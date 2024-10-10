@@ -15,7 +15,7 @@ def pobierz_odjazdy():
     try:
         # Wysłanie zapytania do API PEKA
         response = requests.get(url, params=params)
-        response.raise_for_status()  # Sprawdzanie, czy zapytanie się powiodło
+        print(response.status_code)
 
         # Przetworzenie odpowiedzi JSON
         departures = response.json()
