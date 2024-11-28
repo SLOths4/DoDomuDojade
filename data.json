@@ -13,17 +13,21 @@
     ],
     "stylesheet":[
         {
-            "title": "app",
-            "style": "QWidget {background-color: #f0f0f0;font-family: Arial, sans-serif; color: #000000}"
+          "title": "app",
+          "style": "QWidget {background-color: #f0f0f0;font-family: Arial, sans-serif; color: #000000} \n QTableWidgetItem {border: 0px; background-color: #f0f0f0}"
         },
         {
-            "title": "loading_dots",
-            "style": "QWidget {background-color: #f0f0f0;font-family: Arial, sans-serif; color: #000000}"
+          "title": "loading_dots",
+          "style": "QWidget {background-color: #f0f0f0;font-family: Arial, sans-serif; color: #000000}"
 
         },
         {
-            "title": "footer",
-            "style": ""
+          "title": "footer",
+          "style": ""
+        },
+        {
+          "title": "table",
+          "style": "QTableWidgetItem {border: 0px; background-color: #f0f0f0}"
         }
     ]
   }
