@@ -1,7 +1,7 @@
 
 <div id="weather">
     <?php
-    include('./')
+    include('./');
     function weather() {
         // Fetch weather
         $config = json_decode(file_get_contents("config.json"));
