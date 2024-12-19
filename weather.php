@@ -18,13 +18,11 @@
         $suma_opadu = $weather_data["suma_opadu"];
         $cisnienie = $weather_data["cisnienie"];
         
-        echo "<p> Data pomiaru: ".$data_pomiaru."</p>";
-        echo "<p> Godzina pomiaru: ".$godzina_pomiaru."</p>";
-        echo "<p> Kierunek wiatru: ".$kierunek_wiatru."</p>";
+        echo "<p> Data i godzina pomiaru: ".$data_pomiaru.", ".$godzina_pomiaru."</p>";
+        echo "<p> Kierunek wiatru: ".$kierunek_wiatru."°</p>";
         echo "<p> Wilgotność względna: ".$wilgotnosc_wzgledna."</p>";
         echo "<p> Suma opadu: ".$suma_opadu."</p>";
-        echo "<p> Ciśnienie: ".$cisnienie."</p>";
-
+        echo "<p> Ciśnienie: ".$cisnienie."hPa</p>";
         
     }
     weather();

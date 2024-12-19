@@ -1,5 +1,9 @@
 body {
     font-family: 'Lato', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
 }
 
 #footer {
@@ -7,6 +11,7 @@ body {
     padding: 20px;
     text-align: center;
     border-top: 1px solid #e9ecef;
+    margin-top: auto;
 }
 
 #footer .inner {
@@ -22,4 +27,15 @@ body {
 
 #footer .logo {
     margin-top: 15px;
+}
+
+#weather {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    font-size: 16px;
+    color: #333333;
+    line-height: 1.5;
 }
