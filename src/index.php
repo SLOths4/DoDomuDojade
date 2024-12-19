@@ -11,12 +11,12 @@
   </head>
   <body>
     <!-- IMPORT HEADER -->
-    <?php include('./header.php'); ?>
+    <?php include('./functions/header.php'); ?>
 
     <!-- IMPORT WEATHER MODULE -->
-    <?php include('./weather.php'); ?>
+    <?php include('./functions/weather.php'); ?>
 
     <!-- IMPORT FOOTER -->
-    <?php include('./footer.php'); ?>
+    <?php include('./functions/footer.php'); ?>
   </body>
 </html>
