@@ -39,3 +39,15 @@ body {
     color: #333333;
     line-height: 1.5;
 }
+
+#header {
+    background-color: #f0f0f0; /* Slightly lighter background for a softer look */
+    border-radius: 12px; /* Increased border-radius for a more rounded appearance */
+    padding: 30px; /* Increased padding for more spacing */
+    margin: 30px; /* Increased margin for better separation */
+    margin-top: 0px;
+    font-size: 18px; /* Larger font size for better readability */
+    color: #222222; /* Darker text color for better contrast */
+    line-height: 1.6; /* Slightly increased line-height for improved text spacing */
+    text-align: center; /* Centered text for a balanced look */
+}

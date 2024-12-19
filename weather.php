@@ -1,7 +1,8 @@
-
 <div id="weather">
     <?php
+    // Import get utility
     include('./utilities/get.php');
+
     function weather() {
         // Fetch weather
         $config = json_decode(file_get_contents("config.json"));
