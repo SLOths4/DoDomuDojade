@@ -1,3 +1,25 @@
-p {
-    font-family: lato;
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+#footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+}
+
+#footer .inner {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+#footer .logo img {
+    width: 100px;
+    height: auto;
+    margin-top: 10px;
+}
+
+#footer .logo {
+    margin-top: 15px;
 }

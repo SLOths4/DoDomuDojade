@@ -1,14 +1,14 @@
 {
-    "API": [
-      {
-        "title": "IMGW",
-        "url": "https://danepubliczne.imgw.pl/api/data/synop/id/12330",
-        "description": "Dane meterologiczne z Poznańskiej stacji"
-      },
-      {
-        "title": "ZTM",
-        "url": "https://www.peka.poznan.pl/vm/?przystanek=AWF73",
-        "description": "link do vm przystanku AWF73"
-      }
-    ]
-  }
+  "API": [
+    {
+      "title": "IMGW",
+      "url": "https://danepubliczne.imgw.pl/api/data/synop/id/12330",
+      "description": "Dane meterologiczne z Poznańskiej stacji"
+    },
+    {
+      "title": "ZTM",
+      "url": "https://www.peka.poznan.pl/vm/?przystanek=AWF73",
+      "description": "link do vm przystanku AWF73"
+    }
+  ]
+}
