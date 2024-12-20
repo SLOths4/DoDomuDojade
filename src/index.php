@@ -14,7 +14,9 @@
     <?php include('./functions/header.php'); ?>
 
     <!-- IMPORT WEATHER MODULE -->
-    <?php include('./functions/weather.php'); ?>
+    <?php include('./functions/weather_display.php'); ?>
+
+    <?php include('./functions/calendar_display.php'); ?>
 
     <!-- IMPORT FOOTER -->
     <?php include('./functions/footer.php'); ?>

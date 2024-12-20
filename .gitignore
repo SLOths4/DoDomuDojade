@@ -1,0 +1,48 @@
+# Ignore PHPStorm project files
+.idea/
+
+# Ignore node_modules directory
+node_modules/
+
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore backup files
+*.bak
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore vendor directory for PHP dependencies
+vendor/
+
+# Ignore any compiled PHP files
+*.php~
+
+# Ignore any cache files
+cache/
+
+# Ignore any environment files
+.env
+.env.local
+.env.*.local
+
+# Ignore any build artifacts
+build/
+dist/
+
+# Ignore any coverage reports
+coverage/
+
+# Ignore any personal notes or documentation
+notes/
+docs/
+
+# Ignore any calendar data files
+calendar_data/

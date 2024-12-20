@@ -5,7 +5,7 @@
 
     function weather() {
         // Fetch weather
-        $config = json_decode(file_get_contents("config.json"));
+        $config = json_decode(file_get_contents("./config.json"));
         // API url
         $weather_url = $config->API[0]->url;
         // Fetching data form API
