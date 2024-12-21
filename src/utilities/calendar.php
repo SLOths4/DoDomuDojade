@@ -9,17 +9,25 @@ class Calendar {
 
     public function get_events() {
         // Fetch the iCal data
-        $icalData = file_get_contents($this->icalUrl);
+        $icalData = @file_get_contents($this->icalUrl);
 
         if ($icalData === false) {
-            throw new Exception("Error fetching iCal data.");
+            $error = error_get_last();
+            echo "Error fetching iCal data: " . $error['message'];
+            throw new Exception("Error fetching iCal data: " . $error['message']);
+        }
+
+        echo "<pre>iCal Data:\n" . htmlspecialchars($icalData) . "</pre>";
+        
+        if (strpos($icalData, 'BEGIN:VEVENT') === false) {
+            echo "No events found in the iCal data.";
+            return [];
         }
 
         // Parse the iCal data
-        $events = $this->parse_ical_data($icalData);
 
-        // Display the events
-        $this->display_events($events);
+        $events = $this->parse_ical_data($icalData);
+        return $events;
     }
 
     private function parse_ical_data($icalData) {
