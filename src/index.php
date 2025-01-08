@@ -20,6 +20,6 @@
 
     <!-- IMPORT FOOTER -->
     <?php include('./functions/footer.php'); ?>
-    <!-- super comment -->
+
   </body>
 </html>
