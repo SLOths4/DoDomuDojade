@@ -1,3 +1,6 @@
+# Ignore VScode workspace config files
+*.code-workspace
+
 # Ignore PHPStorm project files
 .idea/
 
