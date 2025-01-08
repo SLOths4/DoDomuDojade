@@ -20,5 +20,6 @@
 
     <!-- IMPORT FOOTER -->
     <?php include('./functions/footer.php'); ?>
+    <!-- testowy komentarz -->
   </body>
 </html>
