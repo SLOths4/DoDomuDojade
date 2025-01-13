@@ -18,8 +18,6 @@ jakość powierza
 
 wyświetlanie odjazdów autobusów i tramwai
 
-dzisiejszy obiad
-
-różne wyświetlanie dla różnych godzin
-
-alert rcb
+- dzisiejszy obiad
+- różne wyświetlanie dla różnych godzin
+- alert rcb
