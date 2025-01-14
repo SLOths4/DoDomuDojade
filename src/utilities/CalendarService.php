@@ -1,5 +1,7 @@
 <?php
-class Calendar {
+
+namespace App\utilities;
+class CalendarService {
     private $icalUrl;
 
     public function __construct() {

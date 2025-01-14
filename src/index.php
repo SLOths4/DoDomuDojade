@@ -26,7 +26,7 @@
 
     <div id="schedule">
     <?php
-    include("./utilities/calendar.php");
+    include("./utilities/CalendarService.php");
     $calendar = new Calendar();
     $events = $calendar->get_events();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\utilities;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
