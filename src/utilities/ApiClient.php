@@ -10,28 +10,26 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 class ApiClient
 {
     private $httpClient;
-    private $baseUrl;
 
-    public function __construct(string $baseUrl = 'https://api.example.com')
+    public function __construct()
     {
         $this->httpClient = HttpClient::create();
-        $this->baseUrl = $baseUrl;
     }
 
     /**
      * Make a GET request to the API
      *
-     * @param string $endpoint
+     * @param string $url
      * @param array $query
      * @return array
      * @throws TransportExceptionInterface
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function get(string $endpoint, array $query = []): array
+    public function get(string $url, array $query = []): array
     {
         try {
-            $response = $this->httpClient->request('GET', $this->baseUrl . $endpoint, [
+            $response = $this->httpClient->request('GET', $url, [
                 'query' => $query,
                 'headers' => [
                     'Accept' => 'application/json',
@@ -48,17 +46,17 @@ class ApiClient
     /**
      * Make a POST request to the API
      *
-     * @param string $endpoint
+     * @param string $url
      * @param array $data
      * @return array
      * @throws TransportExceptionInterface
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      */
-    public function post(string $endpoint, array $data = []): array
+    public function post(string $url, array $data = []): array
     {
         try {
-            $response = $this->httpClient->request('POST', $this->baseUrl . $endpoint, [
+            $response = $this->httpClient->request('POST', $url, [
                 'json' => $data,
                 'headers' => [
                     'Accept' => 'application/json',

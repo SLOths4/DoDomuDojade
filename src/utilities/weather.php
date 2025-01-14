@@ -1,10 +1,16 @@
 <?php
-use Symfony\Component\HttpClient\HttpClient;
+
+use App\Service\ApiClient;
+
+include("ApiClient.php");
 class WeatherService {
+    // inicjacja klasy ApiClient
+    private $ApiClient = new ApiClient();
+    // deklaracja zmiennych globalnych
     public $config = json_decode(file_get_contents("./config.json"));
     public $imgw_weather_url = $config->API[0]->url;
     private function imgwWeatherFetcher() {
-
+        $ApiClient->get();
     }
 
     private function airQuaityFetcher() {}
