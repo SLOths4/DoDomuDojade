@@ -1,38 +1,89 @@
 <?php
 
-function get($url) {
-    // Initialize cURL
-    $ch = curl_init();
+namespace App\Service;
 
-    // Set options
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FAILONERROR => true, // Automatically handle HTTP errors
-    ]);
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
-    // Execute request
-    $response = curl_exec($ch);
+class ApiClient
+{
+    private $httpClient;
+    private $baseUrl;
 
-    // Check for errors
-    if ($response === false) {
-        $error_message = 'cURL error: ' . curl_error($ch);
-        curl_close($ch);
-        throw new Exception($error_message);
+    public function __construct(string $baseUrl = 'https://api.example.com')
+    {
+        $this->httpClient = HttpClient::create();
+        $this->baseUrl = $baseUrl;
     }
 
-    // Close cURL
-    curl_close($ch);
+    /**
+     * Make a GET request to the API
+     *
+     * @param string $endpoint
+     * @param array $query
+     * @return array
+     * @throws TransportExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws ServerExceptionInterface
+     */
+    public function get(string $endpoint, array $query = []): array
+    {
+        try {
+            $response = $this->httpClient->request('GET', $this->baseUrl . $endpoint, [
+                'query' => $query,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
 
-    // Decode JSON response
-    $data = json_decode($response, true);
-
-    // Check for JSON errors
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('JSON decode error: ' . json_last_error_msg());
+            return $response->toArray();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('API request failed: ' . $e->getMessage());
+        }
     }
 
-    // Return the data
-    return $data;
+    /**
+     * Make a POST request to the API
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return array
+     * @throws TransportExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws ServerExceptionInterface
+     */
+    public function post(string $endpoint, array $data = []): array
+    {
+        try {
+            $response = $this->httpClient->request('POST', $this->baseUrl . $endpoint, [
+                'json' => $data,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            return $response->toArray();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('API request failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Set authorization token for requests
+     *
+     * @param string $token
+     * @return void
+     */
+    public function setAuthToken(string $token): void
+    {
+        $this->httpClient = HttpClient::create([
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ]);
+    }
 }
-?>
