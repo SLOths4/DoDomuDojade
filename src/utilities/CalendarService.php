@@ -5,7 +5,7 @@ class CalendarService {
     private $icalUrl;
 
     public function __construct() {
-        $config = json_decode(file_get_contents("./config.json"));
+        $config = require 'config.php';
         $this->icalUrl = $config->Calendar[0]->url;
     }
 

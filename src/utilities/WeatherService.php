@@ -7,7 +7,7 @@ class WeatherService {
     private string $imgw_weather_url;
     public function __construct() {
         $this->ApiClient = new ApiClient();
-        $this->config = json_decode(file_get_contents("./config.json"));
+        $this->config = require 'config.php';
         $this->imgw_weather_url = $this->config->API[0]->url;
     }
 

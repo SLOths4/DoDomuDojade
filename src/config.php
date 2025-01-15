@@ -1,0 +1,23 @@
+<?php
+return [
+    "AirlyApiKey" => "A4gV88G4CKrt7J79a9t6Nwn5VHRvGKC4",
+    "API" => [
+        [
+            "title" => "IMGW",
+            "url" => "https://danepubliczne.imgw.pl/api/data/synop/id/12330",
+            "description" => "Dane meteorologiczne z Poznańskiej stacji"
+        ],
+        [
+            "title" => "ZTM",
+            "url" => "https://www.peka.poznan.pl/vm/?przystanek=AWF73",
+            "description" => "link do vm przystanku AWF73"
+        ]
+    ],
+    "Calendar" => [
+        [
+            "title" => "Kalendarz wydarzen szkolnych",
+            "url" => "https://calendar.google.com/calendar/ical/c_e22b26a985cffb8ff2a9afd9e3516d5ca1e5d608c2d3bf20807da38a40f71431%40group.calendar.google.com/public/basic.ics",
+            "description" => "Szkolne kalendarium"
+        ]
+    ],
+];
