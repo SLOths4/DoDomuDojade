@@ -12,3 +12,5 @@ Pomysły:
 - różne wyświetlanie dla różnych godzin
 - alert rcb
 - zadania maturalne/liga zadaniowa
+- odliczanie do czegoś (np. wakacji)
+- 
