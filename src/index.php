@@ -15,13 +15,14 @@
 
     <!-- IMPORT WEATHER MODULE -->
     <div id="weather">
+        <?php
+        use App\utilities\WeatherService;
+        $weatherService = new WeatherService();
+        $weatherService->imgwWeatherFetcher();
+
+
+        ?>
     </div>
-
-    <div id="schedule">
-    </div>
-
-
-
 
     <!-- IMPORT FOOTER -->
     <?php include('./functions/footer.php'); ?>

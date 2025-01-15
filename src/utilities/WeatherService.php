@@ -11,8 +11,9 @@ class WeatherService {
         $this->imgw_weather_url = $this->config->API[0]->url;
     }
     
-    private function imgwWeatherFetcher() {
-        $this->ApiClient->get($this->imgw_weather_url);
+    public function imgwWeatherFetcher() {
+        $api_data = $this->ApiClient->get($this->imgw_weather_url);
+        echo implode(',', $api_data);
     }
 
     private function airQualityFetcher() {}
