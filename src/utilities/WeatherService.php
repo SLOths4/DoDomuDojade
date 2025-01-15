@@ -10,14 +10,12 @@ class WeatherService {
         $this->config = json_decode(file_get_contents("./config.json"));
         $this->imgw_weather_url = $this->config->API[0]->url;
     }
-    
-    public function imgwWeatherFetcher() {
-        $api_data = $this->ApiClient->get($this->imgw_weather_url);
-        echo implode(',', $api_data);
-    }
 
     private function airQualityFetcher() {}
 
-    public function Weather(){}
+    public function Weather(){
+        $imgw_api_data = $this->ApiClient->get($this->imgw_weather_url);
+
+    }
 
 }
