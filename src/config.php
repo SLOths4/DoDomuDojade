@@ -1,6 +1,10 @@
 <?php
 return [
-    "AirlyApiKey" => "A4gV88G4CKrt7J79a9t6Nwn5VHRvGKC4",
+    "Airly" => [
+        "AirlyApiKey" => "A4gV88G4CKrt7J79a9t6Nwn5VHRvGKC4",
+        "AirlyLocationId" => "63816",
+        "AirlyEndpoint" => "https://airapi.airly.eu/v2/measurements/location?locationId={$this->AirlyLocationId}"
+    ],
     "API" => [
         [
             "title" => "IMGW",
