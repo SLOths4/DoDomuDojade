@@ -1,6 +1,6 @@
 <?php
+namespace src\utilities;
 
-namespace App\utilities;
 class CalendarService {
     private $icalUrl;
 

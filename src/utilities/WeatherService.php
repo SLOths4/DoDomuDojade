@@ -1,5 +1,5 @@
 <?php
-namespace App\utilities;
+namespace src\utilities;
 
 class WeatherService {
     private ApiClient $ApiClient;

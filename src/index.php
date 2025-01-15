@@ -10,16 +10,18 @@
     <link href="styles/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
+    <?php  require_once __DIR__ . '/../vendor/autoload.php';?>
     <!-- IMPORT HEADER -->
     <?php include('./functions/header.php'); ?>
 
     <!-- IMPORT WEATHER MODULE -->
     <div id="weather">
         <?php
-        use App\utilities\WeatherService;
+        include('./utilities/ApiClient.php');
+        include('./utilities/WeatherService.php');
+        use src\utilities\WeatherService;
         $weatherService = new WeatherService();
         $weatherService->imgwWeatherFetcher();
-
 
         ?>
     </div>

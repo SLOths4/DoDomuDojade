@@ -1,15 +1,16 @@
 <?php
 
-namespace App\utilities;
+namespace src\utilities;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
 class ApiClient
 {
-    private $httpClient;
+    private  HttpClientInterface $httpClient;
 
     public function __construct()
     {
@@ -68,20 +69,5 @@ class ApiClient
         } catch (\Exception $e) {
             throw new \RuntimeException('API request failed: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Set authorization token for requests
-     *
-     * @param string $token
-     * @return void
-     */
-    public function setAuthToken(string $token): void
-    {
-        $this->httpClient = HttpClient::create([
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-            ],
-        ]);
     }
 }
