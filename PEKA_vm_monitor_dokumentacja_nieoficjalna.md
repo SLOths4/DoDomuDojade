@@ -112,7 +112,7 @@ Request
 curl -X POST \
   https://www.peka.poznan.pl/vm/method.vm \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "method=getTimes&p0={'symbol':'PRZYKLADOWY_SYMBOL'}"
+  -d "method=getTimes&p0={'symbol':'RKAP71'}"
 ```
 
 Response
