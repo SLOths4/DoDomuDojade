@@ -97,4 +97,43 @@ API zwróci listę odjazdów, np.:
 - Numery linii (`line`) znajdziesz w rozkładach jazdy w Poznaniu.
 - API nie wymaga autoryzacji, ale korzystanie z niego powinno być zgodne z zasadami fair use.
 
-Masz pytania lub potrzebujesz wyjaśnień? 😊
+---
+
+## Przykładowa odpowiedź na 
+
+Request
+```bash
+curl -X POST \
+  https://www.peka.poznan.pl/vm/method.vm \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "method=getTimes&p0={'symbol':'PRZYKLADOWY_SYMBOL'}"
+```
+
+Response
+```json
+{
+  "success": {
+    "bollard": {
+      "symbol": "RKAP71",
+      "tag": "RKAP01",
+      "name": "Rondo Kaponiera",
+      "mainBollard": false
+    },
+    "times": [
+      {
+        "realTime": true,
+        "minutes": 5,
+        "direction": "Os. Sobieskiego",
+        "line": "12"
+      },
+      {
+        "realTime": false,
+        "minutes": 15,
+        "direction": "Starołęka",
+        "line": "13"
+      }
+      // ... kolejne odjazdy
+    ]
+  }
+}
+```
