@@ -1,4 +1,4 @@
 # DoDomuDojade
 
 ## Opis
-DoDomuDojadę to projet aplikacji, która wyświetla rózne dane na jednej stronie.
+DoDomuDojadę to projekt aplikacji, która wyświetla róne dane na jednej stronie.

@@ -13,4 +13,4 @@ Pomysły:
 - alert rcb
 - zadania maturalne/liga zadaniowa
 - odliczanie do czegoś (np. wakacji)
-- 
+- system poprawiania życia (testów i kartkówek)

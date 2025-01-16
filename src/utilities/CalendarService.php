@@ -16,7 +16,7 @@ class CalendarService {
         if ($icalData === false) {
             $error = error_get_last();
             echo "Error fetching iCal data: " . $error['message'];
-            throw new Exception("Error fetching iCal data: " . $error['message']);
+            throw new \Exception("Error fetching iCal data: " . $error['message']);
         }
 
         echo "<pre>iCal Data:\n" . htmlspecialchars($icalData) . "</pre>";
@@ -28,8 +28,7 @@ class CalendarService {
 
         // Parse the iCal data
 
-        $events = $this->parse_ical_data($icalData);
-        return $events;
+        return $this->parse_ical_data($icalData);
     }
 
     private function parse_ical_data($icalData) {
@@ -64,4 +63,4 @@ class CalendarService {
     }
 }
 
-?>
+

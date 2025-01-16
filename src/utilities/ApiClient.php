@@ -3,6 +3,8 @@
 namespace src\utilities;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -21,21 +23,25 @@ class ApiClient
      * Make a GET request to the API
      *
      * @param string $url
-     * @param array $query
+     * @param array|null $query Optional query sent to the url
+     * @param string|null $authToken Optional Authorization token
      * @return array
-     * @throws TransportExceptionInterface
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
      */
-    public function get(string $url, array $query = []): array
+public function get(string $url, ?array $query = [], ?string $authToken = null): array
     {
         try {
             $response = $this->httpClient->request('GET', $url, [
                 'query' => $query,
-                'headers' => [
+                'headers' => array_merge([
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                 ],
+                    $authToken ? ['Authorization' => 'Bearer ' . $authToken] : []),
             ]);
 
             return $response->toArray();
@@ -50,9 +56,11 @@ class ApiClient
      * @param string $url
      * @param array $data
      * @return array
-     * @throws TransportExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function post(string $url, array $data = []): array
     {

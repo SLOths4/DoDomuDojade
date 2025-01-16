@@ -21,9 +21,13 @@
         include('./utilities/WeatherService.php');
         use src\utilities\WeatherService;
         $weatherService = new WeatherService();
-        $weatherService->imgwWeatherFetcher();
-
-        ?>
+        $weatherServiceResponse = $weatherService->Weather();?>
+        <h2>Weather Report</h2>
+        <ul>
+        <?php foreach ($weatherServiceResponse as $key => $value): ?>
+        <li><?= ucfirst(str_replace('_', ' ', $key)) ?>: <?= htmlspecialchars($value) ?></li>
+        <?php endforeach; ?>
+        </ul>
     </div>
 
     <!-- IMPORT FOOTER -->

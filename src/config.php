@@ -1,9 +1,9 @@
-<?php
+<?php /** @noinspection SpellCheckingInspection */
 return [
     "Airly" => [
         "AirlyApiKey" => "A4gV88G4CKrt7J79a9t6Nwn5VHRvGKC4",
         "AirlyLocationId" => "63816",
-        "AirlyEndpoint" => "https://airapi.airly.eu/v2/measurements/location?locationId={$this->AirlyLocationId}"
+        "AirlyEndpoint" => "https://airapi.airly.eu/v2/measurements/location?locationId="
     ],
     "API" => [
         [
@@ -19,7 +19,7 @@ return [
     ],
     "Calendar" => [
         [
-            "title" => "Kalendarz wydarzen szkolnych",
+            "title" => "Kalendarz wydarzeń szkolnych",
             "url" => "https://calendar.google.com/calendar/ical/c_e22b26a985cffb8ff2a9afd9e3516d5ca1e5d608c2d3bf20807da38a40f71431%40group.calendar.google.com/public/basic.ics",
             "description" => "Szkolne kalendarium"
         ]

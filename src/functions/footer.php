@@ -3,6 +3,6 @@
         Developed with ☕
     </div>
     <div class="logo">
-        <img src="./resources/logo.png"></img>
+        <img alt="Społeczna Czwórka liceum logo" src="../resources/logo.png">
     </div>
 </div>
