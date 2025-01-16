@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> Czubkowo opisane (ale dokładniej): https://github.com/lighterowl/peka-vm-api/blob/master/peka-vm-api.md
+
 ### Przewodnik: Jak połączyć się z Wirtualnym Monitorem PEKA i korzystać z jego funkcji
 
 **1. Podstawowe informacje o API:**
