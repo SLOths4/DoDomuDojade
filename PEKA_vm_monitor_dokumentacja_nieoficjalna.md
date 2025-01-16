@@ -1,7 +1,7 @@
 > [!IMPORTANT]  
 > Czubkowo opisane (ale dokładniej): https://github.com/lighterowl/peka-vm-api/blob/master/peka-vm-api.md
 
-> [!INFO]
+> [!NOTE]
 > Aby sprawdzić adres przystanku odwiedź ten [link](https://www.peka.poznan.pl/vm/)
 
 ### Przewodnik: Jak połączyć się z Wirtualnym Monitorem PEKA i korzystać z jego funkcji
