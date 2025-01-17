@@ -28,10 +28,10 @@ class MetarService
 
 
     /**
-     * @return string
+     * @return array
      * @throws TransportExceptionInterface
      */
-    public function getMetar(): string {
+    public function getMetar(): array {
         $metar_data = $this->httpClient->request('GET', $this->metar_url);
 
         return $metar_data;
