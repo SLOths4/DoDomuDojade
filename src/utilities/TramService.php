@@ -22,7 +22,7 @@ class TramService {
     }
 
     /**
-     * function fetches vechicle departures for porvided stop id
+     * function fetches vehicle departures for provided stop id
      *  @param $stopId string
      *  @return array
      *  @throws
