@@ -17,17 +17,15 @@
     <!-- IMPORT WEATHER MODULE -->
     <div id="weather">
         <?php
-        include('./utilities/ApiClient.php');
         include('./utilities/WeatherService.php');
         use src\utilities\WeatherService;
         $weatherService = new WeatherService();
         $weatherServiceResponse = $weatherService->Weather();?>
         <h2>Weather Report</h2>
-        <ul>
-        <?php foreach ($weatherServiceResponse as $key => $value): ?>
-        <li><?= ucfirst(str_replace('_', ' ', $key)) ?>: <?= htmlspecialchars($value) ?></li>
-        <?php endforeach; ?>
-        </ul>
+        <?php
+            // przykład
+            echo "Dzisiejsza temperatura: " . htmlspecialchars($weatherServiceResponse['imgw_temperature']) . "C"
+        ?>
     </div>
 
     <!-- IMPORT FOOTER -->

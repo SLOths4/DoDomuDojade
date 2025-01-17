@@ -5,6 +5,9 @@ return [
         "AirlyLocationId" => "63816",
         "AirlyEndpoint" => "https://airapi.airly.eu/v2/measurements/location?locationId="
     ],
+    "Metar" => [
+      "metar_url" => "https://examle.metar.url.pl",
+    ],
     "API" => [
         [
             "title" => "IMGW",

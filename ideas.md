@@ -5,8 +5,9 @@ Pomysły:
 - aktualności szkolne (np. samorządowe)
 - liga zadaniowa
 - zajęcia dodatkowe
-- pogoda (własna stacja pogodowa)
-- jakość powierza
+- ~~pogoda~~
+- własna stacja pogodowa
+- ~~jakość powierza~~
 - wyświetlanie odjazdów autobusów i tramwai
 - dzisiejszy obiad
 - różne wyświetlanie dla różnych godzin
