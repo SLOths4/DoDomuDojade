@@ -16,7 +16,7 @@ return [
         ],
         [
             "title" => "ZTM",
-            "url" => "https://www.peka.poznan.pl/vm/?przystanek=AWF73",
+            "url" => "https://www.peka.poznan.pl/vm/method.vm",
             "description" => "link do vm przystanku AWF73"
         ]
     ],
@@ -27,4 +27,11 @@ return [
             "description" => "Szkolne kalendarium"
         ]
     ],
+    "Database" => [
+        "db_user" => "root",
+        "db_password" => "{pass]",
+        "db_name" => "anouncements",
+        "db_host" => "localhost",
+        "db_type" => "sqlite"
+    ]
 ];

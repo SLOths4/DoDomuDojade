@@ -21,10 +21,24 @@
         use src\utilities\WeatherService;
         $weatherService = new WeatherService();
         $weatherServiceResponse = $weatherService->Weather();?>
-        <h2>Weather Report</h2>
+        <h2>Dzisiejsza pogoda</h2>
         <?php
             // przykład
-            echo "Dzisiejsza temperatura: " . htmlspecialchars($weatherServiceResponse['imgw_temperature']) . "C"
+            echo "Dzisiejsza temperatura: " . htmlspecialchars($weatherServiceResponse['imgw_temperature']) . "C" . "<br>";
+            echo "Ciśnienie: ". htmlspecialchars($weatherServiceResponse['imgw_pressure']) . "hPa". "<br>";
+            echo "Wysokość indeksu JAKIŚTAM: ". htmlspecialchars($weatherServiceResponse['airly_index_value']). "<br>";
+        ?>
+    </div>
+
+    <div id="tram">
+        <?php
+        include('./utilities/TramService.php');
+        use src\utilities\TramService;
+        $tram_service = new TramService();
+        $tram_service_departures = $tram_service->getTimes("AWF73");
+        echo $tram_service_departures['success']['times'][0]['line'] . " linia" . "<br>";
+        echo $tram_service_departures['success']['times'][0]['minutes'] . " minut";
+
         ?>
     </div>
 

@@ -22,66 +22,89 @@ class TramService {
     }
 
     /**
-     * function fetches vehicle departures for provided stop id
-     *  @param $stopId string
-     *  @return array
-     *  @throws
+     * Pobiera czasy odjazdów dla danego przystanku.
+     *
+     * @param  string  $stopId  Symbol przystanku (unikalny identyfikator, np. RKAP71).
+     * @return array            Tablica z czasami odjazdów i informacjami o liniach.
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Exception
      */
-    private function getTimes($stopId):array {
+    function getTimes(string $stopId): array {
         try {
-            $data = $this->httpClient->request(
-                'POST', $this->ztm_url,
+            $response = $this->httpClient->request(
+                'POST',
+                $this->ztm_url,
                 [
-                    'headers' => array_merge(
-                        [
+                    'headers' => [
                         'Content-Type' => 'application/x-www-form-urlencoded',
-                        ]
-                    ),"body" => array_merge(
-                        [
-                            "method" => "getTimes&p0={$stopId}"
-                        ]
-                    )
+                    ],
+                    'body' => [
+                        'method' => 'getTimes',
+                        'p0' => json_encode(['symbol' => $stopId]),
+                    ],
                 ]
             );
-            return $data;
-        }
-        catch (\Exception $e) {
+
+            // Zamiana odpowiedzi na tablicę
+            $data = $response->toArray();
+
+            // Sprawdzanie poprawności struktury odpowiedzi
+            if (!isset($data['success']) || empty($data['success']['times'])) {
+                throw new \Exception('Brak danych o odjazdach lub niekompletna odpowiedź API.');
+            }
+
+            return $data;//['success']['times']; // Zakładam, że czasy odjazdów są zwracane w kluczu 'times'
+        } catch (\Exception $e) {
             throw $e;
         }
     }
 
     /**
-     * function fetches vehicle departures for porvided stop id
-     *  @param $lat float
-     *  @param $lon float
-     *  @return array
-     *  @throws
+     * Pobiera listę przystanków w okolicy wskazanej lokalizacji GPS.
+     *
+     * @param  float  $lat  Szerokość geograficzna (latitude).
+     * @param  float  $lon  Długość geograficzna (longitude).
+     * @return array         Lista przystanków w formacie tablicy asocjacyjnej.
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws /Exception
      */
-    private function getStops(float  $lat, float $lon):array {
+    function getStops(float $lat, float $lon): array {
         try {
-            $data = $this->httpClient->request(
-                'POST', $this->ztm_url,
+            $response = $this->httpClient->request(
+                'POST',
+                $this->ztm_url,
                 [
-                    'headers' => array_merge(
-                        [
-                            'Content-Type' => 'application/x-www-form-urlencoded',
-                        ]
-                    ),
-                    "body" => array_merge(
-                        [
-                            "method" => "getStops&p0={\"lat\":$lat,\"lon\":$lon}"
-                        ]
-                    )
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                    ],
+                    'body' => [
+                        'method' => 'getStops',
+                        'p0' => json_encode(['lat' => $lat, 'lon' => $lon]),
+                    ],
                 ]
             );
-            return $data;
-        }
-        catch (\Exception $e) {
-            throw $e;
+
+            // Jeśli potrzebujesz logiki walidacji odpowiedzi, np. sprawdzania, czy odpowiedź zawiera dane:
+            $data = $response->toArray();
+
+            if (!isset($data['success']) || empty($data['success'])) {
+                throw new \Exception('Brak danych w odpowiedzi API lub niepoprawna struktura odpowiedzi.');
+            }
+
+            return $data['success']; // Zakładam, że to struktura zawiera dane przystanków zwróconych przez API.
+        } catch (\Exception $e) {
+            // Wyrzucenie błędu z pełną informacją lub logowanie dla debugowania.
+            throw $e; // Możesz również zaimplementować specjalny handler błędów lub logowanie.
         }
     }
 
-    private function getLines($lineNumber):array {
+    function getLines(int $lineNumber):array {
         try {
             $data = $this->httpClient->request(
                 'POST', $this->ztm_url,
@@ -98,14 +121,14 @@ class TramService {
                     )
                 ]
             );
-            return $data;
+            return $data->toArray();
         }
         catch (\Exception $e) {
             throw $e;
         }
     }
 
-    private function getRoutes($lineNumber):array {
+    function getRoutes(int $lineNumber):array {
         try {
             $data = $this->httpClient->request(
                 'POST', $this->ztm_url,
@@ -122,7 +145,7 @@ class TramService {
                     )
                 ]
             );
-            return $data;
+            return $data->toArray();
         }
         catch (\Exception $e) {
             throw $e;

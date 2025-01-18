@@ -1,8 +1,9 @@
 {
     "require": {
-        "symfony/http-client": "^7.2",
-        "php": ">=7.4",
         "ext-json": "*",
-        "ext-http": "*"
+        "ext-pdo": "*",
+        "monolog/monolog": "*",
+        "php": ">=7.4",
+        "symfony/http-client": "^7.2"
     }
 }

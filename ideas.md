@@ -1,7 +1,7 @@
 Pomysły:
 - plan lekcji
 - ogłoszenia
-- kalendarz
+- kalendarz @Hexer
 - aktualności szkolne (np. samorządowe)
 - liga zadaniowa
 - zajęcia dodatkowe
@@ -13,5 +13,5 @@ Pomysły:
 - różne wyświetlanie dla różnych godzin
 - alert rcb
 - zadania maturalne/liga zadaniowa
-- odliczanie do czegoś (np. wakacji)
+- odliczanie do czegoś (np. wakacji) @tymson
 - system poprawiania życia (testów i kartkówek)

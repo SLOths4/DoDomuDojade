@@ -10,7 +10,6 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
 class WeatherService {
-    private ApiClient $ApiClient;
     private  HttpClientInterface $httpClient;
     private $config;
     private string $imgw_weather_url;
@@ -21,7 +20,6 @@ class WeatherService {
 
 
     public function __construct() {
-        $this->ApiClient = new ApiClient();
         $this->httpClient = HttpClient::create();
         $this->config = require 'config.php';
         $this->imgw_weather_url = $this->config['API'][0]['url'] ?? '';
@@ -77,8 +75,22 @@ class WeatherService {
      * @throws TransportExceptionInterface
      */
     public function Weather():array{
-        $imgw_api_data = $this->ApiClient->get($this->imgw_weather_url);
+        try {
+        $imgw_api_data = $this->httpClient->request('GET', $this->imgw_weather_url, [
+            'headers' => array_merge([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ])
+        ])->toArray();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('API request failed: ' . $e->getMessage());
+        }
+
         $airly_data = $this->airQualityFetcher();
+
+        if ($airly_data == null) {
+            return [];
+        }
 
         return [
             "imgw_station" => $imgw_api_data['stacja'],
