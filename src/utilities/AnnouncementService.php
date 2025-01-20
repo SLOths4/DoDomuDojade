@@ -20,7 +20,7 @@ class AnnouncementService{
     // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
     private PDO $pdo; // PDO instance
     private array $config; // config.php file
-    private Logger $log; // Monolog logger instance
+    private Logger $logger; // Monolog logger instance
     private string $db_host; // database host
     private string $db_username; // database username
     private string $db_password; // database password
@@ -49,7 +49,7 @@ class AnnouncementService{
         $this->ALLOWED_FIELDS = $this->config['Database']['allowed_fields'];
         $this->DATE_FORMAT = $this->config['Database']['date_format'];
 
-        $this->log = $loggerInstance;
+        $this->logger = $loggerInstance;
         $this->pdo = $this->initializePDO();
     }
 
@@ -61,12 +61,12 @@ class AnnouncementService{
         try {
             foreach (self::REQUIRED_KEYS as $key) {
                 if (empty($this->config['Database'][$key])) {
-                    $this->log->error("Missing configuration key: $key");
+                    $this->logger->error("Missing configuration key: $key");
                     throw new RuntimeException("Configuration error: Missing $key");
                 }
             }
         } catch (RuntimeException $e) {
-            $this->log->error("Configuration error: " . $e->getMessage());
+            $this->logger->error("Configuration error: " . $e->getMessage());
         }
     }
 
@@ -91,10 +91,10 @@ class AnnouncementService{
         try {
             $pdo = new PDO($this->db_host, $this->db_username, $this->db_password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->log->info("PDO connection successful.");
+            $this->logger->info("PDO connection successful.");
             return $pdo;
         } catch (PDOException $e) {
-            $this->log->error("PDO connection failed: " . $e->getMessage());
+            $this->logger->error("PDO connection failed: " . $e->getMessage());
             throw new RuntimeException('PDO Connection failed');
         }
     }
@@ -108,7 +108,7 @@ class AnnouncementService{
         try {
             foreach ($params as $key => $param) {
                 if (!is_array($param) || count($param) !== 2) {
-                    $this->log->error("Invalid parameter structure.", [
+                    $this->logger->error("Invalid parameter structure.", [
                         'key' => $key,
                         'value' => $param
                     ]);
@@ -118,9 +118,9 @@ class AnnouncementService{
                 [$value, $type] = $param;
                 $stmt->bindParam($key, $value, $type);
             }
-            $this->log->debug("Parameters bound to statement.", ['parameters' => $params]);
+            $this->logger->debug("Parameters bound to statement.", ['parameters' => $params]);
         } catch (PDOException $e) {
-            $this->log->error("Binding parameters to statement failed: " . $e->getMessage(), ['parameters' => $params]);
+            $this->logger->error("Binding parameters to statement failed: " . $e->getMessage(), ['parameters' => $params]);
             throw new RuntimeException('Binding parameters to statement failed');
         }
 
@@ -137,13 +137,13 @@ class AnnouncementService{
             $stmt = $this->pdo->prepare($query);
             $this->bindParams($stmt, $params);
             $stmt->execute();
-            $this->log->info("SQL query executed successfully.", [
+            $this->logger->info("SQL query executed successfully.", [
                 'query' => $query,
                 'parameters' => $params
             ]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->log->error("SQL query execution failed: " . $e->getMessage(), [
+            $this->logger->error("SQL query execution failed: " . $e->getMessage(), [
                 'query' => $query,
                 'parameters' => $params
             ]);
@@ -161,14 +161,14 @@ class AnnouncementService{
             $d = DateTime::createFromFormat($this->DATE_FORMAT, $date);
             $isValid = $d && $d->format($this->DATE_FORMAT) === $date;
 
-            $this->log->debug("Date format validation", [
+            $this->logger->debug("Date format validation", [
                 'date' => $date,
                 'isValid' => $isValid
             ]);
 
             return $isValid;
         } catch (InvalidArgumentException $e) {
-            $this->log->error("Invalid date format provided.". $e->getMessage());
+            $this->logger->error("Invalid date format provided.". $e->getMessage());
             throw new InvalidArgumentException('Invalid date format');
         }
     }
@@ -180,10 +180,10 @@ class AnnouncementService{
     public function getAnnouncements(): array {
         try {
             $query = "SELECT * FROM $this->table_name";
-            $this->log->info("Fetching all announcements.");
+            $this->logger->info("Fetching all announcements.");
             return $this->executeStatement($query);
         } catch (PDOException $e) {
-            $this->log->error("Error fetching announcements: " . $e->getMessage());
+            $this->logger->error("Error fetching announcements: " . $e->getMessage());
             throw new RuntimeException('Error fetching announcements');
         }
     }
@@ -196,10 +196,10 @@ class AnnouncementService{
         try {$date = date('Y-m-d');
         $query = "SELECT * FROM $this->table_name WHERE valid_until >= :date";
         $params = [':date' => [date('Y-m-d'), PDO::PARAM_STR]];
-        $this->log->info("Fetching valid announcements for date: $date.");
+        $this->logger->info("Fetching valid announcements for date: $date.");
         return $this->executeStatement($query, $params);
         } catch (PDOException $e) {
-            $this->log->error("Error fetching valid announcements: " . $e->getMessage());
+            $this->logger->error("Error fetching valid announcements: " . $e->getMessage());
             throw new RuntimeException('Error fetching valid announcements');
         }
     }
@@ -217,7 +217,7 @@ class AnnouncementService{
             $this->validateInput($title, self::MAX_TITLE_LENGTH);
             $this->validateInput($text, self::MAX_TEXT_LENGTH);
             if (!$this->validateDate($validUntil)) {
-                $this->log->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
+                $this->logger->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
                 throw new InvalidArgumentException('Invalid date format');
             }
 
@@ -232,18 +232,17 @@ class AnnouncementService{
             ];
 
             $this->executeStatement($query, $params);
-            $this->log->info("Added new announcement.", [
+            $this->logger->info("Added new announcement.", [
                 'title' => $title,
                 'userId' => $userId
             ]);
 
             return true;
         } catch (PDOException $e) {
-            $this->log->error("Error adding new announcement: " . $e->getMessage());
+            $this->logger->error("Error adding new announcement: " . $e->getMessage());
             throw new RuntimeException('Error adding new announcement');
         }
     }
-
 
     /**
      * @param int $announcementId
@@ -254,7 +253,7 @@ class AnnouncementService{
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
         if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
-            $this->log->warning("Invalid field attempted for update.", [
+            $this->logger->warning("Invalid field attempted for update.", [
                 'field' => $field
             ]);
             throw new InvalidArgumentException("Invalid field to update: $field");
@@ -268,7 +267,7 @@ class AnnouncementService{
             ];
 
             $this->executeStatement($query, $params);
-            $this->log->info("Announcement updated.", [
+            $this->logger->info("Announcement updated.", [
                 'announcementId' => $announcementId,
                 'field' => $field,
                 'newValue' => $newValue,
@@ -276,7 +275,7 @@ class AnnouncementService{
             ]);
             return true;
         } catch (PDOException $e) {
-            $this->log->error("Error updating announcement: " . $e->getMessage());
+            $this->logger->error("Error updating announcement: " . $e->getMessage());
             throw new RuntimeException('Error updating announcement');
         }
     }
@@ -295,18 +294,17 @@ class AnnouncementService{
             ];
 
             $this->executeStatement($query, $params);
-            $this->log->info("Announcement deleted.", [
+            $this->logger->info("Announcement deleted.", [
                 'announcementId' => $announcementId,
                 'userId' => $userId
             ]);
 
             return true;
         } catch (PDOException $e) {
-            $this->log->error("Error deleting announcement: " . $e->getMessage());
+            $this->logger->error("Error deleting announcement: " . $e->getMessage());
             throw new RuntimeException('Error deleting announcement');
         }
     }
-
 
     /**
      * Fetches announcements by id
@@ -323,14 +321,14 @@ class AnnouncementService{
             $result = $this->executeStatement($query, $params);
 
             if (!$result) {
-                $this->log->warning("No announcement found with ID: $announcementId");
+                $this->logger->warning("No announcement found with ID: $announcementId");
                 return [];
             }
 
-            $this->log->info("Announcement fetched successfully.", ['result' => $result]);
+            $this->logger->info("Announcement fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
-            $this->log->error("Error fetching announcement by ID: " . $e->getMessage());
+            $this->logger->error("Error fetching announcement by ID: " . $e->getMessage());
             throw new RuntimeException('Error fetching data from the database');
         }
     }

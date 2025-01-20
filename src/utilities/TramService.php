@@ -1,154 +1,167 @@
 <?php
 namespace src\utilities;
 
+use Exception;
+use Monolog\Logger;
+use RuntimeException;
+use InvalidArgumentException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\{
+    DecodingExceptionInterface,
+    RedirectionExceptionInterface,
+    TransportExceptionInterface,
+    ClientExceptionInterface,
+    ServerExceptionInterface
+};
+use Throwable;
 
 class TramService {
+    private const array ERROR_MESSAGES = [
+        'invalid_response' => 'Invalid or incomplete API response structure',
+        'no_departure_data' => 'No departure times available for the specified stop',
+        'no_stops_data' => 'No stops found in the specified location',
+        'api_error' => 'Error while communicating with ZTM API: %s',
+        'invalid_coordinates' => 'Invalid GPS coordinates provided',
+        'invalid_line_number' => 'Invalid line number provided',
+        'invalid_stop_id' => 'Invalid stop ID format'
+    ];
+
     private HttpClientInterface $httpClient;
-    private string $ztm_url;
-    private $config;
+    private string $ztmUrl;
+    private Logger $logger;
 
 
-    public function __construct() {
+    public function __construct(Logger $loggerInstance, string $ztmUrl) {
         $this->httpClient = HttpClient::create();
-        $this->config = require 'config.php';
-        $this->ztm_url = $this->config['API'][1]['url'] ?? '';
+        $this->ztmUrl = $ztmUrl;
+        $this->logger = $loggerInstance;
     }
 
     /**
-     * Pobiera czasy odjazdów dla danego przystanku.
-     *
-     * @param  string  $stopId  Symbol przystanku (unikalny identyfikator, np. RKAP71).
-     * @return array            Tablica z czasami odjazdów i informacjami o liniach.
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws \Exception
+     * Validate GPS coordinates.
      */
-    function getTimes(string $stopId): array {
+    private function isValidCoordinates(float $lat, float $lon): bool {
+        return $lat >= -90 && $lat <= 90 && $lon >= -180 && $lon <= 180;
+    }
+
+    /**
+     * Make API request with common configuration.
+     * @throws Exception
+     */
+    private function makeApiRequest(string $method, array $params): array {
         try {
             $response = $this->httpClient->request(
                 'POST',
-                $this->ztm_url,
+                $this->ztmUrl,
                 [
-                    'headers' => [
-                        'Content-Type' => 'application/x-www-form-urlencoded',
-                    ],
+                    'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
                     'body' => [
-                        'method' => 'getTimes',
-                        'p0' => json_encode(['symbol' => $stopId]),
-                    ],
+                        'method' => $method,
+                        'p0' => json_encode($params)
+                    ]
                 ]
             );
 
-            // Zamiana odpowiedzi na tablicę
-            $data = $response->toArray();
-
-            // Sprawdzanie poprawności struktury odpowiedzi
-            if (!isset($data['success']) || empty($data['success']['times'])) {
-                throw new \Exception('Brak danych o odjazdach lub niekompletna odpowiedź API.');
-            }
-
-            return $data;//['success']['times']; // Zakładam, że czasy odjazdów są zwracane w kluczu 'times'
-        } catch (\Exception $e) {
-            throw $e;
+            return $response->toArray();
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->error('HTTP transport error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            throw new RuntimeException('HTTP transport error occurred while calling API.', 0, $e);
+        } catch (DecodingExceptionInterface $e) {
+            $this->logger->error('Response decoding error', ['method' => $method, 'response' => $e->getTrace(), 'error' => $e->getMessage()]);
+            throw new RuntimeException('Unable to decode API response.', 0, $e);
+        } catch (ClientExceptionInterface $e) {
+            $this->logger->error('Client error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            throw new RuntimeException('Client error occurred while calling API.', 0, $e);
+        } catch (ServerExceptionInterface $e) {
+            $this->logger->error('Server error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            throw new RuntimeException('Server error occurred while calling API.', 0, $e);
+        } catch (RedirectionExceptionInterface $e) {
+            $this->logger->error('Redirection error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            throw new RuntimeException('Redirection error occurred while calling API.', 0, $e);
+        } catch (Throwable $e) {
+            $this->logger->error('Unexpected error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            throw new RuntimeException('An unexpected error occurred while calling API.', 0, $e);
         }
     }
 
     /**
-     * Pobiera listę przystanków w okolicy wskazanej lokalizacji GPS.
-     *
-     * @param  float  $lat  Szerokość geograficzna (latitude).
-     * @param  float  $lon  Długość geograficzna (longitude).
-     * @return array         Lista przystanków w formacie tablicy asocjacyjnej.
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws /Exception
+     * Get departure times for a specific stop.
+     * @throws Exception
      */
-    function getStops(float $lat, float $lon): array {
+    public function getTimes(string $stopId): array {
+        if (!preg_match('/^[A-Z0-9]+$/', $stopId)) {
+            throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_stop_id']);
+        }
+
         try {
-            $response = $this->httpClient->request(
-                'POST',
-                $this->ztm_url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/x-www-form-urlencoded',
-                    ],
-                    'body' => [
-                        'method' => 'getStops',
-                        'p0' => json_encode(['lat' => $lat, 'lon' => $lon]),
-                    ],
-                ]
-            );
+            $response = $this->makeApiRequest('getTimes', ['symbol' => $stopId]);
 
-            // Jeśli potrzebujesz logiki walidacji odpowiedzi, np. sprawdzania, czy odpowiedź zawiera dane:
-            $data = $response->toArray();
-
-            if (!isset($data['success']) || empty($data['success'])) {
-                throw new \Exception('Brak danych w odpowiedzi API lub niepoprawna struktura odpowiedzi.');
+            if (!isset($response['success']['times'])) {
+                throw new Exception(self::ERROR_MESSAGES['no_departure_data']);
             }
 
-            return $data['success']; // Zakładam, że to struktura zawiera dane przystanków zwróconych przez API.
-        } catch (\Exception $e) {
-            // Wyrzucenie błędu z pełną informacją lub logowanie dla debugowania.
-            throw $e; // Możesz również zaimplementować specjalny handler błędów lub logowanie.
+            return $response;
+        } catch (Exception $e) {
+            $this->logger->error('getTimes failed', ['stopId' => $stopId, 'error' => $e->getMessage()]);
+            throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
 
-    function getLines(int $lineNumber):array {
-        try {
-            $data = $this->httpClient->request(
-                'POST', $this->ztm_url,
-                [
-                    'headers' => array_merge(
-                        [
-                            'Content-Type' => 'application/x-www-form-urlencoded',
-                        ]
-                    ),
-                    "body" => array_merge(
-                        [
-                            "method" => "getLines&p0={\"line\":$lineNumber}"
-                        ]
-                    )
-                ]
-            );
-            return $data->toArray();
+    /**
+     * Get stops near specified GPS coordinates.
+     * @throws Exception
+     */
+    public function getStops(float $lat, float $lon): array {
+        if (!$this->isValidCoordinates($lat, $lon)) {
+            throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_coordinates']);
         }
-        catch (\Exception $e) {
-            throw $e;
+
+        try {
+            $response = $this->makeApiRequest('getStops', ['lat' => $lat, 'lon' => $lon]);
+
+            if (empty($response['success'])) {
+                throw new Exception(self::ERROR_MESSAGES['no_stops_data']);
+            }
+
+            return $response['success'];
+        } catch (Exception $e) {
+            $this->logger->error('getStops failed', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
+            throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
 
-    function getRoutes(int $lineNumber):array {
-        try {
-            $data = $this->httpClient->request(
-                'POST', $this->ztm_url,
-                [
-                    'headers' => array_merge(
-                        [
-                            'Content-Type' => 'application/x-www-form-urlencoded',
-                        ]
-                    ),
-                    "body" => array_merge(
-                        [
-                            "method" => "getRoutes&p0={\"line\":$lineNumber}"
-                        ]
-                    )
-                ]
-            );
-            return $data->toArray();
+    /**
+     * Get line information.
+     * @throws Exception
+     */
+    public function getLines(int $lineNumber): array {
+        if ($lineNumber <= 0) {
+            throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
         }
-        catch (\Exception $e) {
-            throw $e;
+
+        try {
+            return $this->makeApiRequest('getLines', ['line' => $lineNumber]);
+        } catch (Exception $e) {
+            $this->logger->error('getLines failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
+            throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
+        }
+    }
+
+    /**
+     * Get routes for a specific line.
+     * @throws Exception
+     */
+    public function getRoutes(int $lineNumber): array {
+        if ($lineNumber <= 0) {
+            throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
+        }
+
+        try {
+            return $this->makeApiRequest('getRoutes', ['line' => $lineNumber]);
+        } catch (Exception $e) {
+            $this->logger->error('getRoutes failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
+            throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
 }
