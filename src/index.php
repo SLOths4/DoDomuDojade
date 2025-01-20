@@ -15,7 +15,7 @@
     <?php include('./functions/header.php'); ?>
 
     <!-- IMPORT WEATHER MODULE -->
-    <div id="weather">
+    <div id="weather" class="div">
         <?php
         include('./utilities/WeatherService.php');
         use src\utilities\WeatherService;
@@ -24,13 +24,15 @@
         <h2>Dzisiejsza pogoda</h2>
         <?php
             // przykład
+            echo "Dzisiejsza pogoda: " . htmlspecialchars($weatherServiceResponse['imgw_weather']) . "<br>";
             echo "Dzisiejsza temperatura: " . htmlspecialchars($weatherServiceResponse['imgw_temperature']) . "C" . "<br>";
             echo "Ciśnienie: ". htmlspecialchars($weatherServiceResponse['imgw_pressure']) . "hPa". "<br>";
             echo "Wysokość indeksu JAKIŚTAM: ". htmlspecialchars($weatherServiceResponse['airly_index_value']). "<br>";
+
         ?>
     </div>
 
-    <div id="tram">
+    <div id="tram" class="div">
         <?php
         include('./utilities/TramService.php');
         use src\utilities\TramService;
@@ -42,6 +44,26 @@
         ?>
     </div>
 
+    <div id="announcements" class="div">
+        <?php
+        include('./utilities/AnnouncementService.php');
+        use src\utilities\AnnouncementService;
+
+        $announcement_service = new AnnouncementService();
+        $announcement_service_announcements = $announcement_service->getAnnouncements();
+
+        foreach ($announcement_service_announcements as $announcement) {
+            // Wyświetlamy wartości każdego rekordu
+            echo "<div class=\"div\">";
+            echo "Tytuł wpisu: " . htmlspecialchars($announcement['title']) . "<br>";
+            echo "Data wysłania: " . htmlspecialchars($announcement['date']) . "<br>";
+            echo "Autor: " . htmlspecialchars($announcement['user_id']) . "<br>";
+            echo "Ważne do: " . htmlspecialchars($announcement['valid_until']) . "<br>";
+            echo htmlspecialchars($announcement['text']) . "<br><br>";
+            echo "</div>";
+        }
+        ?>
+    </div>
     <!-- IMPORT FOOTER -->
     <?php include('./functions/footer.php'); ?>
 

@@ -3,7 +3,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "monolog/monolog": "*",
-        "php": ">=7.4",
+        "php": ">=8.4",
         "symfony/http-client": "^7.2"
     }
 }

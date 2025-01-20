@@ -15,3 +15,8 @@ Pomysły:
 - zadania maturalne/liga zadaniowa
 - odliczanie do czegoś (np. wakacji) @tymson
 - system poprawiania życia (testów i kartkówek)
+
+
+Offline issues:
+- ?? dodanie error handlingu do wyświetlania ??
+- poprawa typu danych w add announcements

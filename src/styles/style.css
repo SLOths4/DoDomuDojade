@@ -51,3 +51,14 @@ body {
     line-height: 1.6; /* Slightly increased line-height for improved text spacing */
     text-align: center; /* Centered text for a balanced look */
 }
+
+.div {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    font-size: 16px;
+    color: #333333;
+    line-height: 1.5;
+}

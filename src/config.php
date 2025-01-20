@@ -6,7 +6,7 @@ return [
         "AirlyEndpoint" => "https://airapi.airly.eu/v2/measurements/location?locationId="
     ],
     "Metar" => [
-      "metar_url" => "https://examle.metar.url.pl",
+      "metar_url" => "https://awiacja.imgw.pl/metar00.php?airport=EPPO",
     ],
     "API" => [
         [
@@ -28,10 +28,13 @@ return [
         ]
     ],
     "Database" => [
-        "db_user" => "root",
-        "db_password" => "{pass]",
-        "db_name" => "anouncements",
-        "db_host" => "localhost",
-        "db_type" => "sqlite"
+        "db_user" => "null",
+        "db_password" => "null",
+        "db_name" => "database",
+        "db_host" => "sqlite:/Users/franek/Documents/GitHub/DoDomuDojade/database.sqlite", //ściezka do bazy danych
+        "db_type" => "sqlite",
+        "announcement_table_name" => "announcements",
+        "allowed_fields" => ['title', 'text', 'valid_until'],
+        "date_format" => "Y-m-d"
     ]
 ];
