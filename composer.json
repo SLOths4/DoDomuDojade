@@ -4,6 +4,7 @@
         "ext-pdo": "*",
         "monolog/monolog": "*",
         "php": ">=8.4",
-        "symfony/http-client": "^7.2"
+        "symfony/http-client": "^7.2",
+        "ext-mbstring": "*"
     }
 }

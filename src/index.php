@@ -10,7 +10,10 @@
     <link href="styles/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <?php  require_once __DIR__ . '/../vendor/autoload.php';?>
+    <?php  require_once __DIR__ . '/../vendor/autoload.php';
+    $logger = new \Monolog\Logger('CustomLogger');
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler('app.log', \Monolog\Level::Debug));
+    ?>
     <!-- IMPORT HEADER -->
     <?php include('./functions/header.php'); ?>
 
@@ -49,7 +52,7 @@
         include('./utilities/AnnouncementService.php');
         use src\utilities\AnnouncementService;
 
-        $announcement_service = new AnnouncementService();
+        $announcement_service = new AnnouncementService($logger);
         $announcement_service_announcements = $announcement_service->getAnnouncements();
 
         foreach ($announcement_service_announcements as $announcement) {
