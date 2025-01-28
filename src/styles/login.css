@@ -1,0 +1,52 @@
+body {
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+#form {
+    background-color: #90ACC9;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    line-height: 1.6;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 12px;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 25%;
+    height: 8%;
+}
+
+#password {
+    display: block;
+    border: 0px;
+    border-radius: 6px;
+    width: 80%;
+}
+
+#username {
+    display: block;
+    border: 0px;
+    border-radius: 6px;
+    width: 80%;
+}
+
+button {
+    display: block;
+    border: 0px;
+    border-radius: 6px;
+    background-color: #476FB1;
+    color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 80%;
+}

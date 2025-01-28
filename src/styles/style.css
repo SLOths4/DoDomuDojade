@@ -52,13 +52,67 @@ body {
     text-align: center; /* Centered text for a balanced look */
 }
 
-.div {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 20px;
-    font-size: 16px;
+/* Styl dla pól wprowadzania (inputów) */
+#login input[type="text"],
+#login input[type="password"] {
+    width: 100%; /* Pełna szerokość */
+    padding: 12px; /* Wygodne odstępy wewnętrzne */
+    margin-bottom: 20px; /* Odstęp między polami */
+    border: 1px solid #ddd; /* Cienka obwódka */
+    border-radius: 6px; /* Zaokrąglone rogi */
+    font-size: 14px;
     color: #333333;
-    line-height: 1.5;
+    font-family: 'Lato', sans-serif;
+    box-sizing: border-box; /* Uwzględnij wymiary obramowania w szerokości */
+    background-color: #f9f9f9; /* Subtelne tło */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animacja przy focus */
+}
+
+/* Efekt focus dla pól wprowadzania */
+#login input[type="text"]:focus,
+#login input[type="password"]:focus {
+    border-color: #007bff; /* Podkreślenie niebieskim kolorem */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25); /* Lekki cień w fokusie */
+    outline: none; /* Usuń domyślne obramowanie */
+}
+
+/* Styl etykiet */
+#login label {
+    display: block; /* Ustaw blokowy układ dla lepszej czytelności */
+    margin-bottom: 8px; /* Odstęp między etykietą a polem */
+    font-size: 14px;
+    color: #555555;
+}
+
+/* Styl przycisku */
+#login button {
+    width: 100%; /* Pełna szerokość przycisku */
+    padding: 12px 20px; /* Ustawienie paddingu dla czytelności */
+    margin-top: 10px; /* Odstęp u góry */
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff; /* Tekst w kolorze białym */
+    background-color: #28a745; /* Zielony kolor przycisku */
+    border: none; /* Usuń domyślną ramkę */
+    border-radius: 6px; /* Zaokrąglone rogi */
+    cursor: pointer; /* Dodanie wskaźnika wskazującego przycisk */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Animacja przy najechaniu */
+}
+
+/* Hover efekt dla przycisku */
+#login button:hover {
+    background-color: #218838; /* Ciemniejszy zielony przy najechaniu */
+    box-shadow: 0 4px 12px rgba(33, 136, 56, 0.35); /* Subtelny cień */
+}
+
+/* Styl dla mniejszych ekranów */
+@media (max-width: 600px) {
+    #login {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    #login h1 {
+        font-size: 20px;
+    }
 }

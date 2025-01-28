@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Monolog\Logger;
 use PDO;
 use PDOException;
+use PDOStatement;
 use RuntimeException;
 
 /**
@@ -39,7 +40,7 @@ class AnnouncementService{
     private const int MAX_TEXT_LENGTH = 10000;
 
     public function __construct(Logger $loggerInstance) {
-        $this->config = require 'config.php';
+        $this->config = require '../config.php';
         $this->validateConfig();
         $this->db_host = $this->config['Database']['db_host'];
         $this->db_username = $this->config['Database']['db_user'];
@@ -51,6 +52,8 @@ class AnnouncementService{
 
         $this->logger = $loggerInstance;
         $this->pdo = $this->initializePDO();
+
+        $this->logger->debug("Table name being used: $this->table_name");
     }
 
     /**
@@ -100,31 +103,44 @@ class AnnouncementService{
     }
 
     /**
-     * @param $stmt
+     * @param PDOStatement $stmt
      * @param array $params
      * @return void
      */
-    private function bindParams($stmt, array $params): void {
-        try {
-            foreach ($params as $key => $param) {
-                if (!is_array($param) || count($param) !== 2) {
-                    $this->logger->error("Invalid parameter structure.", [
-                        'key' => $key,
-                        'value' => $param
-                    ]);
-                    throw new InvalidArgumentException("Invalid parameter structure detected.");
-                }
-
-                [$value, $type] = $param;
-                $stmt->bindParam($key, $value, $type);
+    private function bindParams(PDOStatement $stmt, array $params): void {
+        foreach ($params as $key => $param) {
+            if (!is_array($param) || count($param) !== 2) {
+                $this->logger->error("Invalid parameter structure.", [
+                    'key' => $key,
+                    'param' => $param
+                ]);
+                throw new InvalidArgumentException("Invalid parameter structure for key $key.");
             }
-            $this->logger->debug("Parameters bound to statement.", ['parameters' => $params]);
-        } catch (PDOException $e) {
-            $this->logger->error("Binding parameters to statement failed: " . $e->getMessage(), ['parameters' => $params]);
-            throw new RuntimeException('Binding parameters to statement failed');
+
+            [$value, $type] = $param;
+
+            $this->logger->debug("Binding parameter:", [
+                'key' => $key,
+                'value' => $value,
+                'type' => $type
+            ]);
+
+            try {
+                $stmt->bindValue($key, $value, $type);
+            } catch (PDOException $e) {
+                $this->logger->error("Failed to bind parameter to statement.", [
+                    'key' => $key,
+                    'value' => $value,
+                    'type' => $type,
+                    'error' => $e->getMessage(),
+                ]);
+                throw new RuntimeException("Failed to bind parameter: $key");
+            }
         }
 
+        $this->logger->debug("All parameters successfully bound.", ['parameters' => $params]);
     }
+
 
     /**
      * Executes given statement
@@ -135,13 +151,25 @@ class AnnouncementService{
     private function executeStatement(string $query, array $params = []): array {
         try {
             $stmt = $this->pdo->prepare($query);
-            $this->bindParams($stmt, $params);
+            $this->logger->debug("Executing query:", ['query' => $query]);
+            if (!empty($params)) {
+                $this->bindParams($stmt, $params);
+            }
+            $start = microtime(true);
             $stmt->execute();
+            $executionTime = round((microtime(true) - $start) * 1000, 2);
             $this->logger->info("SQL query executed successfully.", [
                 'query' => $query,
+                'execution_time_ms' => $executionTime,
                 'parameters' => $params
             ]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (empty($results)) {
+                $this->logger->warning("SQL query executed but returned no results.", [
+                    'query' => $query
+                ]);
+            }
+            return $results;
         } catch (PDOException $e) {
             $this->logger->error("SQL query execution failed: " . $e->getMessage(), [
                 'query' => $query,
@@ -213,6 +241,13 @@ class AnnouncementService{
      * @return bool
      */
     public function addAnnouncement(string $title, string $text, string $validUntil, int $userId): bool {
+        $this->logger->debug("Received values:", [
+            'title' => $title,
+            'text' => $text,
+            'validUntil' => $validUntil,
+            'userId' => $userId
+        ]);
+
         try {
             $this->validateInput($title, self::MAX_TITLE_LENGTH);
             $this->validateInput($text, self::MAX_TEXT_LENGTH);
@@ -221,7 +256,8 @@ class AnnouncementService{
                 throw new InvalidArgumentException('Invalid date format');
             }
 
-            $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id) 
+
+            $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id)
                       VALUES (:title, :text, :date, :valid_until, :user_id)";
             $params = [
                 ':title' => [$title, PDO::PARAM_STR],
@@ -231,6 +267,15 @@ class AnnouncementService{
                 ':user_id' => [$userId, PDO::PARAM_INT],
             ];
 
+
+            /*
+            $date = date('Y-m-d');
+            $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id) 
+                      VALUES ('$title', '$text', '$date', '$validUntil', $userId)";
+
+            $this->executeStatement($query); //, $params);
+
+            */
             $this->executeStatement($query, $params);
             $this->logger->info("Added new announcement.", [
                 'title' => $title,

@@ -16,6 +16,12 @@ use Symfony\Contracts\HttpClient\Exception\{
 };
 use Throwable;
 
+/**
+ * PEKA emonitor API wrapper
+ * @author Franciszek Kruszewski <franciszek@kruszew.ski>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 class TramService {
     private const array ERROR_MESSAGES = [
         'invalid_response' => 'Invalid or incomplete API response structure',

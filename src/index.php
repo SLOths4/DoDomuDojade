@@ -12,7 +12,7 @@
   <body>
     <?php  require_once __DIR__ . '/../vendor/autoload.php';
     $logger = new \Monolog\Logger('CustomLogger');
-    $logger->pushHandler(new \Monolog\Handler\StreamHandler('app.log', \Monolog\Level::Debug));
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', \Monolog\Level::Debug));
     ?>
     <!-- IMPORT HEADER -->
     <?php include('./functions/header.php'); ?>
@@ -39,7 +39,7 @@
         <?php
         include('./utilities/TramService.php');
         use src\utilities\TramService;
-        $tram_service = new TramService();
+        $tram_service = new TramService($logger, "https://www.peka.poznan.pl/vm/method.vm");
         $tram_service_departures = $tram_service->getTimes("AWF73");
         echo $tram_service_departures['success']['times'][0]['line'] . " linia" . "<br>";
         echo $tram_service_departures['success']['times'][0]['minutes'] . " minut";
