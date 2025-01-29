@@ -34,6 +34,7 @@ return [
         "db_host" => "sqlite:/Users/franek/Documents/GitHub/DoDomuDojade/database.sqlite", //ściezka do bazy danych
         "db_type" => "sqlite",
         "announcement_table_name" => "announcements",
+        "users_table_name" => "users",
         "allowed_fields" => ['title', 'text', 'date','valid_until', 'user_id'],
         "date_format" => "Y-m-d"
     ]

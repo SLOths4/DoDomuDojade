@@ -24,7 +24,7 @@ class LoginService
         $this->pdo = $pdoInstance;
     }
 
-    function authenticate($username, $password)
+    function authenticate($username, $password): bool
     {
         $this->logger->debug('Authentication started for username: ' . $username);
         $stmt = $this->pdo->prepare("SELECT password FROM users WHERE username = :username");

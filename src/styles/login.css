@@ -1,52 +1,96 @@
+/* Ogólny styl */
 body {
     font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F9FAFB; /* Miękkie tło */
     text-align: center;
+    color: #333; /* Neutralny kolor tekstu */
 }
 
 h2 {
-    font-size: 24px;
+    font-size: 26px; /* Lekko większy tytuł */
+    font-weight: 700; /* Smukły i pogrubiony */
+    color: #222; /* Styl wyważony */
+    margin: 30px 0; /* Dystyngowane odstępy */
+    text-transform: uppercase; /* Podkreślenie roli nagłówka */
 }
 
+/* Formularz logowania */
 #form {
-    background-color: #90ACC9;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    line-height: 1.6;
-    padding: 20px;
-    margin: 20px auto;
-    border-radius: 12px;
-
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    width: 25%;
-    height: 8%;
+    background-color: #FFFFFF; /* Czytelne jasne tło */
+    border-radius: 12px; /* Zaokrąglone rogi */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Miękki cień */
+    padding: 25px; /* Komfortowy padding */
+    margin: 0 auto 20px;
+    width: 90%;
+    max-width: 400px; /* Ułatwia pracę na większych ekranach */
 }
 
-#password {
-    display: block;
-    border: 0px;
-    border-radius: 6px;
-    width: 80%;
+#form input {
+    width: 100%; /* Rozciąga inputy do pełnych granic */
+    padding: 12px 15px; /* Komfort klikalności */
+    font-size: 16px; /* Wydajniejsze wprowadzanie */
+    border: 1px solid #DDD; /* Lekki kontur */
+    border-radius: 6px; /* Widoczne zagłębienie */
+    background-color: #F8F9FA; /* Miękki szary */
+    transition: border-color 0.3s ease-out, box-shadow 0.3s ease-out; /* Zmiana focus lepszy UX */
+    margin-bottom: 10px;
 }
 
-#username {
-    display: block;
-    border: 0px;
-    border-radius: 6px;
-    width: 80%;
+#form input:focus {
+    border-color: #007BFF; /* Aktywne powiększenie */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Przyciągający focus */
+    outline: none;
 }
 
-button {
-    display: block;
-    border: 0px;
-    border-radius: 6px;
-    background-color: #476FB1;
+/* Styl przycisku logowania */
+#form button {
+    background-color: #007BFF;
+    border: none;
     color: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    width: 80%;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 8px; /* Nowoczesność */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+}
+
+#form button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#form button:disabled {
+    background-color: #D6D6D6;
+    color: #A1A1A1;
+    cursor: not-allowed;
+}
+
+/* Odpowiedź na błędy */
+#form p {
+    color: #C82333;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+/* Responsywność */
+@media (max-width: 600px) {
+    #form {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    #form button {
+        font-size: 14px;
+    }
+
+    #form input {
+        font-size: 14px;
+    }
 }

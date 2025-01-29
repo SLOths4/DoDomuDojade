@@ -14,63 +14,25 @@ use RuntimeException;
 /**
  * Class used for operations on table storing announcements in provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 class AnnouncementService{
     // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
     private PDO $pdo; // PDO instance
-    private array $config; // config.php file
     private Logger $logger; // Monolog logger instance
-    private string $db_host; // database host
-    private string $db_username; // database username
-    private string $db_password; // database password
     private string $table_name; // announcements table name
-    private array $ALLOWED_FIELDS; // database fields
-    private string $DATE_FORMAT; // format of date stored in database
-    private const array REQUIRED_KEYS = [
-        'db_host',
-        'db_user',
-        'db_password',
-        'announcement_table_name',
-        'allowed_fields',
-        'date_format'
-    ];
+    private const string DATE_FORMAT = 'Y-m-d';
+    private const array ALLOWED_FIELDS = ['title', 'text', 'date','valid_until', 'user_id'];
     private const int MAX_TITLE_LENGTH = 255;
     private const int MAX_TEXT_LENGTH = 10000;
 
-    public function __construct(Logger $loggerInstance) {
-        $this->config = require '../config.php';
-        $this->validateConfig();
-        $this->db_host = $this->config['Database']['db_host'];
-        $this->db_username = $this->config['Database']['db_user'];
-        $this->db_password = $this->config['Database']['db_password'];
-        $this->table_name = $this->config['Database']['announcement_table_name'];
-
-        $this->ALLOWED_FIELDS = $this->config['Database']['allowed_fields'];
-        $this->DATE_FORMAT = $this->config['Database']['date_format'];
-
+    public function __construct(Logger $loggerInstance, PDO $pdoInstance, string $table_name = 'announcements') {
+        $this->table_name = $table_name;
         $this->logger = $loggerInstance;
-        $this->pdo = $this->initializePDO();
+        $this->pdo = $pdoInstance;
 
-        $this->logger->debug("Table name being used: $this->table_name");
-    }
-
-    /**
-     * Validates config values
-     * @return void
-     */
-    private function validateConfig(): void {
-        try {
-            foreach (self::REQUIRED_KEYS as $key) {
-                if (empty($this->config['Database'][$key])) {
-                    $this->logger->error("Missing configuration key: $key");
-                    throw new RuntimeException("Configuration error: Missing $key");
-                }
-            }
-        } catch (RuntimeException $e) {
-            $this->logger->error("Configuration error: " . $e->getMessage());
-        }
+        $this->logger->debug("Announcements table name being used: $this->table_name");
     }
 
     /**
@@ -84,21 +46,6 @@ class AnnouncementService{
         }
         if (mb_strlen($input) > $maxLength) {
             throw new InvalidArgumentException("Input exceeds maximum length of $maxLength");
-        }
-    }
-
-    /**
-     * @return PDO
-     */
-    private function initializePDO(): PDO {
-        try {
-            $pdo = new PDO($this->db_host, $this->db_username, $this->db_password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->logger->info("PDO connection successful.");
-            return $pdo;
-        } catch (PDOException $e) {
-            $this->logger->error("PDO connection failed: " . $e->getMessage());
-            throw new RuntimeException('PDO Connection failed');
         }
     }
 
@@ -186,8 +133,8 @@ class AnnouncementService{
      */
     private function validateDate(string $date): bool {
         try {
-            $d = DateTime::createFromFormat($this->DATE_FORMAT, $date);
-            $isValid = $d && $d->format($this->DATE_FORMAT) === $date;
+            $d = DateTime::createFromFormat(self::DATE_FORMAT, $date);
+            $isValid = $d && $d->format(self::DATE_FORMAT) === $date;
 
             $this->logger->debug("Date format validation", [
                 'date' => $date,
@@ -297,7 +244,7 @@ class AnnouncementService{
      * @return bool
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
-        if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
+        if (!in_array($field, self::ALLOWED_FIELDS, true)) {
             $this->logger->warning("Invalid field attempted for update.", [
                 'field' => $field
             ]);

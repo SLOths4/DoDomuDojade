@@ -2,45 +2,68 @@
 session_start();
 require_once '../../vendor/autoload.php';
 require_once '../utilities/LoginService.php';
+require_once '../utilities/UserService.php';
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use src\utilities\LoginService;
-
+use src\utilities\UserService;
+// inicjalizacja loggera
 $logger = new Logger('LoginHandler');
 $logger->pushHandler(new StreamHandler('../log/login.log', Level::Debug));
+// inicjalizacja zmiennych sesji
+$_SESSION['session_error'] = null;
+$_SESSION['user'] = null;
+$_SESSION['user_id'] = null;
 
 $config = require '../config.php';
 $db_host = $config['Database']['db_host'];
-
-$logger->debug("Database host retrieved from config: $db_host");
-
+// inicjalizacja PDO
 $pdo = new PDO($db_host);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$logger->debug("PDO connection established with error mode set to ERRMODE_EXCEPTION");
-
+// inicjalizacja LoginService
 $loginService = new LoginService($logger, $pdo);
-$logger->warning("This is unsafe solution. Use for development purposes only!");
-
-$error = '';
+// inicjalizacja UserService
+$userService = new UserService($logger, $pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $logger->debug("POST request received");
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $logger->debug("Username: $username received via POST");
+    $logger->debug("Login request received");
+
+    $username = isset($_POST['username']) ? trim($_POST['username']) : '';
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
     if ($loginService->authenticate($username, $password)) {
-        $logger->info("User $username authenticated successfully");
-        $_SESSION['user'] = $username;
+        $logger->info("User authenticated successfully");
+        try {
+            $user = $userService->getUserByUsername($username);
+
+            // Weryfikacja, czy wynik zawiera dane
+            if (!empty($user)) {
+                //$user = $user[0];
+                $logger->info("User fetched successfully. ID: {$user['id']}");
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user'] = $username;
+                if ($user['id'] <= 0) {
+                    $logger->error("Invalid user ID provided!");
+                    throw new Exception("Invalid user ID provided!");
+                }
+            } else {
+                $logger->error("Invalid user data!");
+                $_SESSION['session_error'] = 'Invalid user data!';
+            }
+        } catch (Exception $e) {
+            $logger->error('Error fetching user by username: ' . $e->getMessage());
+            $_SESSION['session_error'] = 'An error occurred!';
+        }
         header('Location: admin.php');
         exit;
     } else {
         $logger->warning("Authentication failed for user: $username");
-        $error = 'Invalid credentials!';
+        $_SESSION['session_error'] = 'Invalid credentials!';
     }
-}?>
+}
+?>
 
 <!DOCTYPE html>
 <html lang="pl">
@@ -52,12 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <h2>Login</h2>
     <form method="POST" action="login.php" id="form">
-
-        <?php if ($error): ?>
-            <p style="color: red;"><?= $error ?></p>
+        <?php if ($_SESSION['session_error']): ?>
+            <p style="color: red;"><?php htmlspecialchars($_SESSION['session_error'])?></p>
         <?php endif; ?>
-        <input type="text" name="username" id="username" placeholder=" username" required>
-        <input type="password" name="password" id="password" placeholder="  password" required>
+        <label for="username"></label><input type="text" name="username" id="username" placeholder="nazwa użytkownika" required>
+        <label for="password"></label><input type="password" name="password" id="password" placeholder="hasło" required>
         <button type="submit">Login</button>
     </form>
 </body>

@@ -1,6 +1,8 @@
 <?php
 namespace src\utilities;
 
+use Exception;
+use RuntimeException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -11,7 +13,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
 class WeatherService {
     private  HttpClientInterface $httpClient;
-    private $config;
+    private array $config;
     private string $imgw_weather_url;
     private string $air_quality_url;
     private string $airly_api_key;
@@ -43,19 +45,19 @@ class WeatherService {
                 ])
             ])->toArray();
         } catch (ClientExceptionInterface $e) {
-            throw new \RuntimeException('Client error occurred during Air Quality API request: ' . $e->getMessage());
+            throw new RuntimeException('Client error occurred during Air Quality API request: ' . $e->getMessage());
         } catch (DecodingExceptionInterface $e) {
-            throw new \RuntimeException('Error decoding Air Quality API response: ' . $e->getMessage());
+            throw new RuntimeException('Error decoding Air Quality API response: ' . $e->getMessage());
         } catch (RedirectionExceptionInterface $e) {
-            throw new \RuntimeException('Redirection error during Air Quality API request: ' . $e->getMessage());
+            throw new RuntimeException('Redirection error during Air Quality API request: ' . $e->getMessage());
         } catch (ServerExceptionInterface $e) {
-            throw new \RuntimeException('Server error occurred during Air Quality API request: ' . $e->getMessage());
+            throw new RuntimeException('Server error occurred during Air Quality API request: ' . $e->getMessage());
         } catch (TransportExceptionInterface $e) {
-            throw new \RuntimeException('Transport error occurred during Air Quality API request: ' . $e->getMessage());
+            throw new RuntimeException('Transport error occurred during Air Quality API request: ' . $e->getMessage());
         }
         
         if ($airly_api_data == null) {
-            throw new \RuntimeException("Airly data is null. Check if API works.");
+            throw new RuntimeException("Airly data is null. Check if API works.");
         }
         
         return [
@@ -73,6 +75,7 @@ class WeatherService {
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * TODO ignore typos @t
      */
     public function Weather():array{
         try {
@@ -82,8 +85,8 @@ class WeatherService {
                 'Content-Type' => 'application/json',
             ])
         ])->toArray();
-        } catch (\Exception $e) {
-            throw new \RuntimeException('API request failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            throw new RuntimeException('API request failed: ' . $e->getMessage());
         }
 
         $airly_data = $this->airQualityFetcher();
