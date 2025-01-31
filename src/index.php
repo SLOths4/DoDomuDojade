@@ -113,7 +113,7 @@
         ?>
     </div>
     <!-- IMPORT FOOTER -->
-    <?php include('./functions/footer.php'); ?>
+    <?php include('functions/footer.php'); ?>
   </body>
 </html>
 
