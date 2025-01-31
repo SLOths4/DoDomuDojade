@@ -112,6 +112,119 @@
         }
         ?>
     </div>
+
+    <script>
+        function loadWeather() {
+            fetch('WeatherServiceAjax.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const weatherDiv = document.getElementById('weather');
+                        weatherDiv.innerHTML = `
+                        <h2>Dzisiejsza pogoda</h2>
+                        <i class="fa-solid fa-temperature-full"></i> ${data.data.temperature}&deg;C<br>
+                        <i class="fa-solid fa-gauge"></i> ${data.data.pressure} hPa<br>
+                        <i class="fa-solid fa-lungs"></i> ${data.data.airlyIndex}<br>
+                    `;
+                    } else {
+                        console.error('Weather data fetch failed:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching weather data:', error));
+        }
+
+        // Ładowanie pogody po kliknięciu przycisku lub automatycznie
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWeather(); // Automatyczne załadowanie pogody po załadowaniu strony
+        });
+    </script>
+    <div id="weather" class="div">
+        <h2>Dzisiejsza pogoda</h2>
+        <button onclick="loadWeather()">Odśwież pogodę</button>
+    </div>
+    <script>
+        function loadAnnouncements() {
+            fetch('AnnouncementsServiceAjax.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const announcementsDiv = document.getElementById('announcements');
+                        let html = "<h2>Ogłoszenia</h2>";
+                        data.data.forEach(announcement => {
+                            html += `
+                            <div class="announcement">
+                                <h3>${announcement.title}</h3>
+                                <p><strong>${announcement.author}</strong> | ${announcement.date}</p>
+                                <p>Ważne do: ${announcement.validUntil}</p>
+                                <p>${announcement.text}</p>
+                            </div>
+                        `;
+                        });
+                        announcementsDiv.innerHTML = html;
+                    } else {
+                        console.error('Failed to fetch announcements:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching announcements:', error));
+        }
+
+        // Ładowanie ogłoszeń po kliknięciu przycisku lub automatycznie
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAnnouncements(); // Automatyczne załadowanie ogłoszeń po załadowaniu strony
+        });
+    </script>
+    <div id="announcements" class="div">
+        <h2>Ogłoszenia</h2>
+        <button onclick="loadAnnouncements()">Odśwież ogłoszenia</button>
+    </div>
+    <script>
+        function loadTrams(stopId = 'AWF73') {
+            // Tworzenie żądania AJAX do endpointu tram_ajax.php
+            fetch(`TramServiceAjax.php?stop=${stopId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tramDiv = document.getElementById('tram');
+                    if (data.success) {
+                        // Generowanie treści HTML na podstawie danych
+                        let html = `<h2>Odjazdy tramwajów z przystanku ${stopId}</h2>`;
+                        if (data.data.length > 0) {
+                            data.data.forEach(tram => {
+                                html += `
+                                <div class="tram-line">
+                                    <i class="fa-solid fa-train"></i> Linia: ${tram.line}<br>
+                                    <i class="fa-solid fa-clock"></i> Odjazd za: ${tram.minutes} minut<br>
+                                    <i class="fa-solid fa-location-arrow"></i> Kierunek: ${tram.direction}<br>
+                                </div>
+                            `;
+                            });
+                        } else {
+                            html += '<p>Brak danych o nadchodzących tramwajach.</p>';
+                        }
+                        tramDiv.innerHTML = html;
+                    } else {
+                        tramDiv.innerHTML = `<h2>Błąd ładowania tramwajów</h2><p>${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching tram data:', error);
+                    document.getElementById('tram').innerHTML = "<h2>Błąd!</h2><p>Nie udało się załadować danych tramwajowych.</p>";
+                });
+        }
+
+        // Automatyczne ładowanie przy załadowaniu strony
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTrams(); // Domyślnie ładuje przystanek "AWF73"
+        });
+    </script>
+    <div id="tram" class="div">
+        <h2>Odjazdy tramwajów z przystanku:</h2>
+        <select id="tramStop" onchange="loadTrams(this.value)">
+            <option value="AWF73" selected>AWF 73</option>
+            <option value="RondoKaponiera">Rondo Kaponiera</option>
+            <option value="Pestka">Pestka</option>
+        </select>
+        <button onclick="loadTrams(document.getElementById('tramStop').value)">Odśwież odjazdy</button>
+    </div>
     <!-- IMPORT FOOTER -->
     <?php include('functions/footer.php'); ?>
   </body>
