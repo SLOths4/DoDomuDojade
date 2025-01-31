@@ -1,7 +1,7 @@
 # DoDomuDojade
 
 # O projekcie
-DoDomuDojadę to aplikacja webowa, która skłąda się z modułów wyświetlających dane. Lista modułów znajduje się [tutaj(#Moduły)]
+DoDomuDojadę to aplikacja webowa, która skłąda się z modułów wyświetlających dane. Lista modułów znajduje się [tutaj](#Moduły)
 
 # Moduły
 
@@ -21,4 +21,4 @@ Moduł odjazdów wyświetla odjazdy pojazdów komunikacji miejskiej z podanych p
 
 # Autorzy
 SLOths4 2025
-- Franciszek Kruszewski (@Kruszewski)
+- Franciszek Kruszewski [@Kruszewski](https://github.com/Kruszewski)
