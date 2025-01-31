@@ -15,3 +15,7 @@ Pomysły:
 - zadania maturalne/liga zadaniowa
 - odliczanie do czegoś (np. wakacji) @tymson
 - system poprawiania życia (testów i kartkówek)
+- zakładka ustawień w panelu admina zawierająca:
+  - włączanie/wyłączanie modułów
+  - ...
+- logowanie kontem google
