@@ -1,8 +1,6 @@
 <?php
-
 namespace src\utilities;
 
-// All necessary imports
 use InvalidArgumentException;
 use Monolog\Logger;
 use PDO;

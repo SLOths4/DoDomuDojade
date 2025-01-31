@@ -2,7 +2,7 @@
 > Czubkowo opisane (ale dokładniej): https://github.com/lighterowl/peka-vm-api/blob/master/peka-vm-api.md
 
 > [!NOTE]
-> Aby sprawdzić adres przystanku odwiedź ten [link](https://www.peka.poznan.pl/vm/)
+> Aby sprawdzić adres przystanku odwiedź ten [link](https://www.peka.poznan.pl/vm/)
 
 ### Przewodnik: Jak połączyć się z Wirtualnym Monitorem PEKA i korzystać z jego funkcji
 
@@ -32,12 +32,12 @@
 
 **2. Opcje dostępne w API:**
 
-| **Metoda**      | **Opis**                                                                 | **Przykład p0**                                                                                   |
-|------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| `getTimes`      | Zwraca rzeczywiste czasy odjazdów dla danego przystanku.                 | `{"symbol":"STOP_ID"}`                                                                           |
-| `getStops`      | Zwraca listę przystanków w okolicy wskazanej lokalizacji GPS.            | `{"lat":52.406374,"lon":16.925168}`                                                              |
-| `getLines`      | Zwraca szczegóły dotyczące konkretnej linii, np. jej trasę.              | `{"line":"NUMBER"}`                                                                              |
-| `getRoutes`     | Pobiera wszystkie trasy obsługiwane przez wybraną linię.                 | `{"line":"NUMBER"}`                                                                              |
+| **Metoda**  | **Opis**                                                      | **Przykład p0**                     |
+|-------------|---------------------------------------------------------------|-------------------------------------|
+| `getTimes`  | Zwraca rzeczywiste czasy odjazdów dla danego przystanku.      | `{"symbol":"STOP_ID"}`              |
+| `getStops`  | Zwraca listę przystanków w okolicy wskazanej lokalizacji GPS. | `{"lat":52.406374,"lon":16.925168}` |
+| `getLines`  | Zwraca szczegóły dotyczące konkretnej linii, np. jej trasę.   | `{"line":"NUMBER"}`                 |
+| `getRoutes` | Pobiera wszystkie trasy obsługiwane przez wybraną linię.      | `{"line":"NUMBER"}`                 |
 
 ---
 
@@ -138,7 +138,6 @@ Response
         "direction": "Starołęka",
         "line": "13"
       }
-      // ... kolejne odjazdy
     ]
   }
 }

@@ -2,7 +2,6 @@
 
 namespace src\utilities;
 
-// All necessary imports
 use DateTime;
 use InvalidArgumentException;
 use Monolog\Logger;
@@ -14,7 +13,7 @@ use RuntimeException;
 /**
  * Class used for operations on table storing announcements in provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0.0
  */
 class AnnouncementService{
@@ -50,8 +49,9 @@ class AnnouncementService{
     }
 
     /**
-     * @param PDOStatement $stmt
-     * @param array $params
+     * Binds given parameters to given statement
+     * @param PDOStatement $stmt Statement
+     * @param array $params Parameters to be bound
      * @return void
      */
     private function bindParams(PDOStatement $stmt, array $params): void {
@@ -165,12 +165,13 @@ class AnnouncementService{
 
     /**
      * Fetches all valid announcements
-     * @return array
+     * @return array All valid announcements entries
      */
     public function getValidAnnouncements(): array{
-        try {$date = date('Y-m-d');
+        try {
+            $date = date('Y-m-d');
         $query = "SELECT * FROM $this->table_name WHERE valid_until >= :date";
-        $params = [':date' => [date('Y-m-d'), PDO::PARAM_STR]];
+        $params = [':date' => [$date, PDO::PARAM_STR]];
         $this->logger->info("Fetching valid announcements for date: $date.");
         return $this->executeStatement($query, $params);
         } catch (PDOException $e) {
@@ -214,15 +215,6 @@ class AnnouncementService{
                 ':user_id' => [$userId, PDO::PARAM_INT],
             ];
 
-
-            /*
-            $date = date('Y-m-d');
-            $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id) 
-                      VALUES ('$title', '$text', '$date', '$validUntil', $userId)";
-
-            $this->executeStatement($query); //, $params);
-
-            */
             $this->executeStatement($query, $params);
             $this->logger->info("Added new announcement.", [
                 'title' => $title,
@@ -237,8 +229,9 @@ class AnnouncementService{
     }
 
     /**
+     * Updated chosen filed of announcement with given value
      * @param int $announcementId
-     * @param string $field
+     * @param string $field Field to be updated
      * @param string $newValue
      * @param int $userId
      * @return bool

@@ -2,7 +2,6 @@
 
 namespace src\utilities;
 
-// All necessary imports
 use Monolog\Logger;
 use PDO;
 use PDOException;

@@ -17,9 +17,9 @@ use Symfony\Contracts\HttpClient\Exception\{
 use Throwable;
 
 /**
- * PEKA emonitor API wrapper
+ * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 class TramService {
@@ -46,6 +46,9 @@ class TramService {
 
     /**
      * Validate GPS coordinates.
+     * @param float $lat
+     * @param float $lon
+     * @return bool
      */
     private function isValidCoordinates(float $lat, float $lon): bool {
         return $lat >= -90 && $lat <= 90 && $lon >= -180 && $lon <= 180;
@@ -53,6 +56,9 @@ class TramService {
 
     /**
      * Make API request with common configuration.
+     * @param string $method
+     * @param array $params
+     * @return array
      * @throws Exception
      */
     private function makeApiRequest(string $method, array $params): array {
@@ -93,10 +99,13 @@ class TramService {
 
     /**
      * Get departure times for a specific stop.
+     * @param string $stopId Stop id compatible with PEKA e-monitor e.g. AWF73
+     * @return array
      * @throws Exception
      */
     public function getTimes(string $stopId): array {
         if (!preg_match('/^[A-Z0-9]+$/', $stopId)) {
+            $this->logger->error(self::ERROR_MESSAGES['invalid_stop_id'], ['stopId' => $stopId]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_stop_id']);
         }
 
@@ -104,6 +113,7 @@ class TramService {
             $response = $this->makeApiRequest('getTimes', ['symbol' => $stopId]);
 
             if (!isset($response['success']['times'])) {
+                $this->logger->error(self::ERROR_MESSAGES['no_departure_data'], ['stopId' => $stopId]);
                 throw new Exception(self::ERROR_MESSAGES['no_departure_data']);
             }
 
@@ -116,17 +126,23 @@ class TramService {
 
     /**
      * Get stops near specified GPS coordinates.
+     * @param float $lat
+     * @param float $lon
+     * @return array
      * @throws Exception
      */
     public function getStops(float $lat, float $lon): array {
         if (!$this->isValidCoordinates($lat, $lon)) {
+            $this->logger->error(self::ERROR_MESSAGES['invalid_coordinates'], ['lat' => $lat, 'lon' => $lon]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_coordinates']);
         }
 
         try {
+            $this->logger->debug('getStops', ['lat' => $lat, 'lon' => $lon]);
             $response = $this->makeApiRequest('getStops', ['lat' => $lat, 'lon' => $lon]);
 
             if (empty($response['success'])) {
+                $this->logger->error(self::ERROR_MESSAGES['no_stops_data'], ['lat' => $lat, 'lon' => $lon]);
                 throw new Exception(self::ERROR_MESSAGES['no_stops_data']);
             }
 
@@ -139,14 +155,18 @@ class TramService {
 
     /**
      * Get line information.
+     * @param int $lineNumber
+     * @return array
      * @throws Exception
      */
     public function getLines(int $lineNumber): array {
         if ($lineNumber <= 0) {
+            $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
         }
 
         try {
+            $this->logger->debug('getLines', ['lineNumber' => $lineNumber]);
             return $this->makeApiRequest('getLines', ['line' => $lineNumber]);
         } catch (Exception $e) {
             $this->logger->error('getLines failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
@@ -156,14 +176,18 @@ class TramService {
 
     /**
      * Get routes for a specific line.
+     * @param int $lineNumber
+     * @return array
      * @throws Exception
      */
     public function getRoutes(int $lineNumber): array {
         if ($lineNumber <= 0) {
+            $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
         }
 
         try {
+            $this->logger->debug('getRoutes', ['lineNumber' => $lineNumber]);
             return $this->makeApiRequest('getRoutes', ['line' => $lineNumber]);
         } catch (Exception $e) {
             $this->logger->error('getRoutes failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);

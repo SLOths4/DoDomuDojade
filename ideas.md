@@ -1,22 +1,17 @@
 Pomysły:
 - plan lekcji
-- ogłoszenia
+- ~~ogłoszenia~~ 
 - kalendarz @Hexer
-- aktualności szkolne (np. samorządowe)
+- ~~aktualności szkolne (np. samorządowe)~~ -> ogłoszenia
 - liga zadaniowa
 - zajęcia dodatkowe
 - ~~pogoda~~
 - własna stacja pogodowa
 - ~~jakość powierza~~
-- wyświetlanie odjazdów autobusów i tramwai
+- ~~wyświetlanie odjazdów autobusów i tramwai~~
 - dzisiejszy obiad
 - różne wyświetlanie dla różnych godzin
 - alert rcb
 - zadania maturalne/liga zadaniowa
 - odliczanie do czegoś (np. wakacji) @tymson
 - system poprawiania życia (testów i kartkówek)
-
-
-Offline issues:
-- ?? dodanie error handlingu do wyświetlania ??
-- poprawa typu danych w add announcements

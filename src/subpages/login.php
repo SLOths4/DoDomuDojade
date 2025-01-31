@@ -1,12 +1,16 @@
 <?php
+namespace src\subpages;
+
 session_start();
 require_once '../../vendor/autoload.php';
 require_once '../utilities/LoginService.php';
 require_once '../utilities/UserService.php';
 
+use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use PDO;
 use src\utilities\LoginService;
 use src\utilities\UserService;
 // inicjalizacja loggera
@@ -27,6 +31,10 @@ $loginService = new LoginService($logger, $pdo);
 // inicjalizacja UserService
 $userService = new UserService($logger, $pdo);
 
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logger->debug("Login request received");
 
@@ -38,9 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $user = $userService->getUserByUsername($username);
 
-            // Weryfikacja, czy wynik zawiera dane
             if (!empty($user)) {
-                //$user = $user[0];
                 $logger->info("User fetched successfully. ID: {$user['id']}");
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user'] = $username;

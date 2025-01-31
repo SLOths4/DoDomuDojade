@@ -75,7 +75,7 @@ class WeatherService {
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * TODO ignore typos @t
+     * @noinspection SpellCheckingInspection
      */
     public function Weather():array{
         try {

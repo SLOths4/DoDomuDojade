@@ -1,23 +1,23 @@
 <?php
-session_start();
+namespace src\subpages;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use Monolog\Logger;
-use src\utilities\AnnouncementService;
-use src\utilities\UserService;
+session_start();
 
 require_once '../../vendor/autoload.php';
 include('../utilities/AnnouncementService.php');
 include('../utilities/UserService.php');
 
+use Exception;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
+use PDO;
+use src\utilities\AnnouncementService;
+use src\utilities\UserService;
+
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
-}
-
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 $config = require '../config.php';
@@ -38,10 +38,10 @@ $userService = new UserService($logger, $pdo);
 // obsługa usuwania ogłoszeń
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {
     $logger->debug("delete_announcement request received");
-//    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-//        $logger->error("Invalid CSRF token");
-//        die('Invalid CSRF token');
-//    }
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $logger->error("Invalid CSRF token");
+        die('Invalid CSRF token');
+    }
 
     $announcementId = $_POST['announcement_id'];
 
@@ -68,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement']
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
     $logger->debug("add_announcement request received");
-//    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-//        $logger->error("Invalid CSRF token");
-//        die('Invalid CSRF token');
-//    }
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $logger->error("Invalid CSRF token");
+        die('Invalid CSRF token');
+    }
 
     $title = isset($_POST['title']) ? trim($_POST['title']) : '';
     $text = isset($_POST['text']) ? trim($_POST['text']) : '';
@@ -98,10 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     $logger->debug("add_user request received");
-//    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-//        $logger->error("Invalid CSRF token");
-//        die('Invalid CSRF token');
-//    }
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $logger->error("Invalid CSRF token");
+        die('Invalid CSRF token');
+    }
 
     if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
         $logger->error("Username and password are required");
@@ -135,10 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     $logger->debug("delete_user request received");
-//    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-//        $logger->error("Invalid CSRF token");
-//        die('Invalid CSRF token');
-//    }
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $logger->error("Invalid CSRF token");
+        die('Invalid CSRF token');
+    }
 
 
     $del_user_id = trim($_POST['user_id']);
