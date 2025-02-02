@@ -1,24 +1,28 @@
 # DoDomuDojade
 
-# O projekcie
-DoDomuDojadę to aplikacja webowa, która skłąda się z modułów wyświetlających dane. Lista modułów znajduje się [tutaj](#Moduły)
+![GitHub last commit](https://img.shields.io/github/last-commit/SLOths4/DoDomuDojade)
+![GitHub issues](https://img.shields.io/github/issues/SLOths4/DoDomuDojade)
+![GitHub stars](https://img.shields.io/github/stars/SLOths4/DoDomuDojade?style=social)
 
-# Moduły
+## O projekcie
+DoDomuDojadę to aplikacja webowa, która składa się z modułów wyświetlających dane. Lista modułów znajduje się [tutaj](#moduly)
 
-## Pogoda
+## Moduły
+
+### Pogoda
 Moduł pogodowy wyświetla dane pobrane ze stacji pogodowej IMGW.
 
-## Ogłoszenia
-Moduł ogłoszeń wyświetla ogłoszenia dodane do bazy danych przez administratora. 
+### Ogłoszenia
+Moduł ogłoszeń wyświetla ogłoszenia dodane do bazy danych przez administratora.
 
-## Odjazdy
+### Odjazdy
 Moduł odjazdów wyświetla odjazdy pojazdów komunikacji miejskiej z podanych przystanków.
 
-# Źródła danych
-- IMGW 
-- Airly
-- Google Calendar
+## Źródła danych
+- [IMGW](https://www.imgw.pl/)
+- [Airly](https://airly.org/)
+- [Google Calendar](https://calendar.google.com/)
 
-# Autorzy
+## Autorzy
 SLOths4 2025
 - Franciszek Kruszewski [@Kruszewski](https://github.com/Kruszewski)
