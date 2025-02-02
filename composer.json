@@ -1,10 +1,17 @@
 {
+    "name": "SLOths4/DoDomuDojade",
+    "description": "This is DoDomuDojadę app repository.",
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
         "monolog/monolog": "*",
-        "php": ">=8.4",
+        "php": "^8.4",
         "symfony/http-client": "^7.2",
         "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+                "src\\": "src/"
+            }
     }
 }
