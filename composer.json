@@ -4,7 +4,7 @@
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
-        "monolog/monolog": "*",
+        "monolog/monolog": "^3.0",
         "php": "^8.4",
         "symfony/http-client": "^7.2",
         "ext-mbstring": "*"
@@ -16,5 +16,6 @@
     },
     "scripts": {
         "test": "phpunit"
-    }
+    },
+    "license": "CC BY-NC 4.0"
 }
