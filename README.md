@@ -26,3 +26,4 @@ Moduł odjazdów wyświetla odjazdy pojazdów komunikacji miejskiej z podanych p
 ## Autorzy
 SLOths4 2025
 - Franciszek Kruszewski [@Kruszewski](https://github.com/Kruszewski)
+- Igor Woxnica [@hexer7](https://github.com/hexer7)
