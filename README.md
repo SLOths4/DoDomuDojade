@@ -24,6 +24,6 @@ Moduł odjazdów wyświetla odjazdy pojazdów komunikacji miejskiej z podanych p
 - [Google Calendar](https://calendar.google.com/)
 
 ## Autorzy
-SLOths4 2025
+© SLOths4 2025
 - Franciszek Kruszewski [@Kruszewski](https://github.com/Kruszewski)
-- Igor Woxnica [@hexer7](https://github.com/hexer7)
+- Igor Woźnica [@hexer7](https://github.com/hexer7)
