@@ -25,8 +25,8 @@
     $logger = new Logger('AppHandler');
     $logger->pushHandler(new StreamHandler(__DIR__ . '/log/app.log', Level::Debug));
 
-    $pdo = new PDO($db_host);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //$pdo = new PDO($db_host);
+    //$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     ?>
     <!-- IMPORT HEADER -->
     <?php include('./functions/header.php'); ?>
@@ -48,6 +48,17 @@
         } catch (Exception $e) {
             echo "No weather today :-)";
         }
+        ?>
+    </div>
+
+    <div class="div">
+        <h2>Wydarzenia w tym tygodniu</h2>
+        <?php
+        use src\utilities\CalendarService;
+        include('./utilities/CalendarService.php');
+        $calendarService = new CalendarService($logger);
+        $calendarServiceResponse = $calendarService->get_events();
+        $calendarServiceDisplay = $calendarService->display_events($calendarServiceResponse);
         ?>
     </div>
 

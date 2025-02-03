@@ -25,7 +25,7 @@ return [
     "Calendar" => [
         [
             "title" => "Kalendarz wydarzeń szkolnych",
-            "url" => "https://calendar.google.com/calendar/ical/c_e22b26a985cffb8ff2a9afd9e3516d5ca1e5d608c2d3bf20807da38a40f71431%40group.calendar.google.com/public/basic.ics",
+            "url" => "https://calendar.google.com/calendar/ical/f6cff184f8c37b50bf51f855f6480537d811fc68e60d1282f824d3524e777ffc%40group.calendar.google.com/private-f030d73c8fc9a45f4fd8970d6dd61f84/basic.ics",
             "description" => "Szkolne kalendarium"
         ]
     ],
