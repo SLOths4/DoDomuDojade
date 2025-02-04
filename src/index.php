@@ -28,6 +28,7 @@
     $pdo = new PDO($db_host);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     ?>
+    <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
     <!-- IMPORT HEADER -->
     <?php include('./functions/header.php'); ?>
 
