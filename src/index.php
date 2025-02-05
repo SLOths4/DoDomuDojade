@@ -104,48 +104,6 @@
         </script>
     </div>
 
-    <div class="div">
-        <h2>Wydarzenia w tym tygodniu</h2>
-        <?php
-        use src\utilities\CalendarService;
-        include('./utilities/CalendarService.php');
-        $calendarService = new CalendarService($logger);
-        $calendarServiceResponse = $calendarService->get_events();
-        if (!empty($calendarServiceResponse)) {
-            usort($calendarServiceResponse, function ($a, $b) {
-                $dateA = DateTime::createFromFormat('H.i - d.m.Y', $a['start']);
-                $dateB = DateTime::createFromFormat('H.i - d.m.Y', $b['start']);
-                
-                return $dateA <=> $dateB;
-            });
-            $count = 0;
-            $maxevents = 5;
-            foreach ($calendarServiceResponse as $event) {
-                echo "<div class='calendar-event'>";
-                if ($event['summary']) {
-                    echo "<i class='fa-regular fa-calendar'></i>" . " Wydarzenie: " . htmlspecialchars($event['summary']) . "<br>";
-                } else {
-                    echo "Brak tytułu" . "<br>";
-                }
-                echo "<i class='fa-solid fa-hourglass-start'></i> Start: " . htmlspecialchars($event['start']) . "<br>";
-                echo "<i class='fa-solid fa-hourglass-end'></i> Koniec: " . htmlspecialchars($event['end']) . "<br>";
-                if ($event['description']) {
-                    echo "Opis wydarzenia: " . htmlspecialchars($event['description']) . "<br>";
-                } else {
-                    echo "<br>";
-                }
-                echo "</div>";
-                $count++;
-                if ($count >= $maxevents) {
-                    break;
-                }
-            }
-        } else {
-            echo "Brak wydarzeń do wyświetlenia.";
-        }
-        ?>
-    </div>
-
     <div id="tram" class="div">
         <h2>Odjazdy tramwajów z przystanku AWF 73</h2>
         <div id="tram-container">Ładowanie danych...</div>
