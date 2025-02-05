@@ -8,111 +8,160 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <link href="styles/style.css" rel="stylesheet" type="text/css">
-      <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <?php
     require_once __DIR__ . '/../vendor/autoload.php';
-
-    use Monolog\Handler\StreamHandler;
-    use Monolog\Level;
-    use Monolog\Logger;
-    use src\utilities\WeatherService;
-
-    $config = require './config.php';
-    $db_host = $config['Database']['db_host'];
-
-    $logger = new Logger('AppHandler');
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/log/app.log', Level::Debug));
-
-    $pdo = new PDO($db_host);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     ?>
+
     <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
-    <!-- IMPORT HEADER -->
-    <?php include('./functions/header.php'); ?>
 
     <!-- IMPORT WEATHER MODULE -->
     <div id="weather" class="div">
         <h2>Dzisiejsza pogoda</h2>
-        <?php
-        include('./utilities/WeatherService.php');
+        <div id="weather-container">Ładowanie danych...</div>
+        <script>
+            function loadWeatherData() {
+                $.ajax({
+                    url: 'refresh.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { function: 'weatherData' },
+                    success: function(response) {
+                        try {
+                            // Jeśli odpowiedź zwrócona jako string, parsujemy na JSON
+                            response = typeof response === 'string' ? JSON.parse(response) : response;
+                        } catch (e) {
+                            console.error("Błąd parsowania JSON:", e);
+                            $('#weather-container').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
+                            return;
+                        }
+                        console.log(response); // Debugging
 
+                        // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
+                        if (response.success && response.data) {
+                            let data = response.data; // Dane pogodowe
+                            let content = `
+                                <p>Temperatura: ${data.temperature}°C</p>
+                                <p>Ciśnienie: ${data.pressure} hPa</p>
+                                <p>Indeks jakości powietrza (Airly): ${data.airlyIndex}</p>
+                            `;
+                            $('#weather-container').html(content);
+                        } else {
+                            $('#weather-container').html('<p>Błąd: Brak danych pogodowych</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Błąd ładowania AJAX: ", error);
+                        $('#weather-container').html('<p>Błąd ładowania danych pogodowych.</p>');
+                    }
+                });
+            }
 
-        $weatherService = new WeatherService();
-        try {
-        $weatherServiceResponse = $weatherService->Weather();
-
-        echo "<i class='fa-solid fa-temperature-full'></i>  " . htmlspecialchars($weatherServiceResponse['imgw_temperature']) . "&deg;C" . "<br>";
-        echo "<i class='fa-solid fa-gauge'></i>  ". htmlspecialchars($weatherServiceResponse['imgw_pressure']) . " hPa". "<br>";
-        echo "<i class='fa-solid fa-lungs'></i>  ". htmlspecialchars($weatherServiceResponse['airly_index_value']). "<br>";
-        } catch (Exception $e) {
-            echo "No weather today :-)";
-        }
-        ?>
+            setInterval(loadWeatherData, 900000)
+            loadWeatherData();
+        </script>
     </div>
 
     <div id="tram" class="div">
         <h2>Odjazdy tramwajów z przystanku AWF 73</h2>
-        <?php
-        include('./utilities/TramService.php');
-        use src\utilities\TramService;
+        <div id="tram-container">Ładowanie danych...</div>
+        <script>
+            function loadTramData() {
 
-        $tram_service = new TramService($logger, "https://www.peka.poznan.pl/vm/method.vm");
-        try {
-            $tram_service_departures = $tram_service->getTimes("AWF73");
-
-            if (isset($tram_service_departures['success']['times']) && is_array($tram_service_departures['success']['times'])) {
-                echo "<h2>Odjazdy tramwajów:</h2>";
-                foreach ($tram_service_departures['success']['times'] as $departure) {
-                    echo "<div class='tram-line'>";
-                    echo "<i class='fa-solid fa-train'></i>  " . htmlspecialchars($departure['line']) . "<br>";
-                    echo "<i class='fa-solid fa-clock'></i>  " . htmlspecialchars($departure['minutes']) . " minut<br>";
-                    echo "<i class='fa-solid fa-location-arrow'></i> " . htmlspecialchars($departure['direction']) . "<br>";
-                    echo "</div>";
-                }
-            } else {
-                echo "Brak danych o odjazdach.";
+                $.ajax({
+                    url: 'refresh.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { function: 'tramData' },
+                    success: function(response) {
+                        try {
+                            response = typeof response === 'string' ? JSON.parse(response) : response;
+                        } catch (e) {
+                            console.error("Błąd parsowania JSON:", e);
+                        }
+                        if (response.success && Array.isArray(response.data)) {
+                            let content = '<ul>';
+                            response.data.forEach(tram => {
+                                content += `<li>Linia ${tram.line} → ${tram.direction} za ${tram.minutes} min</li>`;
+                            });
+                            content += '</ul>';
+                            $('#tram-container').html(content);
+                        } else {
+                            console.error("Brak danych do wyświetlenia:", response);
+                            $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Błąd ładowania AJAX: ", error);
+                        $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                    }
+                });
             }
-        } catch (Exception $e) {
-            echo "No departures today :-)";
-        }
-        ?>
+
+            //Odświeżanie co 5 sekund
+            setInterval(loadTramData, 5000);
+            loadTramData();
+        </script>
     </div>
 
     <div id="announcements" class="div">
         <h2>Ogłoszenia</h2>
-        <?php
-        include('./utilities/AnnouncementService.php');
-        include('./utilities/UserService.php');
-        use src\utilities\AnnouncementService;
-        use src\utilities\UserService;
+        <div id="announcements-container">Ładowanie danych...</div>
+        <script>
+            function loadAnnouncements() {
+                $.ajax({
+                    url: 'refresh.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { function: 'announcementsData' },
+                    success: function(response) {
+                        try {
+                            response = typeof response === 'string' ? JSON.parse(response) : response;
+                        } catch (e) {
+                            console.error("Błąd parsowania JSON:", e);
+                        }
 
-        try {
-            $announcement_service = new AnnouncementService($logger, $pdo);
-            $user_service = new UserService($logger, $pdo);
-            $announcement_service_announcements = $announcement_service->getValidAnnouncements();
-            foreach ($announcement_service_announcements as $announcement) {
-
-
-                try {
-                    $user = $user_service->getUserById($announcement['user_id']);
-                    $author_username = $user['username'] ?? 'Nieznany użytkownik';
-                } catch (Exception $e) {
-                    $author_username = $announcement['user_id'] ?? 'Nieznany autor';
-                }
-                echo "<div class='announcement'>";
-                echo "<h3>" . htmlspecialchars($announcement['title']) . "</h3><br>";
-                echo htmlspecialchars($author_username) . " | " . htmlspecialchars($announcement['date']) . "<br>";
-                echo "Ważne do: " . htmlspecialchars($announcement['valid_until']) . "<br>";
-                echo htmlspecialchars($announcement['text']) . "<br><br>";
-                echo "</div>";
+                        if (response.success && Array.isArray(response.data)) {
+                            // Sprawdzenie, czy lista danych jest pusta
+                            if (response.data.length === 0) {
+                                $('#announcements-container').html('<p>Brak ważnych ogłoszeń.</p>');
+                            } else {
+                                let content = '<div class="announcements-list">';
+                                response.data.forEach(announcement => {
+                                    content += `
+                                <div class="announcement-item">
+                                    <h3>${announcement.title}</h3>
+                                    <p><strong>Autor:</strong> ${announcement.author}</p>
+                                    <p>${announcement.text}</p>
+                                    <p><small><strong>Data:</strong> ${announcement.date}</small> – <small><strong>Ważne do:</strong> ${announcement.validUntil}</small></p>
+                                </div>
+                            `;
+                                });
+                                content += '</div>';
+                                $('#announcements-container').html(content);
+                            }
+                        } else {
+                            console.error("Brak danych lub błąd odpowiedzi:", response);
+                            $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
+                        }
+                    },
+                    error: function() {
+                        console.error("Błąd ładowania danych AJAX.");
+                        $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
+                    }
+                });
             }
-        } catch (Exception $e) {
-            echo "No announcements available.";
-        }
-        ?>
+
+            // Odświeżanie danych co minutę
+            setInterval(loadAnnouncements, 60000);
+            loadAnnouncements();
+        </script>
+
     </div>
+
     <!-- IMPORT FOOTER -->
     <?php include('functions/footer.php'); ?>
   </body>
