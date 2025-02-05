@@ -57,7 +57,12 @@ class CalendarService {
         foreach ($matches[1] as $eventData) {
             $this->process_event($eventData, $events, $currentDate);
         }
-    
+        usort($events, function ($a, $b) {
+            $dateA = DateTime::createFromFormat('H.i - d.m.Y', $a['start']);
+            $dateB = DateTime::createFromFormat('H.i - d.m.Y', $b['start']);
+            
+            return $dateA <=> $dateB;
+        });
         return $events;
     }
     
@@ -195,40 +200,5 @@ class CalendarService {
             $events[] = $newEvent;
         }
     }
-    
-    public function displaySortedEvents(array $events, int $maxevents): void {
-        usort($events, function ($a, $b) {
-            $dateA = DateTime::createFromFormat('H.i - d.m.Y', $a['start']);
-            $dateB = DateTime::createFromFormat('H.i - d.m.Y', $b['start']);
-            
-            return $dateA <=> $dateB;
-        });
-        $count = 0;
-        if (!empty($events)) {
-            foreach ($events as $event) {
-                echo "<div class='calendar-event'>";
-                if ($event['summary']) {
-                    echo "<i class='fa-regular fa-calendar'></i>" . " Wydarzenie: " . htmlspecialchars($event['summary']) . "<br>";
-                } else {
-                    echo "Brak tytułu" . "<br>";
-                }
-                echo "<i class='fa-solid fa-hourglass-start'></i> Start: " . htmlspecialchars($event['start']) . "<br>";
-                echo "<i class='fa-solid fa-hourglass-end'></i> Koniec: " . htmlspecialchars($event['end']) . "<br>";
-                if ($event['description']) {
-                    echo "Opis wydarzenia: " . htmlspecialchars($event['description']) . "<br>";
-                } else {
-                    echo "<br>";
-                }
-                echo "</div>";
-                $count++;
-                if ($count >= $maxevents) {
-                    break;
-                }
-            }
-        } else {
-            echo "Brak wydarzeń do wyświetlenia.";
-        }
-    }
 }
-
 

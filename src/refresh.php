@@ -7,6 +7,7 @@ use src\utilities\UserService;
 use src\utilities\TramService;
 use src\utilities\WeatherService;
 use src\utilities\AnnouncementService;
+use src\utilities\CalendarService;
 use Monolog\Logger;
 
 $config = require './config.php';
@@ -31,6 +32,9 @@ switch ($function) {
         break;
     case 'weatherData':
         echo json_encode(getWeatherData($logger));
+        break;
+    case 'calendarData':
+        echo json_encode(getCalendarData($logger));
         break;
     default:
         echo json_encode(['error' => 'Nieznana funkcja']);
@@ -164,5 +168,36 @@ function getWeatherData(Logger $logger): false|string
             'success' => false,
             'message' => 'Błąd pobierania danych pogodowych: ' . $e->getMessage()
         ]);
+    }
+}
+function getCalendarData(Logger $logger): false|string
+{
+    try {
+        $logger->info('Rozpoczęto pobieranie wydarzeń.');
+
+        // Tworzenie usługi dla calendarwajów
+        $calendarService = new CalendarService($logger);
+        $calendarServiceResponse = $calendarService->get_events();
+        $logger->debug('Utworzono instancję calendarService.');
+
+        if (!empty($calendarServiceResponse)) {
+            $response = [];
+            foreach ($calendarServiceResponse as $event) {
+                $response[] = [
+                    'summary' => htmlspecialchars($event['summary'] ?? ''),
+                    'start' => htmlspecialchars($event['start']),
+                    'end' => htmlspecialchars($event['end']),
+                    'description' => htmlspecialchars($event['description'] ?? ''),
+                ];
+            }
+            $logger->debug('Pomyślnie pobrano dane wydarzenia.');
+            return json_encode(['success' => true, 'data' => $response]);
+        } else {
+            $logger->warning('Brak dostępnych danych o wydarzeniach.');
+            return json_encode(['success' => false, 'message' => 'Brak danych o wydarzeniach.']);
+        }
+    } catch (Exception $e) {
+        $logger->error('Błąd podczas przetwarzania wydarzeń: ' . $e->getMessage());
+        return json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania wydarzeń: ' . $e->getMessage()]);
     }
 }

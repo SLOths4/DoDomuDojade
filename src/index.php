@@ -104,6 +104,57 @@
         </script>
     </div>
 
+    <div id="calendar" class="div">
+        <h2>Wydarzenia</h2>
+          <div id="calendar-container">Ładowanie danych...</div>
+        <script>
+            function loadCalendarData() {
+
+                $.ajax({
+                    url: 'refresh.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { function: 'calendarData' },
+                    success: function(response) {
+                        try {
+                            response = typeof response === 'string' ? JSON.parse(response) : response;
+                        } catch (e) {
+                            console.error("Błąd parsowania JSON:", e);
+                        }
+                        if (response.success && Array.isArray(response.data)) {
+                            let content = '';
+                            response.data.forEach(cal => {
+                                if (cal.summary) {
+                                    content += `<div><p><i class='fa-regular fa-calendar'></i> Wydarzenie: ${cal.summary}</p>`;
+                                } else {
+                                    content += `<div><p><i class='fa-regular fa-calendar'></i> Wydarzenie</p>`;
+                                }
+                                content += `<p><i class='fa-solid fa-hourglass-start'></i> Start: ${cal.start}</p>`;
+                                content += `<p><i class='fa-solid fa-hourglass-end'></i> Koniec: ${cal.end}</p>`;
+                                if (cal.description) {
+                                    content += `<p>Opis: ${cal.description}</p></div><br>`;
+                                } else {
+                                    content += `</div><br>`;
+                                }
+                            });
+                            $('#calendar-container').html(content);
+                        } else {
+                            console.error("Brak danych do wyświetlenia:", response);
+                            $('#console-container').html('<p>Błąd: Brak danych</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Błąd ładowania AJAX: ", error);
+                        $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                    }
+                });
+            }
+            //Odświeżanie co minutę
+            setInterval(loadCalendarData, 60000);
+            loadTramData();
+        </script>
+  </div>
+
     <div id="tram" class="div">
         <h2>Odjazdy</h2>
         <div id="tram-container">Ładowanie danych...</div>
