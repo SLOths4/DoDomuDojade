@@ -52,100 +52,103 @@ class CalendarService {
     private function parse_ical_data($icalData) {
         $events = [];
         preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches);
+        $currentDate = new DateTime();
+    
         foreach ($matches[1] as $eventData) {
-            $event = [];
-            preg_match('/SUMMARY:(.*)/', $eventData, $summary);
-            preg_match('/DTSTART(.*)/', $eventData, $start);
-            preg_match('/DTEND(.*)/', $eventData, $end);
-            preg_match('/DESCRIPTION:(.*)/', $eventData, $description);
-            preg_match('/RRULE:(.*)/', $eventData, $rrule);
-
-            $event['summary'] = $summary[1] ?? '';
-            $event['start'] = $start[1] ?? '';
-            $event['end'] = $end[1] ?? '';
-            $event['end1'] = $end[1] ?? '';
-            $event['description'] = $description[1] ?? '';
-            $event['rrule'] = $rrule[1] ?? '';
-
-            preg_match('/:(.*)/', $event['start'], $event['start']);
-            preg_match('/:(.*)/', $event['end'], $event['end']);
-            preg_match('/:(.*)/', $event['end1'], $event['end1']);
-
-            $event['start'] = $event['start'][1] ?? '';
-            $event['end'] = $event['end'][1] ?? '';
-            $event['end1'] = $event['end1'][1] ?? '';
-
-            $this->logger->debug("Variable state after preg_matching:\n". $event['start'] . "\n" . $event['end'] . "\n" . $event['end1']);
-            if ($event['rrule']) {
-                $this->logger->debug("Recurrency rules" . $event['rrule']);
-            }
-            $timezone = strlen($event['start']) < 17;
-
-            if ($timezone) {
-                $event['start'] = trim($event['start']) . "Z";
-                $event['end'] = trim($event['end']) . "Z";
-                $event['end1'] = trim($event['end1']) . "Z";
-            }
-            $formatstdate = substr($event['start'], 0, 15);
-            $formatenddate = substr($event['end'], 0, 15);
-            
-            $startyear = substr($event['start'], 0, 4);
-            $endyear = substr($event['end'], 0, 4);
-            $startmonth = substr($event['start'], 4, 2);
-            $endmonth = substr($event['end'], 4, 2);
-            $startday = substr($event['start'], 6, 2);
-            $endday = substr($event['end'], 6, 2);
-            $startfullhour = substr($event['start'], 9, 2);
-            $endfullhour = substr($event['end'], 9, 2);
-            $startminutes = substr($event['start'], 11, 2);
-            $endminutes = substr($event['end'], 11, 2);
-            
-            if (!$timezone) {
-                $startfullhour = (intval($startfullhour) + 1) % 24;
-                $endfullhour = (intval($endfullhour) + 1) % 24;
-            }
-
-            $event['start'] = sprintf("%02d.%s - %s.%s.%s", $startfullhour, $startminutes, $startday, $startmonth, $startyear);
-            $event['end'] = sprintf("%02d.%s - %s.%s.%s", $endfullhour, $endminutes, $endday, $endmonth, $endyear);
-
-            $this->logger->debug("Reconstructed \"start\" and \"end\" variables:\n". $event['start'] . "\n" . $event['end']);
-
-
-            try {
-                $eventDate = substr($event['end1'], 0, 15);
-                $eventDate = DateTime::createFromFormat("Ymd\THis", $eventDate);
-                if (!$eventDate) {
-                    throw new Exception("Invalid date format: $eventDate");
-                }
-                $currentDate = new DateTime();
-
-            } catch (Exception $e) {
-                $this->logger->error("Date parsing failed: " . $e->getMessage() );
-                throw new RuntimeException("Date parsing failed: " . $e->getMessage());
-            }
-            $interval = $currentDate->diff($eventDate); // Get the difference between dates
-            $daysUntilEvent = $interval->days; // Extract the number of days
-
-            try {
-                $startDate = DateTime::createFromFormat('Ymd\THis', $formatstdate);
-                $endDate = DateTime::createFromFormat('Ymd\THis', $formatenddate);
-                if (!$startDate || !$endDate) {
-                    throw new Exception("Invalid date format");
-                }
-            } catch (Exception $e) {
-                throw new RuntimeException("Date parsing failed: " . $e->getMessage());
-            }
-            if ($eventDate > $currentDate && $daysUntilEvent <= 7) {
-                $events[] = $event;
-            }
-            if (!empty($event['rrule'])) {
-                $this->generateRecurringEvents($events, $event, $startDate, $endDate);
-            }
+            $this->process_event($eventData, $events, $currentDate);
         }
-
-
+    
         return $events;
     }
+    
+    private function process_event($eventData, &$events, $currentDate) {
+        $event = $this->extract_event_data($eventData);
+        $this->format_event_dates($event);
+    
+        try {
+            $eventDate = DateTime::createFromFormat("Ymd\THis", substr($event['end1'], 0, 15));
+            if (!$eventDate) throw new Exception("Invalid date format: {$event['end1']}");
+    
+            $daysUntilEvent = $this->calculate_days_until_event($eventDate, $currentDate);
+            if ($this->should_include_event($eventDate, $currentDate, $daysUntilEvent)) {
+                $events[] = $event;
+            }
+    
+            if (!empty($event['rrule'])) {
+                $startDate = DateTime::createFromFormat('Ymd\THis', substr($event['start'], 0, 15));
+                $endDate = DateTime::createFromFormat('Ymd\THis', substr($event['end'], 0, 15));
+                if ($startDate && $endDate) {
+                    $this->generateRecurringEvents($events, $event, $startDate, $endDate);
+                }
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Date parsing failed: " . $e->getMessage());
+        }
+    }
+    
+    private function extract_event_data($eventData) {
+        $event = [];
+        preg_match('/SUMMARY:(.*)/', $eventData, $summary);
+        preg_match('/DTSTART(.*)/', $eventData, $start);
+        preg_match('/DTEND(.*)/', $eventData, $end);
+        preg_match('/DESCRIPTION:(.*)/', $eventData, $description);
+        preg_match('/RRULE:(.*)/', $eventData, $rrule);
+    
+        $event['summary'] = $summary[1] ?? '';
+        $event['start'] = $start[1] ?? '';
+        $event['end'] = $end[1] ?? '';
+        $event['end1'] = $end[1] ?? '';  // Duplicate end time
+        $event['description'] = $description[1] ?? '';
+        $event['rrule'] = $rrule[1] ?? '';
+    
+        preg_match('/:(.*)/', $event['start'], $event['start']);
+        preg_match('/:(.*)/', $event['end'], $event['end']);
+        preg_match('/:(.*)/', $event['end1'], $event['end1']);
+    
+        $event['start'] = $event['start'][1] ?? '';
+        $event['end'] = $event['end'][1] ?? '';
+        $event['end1'] = $event['end1'][1] ?? '';
+    
+        return $event;
+    }
+    
+    private function format_event_dates(&$event) {
+        $timezone = strlen($event['start']) < 17;
+        if ($timezone) {
+            $event['start'] .= "Z";
+            $event['end'] .= "Z";
+            $event['end1'] .= "Z";
+        }
+    
+        $startYear = substr($event['start'], 0, 4);
+        $endYear = substr($event['end'], 0, 4);
+        $startMonth = substr($event['start'], 4, 2);
+        $endMonth = substr($event['end'], 4, 2);
+        $startDay = substr($event['start'], 6, 2);
+        $endDay = substr($event['end'], 6, 2);
+        $startHour = substr($event['start'], 9, 2);
+        $endHour = substr($event['end'], 9, 2);
+        $startMinutes = substr($event['start'], 11, 2);
+        $endMinutes = substr($event['end'], 11, 2);
+    
+        if (!$timezone) {
+            $startHour = (intval($startHour) + 1) % 24;
+            $endHour = (intval($endHour) + 1) % 24;
+        }
+    
+        $event['start'] = sprintf("%02d.%s - %s.%s.%s", $startHour, $startMinutes, $startDay, $startMonth, $startYear);
+        $event['end'] = sprintf("%02d.%s - %s.%s.%s", $endHour, $endMinutes, $endDay, $endMonth, $endYear);
+    }
+    
+    private function calculate_days_until_event($eventDate, $currentDate) {
+        $interval = $currentDate->diff($eventDate);
+        return $interval->days;
+    }
+    
+    private function should_include_event($eventDate, $currentDate, $daysUntilEvent) {
+        return $eventDate > $currentDate && $daysUntilEvent <= 7;
+    }
+    
 
     public function generateRecurringEvents(&$events, $event, $startDate, $endDate) {
         $rruleParts = [];
@@ -193,25 +196,34 @@ class CalendarService {
         }
     }
     
-    public function displaySortedEvents(array $events): void {
+    public function displaySortedEvents(array $events, int $maxevents): void {
         usort($events, function ($a, $b) {
             $dateA = DateTime::createFromFormat('H.i - d.m.Y', $a['start']);
             $dateB = DateTime::createFromFormat('H.i - d.m.Y', $b['start']);
             
             return $dateA <=> $dateB;
         });
+        $count = 0;
         if (!empty($events)) {
             foreach ($events as $event) {
                 echo "<div class='calendar-event'>";
-                echo "<i class='fa-regular fa-calendar'></i> Wydarzenie: " . htmlspecialchars($event['summary']) . "<br>";
+                if ($event['summary']) {
+                    echo "<i class='fa-regular fa-calendar'></i>" . " Wydarzenie: " . htmlspecialchars($event['summary']) . "<br>";
+                } else {
+                    echo "Brak tytułu" . "<br>";
+                }
                 echo "<i class='fa-solid fa-hourglass-start'></i> Start: " . htmlspecialchars($event['start']) . "<br>";
                 echo "<i class='fa-solid fa-hourglass-end'></i> Koniec: " . htmlspecialchars($event['end']) . "<br>";
-                if ($event['description'] != "" ) {
-                    echo "Opis wydarzenia: " . htmlspecialchars($event['description']) . "<br><br>";
+                if ($event['description']) {
+                    echo "Opis wydarzenia: " . htmlspecialchars($event['description']) . "<br>";
                 } else {
                     echo "<br>";
                 }
                 echo "</div>";
+                $count++;
+                if ($count >= $maxevents) {
+                    break;
+                }
             }
         } else {
             echo "Brak wydarzeń do wyświetlenia.";
