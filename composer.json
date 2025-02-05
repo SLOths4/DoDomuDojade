@@ -1,10 +1,21 @@
 {
+    "name": "sloths4/dodomu-dojade",
+    "description": "This is DoDomuDojadę app repository.",
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
-        "monolog/monolog": "*",
-        "php": ">=8.4",
+        "monolog/monolog": "^3.0",
+        "php": "^8.4",
         "symfony/http-client": "^7.2",
         "ext-mbstring": "*"
-    }
+    },
+    "autoload": {
+        "psr-4": {
+                "src\\": "src/"
+            }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "license": "CC-BY-NC-4.0"
 }

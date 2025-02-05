@@ -8,7 +8,7 @@ return [
     ],
     "Metar" => [
       "metar_url" => "https://awiacja.imgw.pl/metar00.php?airport=",
-        "airport_icao" => "EPPO"
+      "airport_icao" => "EPPO"
     ],
     "API" => [
         [
