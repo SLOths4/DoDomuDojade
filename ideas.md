@@ -19,3 +19,4 @@ Pomysły:
   - włączanie/wyłączanie modułów
   - ...
 - logowanie kontem google
+- ?głosowania samorządowe?

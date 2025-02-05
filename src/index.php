@@ -16,6 +16,8 @@
     require_once __DIR__ . '/../vendor/autoload.php';
     ?>
 
+    <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
+
     <!-- IMPORT WEATHER MODULE -->
     <div id="weather" class="div">
         <h2>Dzisiejsza pogoda</h2>
