@@ -42,28 +42,42 @@ function getTramData(Logger $logger, string $ztmURL): false|string
     try {
         $logger->info('Rozpoczęto pobieranie danych tramwajowych.');
 
-        // Tworzenie usługi dla tramwajów
+        // Zdefiniowanie listy przystanków
+        $stopsIdS = ['AWF73', 'AWF41', 'AWF42', 'AWF02', 'AWF01', 'AWF03']; // Lista ID przystanków
+        $departures = [];
+
+        // Tworzenie instancji TramService
         $tramService = new TramService($logger, $ztmURL);
         $logger->debug('Utworzono instancję TramService.');
 
-        // Pobieranie danych odjazdów tramwajów dla przystanku (np. "AWF73")
-        $stopId = $_GET['stop'] ?? 'AWF73'; // Domyślnie przystanek "AWF73"
-        $departures = $tramService->getTimes($stopId);
+        foreach ($stopsIdS as $stopId) {
+            // Pobieranie danych dla każdego przystanku
+            $stopDepartures = $tramService->getTimes($stopId);
 
-        if (isset($departures['success']['times']) && is_array($departures['success']['times'])) {
-            $response = [];
-            foreach ($departures['success']['times'] as $departure) {
-                $response[] = [
-                    'line' => htmlspecialchars($departure['line']),
-                    'minutes' => htmlspecialchars($departure['minutes']),
-                    'direction' => htmlspecialchars($departure['direction']),
-                ];
+            if (isset($stopDepartures['success']['times']) && is_array($stopDepartures['success']['times'])) {
+                foreach ($stopDepartures['success']['times'] as $departure) {
+                    $departures[] = [
+                        'stopId' => $stopId,
+                        'line' => htmlspecialchars($departure['line']),
+                        'minutes' => (int)htmlspecialchars($departure['minutes']),
+                        'direction' => htmlspecialchars($departure['direction']),
+                    ];
+                }
+            } else {
+                $logger->warning("Brak dostępnych danych o odjazdach dla przystanku: {$stopId}.");
             }
+        }
+
+        usort($departures, function ($a, $b) {
+            return $a['minutes'] <=> $b['minutes'];
+        });
+
+        if (!empty($departures)) {
             $logger->debug('Pomyślnie pobrano dane tramwajowe.');
-            return json_encode(['success' => true, 'data' => $response]);
+            return json_encode(['success' => true, 'data' => $departures]);
         } else {
-            $logger->warning('Brak dostępnych danych o odjazdach.');
-            return json_encode(['success' => false, 'message' => 'Brak danych o odjazdach.']);
+            $logger->warning('Brak danych o odjazdach dla wszystkich przystanków.');
+            return json_encode(['success' => false, 'message' => 'Brak danych o odjazdach dla wybranych przystanków.']);
         }
     } catch (Exception $e) {
         $logger->error('Błąd podczas przetwarzania danych tramwajowych: ' . $e->getMessage());

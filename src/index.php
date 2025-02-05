@@ -105,11 +105,10 @@
     </div>
 
     <div id="tram" class="div">
-        <h2>Odjazdy tramwajów z przystanku AWF 73</h2>
+        <h2>Odjazdy</h2>
         <div id="tram-container">Ładowanie danych...</div>
         <script>
             function loadTramData() {
-
                 $.ajax({
                     url: 'refresh.php',
                     type: 'GET',
