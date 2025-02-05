@@ -11,7 +11,7 @@ Pomysły:
 - ~~wyświetlanie odjazdów autobusów i tramwai~~
 - dzisiejszy obiad
 - różne wyświetlanie dla różnych godzin
-- alert rcb
+- ~~alert rcb~~ - nie ma API 
 - zadania maturalne/liga zadaniowa
 - odliczanie do czegoś (np. wakacji) @tymson
 - system poprawiania życia (testów i kartkówek)

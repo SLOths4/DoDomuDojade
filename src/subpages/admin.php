@@ -162,6 +162,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     }
 }
 
+
+// Ustawianie stanu checkboxa na podstawie przesłania formularza
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['display-valid-announcements-only'])) {
+        // Zaznaczenie checkboxa (tylko ważne ogłoszenia)
+        $_SESSION['display_valid_announcements_only'] = true;
+    } else {
+        // Odznaczenie checkboxa (wszystkie ogłoszenia)
+        $_SESSION['display_valid_announcements_only'] = false;
+    }
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -203,7 +217,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
         echo '<div class="error">' . htmlspecialchars($_SESSION['add_error']) . '</div>';
         unset($_SESSION['add_error']);
     }
+
+    // Sprawdzanie, czy wyświetlać tylko ważne ogłoszenia (domyślnie "wszystkie")
+    $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
     ?>
+
+    <form method="POST" action="admin.php" id="display-valid-announcements-only">
+        <label>
+            <!-- Jeśli w sesji jest zapisane, że checkbox ma być włączony, to dodawany jest atrybut "checked" -->
+            <input type="checkbox"
+                   name="display-valid-announcements-only"
+                   onchange="this.form.submit();"
+                   placeholder="display only valid announcements"
+                <?php if ($showOnlyValid) echo 'checked'; ?>>
+            Wyświetlaj tylko ważne ogłoszenia
+        </label>
+    </form>
+
 
     <form method="POST" action="admin.php" id="form">
         <label>
@@ -221,7 +251,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     </form>
 
     <?php
-    $announcements = $announcementService->getAnnouncements();
+
+    // Pobieranie ogłoszeń na podstawie stanu checkboxa
+    if ($showOnlyValid) {
+        $announcements = $announcementService->getValidAnnouncements(); // Tylko ważne ogłoszenia
+    } else {
+        $announcements = $announcementService->getAnnouncements(); // Wszystkie ogłoszenia
+    }
+
+
     $user_service = new UserService($logger, $pdo);
     foreach ($announcements as $announcement) {
         try {
@@ -245,6 +283,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
         // Edit form
         // TODO Dodanie edycji ogłoszenia
         echo "<form method='POST' onsubmit='return confirm(\"Are you sure you want to make changes to this announcement?\");'>";
+        echo "<input type='text' name='title' placeholder='Title' >";
+        echo "<input type='text' name='text' placeholder='Text'>";
+        echo "<input type='date' name='valid_until' placeholder='Valid until'>";
+        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
+        echo "<input type='hidden' name='announcement_id' value='" . htmlspecialchars($announcement['id']) . "'>";
         echo "<button type='submit' name='edit_announcement'>Edytuj</button>";
         echo "</form>";
         // Div close tag
