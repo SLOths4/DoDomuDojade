@@ -170,10 +170,16 @@ class AnnouncementService{
     public function getValidAnnouncements(): array{
         try {
             $date = date('Y-m-d');
-        $query = "SELECT * FROM $this->table_name WHERE valid_until >= :date";
-        $params = [':date' => [$date, PDO::PARAM_STR]];
-        $this->logger->info("Fetching valid announcements for date: $date.");
-        return $this->executeStatement($query, $params);
+            $query = "SELECT * FROM $this->table_name WHERE valid_until >= :date";
+            $params = [':date' => [$date, PDO::PARAM_STR]];
+            $this->logger->info("Fetching valid announcements for date: $date.");
+            $result = $this->executeStatement($query, $params);
+            if (!$result) {
+                $this->logger->warning("No valid announcements found for date: $date");
+                return [];
+            }
+            $this->logger->info("Valid announcements fetched successfully.", ['result' => $result]);
+            return $result;
         } catch (PDOException $e) {
             $this->logger->error("Error fetching valid announcements: " . $e->getMessage());
             throw new RuntimeException('Error fetching valid announcements');

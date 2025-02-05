@@ -68,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement']
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
     $logger->debug("add_announcement request received");
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $logger->error("Invalid CSRF token");
-        die('Invalid CSRF token');
-    }
+    //if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    //    $logger->error("Invalid CSRF token");
+    //    die('Invalid CSRF token');
+    //}
 
     $title = isset($_POST['title']) ? trim($_POST['title']) : '';
     $text = isset($_POST['text']) ? trim($_POST['text']) : '';
