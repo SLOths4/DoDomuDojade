@@ -67,7 +67,6 @@ class UserService{
         $this->logger->debug("All parameters successfully bound.", ['parameters' => $params]);
     }
 
-
     /**
      * Executes given statement
      * @param string $query Query to be executed
@@ -180,7 +179,7 @@ class UserService{
                 ':created_at' => [date('Y-m-d'), PDO::PARAM_STR],
             ];
             $this->executeStatement($query, $params);
-            $this->logger->info("Added new user.", []);
+            $this->logger->info("Added new user.");
             return true;
         } catch (PDOException $e) {
             $this->logger->error("Error adding new user: " . $e->getMessage());
@@ -203,7 +202,7 @@ class UserService{
                 ':userId' => [$userId, PDO::PARAM_INT],
             ];
             $this->executeStatement($query, $params);
-            $this->logger->info("User updated.", []);
+            $this->logger->info("User updated.");
             return true;
         } catch (PDOException $e) {
             $this->logger->error("Error updating user: " . $e->getMessage());
@@ -220,7 +219,7 @@ class UserService{
             $query = "DELETE FROM $this->table_name WHERE id = :userId";
             $params = [':userId' => [$userId, PDO::PARAM_INT]];
             $this->executeStatement($query, $params);
-            $this->logger->info("User deleted.", []);
+            $this->logger->info("User deleted.");
             return true;
         } catch (PDOException $e) {
             $this->logger->error("Error deleting user: " . $e->getMessage());

@@ -3,7 +3,6 @@ namespace src\utilities;
 
 use DateTime;
 use Exception;
-use RuntimeException;
 use Monolog\Logger;
 
 /**
@@ -12,32 +11,32 @@ use Monolog\Logger;
  * @version 1.0.1
  * @since 1.0.0
  */
-
 class CalendarService {
     private string $icalUrl;
     private Logger $logger;
 
-    public function __construct(Logger $logger) {
-        $config = require 'config.php';
+    public function __construct(Logger $logger, string $icalUrl) {
         $this->logger = $logger;
-        $this->icalUrl = $config['Calendar'][0]['url'];
+        $this->icalUrl = $icalUrl;
     }
 
-    public function get_events() {
+    /**
+     * @throws Exception
+     */
+    public function get_events(): array
+    {
         // Fetch the iCal data
         $icalData = @file_get_contents($this->icalUrl);
 
         if ($icalData === false) {
             $error = error_get_last();
-            echo "Error fetching iCal data: " . $error['message'];
-            throw new \Exception("Error fetching iCal data: " . $error['message']);
             $this->logger->error("Error fetching iCal data: " . $error['message']);
+            throw new Exception("Error fetching iCal data: " . $error['message']);
         } else {
             $this->logger->debug("Successfully fetched the iCal data");
         }
       
         if (strpos($icalData, 'BEGIN:VEVENT') === false) {
-            echo "No events found in the iCal data.";
             $this->logger->debug("No events found in the iCal data.");
             return [];
         } else {
@@ -45,11 +44,11 @@ class CalendarService {
         }
 
         // Parse the iCal data
-
         return $this->parse_ical_data($icalData);
     }
 
-    private function parse_ical_data($icalData) {
+    private function parse_ical_data($icalData): array
+    {
         $events = [];
         preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches);
         $currentDate = new DateTime();
@@ -66,7 +65,8 @@ class CalendarService {
         return $events;
     }
     
-    private function process_event($eventData, &$events, $currentDate) {
+    private function process_event($eventData, &$events, $currentDate): void
+    {
         $event = $this->extract_event_data($eventData);
         $this->format_event_dates($event);
     
@@ -91,7 +91,8 @@ class CalendarService {
         }
     }
     
-    private function extract_event_data($eventData) {
+    private function extract_event_data($eventData): array
+    {
         $event = [];
         preg_match('/SUMMARY:(.*)/', $eventData, $summary);
         preg_match('/DTSTART(.*)/', $eventData, $start);
@@ -117,7 +118,8 @@ class CalendarService {
         return $event;
     }
     
-    private function format_event_dates(&$event) {
+    private function format_event_dates(&$event): void
+    {
         $timezone = strlen($event['start']) < 17;
         if ($timezone) {
             $event['start'] .= "Z";
@@ -150,12 +152,14 @@ class CalendarService {
         return $interval->days;
     }
     
-    private function should_include_event($eventDate, $currentDate, $daysUntilEvent) {
+    private function should_include_event($eventDate, $currentDate, $daysUntilEvent): bool
+    {
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
     
 
-    public function generateRecurringEvents(&$events, $event, $startDate, $endDate) {
+    public function generateRecurringEvents(&$events, $event, $startDate, $endDate): void
+    {
         $rruleParts = [];
         
         // Konwertuje RRULE na tablicę wartości

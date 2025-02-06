@@ -15,21 +15,45 @@ use RuntimeException;
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  * @version 1.0.2
  * @since 1.0.0
+ *
+ * @param Logger $loggerInstance Logger Monolog do logowania
+ * @param PDO $pdoInstance Obiekt PDO dla operacji bazy danych
+ * @param string $table_name Nazwa tabeli ogłoszeń (domyślnie: 'announcements')
+ * @param string $date_format Format daty używany w bazie danych (domyślnie: 'Y-m-d')
+ * @param int $max_title_length Maksymalna długość tytułu (domyślnie: 255 znaków)
+ * @param int $max_text_length Maksymalna długość tekstu ogłoszenia (domyślnie: 10000 znaków)
+ * @param array $allowed_fields Dozwolone pola w tabeli ogłoszeń (domyślnie: ['title', 'text', 'date', 'valid_until', 'user_id'])
  */
 class AnnouncementService{
     // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
     private PDO $pdo; // PDO instance
     private Logger $logger; // Monolog logger instance
     private string $table_name; // announcements table name
-    private const string DATE_FORMAT = 'Y-m-d';
-    private const array ALLOWED_FIELDS = ['title', 'text', 'date','valid_until', 'user_id'];
-    private const int MAX_TITLE_LENGTH = 255;
-    private const int MAX_TEXT_LENGTH = 10000;
+    private string $DATE_FORMAT;
+    private int $MAX_TITLE_LENGTH;
+    private int $MAX_TEXT_LENGTH;
+    private array $ALLOWED_FIELDS;
 
-    public function __construct(Logger $loggerInstance, PDO $pdoInstance, string $table_name = 'announcements') {
-        $this->table_name = $table_name;
+    /**
+     * Konstruktor klasy AnnouncementService
+     *
+     * @param Logger $loggerInstance Logger Monolog
+     * @param PDO $pdoInstance Obiekt PDO
+     * @param string $table_name Nazwa tabeli (domyślnie: 'announcements')
+     * @param string $date_format Format daty (domyślnie: 'Y-m-d')
+     * @param int $max_title_length Maksymalna długość tytułu (domyślnie: 255 znaków)
+     * @param int $max_text_length Maksymalna długość tekstu ogłoszenia (domyślnie: 10000 znaków)
+     * @param array $allowed_fields Dozwolone kolumny w zapytaniach SQL (domyślnie: ['title', 'text', 'date', 'valid_until', 'user_id'])
+     */
+    public function __construct(Logger $loggerInstance, PDO $pdoInstance, string $table_name = 'announcements', string $date_format = 'Y-m-d', int $max_title_length = 255, int $max_text_length = 10000, array $allowed_fields = ['title', 'text', 'date','valid_until', 'user_id']) {
         $this->logger = $loggerInstance;
         $this->pdo = $pdoInstance;
+        // settings
+        $this->table_name = $table_name;
+        $this->DATE_FORMAT = $date_format;
+        $this->MAX_TITLE_LENGTH = $max_title_length;
+        $this->MAX_TEXT_LENGTH = $max_text_length;
+        $this->ALLOWED_FIELDS = $allowed_fields;
 
         $this->logger->debug("Announcements table name being used: $this->table_name");
     }
@@ -133,8 +157,8 @@ class AnnouncementService{
      */
     private function validateDate(string $date): bool {
         try {
-            $d = DateTime::createFromFormat(self::DATE_FORMAT, $date);
-            $isValid = $d && $d->format(self::DATE_FORMAT) === $date;
+            $d = DateTime::createFromFormat($this->DATE_FORMAT, $date);
+            $isValid = $d && $d->format($this->DATE_FORMAT) === $date;
 
             $this->logger->debug("Date format validation", [
                 'date' => $date,
@@ -203,8 +227,8 @@ class AnnouncementService{
         ]);
 
         try {
-            $this->validateInput($title, self::MAX_TITLE_LENGTH);
-            $this->validateInput($text, self::MAX_TEXT_LENGTH);
+            $this->validateInput($title, $this->MAX_TITLE_LENGTH);
+            $this->validateInput($text, $this->MAX_TEXT_LENGTH);
             if (!$this->validateDate($validUntil)) {
                 $this->logger->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
                 throw new InvalidArgumentException('Invalid date format');
@@ -243,7 +267,7 @@ class AnnouncementService{
      * @return bool
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
-        if (!in_array($field, self::ALLOWED_FIELDS, true)) {
+        if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
             $this->logger->warning("Invalid field attempted for update.", [
                 'field' => $field
             ]);

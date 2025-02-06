@@ -166,8 +166,10 @@
                     dataType: 'json',
                     data: { function: 'tramData' },
                     success: function(response) {
+                        console.debug("Rozpoczęto ładowanie danych tramwajowych")
                         try {
                             response = typeof response === 'string' ? JSON.parse(response) : response;
+                            console.debug("String został sparsowany na JSON")
                         } catch (e) {
                             console.error("Błąd parsowania JSON:", e);
                         }
@@ -184,15 +186,23 @@
             <tbody>`;
                             response.data.forEach(tram => {
                                 content += `
-            <tr>
-                <td><i class="fa-solid fa-train-tram"></i> ${tram.line}</td>
-                <td><i class="fa-solid fa-location-dot"></i> ${tram.direction}</td>
-                <td><i class="fa-solid fa-clock"></i> ${tram.minutes} min</td>
-            </tr>`;
+                                        <tr>
+                                            <td><i class="fa-solid fa-train-tram"></i> ${tram.line}</td>
+                                            <td><i class="fa-solid fa-location-dot"></i> ${tram.direction}</td>`
+                                    if (tram.minutes === 0) {
+                                        content += `<td><i class="fa-solid fa-clock"></i> odjeżdża </td>`;
+                                    } else if (tram.minutes < 60) {
+                                        content += `<td><i class="fa-solid fa-clock"></i> ${tram.minutes} min</td>`;
+                                    } else {
+                                        let hours = Math.floor(tram.minutes / 60);
+                                        let minutes = tram.minutes % 60;
+                                        content += `<td><i class="fa-solid fa-clock"></i> ${hours}h ${minutes}min</td>`;
+                                    }
+                                content += `</tr>`;
                             });
                             content += `
-            </tbody>
-        </table>`;
+                                    </tbody>
+                                </table>`;
                             $('#tram-container').html(content);
                         } else {
                             console.error("Brak danych do wyświetlenia:", response);

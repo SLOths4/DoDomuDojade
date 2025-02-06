@@ -19,6 +19,8 @@ $pdo = new PDO($config['Database']['db_host']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // ztm URL
 $ztmURL = $config["API"][1]["url"];
+// ical URL
+$icalURL = $config['Calendar'][0]['url'];
 
 // Pobieramy nazwę funkcji z parametru GET
 $function = $_GET['function'] ?? 'default';
@@ -34,7 +36,7 @@ switch ($function) {
         echo json_encode(getWeatherData($logger));
         break;
     case 'calendarData':
-        echo json_encode(getCalendarData($logger));
+        echo json_encode(getCalendarData($logger, $icalURL));
         break;
     default:
         echo json_encode(['error' => 'Nieznana funkcja']);
@@ -68,7 +70,7 @@ function getTramData(Logger $logger, string $ztmURL): false|string
                     ];
                 }
             } else {
-                $logger->warning("Brak dostępnych danych o odjazdach dla przystanku: {$stopId}.");
+                $logger->warning("Brak dostępnych danych o odjazdach dla przystanku: $stopId.");
             }
         }
 
@@ -170,13 +172,13 @@ function getWeatherData(Logger $logger): false|string
         ]);
     }
 }
-function getCalendarData(Logger $logger): false|string
+function getCalendarData(Logger $logger, string $icalURL): false|string
 {
     try {
         $logger->info('Rozpoczęto pobieranie wydarzeń.');
 
         // Tworzenie usługi dla calendarwajów
-        $calendarService = new CalendarService($logger);
+        $calendarService = new CalendarService($logger, $icalURL);
         $calendarServiceResponse = $calendarService->get_events();
         $logger->debug('Utworzono instancję calendarService.');
 

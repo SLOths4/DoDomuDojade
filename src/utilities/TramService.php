@@ -37,7 +37,6 @@ class TramService {
     private string $ztmUrl;
     private Logger $logger;
 
-
     public function __construct(Logger $loggerInstance, string $ztmUrl) {
         $this->httpClient = HttpClient::create();
         $this->ztmUrl = $ztmUrl;
