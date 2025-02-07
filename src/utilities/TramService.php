@@ -19,8 +19,6 @@ use Throwable;
 /**
  * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.1
- * @since 1.0.0
  */
 class TramService {
     private const array ERROR_MESSAGES = [
@@ -98,7 +96,7 @@ class TramService {
 
     /**
      * Get departure times for a specific stop.
-     * @param string $stopId Stop id compatible with PEKA e-monitor e.g. AWF73
+     * @param string $stopId
      * @return array
      * @throws Exception
      */

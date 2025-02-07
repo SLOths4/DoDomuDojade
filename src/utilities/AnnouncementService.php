@@ -13,16 +13,6 @@ use RuntimeException;
 /**
  * Class used for operations on table storing announcements in provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.2
- * @since 1.0.0
- *
- * @param Logger $loggerInstance Logger Monolog do logowania
- * @param PDO $pdoInstance Obiekt PDO dla operacji bazy danych
- * @param string $table_name Nazwa tabeli ogłoszeń (domyślnie: 'announcements')
- * @param string $date_format Format daty używany w bazie danych (domyślnie: 'Y-m-d')
- * @param int $max_title_length Maksymalna długość tytułu (domyślnie: 255 znaków)
- * @param int $max_text_length Maksymalna długość tekstu ogłoszenia (domyślnie: 10000 znaków)
- * @param array $allowed_fields Dozwolone pola w tabeli ogłoszeń (domyślnie: ['title', 'text', 'date', 'valid_until', 'user_id'])
  */
 class AnnouncementService{
     // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
@@ -73,9 +63,8 @@ class AnnouncementService{
     }
 
     /**
-     * Binds given parameters to given statement
-     * @param PDOStatement $stmt Statement
-     * @param array $params Parameters to be bound
+     * @param PDOStatement $stmt
+     * @param array $params
      * @return void
      */
     private function bindParams(PDOStatement $stmt, array $params): void {
@@ -114,9 +103,8 @@ class AnnouncementService{
 
 
     /**
-     * Executes given statement
-     * @param string $query Query to be executed
-     * @param array $params Parameters
+     * @param string $query
+     * @param array $params
      * @return array
      */
     private function executeStatement(string $query, array $params = []): array {
@@ -151,8 +139,7 @@ class AnnouncementService{
     }
 
     /**
-     * Checks if given string is a valid date format
-     * @param string $date Date to be checked
+     * @param string $date
      * @return bool
      */
     private function validateDate(string $date): bool {
@@ -174,7 +161,7 @@ class AnnouncementService{
 
     /**
      * Fetches all entries from provided announcements table
-     * @return array All entries of table storing announcements
+     * @return array
      */
     public function getAnnouncements(): array {
         try {
@@ -189,7 +176,7 @@ class AnnouncementService{
 
     /**
      * Fetches all valid announcements
-     * @return array All valid announcements entries
+     * @return array
      */
     public function getValidAnnouncements(): array{
         try {
@@ -212,10 +199,10 @@ class AnnouncementService{
 
     /**
      * Adds new announcement
-     * @param string $title Title for new announcement
-     * @param string $text Contents of new announcement
-     * @param string $validUntil Date until which announcement is valid
-     * @param int $userId ID of user creating announcement
+     * @param string $title
+     * @param string $text
+     * @param string $validUntil
+     * @param int $userId
      * @return bool
      */
     public function addAnnouncement(string $title, string $text, string $validUntil, int $userId): bool {
@@ -233,7 +220,6 @@ class AnnouncementService{
                 $this->logger->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
                 throw new InvalidArgumentException('Invalid date format');
             }
-
 
             $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id)
                       VALUES (:title, :text, :date, :valid_until, :user_id)";
@@ -261,7 +247,7 @@ class AnnouncementService{
     /**
      * Updated chosen filed of announcement with given value
      * @param int $announcementId
-     * @param string $field Field to be updated
+     * @param string $field
      * @param string $newValue
      * @param int $userId
      * @return bool
@@ -297,8 +283,8 @@ class AnnouncementService{
 
     /**
      * Deletes selected announcement
-     * @param int $announcementId ID of announcements to make changes to
-     * @param int $userId ID of user making a change
+     * @param int $announcementId
+     * @param int $userId
      * @return bool
      */
     public function deleteAnnouncement(int $announcementId, int $userId): bool {
@@ -323,8 +309,8 @@ class AnnouncementService{
 
     /**
      * Fetches announcements by id
-     * @param int $announcementId ID of announcements to search
-     * @return array Returns found announcements
+     * @param int $announcementId
+     * @return array
      */
     public function getAnnouncementById(int $announcementId): array {
         try {
@@ -350,22 +336,19 @@ class AnnouncementService{
 
     /**
      * Fetches announcements by provided title from database
-     * @param string $announcementTitle Title of announcements to search for
-     * @return array Returns found announcements
+     * @param string $announcementTitle
+     * @return array
      */
     public function getAnnouncementByTitle(string $announcementTitle): array {
         try {
             // query structure
             $query = "SELECT * FROM $this->table_name WHERE title LIKE :announcementTitle";
-            $stmt = $this->pdo->prepare($query);
-            // creating pattern for searching in database
+            $statement = $this->pdo->prepare($query);
             $pattern = '%' . $announcementTitle . '%';
-            // binding parameters
-            $stmt->bindParam(':announcementTitle', $pattern);
-            // executing query
-            $stmt->execute();
-            // returns all found announcements
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $statement->bindParam(':announcementTitle', $pattern);
+            $statement->execute();
+
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
