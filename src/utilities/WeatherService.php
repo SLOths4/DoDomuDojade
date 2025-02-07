@@ -2,6 +2,7 @@
 namespace src\utilities;
 
 use Exception;
+use Dotenv\Dotenv;
 use Monolog\Logger;
 use RuntimeException;
 use Symfony\Component\HttpClient\HttpClient;
@@ -27,11 +28,21 @@ class WeatherService {
         $this->httpClient = HttpClient::create();
         $this->config = require 'config.php';
         $this->logger = $logger;
-        $this->imgw_weather_url = $this->config['API'][0]['url'] ?? '';
-        $this->airly_url = $this->config['Airly']['AirlyEndpoint'] ?? '';
-        $this->airly_api_key = $this->config['Airly']['AirlyApiKey'] ?? '';
-        $this->airly_location_id = ltrim($this->config['Airly']['AirlyLocationId'] ?? '', '/');
-        $this->air_quality_url = $this->airly_url . urlencode($this->airly_location_id);
+
+        // TODO usunięcie danych z configu
+        $this->imgw_weather_url = $this->getEnvVariable('IMGW_WEATHER_URL') ?? $this->config['API'][0]['url'];
+        $this->airly_url = $this->getEnvVariable('AIRLY_ENDPOINT') ?? $this->config['Airly']['AirlyEndpoint'];
+        $this->airly_api_key = $this->getEnvVariable('AIRLY_API_KEY') ?? $this->config['Airly']['AirlyApiKey'] ?? '';
+        $this->airly_location_id = $this->getEnvVariable('AIRLY_LOCATION_ID') ?? ltrim($this->config['Airly']['AirlyLocationId'] ?? '', '/');
+        $this->air_quality_url =$this->getEnvVariable('AIRLY_URL') ?? $this->airly_url . urlencode($this->airly_location_id);
+    }
+
+    private function getEnvVariable(string $variableName): string {
+        $value = getenv($variableName);
+        if ($value === false) {
+            throw new RuntimeException("Environment variable $variableName is not set.");
+        }
+        return $value;
     }
 
     /**

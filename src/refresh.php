@@ -9,20 +9,23 @@ use src\utilities\WeatherService;
 use src\utilities\AnnouncementService;
 use src\utilities\CalendarService;
 use Monolog\Logger;
+use Dotenv\Dotenv;
 
 $config = require './config.php';
-// Logger init
+
 $logger = new Monolog\Logger('AppHandler');
 $logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', Monolog\Level::Debug));
-// PDO init
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+$ztmURL = $_ENV['DB_HOST'];
+
 $pdo = new PDO($config['Database']['db_host']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-// ztm URL
 $ztmURL = $config["API"][1]["url"];
-// ical URL
 $icalURL = $config['Calendar'][0]['url'];
 
-// Pobieramy nazwę funkcji z parametru GET
 $function = $_GET['function'] ?? 'default';
 
 switch ($function) {
@@ -193,6 +196,31 @@ function getCalendarData(Logger $logger, string $icalURL): false|string
                 ];
             }
             $logger->debug('Pomyślnie pobrano dane wydarzenia.');
+            return json_encode(['success' => true, 'data' => $response]);
+        } else {
+            $logger->warning('Brak dostępnych danych o wydarzeniach.');
+            return json_encode(['success' => false, 'message' => 'Brak danych o wydarzeniach.']);
+        }
+    } catch (Exception $e) {
+        $logger->error('Błąd podczas przetwarzania wydarzeń: ' . $e->getMessage());
+        return json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania wydarzeń: ' . $e->getMessage()]);
+    }
+}
+
+function getMetarData(Logger $logger): false|string {
+    try {
+        $logger->info('Rozpoczęto pobieranie danych METAR.');
+
+        $metarService = new \src\utilities\MetarService($logger);
+        $metarData = $metarService->getMetar('EPPO');
+        $logger->debug('Utworzono instancję metarService.');
+
+        if (!empty($metarData)) {
+            $response = [];
+            $response[] = [
+                    'metar' => htmlspecialchars($event['summary'] ?? ''),
+            ];
+            $logger->debug('Pomyślnie pobrano dane depeszy METAR.');
             return json_encode(['success' => true, 'data' => $response]);
         } else {
             $logger->warning('Brak dostępnych danych o wydarzeniach.');
