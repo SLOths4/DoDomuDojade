@@ -4,6 +4,7 @@ namespace src\utilities;
 
 use Exception;
 use Monolog\Logger;
+use RuntimeException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -23,13 +24,23 @@ class MetarService
 {
     private HttpClientInterface $httpClient;
     private string $metar_url;
+    private array $config; // TODO usunięcie configu
     private Logger $logger;
 
-    public function __construct(Logger $loggerInstance, string $metar_url)
+    public function __construct(Logger $loggerInstance)
     {
         $this->httpClient = HttpClient::create();
-        $this->metar_url = $metar_url;
+        $this->config = require '../config.php'; // TODO usunięcie configu
+        $this->metar_url =  $this->getEnvVariable("METAR_URL")  ?? $this->config['Metar']['metar_url']; // TODO usunięcie configu
         $this->logger = $loggerInstance;
+    }
+
+    private function getEnvVariable(string $variableName): string {
+        $value = getenv($variableName);
+        if ($value === false) {
+            throw new RuntimeException("Environment variable $variableName is not set.");
+        }
+        return $value;
     }
 
     /**
