@@ -44,7 +44,7 @@ function isModuleActive(string $module): bool
     global $pdo;
     global $logger;
     $moduleService = new ModuleService($pdo, $logger);
-    if ($moduleService->isModuleActive($module)) {
+    if ($moduleService->isModuleVisible($module)) {
         $logger->info("Moduł $module jest aktywny.");
         return true;
     }

@@ -9,6 +9,7 @@ use PDOStatement;
 
 class ModuleService
 {
+    // DB structure: id | module_name | is_active (0, 1) | start_time | end_time
     private PDO $pdo;
     private Logger $logger;
     private string $moduleTableName;
