@@ -9,6 +9,7 @@ use src\utilities\WeatherService;
 use src\utilities\AnnouncementService;
 use src\utilities\CalendarService;
 use src\utilities\MetarService;
+use src\utilities\ModuleService;
 use Monolog\Logger;
 use Dotenv\Dotenv;
 
@@ -22,9 +23,11 @@ $ztm_url = $_ENV['ZTM_URL'];
 $ical_url = $_ENV['CALENDAR_URL'];
 $metar_url = $_ENV['AIRPORT_URL'] . $_ENV['AIRPORT_CODE'];
 
+global $logger;
 $logger = new Monolog\Logger('AppHandler');
 $logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', Monolog\Level::Debug));
 
+global $pdo;
 if ($db_host && str_starts_with($db_host, 'sqlite:')) {
     $pdo = new PDO($db_host);
 } elseif (!empty($db_password) && !empty($db_username)) {
@@ -34,8 +37,20 @@ if ($db_host && str_starts_with($db_host, 'sqlite:')) {
 }
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
 $function = $_GET['function'] ?? 'default';
+
+function isModuleActive(string $module): bool
+{
+    global $pdo;
+    global $logger;
+    $moduleService = new ModuleService($pdo, $logger);
+    if ($moduleService->isModuleActive($module)) {
+        $logger->info("Moduł $module jest aktywny.");
+        return true;
+    }
+    $logger->info("Moduł $module jest nieaktywny.");
+    return false;
+}
 
 switch ($function) {
     case 'tramData':
@@ -62,6 +77,17 @@ function getTramData(Logger $logger, string $ztmURL): false|string
 {
     try {
         $logger->info('Rozpoczęto pobieranie danych tramwajowych.');
+
+        if (!isModuleActive('tram')) {
+            $logger->debug("Moduł tram nie jest aktywny.");
+            return json_encode(
+                [
+                    'success' => true,
+                    'is_active' => false,
+                    'data' => null
+                ]
+            );
+        }
 
         // Zdefiniowanie listy przystanków
         $stopsIdS = ['AWF73', 'AWF41', 'AWF42', 'AWF02', 'AWF01', 'AWF03']; // Lista ID przystanków
@@ -95,14 +121,14 @@ function getTramData(Logger $logger, string $ztmURL): false|string
 
         if (!empty($departures)) {
             $logger->debug('Pomyślnie pobrano dane tramwajowe.');
-            return json_encode(['success' => true, 'data' => $departures]);
+            return json_encode(['success' => true, 'is_active' => true, 'data' => $departures]);
         } else {
             $logger->warning('Brak danych o odjazdach dla wszystkich przystanków.');
-            return json_encode(['success' => false, 'message' => 'Brak danych o odjazdach dla wybranych przystanków.']);
+            return json_encode(['success' => false, 'is_active' => true, 'message' => 'Brak danych o odjazdach dla wybranych przystanków.']);
         }
     } catch (Exception $e) {
         $logger->error('Błąd podczas przetwarzania danych tramwajowych: ' . $e->getMessage());
-        return json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania danych tramwajowych: ' . $e->getMessage()]);
+        return json_encode(['success' => false, 'is_active' => true, 'message' => 'Błąd w trakcie przetwarzania danych tramwajowych: ' . $e->getMessage()]);
     }
 }
 

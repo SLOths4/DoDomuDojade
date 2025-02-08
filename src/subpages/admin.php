@@ -7,6 +7,7 @@ require_once '../../vendor/autoload.php';
 include('../utilities/AnnouncementService.php');
 include('../utilities/UserService.php');
 
+use Dotenv\Dotenv;
 use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
@@ -14,6 +15,9 @@ use Monolog\Logger;
 use PDO;
 use src\utilities\AnnouncementService;
 use src\utilities\UserService;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
@@ -25,9 +29,9 @@ if (!isset($_SESSION['user'])) {
  */
 function getPdo(): PDO
 {
-    $db_password = getenv('DB_PASSWORD');
-    $db_username = getenv('DB_USERNAME');
-    $db_host = getenv('DB_HOST');
+    $db_password = $_ENV['DB_PASSWORD'];
+    $db_username = $_ENV['DB_USERNAME'];
+    $db_host = $_ENV['DB_HOST'];
 
     if (!empty($db_password) and !empty($db_username)) {
         $pdo = new PDO($db_host, $db_username, $db_password);

@@ -77,7 +77,11 @@
                             $('#weather-container').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
                             return;
                         }
-                        console.log(response); // Debugging
+
+                        if (response.is_active===false) {
+                            $('#weather').remove();
+                            return;
+                        }
 
                         // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
                         if (response.success && response.data) {
@@ -121,6 +125,12 @@
                         } catch (e) {
                             console.error("Błąd parsowania JSON:", e);
                         }
+
+                        if (response.is_active===false) {
+                            $('#calendar).remove();
+                            return;
+                        }
+
                         if (response.success && Array.isArray(response.data)) {
                             let content = '';
                             response.data.forEach(cal => {
@@ -173,7 +183,14 @@
                         } catch (e) {
                             console.error("Błąd parsowania JSON:", e);
                         }
+
+                        if (response.is_active===false) {
+                            $('#tram').remove();
+                            return;
+                        }
+
                         if (response.success && Array.isArray(response.data)) {
+
                             let content = `
         <table>
             <thead>
@@ -237,6 +254,11 @@
                             response = typeof response === 'string' ? JSON.parse(response) : response;
                         } catch (e) {
                             console.error("Błąd parsowania JSON:", e);
+                        }
+
+                        if (response.is_active===false) {
+                            $('#announcements').remove();
+                            return;
                         }
 
                         if (response.success && Array.isArray(response.data)) {

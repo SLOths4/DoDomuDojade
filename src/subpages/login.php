@@ -13,6 +13,10 @@ use Monolog\Logger;
 use PDO;
 use src\utilities\LoginService;
 use src\utilities\UserService;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 
 $logger = new Logger('LoginHandler');
 $logger->pushHandler(new StreamHandler('../log/login.log', Level::Debug));
@@ -20,6 +24,21 @@ $logger->pushHandler(new StreamHandler('../log/login.log', Level::Debug));
 $_SESSION['session_error'] = null;
 $_SESSION['user'] = null;
 $_SESSION['user_id'] = null;
+
+function getPdo(): PDO
+{
+    $db_password = $_ENV['DB_PASSWORD'];
+    $db_username = $_ENV['DB_USERNAME'];
+    $db_host = $_ENV['DB_HOST'];
+
+    if (!empty($db_password) and !empty($db_username)) {
+        $pdo = new PDO($db_host, $db_username, $db_password);
+    } else {
+        $pdo = new PDO($db_host);
+    }
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $pdo;
+}
 
 $pdo = getPdo();
 
