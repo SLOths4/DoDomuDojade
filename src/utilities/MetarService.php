@@ -4,11 +4,8 @@ namespace src\utilities;
 
 use Exception;
 use Monolog\Logger;
-use RuntimeException;
-use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -17,58 +14,122 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Class used for fetching METAR data
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
- * @version 1.0.0
- * @since 1.0.0
  */
 class MetarService
 {
+    private const array ENV_VARIABLES = ['METAR_URL'];
     private HttpClientInterface $httpClient;
-    private string $metar_url;
-    private array $config; // TODO usunięcie configu
     private Logger $logger;
+    private string $metar_url;
+
 
     public function __construct(Logger $loggerInstance)
     {
         $this->httpClient = HttpClient::create();
-        $this->config = require '../config.php'; // TODO usunięcie configu
-        $this->metar_url =  $this->getEnvVariable("METAR_URL")  ?? $this->config['Metar']['metar_url']; // TODO usunięcie configu
+        $this->metar_url =  $this->getEnvVariable("METAR_URL");
         $this->logger = $loggerInstance;
     }
 
+    /**
+     * Pobiera zmienne z pliku .env
+     *
+     * @param string $variableName
+     *
+     * @return string
+     */
     private function getEnvVariable(string $variableName): string {
         $value = getenv($variableName);
+
         if ($value === false) {
-            throw new RuntimeException("Environment variable $variableName is not set.");
+            $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));
         }
+
         return $value;
     }
 
     /**
-     * Function fetches metar data
-     * @param string $AirportICAO ICAO code of airport e.g. EPPO
+     * Pobiera dane METAR dla danego kodu ICAO.
+     *
+     * @param string $airportIcaoCode
+     *
      * @return array
-     * @throws DecodingExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws Exception
      */
-    public function getMetar(string $AirportICAO): array {
-        if(empty($AirportICAO)) {
-            $this->logger->error("AirportICAO is empty");
-            throw new Exception("AirportICAO is empty");
+    public function getMetar(string $airportIcaoCode): array
+    {
+        if (!$this->isValidIcaoCode($airportIcaoCode)) {
+            $this->logger->error("Invalid ICAO code provided.");
+            return [];
         }
-        try {
-            $url = $this->metar_url . $AirportICAO;
-            $response = $this->httpClient->request('GET', $url);
 
-            return $response->toArray();
+
+        try {
+            $url = $this->metar_url . $airportIcaoCode;
+            $xmlContent = $this->fetchData($url);
+            return $this->extractMetarData($xmlContent);
         } catch (Exception $e) {
             $this->logger->error('Error occurred while fetching METAR data: ' . $e->getMessage());
-            throw new Exception("Error occurred while fetching METAR data: " . $e->getMessage());
-        } catch (TransportExceptionInterface $e) {
-            $this->logger->error('Transport Error occurred while fetching METAR data: ' . $e->getMessage());
-            throw new TransportException("Transport Error occurred while fetching METAR data: " . $e->getMessage());
         }
+
+        return [];
     }
+
+    /**
+     * Ekstrahuje dane METAR z ciągu XML i konwertuje je do tablicy.
+     *
+     * @param string $xmlString Surowy ciąg XML pobrany z API
+     *
+     * @return array Zmapowane dane METAR
+     */
+    private function extractMetarData(string $xmlString): array
+    {
+        $xml = simplexml_load_string($xmlString, "SimpleXMLElement", LIBXML_NOCDATA);
+        if ($xml === false) {
+            $this->logger->error("Nie udało się sparsować danych XML");
+            return [];
+        }
+
+        $jsonEncodedData = json_encode($xml);
+        $arrayData = json_decode($jsonEncodedData, true);
+
+        $item = $arrayData['channel']['item'] ?? [];
+
+        return [
+            'title'       => $item['title'] ?? null,
+            'link'        => $item['link'] ?? null,
+            'description' => trim($item['description'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param string $icaoCode
+     * @return bool
+     */
+    private function isValidIcaoCode(string $icaoCode): bool
+    {
+        return !empty($icaoCode) && preg_match('/^[A-Z]{4}$/', $icaoCode);
+    }
+
+    /**
+     * Wykonuje zapytanie GET pod dany URL i zwraca wynik jako tablicę.
+     *
+     * @param string $url
+     * @return string
+     */
+    private function fetchData(string $url): string
+    {
+        try {
+            $response = $this->httpClient->request('GET', $url);
+            return $response->getContent();
+        } catch (
+        ClientExceptionInterface |
+        RedirectionExceptionInterface |
+        ServerExceptionInterface |
+        TransportExceptionInterface $e
+        ) {
+            $this->logger->error("An error occurred while fetching data from $url: " . $e->getMessage());
+        }
+
+        return '';
+    }
+
 }

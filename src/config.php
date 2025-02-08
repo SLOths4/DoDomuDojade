@@ -1,5 +1,4 @@
 <?php /** @noinspection SpellCheckingInspection */
-$project_directory = dirname(__DIR__);
 return [
     "Airly" => [
         "AirlyApiKey" => "A4gV88G4CKrt7J79a9t6Nwn5VHRvGKC4",
@@ -25,9 +24,5 @@ return [
     ],
     "Database" => [
         "db_host" => "sqlite:" . realpath(__DIR__ . '/../database.sqlite'), //ściezka do bazy danych
-        "announcement_table_name" => "announcements",
-        "users_table_name" => "users",
-        "allowed_fields" => ['title', 'text', 'date','valid_until', 'user_id'],
-        "date_format" => "Y-m-d"
     ]
 ];

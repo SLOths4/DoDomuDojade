@@ -13,22 +13,26 @@ use Monolog\Logger;
 use PDO;
 use src\utilities\LoginService;
 use src\utilities\UserService;
-// inicjalizacja loggera
+
 $logger = new Logger('LoginHandler');
 $logger->pushHandler(new StreamHandler('../log/login.log', Level::Debug));
-// inicjalizacja zmiennych sesji
+
 $_SESSION['session_error'] = null;
 $_SESSION['user'] = null;
 $_SESSION['user_id'] = null;
 
-$config = require '../config.php';
-$db_host = $config['Database']['db_host'];
-// inicjalizacja PDO
-$pdo = new PDO($db_host);
+$db_password = getenv('DB_PASSWORD');
+$db_username = getenv('DB_USERNAME');
+$db_host = getenv('DB_HOST');
+
+if (!empty($db_password) and !empty($db_username)) {
+    $pdo = new PDO($db_host, $db_username, $db_password);
+} else {
+    $pdo = new PDO($db_host);
+}
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-// inicjalizacja LoginService
+
 $loginService = new LoginService($logger, $pdo);
-// inicjalizacja UserService
 $userService = new UserService($logger, $pdo);
 
 if (!isset($_SESSION['csrf_token'])) {

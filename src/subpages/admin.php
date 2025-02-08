@@ -20,20 +20,25 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$config = require '../config.php';
-$db_host = $config['Database']['db_host'];
-// inicjalizacja zmiennych sesji
+$db_password = getenv('DB_PASSWORD');
+$db_username = getenv('DB_USERNAME');
+$db_host = getenv('DB_HOST');
+
+if (!empty($db_password) and !empty($db_username)) {
+    $pdo = new PDO($db_host, $db_username, $db_password);
+} else {
+    $pdo = new PDO($db_host);
+}
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 $user = $_SESSION['user'];
 $user_id = (int)$_SESSION['user_id'];
-// inicjalizacja loggera
+
 $logger = new Logger('AdminHandler');
 $logger->pushHandler(new StreamHandler('../log/admin.log', Level::Debug));
-// inicjalizacja PDO
-$pdo = new PDO($db_host);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-// inicjalizacja announcementService
+
+
 $announcementService = new AnnouncementService($logger, $pdo);
-// inicjalizacja userService
 $userService = new UserService($logger, $pdo);
 // obsługa usuwania ogłoszeń
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {

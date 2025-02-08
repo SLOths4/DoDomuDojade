@@ -27,13 +27,13 @@ class AnnouncementService{
     /**
      * Konstruktor klasy AnnouncementService
      *
-     * @param Logger $loggerInstance Logger Monolog
-     * @param PDO $pdoInstance Obiekt PDO
-     * @param string $table_name Nazwa tabeli (domyślnie: 'announcements')
-     * @param string $date_format Format daty (domyślnie: 'Y-m-d')
-     * @param int $max_title_length Maksymalna długość tytułu (domyślnie: 255 znaków)
-     * @param int $max_text_length Maksymalna długość tekstu ogłoszenia (domyślnie: 10000 znaków)
-     * @param array $allowed_fields Dozwolone kolumny w zapytaniach SQL (domyślnie: ['title', 'text', 'date', 'valid_until', 'user_id'])
+     * @param Logger $loggerInstance
+     * @param PDO $pdoInstance
+     * @param string $table_name
+     * @param string $date_format
+     * @param int $max_title_length
+     * @param int $max_text_length
+     * @param array $allowed_fields
      */
     public function __construct(Logger $loggerInstance, PDO $pdoInstance, string $table_name = 'announcements', string $date_format = 'Y-m-d', int $max_title_length = 255, int $max_text_length = 10000, array $allowed_fields = ['title', 'text', 'date','valid_until', 'user_id']) {
         $this->logger = $loggerInstance;

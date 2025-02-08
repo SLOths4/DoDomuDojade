@@ -12,24 +12,32 @@ use src\utilities\MetarService;
 use Monolog\Logger;
 use Dotenv\Dotenv;
 
-$config = require './config.php'; // TODO usunięcie configu
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+$db_password = getenv('DB_PASSWORD');
+$db_username = getenv('DB_USERNAME');
+$db_host = getenv('DB_HOST');
+$ztm_url = getenv('ZTM_URL');
+$ical_url = getenv('CALENDAR_URL');
+$metar_url = getenv('AIRPORT_URL') . getenv('AIRPORT_CODE');
 
 $logger = new Monolog\Logger('AppHandler');
 $logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', Monolog\Level::Debug));
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-$pdo = new PDO($config['Database']['db_host']);
+if (!empty($db_password) and !empty($db_username)) {
+    $pdo = new PDO($db_host, $db_username, $db_password);
+} else {
+    $pdo = new PDO($db_host);
+}
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$ztmURL = $config["API"][1]["url"];
-$icalURL = $config['Calendar'][0]['url'];
+
 
 $function = $_GET['function'] ?? 'default';
 
 switch ($function) {
     case 'tramData':
-        echo json_encode(getTramData($logger, $ztmURL));
+        echo json_encode(getTramData($logger, $ztm_url));
         break;
     case 'announcementsData':
         echo json_encode(getAnnouncementsData($logger, $pdo));
@@ -38,11 +46,11 @@ switch ($function) {
         echo json_encode(getWeatherData($logger));
         break;
     case 'calendarData':
-        echo json_encode(getCalendarData($logger, $icalURL));
+        echo json_encode(getCalendarData($logger, $ical_url));
         break;
     case 'metarData':
-            echo json_encode(getMetarData($logger));
-            break;
+        echo json_encode(getMetarData($logger));
+        break;
     default:
         echo json_encode(['error' => 'Nieznana funkcja']);
         break;
@@ -149,7 +157,7 @@ function getWeatherData(Logger $logger): false|string
 
         $weatherService = new WeatherService($logger);
         $logger->debug('Utworzono instancję WeatherService.');
-        $weatherServiceResponse = $weatherService->Weather();
+        $weatherServiceResponse = $weatherService->getWeather();
         if (empty($weatherServiceResponse)) {
             $logger->warning('Brak danych pogodowych.');
             return json_encode([
@@ -182,7 +190,6 @@ function getCalendarData(Logger $logger, string $icalURL): false|string
     try {
         $logger->info('Rozpoczęto pobieranie wydarzeń.');
 
-        // Tworzenie usługi dla calendarwajów
         $calendarService = new CalendarService($logger, $icalURL);
         $calendarServiceResponse = $calendarService->get_events();
         $logger->debug('Utworzono instancję calendarService.');
