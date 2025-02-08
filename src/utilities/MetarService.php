@@ -38,7 +38,7 @@ class MetarService
      * @return string
      */
     private function getEnvVariable(string $variableName): string {
-        $value = getenv($variableName);
+        $value = $_ENV[$variableName];
 
         if ($value === false) {
             $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));

@@ -20,16 +20,25 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$db_password = getenv('DB_PASSWORD');
-$db_username = getenv('DB_USERNAME');
-$db_host = getenv('DB_HOST');
+/**
+ * @return PDO
+ */
+function getPdo(): PDO
+{
+    $db_password = getenv('DB_PASSWORD');
+    $db_username = getenv('DB_USERNAME');
+    $db_host = getenv('DB_HOST');
 
-if (!empty($db_password) and !empty($db_username)) {
-    $pdo = new PDO($db_host, $db_username, $db_password);
-} else {
-    $pdo = new PDO($db_host);
+    if (!empty($db_password) and !empty($db_username)) {
+        $pdo = new PDO($db_host, $db_username, $db_password);
+    } else {
+        $pdo = new PDO($db_host);
+    }
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $pdo;
 }
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$pdo = getPdo();
 
 $user = $_SESSION['user'];
 $user_id = (int)$_SESSION['user_id'];
@@ -229,7 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" action="admin.php" id="display-valid-announcements-only">
         <label>
-            <!-- Jeśli w sesji jest zapisane, że checkbox ma być włączony, to dodawany jest atrybut "checked" -->
             <input type="checkbox"
                    name="display-valid-announcements-only"
                    onchange="this.form.submit();"
@@ -283,6 +291,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<form method='POST' onsubmit='return confirm(\"Are you sure you want to delete this announcement?\");'>";
         echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
         echo "<input type='hidden' name='announcement_id' value='" . htmlspecialchars($announcement['id']) . "'>";
+        echo "<input type='hidden' name='csrf_token' value=' " . htmlspecialchars($_SESSION['csrf_token']) . "'>";
+        echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($_SESSION['user_id']) . "'>";
         echo "<button type='submit' name='delete_announcement'>Usuń</button>";
         echo "</form>";
         // Edit form
@@ -293,6 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<input type='date' name='valid_until' placeholder='Valid until'>";
         echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
         echo "<input type='hidden' name='announcement_id' value='" . htmlspecialchars($announcement['id']) . "'>";
+        echo "<input type='hidden' name='csrf_token' value=' " . htmlspecialchars($_SESSION['csrf_token']) . "'>";
+        echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($_SESSION['user_id']) . "'>";
         echo "<button type='submit' name='edit_announcement'>Edytuj</button>";
         echo "</form>";
         // Div close tag

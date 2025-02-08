@@ -12,23 +12,25 @@ use src\utilities\MetarService;
 use Monolog\Logger;
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
 
-$db_password = getenv('DB_PASSWORD');
-$db_username = getenv('DB_USERNAME');
-$db_host = getenv('DB_HOST');
-$ztm_url = getenv('ZTM_URL');
-$ical_url = getenv('CALENDAR_URL');
-$metar_url = getenv('AIRPORT_URL') . getenv('AIRPORT_CODE');
+$db_host = $_ENV['DB_HOST'] ?? null;
+$db_username = $_ENV['DB_USERNAME'] ?? null;
+$db_password = $_ENV['DB_PASSWORD'] ?? null;
+$ztm_url = $_ENV['ZTM_URL'];
+$ical_url = $_ENV['CALENDAR_URL'];
+$metar_url = $_ENV['AIRPORT_URL'] . $_ENV['AIRPORT_CODE'];
 
 $logger = new Monolog\Logger('AppHandler');
 $logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', Monolog\Level::Debug));
 
-if (!empty($db_password) and !empty($db_username)) {
+if ($db_host && str_starts_with($db_host, 'sqlite:')) {
+    $pdo = new PDO($db_host);
+} elseif (!empty($db_password) && !empty($db_username)) {
     $pdo = new PDO($db_host, $db_username, $db_password);
 } else {
-    $pdo = new PDO($db_host);
+    throw new RuntimeException('Nieprawidłowa konfiguracja bazy danych.');
 }
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
