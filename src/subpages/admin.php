@@ -14,6 +14,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use PDO;
 use src\utilities\AnnouncementService;
+use src\utilities\ModuleService;
 use src\utilities\UserService;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
@@ -53,6 +54,7 @@ $logger->pushHandler(new StreamHandler('../log/admin.log', Level::Debug));
 
 $announcementService = new AnnouncementService($logger, $pdo);
 $userService = new UserService($logger, $pdo);
+$moduleService = new ModuleService($pdo, $logger);
 // obsługa usuwania ogłoszeń
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {
     $logger->debug("delete_announcement request received");
@@ -192,6 +194,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $logger->error("Nieprawidłowy token CSRF");
+        die('Nieprawidłowy token CSRF');
+    }
+
+    if (isset($_POST['enable_module'])) {
+        $moduleName = $_POST['module_name'];
+
+        try {
+            $moduleService->toggleModule($moduleName, true);
+            $logger->info("Moduł {$moduleName} został włączony");
+            header("Location: admin.php?module_enabled={$moduleName}");
+            exit;
+        } catch (Exception $e) {
+            $logger->error("Błąd przy włączaniu modułu: {$e->getMessage()}");
+            header("Location: admin.php?module_error=enable_failed");
+            exit;
+        }
+    }
+
+    if (isset($_POST['disable_module'])) {
+        $moduleName = $_POST['module_name'];
+
+        try {
+            $moduleService->toggleModule($moduleName, false);
+            $logger->info("Moduł {$moduleName} został wyłączony");
+            header("Location: admin.php?module_disabled={$moduleName}");
+            exit;
+        } catch (Exception $e) {
+            $logger->error("Błąd przy wyłączaniu modułu: {$e->getMessage()}");
+            header("Location: admin.php?module_error=disable_failed");
+            exit;
+        }
+    }
+}
 
 
 ?>
@@ -356,6 +394,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ?>
 </div>
 
+<div id="modules">
+    <?php
+    $modules = $moduleService->getModules();
+
+    foreach ($modules as $module) {
+        echo "<div id='module'>";
+        echo "<h3>" . htmlspecialchars($module['module_name']) . "</h3><br>";
+        echo "Status: " . ($module['is_active'] ? "Enabled" : "Disabled") . "<br>";
+        echo "<form method='POST' action='admin.php'>";
+        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
+        echo "<input type='hidden' name='module_name' value='" . htmlspecialchars($module['module_name']) . "'>";
+        echo "<input type='hidden' name='module_id' value='" . htmlspecialchars($module['id']) . "'>";
+        if ($module['is_active']) {
+            echo "<button type='submit' name='disable_module'>Disable</button>";
+        } else {
+            echo "<button type='submit' name='enable_module'>Enable</button>";
+        }
+        echo "</form>";
+        echo "</div>";
+    }
+    ?>
+</div>
 <!-- IMPORT FOOTER -->
 <?php include('../functions/footer.php'); ?>
 

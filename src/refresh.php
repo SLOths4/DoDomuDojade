@@ -52,6 +52,11 @@ function isModuleActive(string $module): bool
     return false;
 }
 
+function getVersion(): string
+{
+    return trim(shell_exec('git describe --tags --abbrev=0'));
+}
+
 switch ($function) {
     case 'tramData':
         echo json_encode(getTramData($logger, $ztm_url));
@@ -67,6 +72,9 @@ switch ($function) {
         break;
     case 'metarData':
         echo json_encode(getMetarData($logger));
+        break;
+    case 'getVersion':
+        echo json_encode(['version' => getVersion()]);
         break;
     default:
         echo json_encode(['error' => 'Nieznana funkcja']);
@@ -135,6 +143,18 @@ function getTramData(Logger $logger, string $ztmURL): false|string
 function getAnnouncementsData(Logger $logger, PDO $pdo): false|string
 {
     try {
+
+        if (!isModuleActive('announcement')) {
+            $logger->debug("Moduł announcement nie jest aktywny.");
+            return json_encode(
+                [
+                    'success' => true,
+                    'is_active' => false,
+                    'data' => null
+                ]
+            );
+        }
+
         $logger->info('Rozpoczęto pobieranie danych ogłoszeń.');
         $announcementService = new AnnouncementService($logger, $pdo);
         $logger->debug('Utworzono instancję AnnouncementService.');
@@ -183,6 +203,17 @@ function getWeatherData(Logger $logger): false|string
     try {
         $logger->info('Rozpoczęto przetwarzanie danych pogodowych.');
 
+        if (!isModuleActive('weather')) {
+            $logger->debug("Moduł weather nie jest aktywny.");
+            return json_encode(
+                [
+                    'success' => true,
+                    'is_active' => false,
+                    'data' => null
+                ]
+            );
+        }
+
         $weatherService = new WeatherService($logger);
         $logger->debug('Utworzono instancję WeatherService.');
         $weatherServiceResponse = $weatherService->getWeather();
@@ -217,6 +248,17 @@ function getCalendarData(Logger $logger, string $icalURL): false|string
 {
     try {
         $logger->info('Rozpoczęto pobieranie wydarzeń.');
+
+        if (!isModuleActive('calendar')) {
+            $logger->debug("Moduł calendar nie jest aktywny.");
+            return json_encode(
+                [
+                    'success' => true,
+                    'is_active' => false,
+                    'data' => null
+                ]
+            );
+        }
 
         $calendarService = new CalendarService($logger, $icalURL);
         $calendarServiceResponse = $calendarService->get_events();

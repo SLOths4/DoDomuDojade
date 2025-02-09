@@ -17,44 +17,82 @@
 
     ?>
 
-    <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
+    <div class="div">
+        <div id="version-container" class="div">
+            <script>
+                function getVersion() {
+                    $.ajax({
+                        url: 'refresh.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { function: 'getVersion' },
+                        success: function(response) {
+                            try {
+                                // Jeśli odpowiedź zwrócona jako string, parsujemy na JSON
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                                $('#version-container').html('<p>Błąd danych wersji (nie można przetworzyć odpowiedzi).</p>');
+                                return;
+                            }
 
-    <div id="time" class="div">
-        <script>
-            function updateClock() {
-                const timeElement = document.getElementById('time');
-                if (!timeElement) return;
+                            // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
+                            if (response.version) {
+                                let version = response.version;
+                                $('#version-container').html(version);
+                            } else {
+                                $('#version-container').html('<p>Błąd: Brak danych wersji</p>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#version-container').html('<p>Błąd ładowania danych wersji.</p>');
+                        }
+                    });
+                }
 
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                const seconds = now.getSeconds().toString().padStart(2, '0');
+                setInterval(getVersion, 900000)
+                getVersion();
+            </script>
+        </div>
+        <div id="date" class="div">
+            <script>
+                function updateDate() {
+                    const dateElement = document.getElementById('date');
+                    if (!dateElement) return;
 
-                timeElement.innerHTML = `<h2><i class="fa-solid fa-clock"></i> ${hours}:${minutes}:${seconds}</h2>`;
-            }
+                    const now = new Date();
+                    const day = now.getDate().toString().padStart(2, '0');
+                    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                    const year = now.getFullYear();
 
-            // Aktualizacja zegara co 1 sekundę
-            setInterval(updateClock, 1000);
-            updateClock(); // Wywołanie na starcie
-        </script>
-    </div>
-    <div id="date" class="div">
-        <script>
-            function updateDate() {
-                const dateElement = document.getElementById('date');
-                if (!dateElement) return;
+                    dateElement.innerHTML = `<h2><i class="fa-solid fa-calendar"></i> ${day}.${month}.${year}</h2>`;
+                }
 
-                const now = new Date();
-                const day = now.getDate().toString().padStart(2, '0');
-                const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                const year = now.getFullYear();
+                setInterval(updateDate, 1000);
+                updateDate();
+            </script>
+        </div>
+        <div id="time" class="div">
+            <script>
+                function updateClock() {
+                    const timeElement = document.getElementById('time');
+                    if (!timeElement) return;
 
-                dateElement.innerHTML = `<h2><i class="fa-solid fa-calendar"></i> ${day}.${month}.${year}</h2>`;
-            }
+                    const now = new Date();
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
 
-            setInterval(updateDate, 1000);
-            updateDate();
-        </script>
+                    timeElement.innerHTML = `<h2><i class="fa-solid fa-clock"></i> ${hours}:${minutes}:${seconds}</h2>`;
+                }
+
+                // Aktualizacja zegara co 1 sekundę
+                setInterval(updateClock, 1000);
+                updateClock(); // Wywołanie na starcie
+            </script>
+        </div>
+        <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
     </div>
 
     <!-- IMPORT WEATHER MODULE -->
@@ -155,7 +193,7 @@
                     },
                     error: function(xhr, status, error) {
                         console.error("Błąd ładowania AJAX: ", error);
-                        $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                        $('#calendar-container').html('<p>Błąd ładowania danych kalendarza.</p>');
                     }
                 });
             }
