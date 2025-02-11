@@ -198,8 +198,8 @@
                 });
             }
             //Odświeżanie co minutę
-            setInterval(loadCalendarData, 60000);
-            loadTramData();
+            setInterval(loadCalendarData, 60000); // 1 min
+            loadCalendarData();
         </script>
   </div>
 

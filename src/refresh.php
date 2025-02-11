@@ -244,6 +244,7 @@ function getWeatherData(Logger $logger): false|string
         ]);
     }
 }
+
 function getCalendarData(Logger $logger, string $icalURL): false|string
 {
     try {
