@@ -95,7 +95,56 @@
         <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
     </div>
 
-    <!-- IMPORT WEATHER MODULE -->
+    <div id="countdown" class="div">
+        <h2>Odliczanie</h2>
+        <script>
+            function loadCountdownData() {
+
+                $.ajax({
+                    url: 'refresh.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { function: 'countdownData' },
+                    success: function(response) {
+                        try {
+                            response = typeof response === 'string' ? JSON.parse(response) : response;
+                        } catch (e) {
+                            console.error("Błąd parsowania JSON:", e);
+                        }
+
+                        if (response.is_active===false) {
+                            $('#countdown').remove();
+                            return;
+                        }
+
+
+                        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                            let item = response.data[0];
+                            let content = '';
+                            let timestamp = parseInt(item.count_to, 10);
+
+                            content += `<p>Title: ${item.title}</p>`;
+                            content += `<p>Kontent: ${new Date(timestamp)}</p>`;
+
+                            $('#countdown').html(content);
+
+                        } else {
+                            console.error("Brak danych do wyświetlenia:", response);
+                            $('#countdown').html('<p>Błąd: Brak danych</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Błąd ładowania AJAX: ", error);
+                        $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
+                    }
+                });
+            }
+
+            setInterval(loadCountdownData, 60000); // 1 min
+            loadCountdownData();
+        </script>
+    </div>
+
     <div id="weather" class="div">
         <h2>Dzisiejsza pogoda</h2>
         <div id="weather-container">Ładowanie danych...</div>
@@ -165,7 +214,7 @@
                         }
 
                         if (response.is_active===false) {
-                            $('#calendar).remove();
+                            $('#calendar').remove();
                             return;
                         }
 
