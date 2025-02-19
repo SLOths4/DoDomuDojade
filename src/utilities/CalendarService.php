@@ -21,6 +21,8 @@ class CalendarService {
     }
 
     /**
+     * iCal data fetching function
+     * @return array
      * @throws Exception
      */
     public function get_events(): array
@@ -46,7 +48,11 @@ class CalendarService {
         // Parse the iCal data
         return $this->parse_ical_data($icalData);
     }
-
+    /**
+     * iCal events extracting function
+     * @param array $iCalData
+     * @return array
+     */
     private function parse_ical_data($icalData): array
     {
         $events = [];
@@ -64,7 +70,14 @@ class CalendarService {
         });
         return $events;
     }
-    
+    /**
+     * iCal event processing function
+     * @param mixed $eventData
+     * @param \DateTime $currentDate
+     * @param array $events
+     * @return void
+     * @throws Exception
+     */
     private function process_event($eventData, &$events, $currentDate): void
     {
         $event = $this->extract_event_data($eventData);
@@ -90,7 +103,11 @@ class CalendarService {
             $this->logger->error("Date parsing failed: " . $e->getMessage());
         }
     }
-    
+    /**
+     * iCal event extracting function
+     * @param string $eventData
+     * @return array $event
+     */
     private function extract_event_data($eventData): array
     {
         $event = [];
@@ -117,7 +134,11 @@ class CalendarService {
     
         return $event;
     }
-    
+    /**
+     * Event date formatting function
+     * @param mixed $event
+     * @return void
+     */
     private function format_event_dates(&$event): void
     {
         $timezone = strlen($event['start']) < 17;
@@ -146,18 +167,36 @@ class CalendarService {
         $event['start'] = sprintf("%02d.%s - %s.%s.%s", $startHour, $startMinutes, $startDay, $startMonth, $startYear);
         $event['end'] = sprintf("%02d.%s - %s.%s.%s", $endHour, $endMinutes, $endDay, $endMonth, $endYear);
     }
-    
+    /**
+     * iCal event processing function
+     * @param \DateTime $eventDate
+     * @param \DateTime $currentDate
+     * @return int $days
+     */
     private function calculate_days_until_event($eventDate, $currentDate) {
         $interval = $currentDate->diff($eventDate);
         return $interval->days;
     }
-    
+    /**
+     * Checking if the event is happening in 7 days function
+     * @param \DateTime $eventDate
+     * @param \DateTime $currentDate
+     * @param int $daysUntilEvent
+     * @return bool
+     */
     private function should_include_event($eventDate, $currentDate, $daysUntilEvent): bool
     {
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
     
-
+    /**
+     * Recurring events generating function
+     * @param array $event
+     * @param array $events 
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return void
+     */
     public function generateRecurringEvents(&$events, $event, $startDate, $endDate): void
     {
         $rruleParts = [];
