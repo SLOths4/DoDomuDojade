@@ -123,9 +123,32 @@
                             let content = '';
                             let timestamp = parseInt(item.count_to, 10);
 
-                            content += `<p>Title: ${item.title}</p>`;
-                            content += `<p>Kontent: ${new Date(timestamp)}</p>`;
+                            //content += `<p>Title: ${item.title}</p>`;
+                            //content += `<p>Kontent: ${new Date(timestamp)}</p>`;
 
+                            // data do której odliczamy
+                            var countDownDate = new Date(timestamp).getTime();
+
+                            function countdown() {
+
+                                // Get today's date and time
+                                var now = new Date().getTime();
+
+                                // Find the distance between now and the count-down date
+                                var distance = countDownDate - now;
+
+                                // Time calculations for days, hours, minutes and seconds
+                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                var hours = Math.floor(distance / (1000 * 60 * 60));
+                                var minutes = Math.floor(distance / 1000 / 60);
+                                var seconds = Math.floor(distance / 1000);
+                                var miliseconds = Math.floor(distance);
+
+                                // Output the result in an element with id="demo"
+                                content += `<p>Czas do ${item.title} wynosi ${seconds} sekund.</p>`
+
+                            };
+                            countdown();
                             $('#countdown').html(content);
 
                         } else {
@@ -140,7 +163,7 @@
                 });
             }
 
-            setInterval(loadCountdownData, 60000); // 1 min
+            setInterval(loadCountdownData, 1000); // 1 second
             loadCountdownData();
         </script>
     </div>
