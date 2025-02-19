@@ -300,7 +300,7 @@ function getMetarData(Logger $logger): false|string {
 
         if (!empty($metarData)) {
             $response[] = [
-                    'metar' => htmlspecialchars(htmlspecialchars((string)$metarData) ?? ''),
+                    'metar' => htmlspecialchars(htmlspecialchars($metarData) ?? ''),
             ];
             $logger->debug('Pomyślnie pobrano dane depeszy METAR.');
             return json_encode(['success' => true, 'data' => $response]);

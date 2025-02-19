@@ -124,7 +124,7 @@
                             let timestamp = parseInt(item.count_to, 10);
 
                             content += `<p>Title: ${item.title}</p>`;
-                            content += `<p>Kontent: ${new Date(timestamp)}</p>`;
+                            content += `<p>Kontent: ${new Date(timestamp)}</p>`
 
                             $('#countdown').html(content);
 
