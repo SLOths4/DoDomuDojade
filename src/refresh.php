@@ -3,6 +3,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use src\utilities\CountdownService;
 use src\utilities\UserService;
 use src\utilities\TramService;
 use src\utilities\WeatherService;
@@ -69,6 +70,9 @@ switch ($function) {
         break;
     case 'calendarData':
         echo json_encode(getCalendarData($logger, $ical_url));
+        break;
+    case 'countdownData':
+        echo json_encode(getCountdownData($logger, $pdo));
         break;
     case 'metarData':
         echo json_encode(getMetarData($logger));
@@ -296,7 +300,7 @@ function getMetarData(Logger $logger): false|string {
 
         if (!empty($metarData)) {
             $response[] = [
-                    'metar' => htmlspecialchars(htmlspecialchars((string)$metarData) ?? ''),
+                    'metar' => htmlspecialchars(htmlspecialchars($metarData) ?? ''),
             ];
             $logger->debug('Pomyślnie pobrano dane depeszy METAR.');
             return json_encode(['success' => true, 'data' => $response]);
@@ -307,5 +311,42 @@ function getMetarData(Logger $logger): false|string {
     } catch (Exception $e) {
         $logger->error('Błąd podczas przetwarzania depeszy METAR: ' . $e->getMessage());
         return json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania przetwarzania depeszy METAR: ' . $e->getMessage()]);
+    }
+}
+
+function getCountdownData(Logger $logger, PDO $PDO): false|string
+{
+    try {
+        $logger->info('Rozpoczęto pobieranie danych odliczania.');
+
+        if (!isModuleActive('countdown')) {
+            $logger->debug("Moduł odliczania nie jest aktywny.");
+            return json_encode(
+                [
+                    'success' => true,
+                    'is_active' => false,
+                    'data' => null
+                ]
+            );
+        }
+
+        $countdownService = new CountdownService($logger, $PDO);
+        $logger->debug('Utworzono instancję countdownService.');
+        $currentCountdown = $countdownService->getCurrentCountdown();
+
+        if (!empty($currentCountdown)) {
+            $response[] = [
+                'title' => htmlspecialchars($currentCountdown['title']),
+                'count_to' => htmlspecialchars($currentCountdown['count_to'])
+            ];
+            $logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
+            return json_encode(['success' => true, 'data' => $response]);
+        } else {
+            $logger->warning('Brak dostępnych danych odliczania.');
+            return json_encode(['success' => false, 'message' => 'Brak dostępnych danych odliczania.']);
+        }
+    } catch (Exception $e) {
+        $logger->error('Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage());
+        return json_encode(['success' => false, 'message' => 'Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage()]);
     }
 }
