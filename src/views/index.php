@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>DoDomuDojadę</title>
-    <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../../public/assets/resources/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="../../public/assets/styles/style.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <?php
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../../vendor/autoload.php';
 
     ?>
 
@@ -92,7 +92,7 @@
                 updateClock(); // Wywołanie na starcie
             </script>
         </div>
-        <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
+        <div class="div"><img src="../../public/assets/resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
     </div>
 
     <div id="countdown" class="div">
@@ -202,7 +202,7 @@
             function loadCalendarData() {
 
                 $.ajax({
-                    url: 'refresh.php',
+                    url: 'app/../refresh.php',
                     type: 'GET',
                     dataType: 'json',
                     data: { function: 'calendarData' },
@@ -258,7 +258,7 @@
         <script>
             function loadTramData() {
                 $.ajax({
-                    url: 'refresh.php',
+                    url: '../app/refresh.php',
                     type: 'GET',
                     dataType: 'json',
                     data: { function: 'tramData' },
@@ -379,7 +379,6 @@
                 });
             }
 
-            // Odświeżanie danych co minutę
             setInterval(loadAnnouncements, 60000);
             loadAnnouncements();
         </script>

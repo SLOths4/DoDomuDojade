@@ -1,6 +1,6 @@
 {
     "name": "sloths4/dodomu-dojade",
-    "description": "This is DoDomuDojadę app repository.",
+    "description": "This is DoDomuDojadę src repository.",
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",

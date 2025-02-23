@@ -1,49 +1,21 @@
 <?php
 
-namespace src\utilities;
+namespace src\models;
 
 use Monolog\Logger;
-use PDO;
-use PDOException;
-use PDOStatement;
+use src\core\Model;
 
-class ModuleService
+class ModuleModel extends Model
 {
     // DB structure: id | module_name | is_active (0, 1) | start_time | end_time
-    private PDO $pdo;
     private Logger $logger;
     private string $moduleTableName;
 
-    public function __construct(PDO $pdo, Logger $logger)
+    public function __construct()
     {
-        $this->pdo = $pdo;
-        $this->logger = $logger;
-        $this->moduleTableName = getenv('MODULE_TABLE_NAME') ?: 'modules';
-        $this->logger->info('Usługa ModuleService została zainicjalizowana z nazwą tabeli: ' . $this->moduleTableName);
-    }
-
-    /**
-     * Metoda pomocnicza do wykonywania zapytań.
-     *
-     * @param string $query
-     * @param array $params
-     * @return PDOStatement
-     * @throws PDOException
-     */
-    private function executeQuery(string $query, array $params = []): PDOStatement
-    {
-        try {
-            $statement = $this->pdo->prepare($query);
-            $statement->execute($params);
-            return $statement;
-        } catch (PDOException $e) {
-            $this->logger->error('Błąd podczas wykonywania zapytania', [
-                'zapytanie' => $query,
-                'parametry' => $params,
-                'komunikat_błędu' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
+        $this->logger = self::initLogger();
+        $this->moduleTableName = self::getConfigVariable('MODULE_TABLE_NAME') ?: 'modules';
+        $this->logger->info('Modules table being used: ' . $this->moduleTableName);
     }
 
     /**
@@ -67,12 +39,12 @@ class ModuleService
             'bieżący_czas' => $currentTime,
         ]);
 
-        $statement = $this->executeQuery($query, [
+        $statement = $this->executeStatement($query, [
             'module_name' => $moduleName,
             'current_time' => $currentTime,
         ]);
 
-        $isVisible = $statement->fetchColumn() !== false;
+        $isVisible = !empty($statement);
 
         $this->logger->info('Widoczność modułu została sprawdzona', [
             'nazwa_modułu' => $moduleName,
@@ -99,11 +71,11 @@ class ModuleService
             'nazwa_modułu' => $moduleName,
         ]);
 
-        $statement = $this->executeQuery($query, [
+        $statement = $this->executeStatement($query, [
             'module_name' => $moduleName,
         ]);
 
-        $isActive = $statement->fetchColumn() !== false;
+        $isActive = !empty($statement);
 
         $this->logger->info('Status aktywności modułu został sprawdzony', [
             'nazwa_modułu' => $moduleName,
@@ -124,8 +96,7 @@ class ModuleService
 
         $this->logger->debug('Pobieranie wszystkich modułów');
 
-        $statement = $this->executeQuery($query);
-        $modules = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $modules = $this->executeStatement($query);
 
         $this->logger->info('Wszystkie moduły zostały pobrane', [
             'liczba_modułów' => count($modules),
@@ -148,11 +119,11 @@ class ModuleService
             'nazwa_modułu' => $moduleName,
         ]);
 
-        $statement = $this->executeQuery($query, [
+        $statement = $this->executeStatement($query, [
             'module_name' => $moduleName,
         ]);
 
-        $module = $statement->fetch(PDO::FETCH_ASSOC) ?: [];
+        $module = $statement[0] ?: [];
 
         $this->logger->info('Moduł został pobrany', [
             'nazwa_modułu' => $moduleName,
@@ -173,8 +144,7 @@ class ModuleService
 
         $this->logger->debug('Pobieranie aktywnych modułów');
 
-        $statement = $this->executeQuery($query);
-        $activeModules = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $activeModules = $this->executeStatement($query);
 
         $this->logger->info('Aktywne moduły zostały pobrane', [
             'liczba_aktywnych_modułów' => count($activeModules),
@@ -199,7 +169,7 @@ class ModuleService
             'nowy_status' => $status,
         ]);
 
-        $this->executeQuery($query, [
+        $this->executeStatement($query, [
             'status' => $status ? 1 : 0,
             'module_name' => $moduleName,
         ]);

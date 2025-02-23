@@ -1,11 +1,11 @@
 <?php
-namespace src\subpages;
+namespace src\views;
 
 session_start();
 
 require_once '../../vendor/autoload.php';
-include('../utilities/AnnouncementService.php');
-include('../utilities/UserService.php');
+include('../controllers/AnnouncementsModel.php');
+include('../controllers/UserModel.php');
 
 use Dotenv\Dotenv;
 use Exception;
@@ -13,11 +13,11 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use PDO;
-use src\utilities\AnnouncementService;
-use src\utilities\ModuleService;
-use src\utilities\UserService;
+use src\models\AnnouncementsModel;
+use src\models\ModuleModel;
+use src\models\UserModel;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../DoDomuDojade/');
 $dotenv->load();
 
 if (!isset($_SESSION['user'])) {
@@ -49,12 +49,12 @@ $user = $_SESSION['user'];
 $user_id = (int)$_SESSION['user_id'];
 
 $logger = new Logger('AdminHandler');
-$logger->pushHandler(new StreamHandler('../log/admin.log', Level::Debug));
+$logger->pushHandler(new StreamHandler('../logs/admin.logs', Level::Debug));
 
 
-$announcementService = new AnnouncementService($logger, $pdo);
-$userService = new UserService($logger, $pdo);
-$moduleService = new ModuleService($pdo, $logger);
+$announcementService = new AnnouncementsModel($logger, $pdo);
+$userService = new UserModel($logger, $pdo);
+$moduleService = new ModuleModel($pdo, $logger);
 // obsługa usuwania ogłoszeń
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {
     $logger->debug("delete_announcement request received");
@@ -206,11 +206,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $moduleService->toggleModule($moduleName, true);
             $logger->info("Moduł {$moduleName} został włączony");
-            header("Location: admin.php?module_enabled={$moduleName}");
+            header("Location: panel.php?module_enabled={$moduleName}");
             exit;
         } catch (Exception $e) {
             $logger->error("Błąd przy włączaniu modułu: {$e->getMessage()}");
-            header("Location: admin.php?module_error=enable_failed");
+            header("Location: panel.php?module_error=enable_failed");
             exit;
         }
     }
@@ -221,11 +221,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $moduleService->toggleModule($moduleName, false);
             $logger->info("Moduł {$moduleName} został wyłączony");
-            header("Location: admin.php?module_disabled={$moduleName}");
+            header("Location: panel.php?module_disabled={$moduleName}");
             exit;
         } catch (Exception $e) {
             $logger->error("Błąd przy wyłączaniu modułu: {$e->getMessage()}");
-            header("Location: admin.php?module_error=disable_failed");
+            header("Location: panel.php?module_error=disable_failed");
             exit;
         }
     }
@@ -239,17 +239,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <title>Panel | DoDomuDojadę</title>
-    <link rel="icon" type="image/x-icon" href="../resources/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../../public/assets/resources/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="../styles/style.css" rel="stylesheet" type="text/css">
-    <link href="../styles/admin.css" rel="stylesheet" type="text/css">
+    <link href="../../public/assets/styles/style.css" rel="stylesheet" type="text/css">
+    <link href="../../public/assets/styles/admin.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<!-- IMPORT HEADER -->
-<?php include('../functions/header.php'); ?>
 
 <h1>Witaj, <?= htmlspecialchars($user) ?>!</h1>
 
@@ -278,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
     ?>
 
-    <form method="POST" action="admin.php" id="display-valid-announcements-only">
+    <form method="POST" action="panel.php" id="display-valid-announcements-only">
         <label>
             <input type="checkbox"
                    name="display-valid-announcements-only"
@@ -290,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
 
-    <form method="POST" action="admin.php" id="form">
+    <form method="POST" action="panel.php" id="form">
         <label>
             <input type="text" name="title" placeholder="Title">
         </label>
@@ -315,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    $user_service = new UserService($logger, $pdo);
+    $user_service = new UserModel($logger, $pdo);
     foreach ($announcements as $announcement) {
         try {
             $user = $user_service->getUserById($announcement['user_id']);
@@ -378,14 +376,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<div id='user'>";
             echo "<h3>" . htmlspecialchars($user['username']) . "</h3><br>";
             echo "ID". htmlspecialchars($user['id']) . "<br>";
-            echo "<form method='POST' action='admin.php' onsubmit='return confirm(\"Are you sure you want to delete this user?\");'>";
+            echo ");'>";
             echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
             echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($user['id']) . "'>";
             echo "<button type='submit' name='delete_user'>Usuń</button>";
             echo "</form>";
         }
 
-        echo "<form method='POST' action='admin.php' onsubmit='return confirm(\"Are you sure you want to add this user?\");'>";
+        echo ");'>";
         echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
         echo "<input type='text' name='username'>";
         echo "<input type='text' name='password'>";
@@ -402,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<div id='module'>";
         echo "<h3>" . htmlspecialchars($module['module_name']) . "</h3><br>";
         echo "Status: " . ($module['is_active'] ? "Enabled" : "Disabled") . "<br>";
-        echo "<form method='POST' action='admin.php'>";
+        echo "<form method='POST' action='panel.php'>";
         echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
         echo "<input type='hidden' name='module_name' value='" . htmlspecialchars($module['module_name']) . "'>";
         echo "<input type='hidden' name='module_id' value='" . htmlspecialchars($module['id']) . "'>";

@@ -34,7 +34,7 @@ jobs:
 
       - name: Display Composer cache logs
         if: failure()
-        run: cat /home/runner/work/_temp/_github_home/cache.log
+        run: cat /home/runner/work/_temp/_github_home/cache.logs
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md

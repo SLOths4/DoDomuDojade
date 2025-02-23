@@ -1,52 +1,27 @@
 <?php
 
-namespace src\utilities;
+namespace src\models;
 
 use Exception;
 use Monolog\Logger;
 use PDO;
 use PDOException;
 use PDOStatement;
+use src\core\Model;
 
-class CountdownService
+class CountdownModel extends Model
 {
     // DB structure: id | title | count_to
     private Logger $logger;
     private PDO $pdo;
-    private string $CountdownTableName;
+    private string $TABLE_NAME;
 
-    public function __construct(Logger $loggerInstance, PDO $pdoInstance)
+    public function __construct()
     {
-        $this->logger = $loggerInstance;
-        $this->pdo = $pdoInstance;
-        $this->CountdownTableName = getenv('COUNTDOWN_TABLE_NAME') ?: 'countdowns';
-        $this->logger->info('CountdownService został zainicjalizowany z nazwą tabeli: ' . $this->CountdownTableName);
-    }
-
-    /**
-     * Metoda pomocnicza do wykonywania zapytań.
-     *
-     * @param string $query
-     * @param array $params
-     * @return PDOStatement
-     * @throws PDOException
-     */
-    private function executeQuery(string $query, array $params = []): PDOStatement
-    {
-        try {
-            $this->logger->debug('Przygotowanie zapytania SQL: ' . $query, ['parametry' => $params]);
-            $statement = $this->pdo->prepare($query);
-            $statement->execute($params);
-            $this->logger->debug('Wykonano zapytanie SQL: ' . $query);
-            return $statement;
-        } catch (PDOException $e) {
-            $this->logger->error('Błąd podczas wykonywania zapytania', [
-                'zapytanie' => $query,
-                'parametry' => $params,
-                'komunikat_błędu' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
+        $this->logger = self::initLogger();
+        $this->pdo = self::initDatabase();
+        $this->TABLE_NAME = self::getConfigVariable('COUNTDOWN_TABLE_NAME') ?: 'countdowns';
+        $this->logger->info('Countdowns table name in being used: ' . $this->TABLE_NAME);
     }
 
     public function getCurrentCountdown(): array
@@ -55,7 +30,7 @@ class CountdownService
             $currentTime = date('Y-m-d');
             $this->logger->info('Rozpoczęcie pobierania obecnego odliczania.', ['current_time' => $currentTime]);
 
-            $query = "SELECT * FROM $this->CountdownTableName WHERE count_to <= :current_time LIMIT 1";
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to <= :current_time LIMIT 1";
 
             $statement = $this->executeQuery($query, [
                 ":current_time" => $currentTime
@@ -81,8 +56,7 @@ class CountdownService
         try {
             $this->logger->info('Rozpoczęcie pobierania wszystkich odliczań.');
 
-            $statement = $this->executeQuery("SELECT * FROM $this->CountdownTableName");
-            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $results = $this->executeStatement("SELECT * FROM $this->TABLE_NAME");
 
             $this->logger->info('Pobrano wszystkie odliczania.', ['liczba_odliczań' => count($results)]);
             return $results;
@@ -97,8 +71,8 @@ class CountdownService
         try {
             $this->logger->info('Rozpoczęcie dodawania nowego odliczania.', ['title' => $title, 'count_to' => $count_to]);
 
-            $query = "INSERT INTO $this->CountdownTableName (title, count_to) VALUES (:title, :count_to)";
-            $this->executeQuery($query, [
+            $query = "INSERT INTO $this->TABLE_NAME (title, count_to) VALUES (:title, :count_to)";
+            $this->executeStatement($query, [
                 ":title" => $title,
                 ":count_to" => $count_to
             ]);
@@ -116,8 +90,8 @@ class CountdownService
         try {
             $this->logger->info('Rozpoczęcie usuwania odliczania.', ['id' => $id]);
 
-            $query = "DELETE FROM $this->CountdownTableName WHERE id = :id";
-            $this->executeQuery($query, [
+            $query = "DELETE FROM $this->TABLE_NAME WHERE id = :id";
+            $this->executeStatement($query, [
                 ":id" => $id
             ]);
 
@@ -134,8 +108,8 @@ class CountdownService
         try {
             $this->logger->info('Rozpoczęcie aktualizowania odliczania.', ['id' => $id, 'title' => $title, 'count_to' => $count_to]);
 
-            $query = "UPDATE $this->CountdownTableName SET title = :title, count_to = :count_to WHERE id = :id";
-            $this->executeQuery($query, [
+            $query = "UPDATE $this->TABLE_NAME SET title = :title, count_to = :count_to WHERE id = :id";
+            $this->executeStatement($query, [
                 ":title" => $title,
                 ":count_to" => $count_to,
                 ":id" => $id

@@ -1,49 +1,36 @@
 <?php
 
-namespace src\utilities;
+namespace src\models;
 
 use DateTime;
 use InvalidArgumentException;
 use Monolog\Logger;
 use PDO;
 use PDOException;
-use PDOStatement;
 use RuntimeException;
+use src\core\Model;
 
 /**
  * Class used for operations on table storing announcements in provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class AnnouncementService{
+class AnnouncementsModel extends Model {
     // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
-    private PDO $pdo; // PDO instance
-    private Logger $logger; // Monolog logger instance
-    private string $table_name; // announcements table name
+    private Logger $logger;
+    private string $TABLE_NAME;
     private string $DATE_FORMAT;
     private int $MAX_TITLE_LENGTH;
     private int $MAX_TEXT_LENGTH;
     private array $ALLOWED_FIELDS;
 
-    /**
-     * Konstruktor klasy AnnouncementService
-     *
-     * @param Logger $loggerInstance
-     * @param PDO $pdoInstance
-     * @param string $table_name
-     * @param string $date_format
-     * @param int $max_title_length
-     * @param int $max_text_length
-     * @param array $allowed_fields
-     */
-    public function __construct(Logger $loggerInstance, PDO $pdoInstance, string $table_name = 'announcements', string $date_format = 'Y-m-d', int $max_title_length = 255, int $max_text_length = 10000, array $allowed_fields = ['title', 'text', 'date','valid_until', 'user_id']) {
-        $this->logger = $loggerInstance;
-        $this->pdo = $pdoInstance;
+    public function __construct() {
+        $this->logger = self::initLogger();
         // settings
-        $this->table_name = $table_name;
-        $this->DATE_FORMAT = $date_format;
-        $this->MAX_TITLE_LENGTH = $max_title_length;
-        $this->MAX_TEXT_LENGTH = $max_text_length;
-        $this->ALLOWED_FIELDS = $allowed_fields;
+        $this->TABLE_NAME = self::getConfigVariable("ANNOUNCEMENTS_TABLE_NAME") ?? 'announcements';
+        $this->DATE_FORMAT = self::getConfigVariable("DATE_FORMAT") ?? 'Y-m-d';
+        $this->MAX_TITLE_LENGTH = self::getConfigVariable("MAX_TITLE_LENGTH") ?? 255;
+        $this->MAX_TEXT_LENGTH = self::getConfigVariable("MAX_TEXT_LENGTH") ?? 65535;
+        $this->ALLOWED_FIELDS = self::getConfigVariable("ALLOWED_FIELDS") ?? ['title', 'text', 'date','valid_until', 'user_id'];
 
         $this->logger->debug("Announcements table name being used: $this->table_name");
     }
@@ -59,82 +46,6 @@ class AnnouncementService{
         }
         if (mb_strlen($input) > $maxLength) {
             throw new InvalidArgumentException("Input exceeds maximum length of $maxLength");
-        }
-    }
-
-    /**
-     * @param PDOStatement $stmt
-     * @param array $params
-     * @return void
-     */
-    private function bindParams(PDOStatement $stmt, array $params): void {
-        foreach ($params as $key => $param) {
-            if (!is_array($param) || count($param) !== 2) {
-                $this->logger->error("Invalid parameter structure.", [
-                    'key' => $key,
-                    'param' => $param
-                ]);
-                throw new InvalidArgumentException("Invalid parameter structure for key $key.");
-            }
-
-            [$value, $type] = $param;
-
-            $this->logger->debug("Binding parameter:", [
-                'key' => $key,
-                'value' => $value,
-                'type' => $type
-            ]);
-
-            try {
-                $stmt->bindValue($key, $value, $type);
-            } catch (PDOException $e) {
-                $this->logger->error("Failed to bind parameter to statement.", [
-                    'key' => $key,
-                    'value' => $value,
-                    'type' => $type,
-                    'error' => $e->getMessage(),
-                ]);
-                throw new RuntimeException("Failed to bind parameter: $key");
-            }
-        }
-
-        $this->logger->debug("All parameters successfully bound.", ['parameters' => $params]);
-    }
-
-
-    /**
-     * @param string $query
-     * @param array $params
-     * @return array
-     */
-    private function executeStatement(string $query, array $params = []): array {
-        try {
-            $stmt = $this->pdo->prepare($query);
-            $this->logger->debug("Executing query:", ['query' => $query]);
-            if (!empty($params)) {
-                $this->bindParams($stmt, $params);
-            }
-            $start = microtime(true);
-            $stmt->execute();
-            $executionTime = round((microtime(true) - $start) * 1000, 2);
-            $this->logger->info("SQL query executed successfully.", [
-                'query' => $query,
-                'execution_time_ms' => $executionTime,
-                'parameters' => $params
-            ]);
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($results)) {
-                $this->logger->warning("SQL query executed but returned no results.", [
-                    'query' => $query
-                ]);
-            }
-            return $results;
-        } catch (PDOException $e) {
-            $this->logger->error("SQL query execution failed: " . $e->getMessage(), [
-                'query' => $query,
-                'parameters' => $params
-            ]);
-            throw new RuntimeException('Database operation failed');
         }
     }
 
@@ -165,7 +76,7 @@ class AnnouncementService{
      */
     public function getAnnouncements(): array {
         try {
-            $query = "SELECT * FROM $this->table_name";
+            $query = "SELECT * FROM $this->TABLE_NAME";
             $this->logger->info("Fetching all announcements.");
             return $this->executeStatement($query);
         } catch (PDOException $e) {
@@ -181,7 +92,7 @@ class AnnouncementService{
     public function getValidAnnouncements(): array{
         try {
             $date = date('Y-m-d');
-            $query = "SELECT * FROM $this->table_name WHERE valid_until >= :date";
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date";
             $params = [':date' => [$date, PDO::PARAM_STR]];
             $this->logger->info("Fetching valid announcements for date: $date.");
             $result = $this->executeStatement($query, $params);
@@ -221,7 +132,7 @@ class AnnouncementService{
                 throw new InvalidArgumentException('Invalid date format');
             }
 
-            $query = "INSERT INTO $this->table_name (title, text, date, valid_until, user_id)
+            $query = "INSERT INTO $this->TABLE_NAME (title, text, date, valid_until, user_id)
                       VALUES (:title, :text, :date, :valid_until, :user_id)";
             $params = [
                 ':title' => [$title, PDO::PARAM_STR],
@@ -261,7 +172,7 @@ class AnnouncementService{
         }
 
         try {
-            $query = "UPDATE $this->table_name SET $field = :value WHERE id = :announcementId";
+            $query = "UPDATE $this->TABLE_NAME SET $field = :value WHERE id = :announcementId";
             $params = [
                 ':value' => [$newValue, PDO::PARAM_STR],
                 ':announcementId' => [$announcementId, PDO::PARAM_INT],
@@ -289,7 +200,7 @@ class AnnouncementService{
      */
     public function deleteAnnouncement(int $announcementId, int $userId): bool {
         try {
-            $query = "DELETE FROM $this->table_name WHERE id = :announcementId";
+            $query = "DELETE FROM $this->TABLE_NAME WHERE id = :announcementId";
             $params = [
                 ':announcementId' => [$announcementId, PDO::PARAM_INT],
             ];
@@ -314,7 +225,7 @@ class AnnouncementService{
      */
     public function getAnnouncementById(int $announcementId): array {
         try {
-            $query = "SELECT * FROM $this->table_name WHERE id = :announcementId";
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE id = :announcementId";
             $params = [
                 ':announcementId' => [$announcementId, PDO::PARAM_INT],
             ];
@@ -342,18 +253,24 @@ class AnnouncementService{
     public function getAnnouncementByTitle(string $announcementTitle): array {
         try {
             // query structure
-            $query = "SELECT * FROM $this->table_name WHERE title LIKE :announcementTitle";
-            $statement = $this->pdo->prepare($query);
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE title LIKE :announcementTitle";
             $pattern = '%' . $announcementTitle . '%';
-            $statement->bindParam(':announcementTitle', $pattern);
-            $statement->execute();
+            $params = [
+                ':announcementTitle' => [$pattern, PDO::PARAM_STR],
+            ];
 
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            $result = $this->executeStatement($query, $params);
 
+            if (!$result) {
+                $this->logger->warning("No announcement found with title: $announcementTitle");
+                return [];
+            }
+
+            $this->logger->info("Announcement fetched successfully.", ['result' => $result]);
+            return $result;
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
             throw new RuntimeException('Error fetching data from the database');
-
         }
     }
 }

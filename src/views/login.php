@@ -1,49 +1,27 @@
 <?php
-namespace src\subpages;
+// TODO naprawa tego
+namespace src\views;
 
 session_start();
-require_once '../../vendor/autoload.php';
-require_once '../utilities/LoginService.php';
-require_once '../utilities/UserService.php';
+require_once '../../../vendor/autoload.php';
+require_once '../controllers/UserController.php';
+require_once '../controllers/UserModel.php';
 
-use Exception;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use Monolog\Logger;
-use PDO;
-use src\utilities\LoginService;
-use src\utilities\UserService;
 use Dotenv\Dotenv;
+use Exception;
+use PDO;
+use src\controllers\UserController;
+use src\models\UserModel;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../DoDomuDojade/');
 $dotenv->load();
 
-$logger = new Logger('LoginHandler');
-$logger->pushHandler(new StreamHandler('../log/login.log', Level::Debug));
 
 $_SESSION['session_error'] = null;
 $_SESSION['user'] = null;
 $_SESSION['user_id'] = null;
 
-function getPdo(): PDO
-{
-    $db_password = $_ENV['DB_PASSWORD'];
-    $db_username = $_ENV['DB_USERNAME'];
-    $db_host = $_ENV['DB_HOST'];
-
-    if (!empty($db_password) and !empty($db_username)) {
-        $pdo = new PDO($db_host, $db_username, $db_password);
-    } else {
-        $pdo = new PDO($db_host);
-    }
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    return $pdo;
-}
-
-$pdo = getPdo();
-
-$loginService = new LoginService($logger, $pdo);
-$userService = new UserService($logger, $pdo);
+$loginService = new UserController();
 
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -76,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $logger->error('Error fetching user by username: ' . $e->getMessage());
             $_SESSION['session_error'] = 'An error occurred!';
         }
-        header('Location: admin.php');
+        header('Location: panel.php');
         exit;
     } else {
         $logger->warning("Authentication failed for user: $username");
@@ -89,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pl">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../../public/assets/styles/style.css">
+    <link rel="stylesheet" href="../../public/assets/styles/login.css">
 </head>
 <body>
     <h2>Login</h2>

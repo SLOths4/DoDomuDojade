@@ -1,26 +1,26 @@
 <?php
-namespace src\utilities;
+namespace src\models;
 
 use Exception;
+use InvalidArgumentException;
 use Monolog\Logger;
 use RuntimeException;
-use InvalidArgumentException;
+use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\Exception\{
+use Symfony\Contracts\HttpClient\Exception\{ClientExceptionInterface,
     DecodingExceptionInterface,
     RedirectionExceptionInterface,
-    TransportExceptionInterface,
-    ClientExceptionInterface,
-    ServerExceptionInterface
-};
+    ServerExceptionInterface,
+    TransportExceptionInterface};
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
 /**
  * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class TramService {
+class TramModel extends Model
+{
     private const array ERROR_MESSAGES = [
         'invalid_response' => 'Invalid or incomplete API response structure',
         'no_departure_data' => 'No departure times available for the specified stop',
@@ -35,10 +35,10 @@ class TramService {
     private string $ztmUrl;
     private Logger $logger;
 
-    public function __construct(Logger $loggerInstance, string $ztmUrl) {
+    public function __construct(string $ztmUrl) {
         $this->httpClient = HttpClient::create();
         $this->ztmUrl = $ztmUrl;
-        $this->logger = $loggerInstance;
+        $this->logger = self::initLogger();
     }
 
     /**

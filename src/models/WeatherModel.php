@@ -1,19 +1,20 @@
 <?php
-namespace src\utilities;
+namespace src\models;
 
 use Exception;
 use Monolog\Logger;
 use RuntimeException;
+use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class WeatherService {
-    private const array ENV_VARIABLES = ['IMGW_WEATHER_URL', 'AIRLY_ENDPOINT', 'AIRLY_API_KEY', 'AIRLY_LOCATION_ID', 'AIRLY_URL'];
+class WeatherModel extends Model
+{
     private  HttpClientInterface $httpClient;
     private string $imgwWeatherUrl;
     private string $airQualityUrl;
@@ -23,32 +24,16 @@ class WeatherService {
     private Logger $logger;
 
 
-    public function __construct(Logger $logger) {
+    public function __construct() {
         $this->httpClient = HttpClient::create();
-        $this->logger = $logger;
+        $this->logger = self::initLogger();
 
-        $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL');
-        $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT');
-        $this->airlyApiKey = $this->getEnvVariable('AIRLY_API_KEY');
-        $this->airlyLocationId = ltrim($this->getEnvVariable('AIRLY_LOCATION_ID'), '/');
+        $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL') ?? $this->logger->error("IMGW endpoint is missing.") && throw new RuntimeException('IMGW endpoint is missing.');
+        $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT') ?? $this->logger->error("Airly endpoint is missing.") && throw new RuntimeException('Airly endpoint is missing.');
+        $this->airlyApiKey = $this->getEnvVariable('AIRLY_API_KEY') ?? $this->logger->error('Airly API key is missing.') && throw new RuntimeException('Airly API key is missing.');
+        $this->airlyLocationId = ltrim($this->getEnvVariable('AIRLY_LOCATION_ID'), '/') ?? $this->logger->error('Airly location ID is missing.') && throw new RuntimeException('Airly location ID is missing.');
         $this->airQualityUrl = $this->airlyUrl . $this->airlyLocationId;
     }
-
-    /**
-     * Pobiera zmienne z pliku .env
-     *
-     * @param string $variableName
-     *
-     * @return string
-     */
-    private function getEnvVariable(string $variableName): string {
-        $value = $_ENV[$variableName];
-        if ($value === false) {
-            $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));
-        }
-        return $value;
-    }
-
 
     /**
      * Wykonuje zapytanie HTTP do podanego URL z opcjonalnymi nagłówkami.
@@ -72,9 +57,9 @@ class WeatherService {
         TransportExceptionInterface |
         DecodingExceptionInterface $e
         ) {
-            $this->logger->error(sprintf("Błąd podczas pobierania danych z %s: %s", $url, $e->getMessage()));
+            $this->logger->error("Błąd podczas pobierania danych z ". $url . " " .  $e->getMessage());
         } catch (Exception $e) {
-            $this->logger->error(sprintf("Nieoczekiwany błąd podczas pobierania danych z %s: %s", $url, $e->getMessage()));
+            $this->logger->error("Nieoczekiwany błąd podczas pobierania danych z" . $url . " " .  $e->getMessage());
         }
         return [];
     }

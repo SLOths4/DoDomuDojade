@@ -3,16 +3,17 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use src\utilities\CountdownService;
-use src\utilities\UserService;
-use src\utilities\TramService;
-use src\utilities\WeatherService;
-use src\utilities\AnnouncementService;
-use src\utilities\CalendarService;
-use src\utilities\MetarService;
-use src\utilities\ModuleService;
-use Monolog\Logger;
 use Dotenv\Dotenv;
+use Monolog\Logger;
+use src\models\AnnouncementsModel;
+use src\models\CalendarModel;
+use src\models\CountdownModel;
+use src\models\MetarModel;
+use src\models\ModuleModel;
+use src\models\TramModel;
+use src\models\UserModel;
+
+// TODO naprawa tego całego
 
 $dotenv = Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
@@ -26,7 +27,7 @@ $metar_url = $_ENV['AIRPORT_URL'] . $_ENV['AIRPORT_CODE'];
 
 global $logger;
 $logger = new Monolog\Logger('AppHandler');
-$logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/log/app.log', Monolog\Level::Debug));
+$logger->pushHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/logs/app.log', Monolog\Level::Debug));
 
 global $pdo;
 if ($db_host && str_starts_with($db_host, 'sqlite:')) {
@@ -42,10 +43,11 @@ $function = $_GET['function'] ?? 'default';
 
 function isModuleActive(string $module): bool
 {
-    global $pdo;
     global $logger;
-    $moduleService = new ModuleService($pdo, $logger);
-    if ($moduleService->isModuleVisible($module)) {
+    $moduleService = new ModuleModel();
+    $isModuleVisible = $moduleService->isModuleVisible($module);
+    $logger->critical($isModuleVisible);
+    if ($isModuleVisible) {
         $logger->info("Moduł $module jest aktywny.");
         return true;
     }
@@ -60,7 +62,7 @@ function getVersion(): string
 
 switch ($function) {
     case 'tramData':
-        echo json_encode(getTramData($logger, $ztm_url));
+        echo json_encode(getTramData($ztm_url));
         break;
     case 'announcementsData':
         echo json_encode(getAnnouncementsData($logger, $pdo));
@@ -85,9 +87,11 @@ switch ($function) {
         break;
 }
 
-function getTramData(Logger $logger, string $ztmURL): false|string
+function getTramData(string $ztmURL): false|string
 {
+    global $logger;
     try {
+
         $logger->info('Rozpoczęto pobieranie danych tramwajowych.');
 
         if (!isModuleActive('tram')) {
@@ -105,9 +109,9 @@ function getTramData(Logger $logger, string $ztmURL): false|string
         $stopsIdS = ['AWF73', 'AWF41', 'AWF42', 'AWF02', 'AWF01', 'AWF03']; // Lista ID przystanków
         $departures = [];
 
-        // Tworzenie instancji TramService
-        $tramService = new TramService($logger, $ztmURL);
-        $logger->debug('Utworzono instancję TramService.');
+        // Tworzenie instancji TramModel
+        $tramService = new TramModel($ztmURL);
+        $logger->debug('Utworzono instancję TramModel.');
 
         foreach ($stopsIdS as $stopId) {
             // Pobieranie danych dla każdego przystanku
@@ -160,10 +164,10 @@ function getAnnouncementsData(Logger $logger, PDO $pdo): false|string
         }
 
         $logger->info('Rozpoczęto pobieranie danych ogłoszeń.');
-        $announcementService = new AnnouncementService($logger, $pdo);
-        $logger->debug('Utworzono instancję AnnouncementService.');
-        $userService = new UserService($logger, $pdo);
-        $logger->debug('Utworzono instancję UserService.');
+        $announcementService = new AnnouncementsModel();
+        $logger->debug('Utworzono instancję AnnouncementsModel.');
+        $userService = new UserModel($logger, $pdo);
+        $logger->debug('Utworzono instancję UserModel.');
 
         $announcements = $announcementService->getValidAnnouncements();
         $logger->info('Pobrano listę ogłoszeń z bazy danych.');
@@ -218,8 +222,8 @@ function getWeatherData(Logger $logger): false|string
             );
         }
 
-        $weatherService = new WeatherService($logger);
-        $logger->debug('Utworzono instancję WeatherService.');
+        $weatherService = new \src\models\WeatherModel($logger);
+        $logger->debug('Utworzono instancję WeatherModel.');
         $weatherServiceResponse = $weatherService->getWeather();
         if (empty($weatherServiceResponse)) {
             $logger->warning('Brak danych pogodowych.');
@@ -265,7 +269,7 @@ function getCalendarData(Logger $logger, string $icalURL): false|string
             );
         }
 
-        $calendarService = new CalendarService($logger, $icalURL);
+        $calendarService = new CalendarModel($logger, $icalURL);
         $calendarServiceResponse = $calendarService->get_events();
         $logger->debug('Utworzono instancję calendarService.');
 
@@ -294,7 +298,7 @@ function getCalendarData(Logger $logger, string $icalURL): false|string
 function getMetarData(Logger $logger): false|string {
     try {
         $logger->info('Rozpoczęto pobieranie danych METAR.');
-        $metarService = new MetarService($logger);
+        $metarService = new MetarModel($logger);
         $metarData = $metarService->getMetar('EPPO');
         $logger->debug('Utworzono instancję metarService.');
 
@@ -330,7 +334,7 @@ function getCountdownData(Logger $logger, PDO $PDO): false|string
             );
         }
 
-        $countdownService = new CountdownService($logger, $PDO);
+        $countdownService = new CountdownModel($logger, $PDO);
         $logger->debug('Utworzono instancję countdownService.');
         $currentCountdown = $countdownService->getCurrentCountdown();
 
