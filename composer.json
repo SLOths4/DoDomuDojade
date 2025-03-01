@@ -18,7 +18,15 @@
             }
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "post-install-cmd": [
+            "npm install",
+            "npm run build"
+        ],
+        "post-update-cmd": [
+            "npm install",
+            "npm run build"
+        ]
     },
     "license": "CC-BY-NC-4.0"
 }
