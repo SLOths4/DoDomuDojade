@@ -1,9 +1,10 @@
 <?php
 
-namespace src\utilities;
+namespace src\models;
 
 use Exception;
 use Monolog\Logger;
+use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -15,7 +16,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * Class used for fetching METAR data
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class MetarService
+class MetarModel extends Model
 {
     private const array ENV_VARIABLES = ['METAR_URL'];
     private HttpClientInterface $httpClient;
@@ -28,23 +29,6 @@ class MetarService
         $this->httpClient = HttpClient::create();
         $this->metar_url =  $this->getEnvVariable("METAR_URL");
         $this->logger = $loggerInstance;
-    }
-
-    /**
-     * Pobiera zmienne z pliku .env
-     *
-     * @param string $variableName
-     *
-     * @return string
-     */
-    private function getEnvVariable(string $variableName): string {
-        $value = $_ENV[$variableName];
-
-        if ($value === false) {
-            $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));
-        }
-
-        return $value;
     }
 
     /**

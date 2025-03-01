@@ -1,6 +1,6 @@
 {
     "name": "sloths4/dodomu-dojade",
-    "description": "This is DoDomuDojadę app repository.",
+    "description": "This is DoDomuDojadę src repository.",
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
@@ -10,7 +10,8 @@
         "ext-mbstring": "*",
         "vlucas/phpdotenv": "^5.6",
         "ext-simplexml": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "nikic/fast-route": "^1.3"
     },
     "autoload": {
         "psr-4": {

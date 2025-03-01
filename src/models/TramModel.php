@@ -1,26 +1,26 @@
 <?php
-namespace src\utilities;
+namespace src\models;
 
 use Exception;
+use InvalidArgumentException;
 use Monolog\Logger;
 use RuntimeException;
-use InvalidArgumentException;
+use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\Exception\{
+use Symfony\Contracts\HttpClient\Exception\{ClientExceptionInterface,
     DecodingExceptionInterface,
     RedirectionExceptionInterface,
-    TransportExceptionInterface,
-    ClientExceptionInterface,
-    ServerExceptionInterface
-};
+    ServerExceptionInterface,
+    TransportExceptionInterface};
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
 /**
  * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class TramService {
+class TramModel extends Model
+{
     private const array ERROR_MESSAGES = [
         'invalid_response' => 'Invalid or incomplete API response structure',
         'no_departure_data' => 'No departure times available for the specified stop',
@@ -33,12 +33,10 @@ class TramService {
 
     private HttpClientInterface $httpClient;
     private string $ztmUrl;
-    private Logger $logger;
 
-    public function __construct(Logger $loggerInstance, string $ztmUrl) {
+    public function __construct(string $ztmUrl) {
         $this->httpClient = HttpClient::create();
         $this->ztmUrl = $ztmUrl;
-        $this->logger = $loggerInstance;
     }
 
     /**
@@ -74,22 +72,22 @@ class TramService {
 
             return $response->toArray();
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('HTTP transport error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            self::$logger->error('HTTP transport error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
             throw new RuntimeException('HTTP transport error occurred while calling API.', 0, $e);
         } catch (DecodingExceptionInterface $e) {
-            $this->logger->error('Response decoding error', ['method' => $method, 'response' => $e->getTrace(), 'error' => $e->getMessage()]);
+            self::$logger->error('Response decoding error', ['method' => $method, 'response' => $e->getTrace(), 'error' => $e->getMessage()]);
             throw new RuntimeException('Unable to decode API response.', 0, $e);
         } catch (ClientExceptionInterface $e) {
-            $this->logger->error('Client error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            self::$logger->error('Client error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
             throw new RuntimeException('Client error occurred while calling API.', 0, $e);
         } catch (ServerExceptionInterface $e) {
-            $this->logger->error('Server error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            self::$logger->error('Server error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
             throw new RuntimeException('Server error occurred while calling API.', 0, $e);
         } catch (RedirectionExceptionInterface $e) {
-            $this->logger->error('Redirection error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            self::$logger->error('Redirection error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
             throw new RuntimeException('Redirection error occurred while calling API.', 0, $e);
         } catch (Throwable $e) {
-            $this->logger->error('Unexpected error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
+            self::$logger->error('Unexpected error', ['method' => $method, 'params' => $params, 'error' => $e->getMessage()]);
             throw new RuntimeException('An unexpected error occurred while calling API.', 0, $e);
         }
     }
@@ -102,7 +100,7 @@ class TramService {
      */
     public function getTimes(string $stopId): array {
         if (!preg_match('/^[A-Z0-9]+$/', $stopId)) {
-            $this->logger->error(self::ERROR_MESSAGES['invalid_stop_id'], ['stopId' => $stopId]);
+            self::$logger->error(self::ERROR_MESSAGES['invalid_stop_id'], ['stopId' => $stopId]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_stop_id']);
         }
 
@@ -110,13 +108,13 @@ class TramService {
             $response = $this->makeApiRequest('getTimes', ['symbol' => $stopId]);
 
             if (!isset($response['success']['times'])) {
-                $this->logger->error(self::ERROR_MESSAGES['no_departure_data'], ['stopId' => $stopId]);
+                self::$logger->error(self::ERROR_MESSAGES['no_departure_data'], ['stopId' => $stopId]);
                 throw new Exception(self::ERROR_MESSAGES['no_departure_data']);
             }
 
             return $response;
         } catch (Exception $e) {
-            $this->logger->error('getTimes failed', ['stopId' => $stopId, 'error' => $e->getMessage()]);
+            self::$logger->error('getTimes failed', ['stopId' => $stopId, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
@@ -130,22 +128,22 @@ class TramService {
      */
     public function getStops(float $lat, float $lon): array {
         if (!$this->isValidCoordinates($lat, $lon)) {
-            $this->logger->error(self::ERROR_MESSAGES['invalid_coordinates'], ['lat' => $lat, 'lon' => $lon]);
+            self::$logger->error(self::ERROR_MESSAGES['invalid_coordinates'], ['lat' => $lat, 'lon' => $lon]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_coordinates']);
         }
 
         try {
-            $this->logger->debug('getStops', ['lat' => $lat, 'lon' => $lon]);
+            self::$logger->debug('getStops', ['lat' => $lat, 'lon' => $lon]);
             $response = $this->makeApiRequest('getStops', ['lat' => $lat, 'lon' => $lon]);
 
             if (empty($response['success'])) {
-                $this->logger->error(self::ERROR_MESSAGES['no_stops_data'], ['lat' => $lat, 'lon' => $lon]);
+                self::$logger->error(self::ERROR_MESSAGES['no_stops_data'], ['lat' => $lat, 'lon' => $lon]);
                 throw new Exception(self::ERROR_MESSAGES['no_stops_data']);
             }
 
             return $response['success'];
         } catch (Exception $e) {
-            $this->logger->error('getStops failed', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
+            self::$logger->error('getStops failed', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
@@ -158,15 +156,15 @@ class TramService {
      */
     public function getLines(int $lineNumber): array {
         if ($lineNumber <= 0) {
-            $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
+            self::$logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
         }
 
         try {
-            $this->logger->debug('getLines', ['lineNumber' => $lineNumber]);
+            self::$logger->debug('getLines', ['lineNumber' => $lineNumber]);
             return $this->makeApiRequest('getLines', ['line' => $lineNumber]);
         } catch (Exception $e) {
-            $this->logger->error('getLines failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
+            self::$logger->error('getLines failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
@@ -179,15 +177,15 @@ class TramService {
      */
     public function getRoutes(int $lineNumber): array {
         if ($lineNumber <= 0) {
-            $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
+            self::$logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
         }
 
         try {
-            $this->logger->debug('getRoutes', ['lineNumber' => $lineNumber]);
+            self::$logger->debug('getRoutes', ['lineNumber' => $lineNumber]);
             return $this->makeApiRequest('getRoutes', ['line' => $lineNumber]);
         } catch (Exception $e) {
-            $this->logger->error('getRoutes failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
+            self::$logger->error('getRoutes failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }

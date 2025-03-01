@@ -1,41 +1,24 @@
 <?php
-namespace src\utilities;
+namespace src\models;
 
+use DateMalformedStringException;
 use DateTime;
 use Exception;
 use Monolog\Logger;
+use src\core\Model;
 
 /**
  * iCal data parsing and customising class
  * @author Igor Woźnica <igor.supermemo@gmail.com>
- * @version 1.0.1
- * @since 1.0.0
  */
-class CalendarService {
-    private const array ENV_VARIABLES = ['CALENDAR_URL'];
+class CalendarModel extends Model
+{
     private string $icalUrl;
-    private Logger $logger;
 
-    public function __construct(Logger $logger) {
-        $this->logger = $logger;
-        $this->icalUrl = $this->getEnvVariable("CALENDAR_URL");
+    public function __construct(string $icalUrl) {
+        $this->icalUrl = $icalUrl;
     }
 
-    
-    /**
-     * Pobiera zmienne z pliku .env
-     *
-     * @param string $variableName
-     *
-     * @return string
-     */
-    private function getEnvVariable(string $variableName): string {
-        $value = $_ENV[$variableName];
-        if ($value === false) {
-            $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));
-        }
-        return $value;
-    }
     /**
      * iCal data fetching function
      * @return array
@@ -48,28 +31,30 @@ class CalendarService {
 
         if ($icalData === false) {
             $error = error_get_last();
-            $this->logger->error("Error fetching iCal data: " . $error['message']);
+            self::$logger->error("Error fetching iCal data: " . $error['message']);
             throw new Exception("Error fetching iCal data: " . $error['message']);
         } else {
-            $this->logger->debug("Successfully fetched the iCal data");
+            self::$logger->debug("Successfully fetched the iCal data");
         }
       
         if (strpos($icalData, 'BEGIN:VEVENT') === false) {
-            $this->logger->debug("No events found in the iCal data.");
+            self::$logger->debug("No events found in the iCal data.");
             return [];
         } else {
-            $this->logger->debug("Found events in the iCal data.");
+            self::$logger->debug("Found events in the iCal data.");
         }
 
         // Parse the iCal data
         return $this->parse_ical_data($icalData);
     }
+
     /**
      * iCal events extracting function
-     * @param array $iCalData
+     * @param array $icalData
      * @return array
+     * @throws Exception
      */
-    private function parse_ical_data($icalData): array
+    private function parse_ical_data(array $icalData): array
     {
         $events = [];
         preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches);
@@ -89,12 +74,12 @@ class CalendarService {
     /**
      * iCal event processing function
      * @param mixed $eventData
-     * @param \DateTime $currentDate
+     * @param DateTime $currentDate
      * @param array $events
      * @return void
      * @throws Exception
      */
-    private function process_event($eventData, &$events, $currentDate): void
+    private function process_event(mixed $eventData, array &$events, DateTime $currentDate): void
     {
         $event = $this->extract_event_data($eventData);
         $this->format_event_dates($event);
@@ -116,15 +101,16 @@ class CalendarService {
                 }
             }
         } catch (Exception $e) {
-            $this->logger->error("Date parsing failed: " . $e->getMessage());
+            self::$logger->error("Date parsing failed: " . $e->getMessage());
         }
     }
+
     /**
      * iCal event extracting function
      * @param string $eventData
      * @return array $event
      */
-    private function extract_event_data($eventData): array
+    private function extract_event_data(string $eventData): array
     {
         $event = [];
         preg_match('/SUMMARY:(.*)/', $eventData, $summary);
@@ -150,12 +136,13 @@ class CalendarService {
     
         return $event;
     }
+
     /**
      * Event date formatting function
      * @param mixed $event
      * @return void
      */
-    private function format_event_dates(&$event): void
+    private function format_event_dates(mixed &$event): void
     {
         $timezone = strlen($event['start']) < 17;
         if ($timezone) {
@@ -183,20 +170,21 @@ class CalendarService {
         $event['start'] = sprintf("%02d.%s - %s.%s.%s", $startHour, $startMinutes, $startDay, $startMonth, $startYear);
         $event['end'] = sprintf("%02d.%s - %s.%s.%s", $endHour, $endMinutes, $endDay, $endMonth, $endYear);
     }
+
     /**
      * iCal event processing function
-     * @param \DateTime $eventDate
-     * @param \DateTime $currentDate
+     * @param DateTime $eventDate
+     * @param DateTime $currentDate
      * @return int $days
      */
-    private function calculate_days_until_event($eventDate, $currentDate) {
+    private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate) {
         $interval = $currentDate->diff($eventDate);
         return $interval->days;
     }
     /**
      * Checking if the event is happening in 7 days function
-     * @param \DateTime $eventDate
-     * @param \DateTime $currentDate
+     * @param DateTime $eventDate
+     * @param DateTime $currentDate
      * @param int $daysUntilEvent
      * @return bool
      */
@@ -204,14 +192,15 @@ class CalendarService {
     {
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
-    
+
     /**
      * Recurring events generating function
      * @param array $event
-     * @param array $events 
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param array $events
+     * @param DateTime $startDate
+     * @param DateTime $endDate
      * @return void
+     * @throws DateMalformedStringException
      */
     public function generateRecurringEvents(&$events, $event, $startDate, $endDate): void
     {

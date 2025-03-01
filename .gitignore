@@ -8,7 +8,7 @@
 node_modules/
 
 
-# Ignore log files
+# Ignore logs files
 *.log
 
 # Ignore temporary files
