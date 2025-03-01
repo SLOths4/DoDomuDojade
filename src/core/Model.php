@@ -10,6 +10,9 @@ use RuntimeException;
 class Model extends CommonService{
     protected static ?PDO $pdo;
 
+    /**
+     * @throws Exception
+     */
     public static function initDatabase(): PDO
     {
         if (!isset(self::$pdo)){
@@ -38,48 +41,84 @@ class Model extends CommonService{
     }
 
     /**
+     * Waliduje strukturę pojedynczego parametru.
+     *
+     * @param mixed $param
+     * @param mixed $key
+     *
+     * @return array
+     * @throws Exception
+     */
+    private function validateParam($param, $key): array {
+        if (!is_array($param)) {
+            self::$logger->error("Invalid parameter structure: expected an array.", [
+                'key' => $key,
+                'param' => $param
+            ]);
+            throw new Exception("Invalid parameter structure: parameter is not an array");
+        }
+
+        if (count($param) !== 2) {
+            // Jeśli drugi element nie istnieje, oznacza to brak typu parametru
+            if (!array_key_exists(1, $param)) {
+                self::$logger->error("Parameter type is missing.", [
+                    'key' => $key,
+                    'param' => $param
+                ]);
+                throw new Exception("Parameter type is missing");
+            }
+            self::$logger->error("Invalid parameter structure: expected exactly 2 elements.", [
+                'key' => $key,
+                'param' => $param
+            ]);
+            throw new Exception("Invalid parameter structure");
+        }
+
+        return $param;
+    }
+
+    /**
+     * Binds parameters to a PDOStatement with validation and logging.
+     *
      * @param PDOStatement $stmt
      * @param array $params
      *
      * @return void
+     * @throws Exception
      */
     public function bindParams(PDOStatement $stmt, array $params): void {
         foreach ($params as $key => $param) {
-            if (!is_array($param) || count($param) !== 2) {
-                self::$logger->error("Invalid parameter structure.", [
-                    'key' => $key,
-                    'param' => $param
-                ]);
-                return;
-            }
-
-            [$value, $type] = $param;
+            // Walidacja struktury parametru
+            [$value, $type] = $this->validateParam($param, $key);
 
             self::$logger->debug("Binding parameter:", [
-                'key' => $key,
+                'key'   => $key,
                 'value' => $value,
-                'type' => $type
+                'type'  => $type
             ]);
 
             try {
                 $stmt->bindValue($key, $value, $type ?? PDO::PARAM_STR);
             } catch (PDOException $e) {
                 self::$logger->error("Failed to bind parameter to statement.", [
-                    'key' => $key,
+                    'key'   => $key,
                     'value' => $value,
-                    'type' => $type,
+                    'type'  => $type,
                     'error' => $e->getMessage(),
                 ]);
+                throw new Exception("Failed to bind parameter to statement.", 0, $e);
             }
         }
         self::$logger->debug("All parameters successfully bound.", ['parameters' => $params]);
     }
+
 
     /**
      * @param string $query
      * @param array $params
      *
      * @return array
+     * @throws Exception
      */
     public function executeStatement(string $query, array $params = []): array {
         self::initDatabase();

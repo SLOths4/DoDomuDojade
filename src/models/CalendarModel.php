@@ -4,7 +4,6 @@ namespace src\models;
 use DateMalformedStringException;
 use DateTime;
 use Exception;
-use Monolog\Logger;
 use src\core\Model;
 
 /**
@@ -37,14 +36,13 @@ class CalendarModel extends Model
             self::$logger->debug("Successfully fetched the iCal data");
         }
       
-        if (strpos($icalData, 'BEGIN:VEVENT') === false) {
+        if (!str_contains($icalData, 'BEGIN:VEVENT')) {
             self::$logger->debug("No events found in the iCal data.");
             return [];
         } else {
             self::$logger->debug("Found events in the iCal data.");
         }
 
-        // Parse the iCal data
         return $this->parse_ical_data($icalData);
     }
 
@@ -71,6 +69,7 @@ class CalendarModel extends Model
         });
         return $events;
     }
+
     /**
      * iCal event processing function
      * @param mixed $eventData
@@ -177,10 +176,12 @@ class CalendarModel extends Model
      * @param DateTime $currentDate
      * @return int $days
      */
-    private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate) {
+    private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate): int
+    {
         $interval = $currentDate->diff($eventDate);
         return $interval->days;
     }
+
     /**
      * Checking if the event is happening in 7 days function
      * @param DateTime $eventDate
@@ -188,7 +189,7 @@ class CalendarModel extends Model
      * @param int $daysUntilEvent
      * @return bool
      */
-    private function should_include_event($eventDate, $currentDate, $daysUntilEvent): bool
+    private function should_include_event(DateTime $eventDate, DateTime $currentDate, int $daysUntilEvent): bool
     {
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
@@ -202,49 +203,39 @@ class CalendarModel extends Model
      * @return void
      * @throws DateMalformedStringException
      */
-    public function generateRecurringEvents(&$events, $event, $startDate, $endDate): void
+    public function generateRecurringEvents(array &$events, array $event, DateTime $startDate, DateTime $endDate): void
     {
         $rruleParts = [];
-        
-        // Konwertuje RRULE na tablicę wartości
+
         parse_str(str_replace(';', '&', $event['rrule']), $rruleParts);
-        
-        // Pobiera częstotliwość powtarzania (DAILY, WEEKLY, MONTHLY)
+
         $freq = $rruleParts['FREQ'] ?? '';
-        
-        // Pobiera liczbę powtórzeń, jeśli nie podano COUNT, ustawiamy datę maksymalną
+
         $count = isset($rruleParts['COUNT']) ? (int)$rruleParts['COUNT'] : PHP_INT_MAX;
         $maxDate = new DateTime('2025-06-30');
         
         // Pobiera informację o dniu tygodnia, jeśli istnieje
         $byday = $rruleParts['BYDAY'] ?? '';
-        
-        // Ustalanie interwału na podstawie częstotliwości
+
         $interval = match ($freq) {
             'DAILY' => '+1 day',
             'WEEKLY' => '+1 week',
             'MONTHLY' => '+1 month',
             default => null,
         };
-        
-        // Jeśli brak interwału, zakończ
+
         if (!$interval) return;
-        
-        // Tworzenie powtarzających się wydarzeń
+
         for ($i = 1; $i < $count; $i++) {
-            // Zmienia datę rozpoczęcia i zakończenia zgodnie z interwałem
             $startDate->modify($interval);
             $endDate->modify($interval);
-            
-            // Sprawdza, czy nowe wydarzenie nie przekracza maksymalnej daty
+
             if ($startDate > $maxDate) break;
-            
-            // Tworzy nowe wydarzenie na podstawie oryginalnego
+
             $newEvent = $event;
             $newEvent['start'] = $startDate->format('H.i - d.m.Y');
             $newEvent['end'] = $endDate->format('H.i - d.m.Y');
-            
-            // Dodaje nowe wydarzenie do tablicy
+
             $events[] = $newEvent;
         }
     }

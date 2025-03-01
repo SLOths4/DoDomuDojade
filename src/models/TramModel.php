@@ -3,7 +3,6 @@ namespace src\models;
 
 use Exception;
 use InvalidArgumentException;
-use Monolog\Logger;
 use RuntimeException;
 use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
