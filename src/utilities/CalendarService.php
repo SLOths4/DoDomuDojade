@@ -12,14 +12,30 @@ use Monolog\Logger;
  * @since 1.0.0
  */
 class CalendarService {
+    private const array ENV_VARIABLES = ['CALENDAR_URL'];
     private string $icalUrl;
     private Logger $logger;
 
-    public function __construct(Logger $logger, string $icalUrl) {
+    public function __construct(Logger $logger) {
         $this->logger = $logger;
-        $this->icalUrl = $icalUrl;
+        $this->icalUrl = $this->getEnvVariable("CALENDAR_URL");
     }
 
+    
+    /**
+     * Pobiera zmienne z pliku .env
+     *
+     * @param string $variableName
+     *
+     * @return string
+     */
+    private function getEnvVariable(string $variableName): string {
+        $value = $_ENV[$variableName];
+        if ($value === false) {
+            $this->logger->error("Environment variable $variableName is not set. Expected variables: " . implode(',', self::ENV_VARIABLES));
+        }
+        return $value;
+    }
     /**
      * iCal data fetching function
      * @return array
