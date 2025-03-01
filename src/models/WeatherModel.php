@@ -21,12 +21,10 @@ class WeatherModel extends Model
     private string $airlyApiKey;
     private string $airlyLocationId;
     private string $airlyUrl;
-    private Logger $logger;
 
 
     public function __construct() {
         $this->httpClient = HttpClient::create();
-        $this->logger = self::initLogger();
 
         $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL') ?? $this->logger->error("IMGW endpoint is missing.") && throw new RuntimeException('IMGW endpoint is missing.');
         $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT') ?? $this->logger->error("Airly endpoint is missing.") && throw new RuntimeException('Airly endpoint is missing.');
@@ -57,9 +55,9 @@ class WeatherModel extends Model
         TransportExceptionInterface |
         DecodingExceptionInterface $e
         ) {
-            $this->logger->error("Błąd podczas pobierania danych z ". $url . " " .  $e->getMessage());
+            self::$logger->error("Błąd podczas pobierania danych z ". $url . " " .  $e->getMessage());
         } catch (Exception $e) {
-            $this->logger->error("Nieoczekiwany błąd podczas pobierania danych z" . $url . " " .  $e->getMessage());
+            self::$logger->error("Nieoczekiwany błąd podczas pobierania danych z" . $url . " " .  $e->getMessage());
         }
         return [];
     }
@@ -102,7 +100,7 @@ class WeatherModel extends Model
      */
     private function getAirlyData(): array
     {
-        $this->logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airQualityUrl]);
+        self::$logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airQualityUrl]);
 
         $headers = [
             'Accept'       => 'application/json',
@@ -112,14 +110,14 @@ class WeatherModel extends Model
 
         try {
             $data = $this->fetchData($this->airQualityUrl, $headers);
-            $this->logger->info("Pomyślnie pobrano dane z API Airly");
+            self::$logger->info("Pomyślnie pobrano dane z API Airly");
         } catch (RuntimeException $e) {
-            $this->logger->warning("Nie udało się pobrać danych z API Airly: " . $e->getMessage());
+            self::$logger->warning("Nie udało się pobrać danych z API Airly: " . $e->getMessage());
             return $this->extractAirlyData([]); // Zwracamy dane z wartościami null
         }
 
         if (empty($data)) {
-            $this->logger->error("Dane z Airly są puste. Możliwa awaria API.");
+            self::$logger->error("Dane z Airly są puste. Możliwa awaria API.");
             return $this->extractAirlyData([]);
         }
 
@@ -135,7 +133,7 @@ class WeatherModel extends Model
      */
     private function getImgwWeatherData(): array
     {
-        $this->logger->info("Rozpoczęto pobieranie danych z API IMGW");
+        self::$logger->info("Rozpoczęto pobieranie danych z API IMGW");
 
         $headers = [
             'Accept' => 'application/json',
@@ -144,9 +142,9 @@ class WeatherModel extends Model
 
         try {
             $data = $this->fetchData($this->imgwWeatherUrl, $headers);
-            $this->logger->info("Pomyślnie pobrano dane z API IMGW");
+            self::$logger->info("Pomyślnie pobrano dane z API IMGW");
         } catch (Exception $e) {
-            $this->logger->error("Błąd podczas pobierania danych z API IMGW: " . $e->getMessage());
+            self::$logger->error("Błąd podczas pobierania danych z API IMGW: " . $e->getMessage());
             throw new RuntimeException("Błąd podczas pobierania danych pogodowych IMGW: " . $e->getMessage());
         }
 

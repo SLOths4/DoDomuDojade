@@ -1,187 +1,16 @@
 <?php
 namespace src\views;
 
-session_start();
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-require_once '../../vendor/autoload.php';
-include('../controllers/AnnouncementsModel.php');
-include('../controllers/UserModel.php');
+use src\core\SessionHelper;
 
-use Dotenv\Dotenv;
-use Exception;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use Monolog\Logger;
-use PDO;
-use src\models\AnnouncementsModel;
-use src\models\ModuleModel;
-use src\models\UserModel;
-
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../DoDomuDojade/');
-$dotenv->load();
-
-if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
-    exit;
-}
-
-/**
- * @return PDO
- */
-function getPdo(): PDO
-{
-    $db_password = $_ENV['DB_PASSWORD'];
-    $db_username = $_ENV['DB_USERNAME'];
-    $db_host = $_ENV['DB_HOST'];
-
-    if (!empty($db_password) and !empty($db_username)) {
-        $pdo = new PDO($db_host, $db_username, $db_password);
-    } else {
-        $pdo = new PDO($db_host);
-    }
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    return $pdo;
-}
-
-$pdo = getPdo();
-
-$user = $_SESSION['user'];
-$user_id = (int)$_SESSION['user_id'];
-
-$logger = new Logger('AdminHandler');
-$logger->pushHandler(new StreamHandler('../logs/admin.logs', Level::Debug));
+SessionHelper::start();
+$error = SessionHelper::get('error');
+SessionHelper::remove('error');
 
 
-$announcementService = new AnnouncementsModel($logger, $pdo);
-$userService = new UserModel($logger, $pdo);
-$moduleService = new ModuleModel($pdo, $logger);
-// obsługa usuwania ogłoszeń
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {
-    $logger->debug("delete_announcement request received");
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $logger->error("Invalid CSRF token");
-        die('Invalid CSRF token');
-    }
-
-    $announcementId = $_POST['announcement_id'];
-
-    try {
-        $result = $announcementService->deleteAnnouncement($announcementId, $user_id);
-
-        if ($result) {
-            $logger->info("Announcement deleted");
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?delete=success');
-        } else {
-            $logger->error("Announcement could not be deleted");
-            $_SESSION['delete_error'] = 'Failed to delete announcement';
-            header('Location: ' . $_SERVER['PHP_SELF']);
-        }
-        exit;
-    } catch (Exception $e) {
-        // Log error and show generic message
-        $logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
-        $_SESSION['delete_error'] = 'An error occurred while deleting the announcement';
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
-    $logger->debug("add_announcement request received");
-    //if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-    //    $logger->error("Invalid CSRF token");
-    //    die('Invalid CSRF token');
-    //}
-
-    $title = isset($_POST['title']) ? trim($_POST['title']) : '';
-    $text = isset($_POST['text']) ? trim($_POST['text']) : '';
-    $valid_until = $_POST['valid_until'];
-
-    try {
-        $result = $announcementService->addAnnouncement($title, $text, $valid_until, $user_id);
-        if ($result) {
-            $logger->info("Announcement added successfully");
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?add=success');
-        } else {
-            $logger->error("Announcement adding failed");
-            $_SESSION['add_error'] = 'Failed to add announcement';
-            header('Location: ' . $_SERVER['PHP_SELF']);
-        }
-        exit;
-    } catch (Exception $e) {
-        $logger->error('Announcement adding failed', ['error' => $e->getMessage()]);
-        $_SESSION['add_error'] = 'Failed to add announcement';
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-    $logger->debug("add_user request received");
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $logger->error("Invalid CSRF token");
-        die('Invalid CSRF token');
-    }
-
-    if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
-        $logger->error("Username and password are required");
-        $_SESSION['user_add_error'] = "Username and password are required!";
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-
-
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
-
-    try {
-        $result = $userService->addUser($username, $password);
-        if ($result) {
-            $logger->info("User added successfully");
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?user_add=success');
-        } else {
-            $logger->error("User adding failed");
-            $_SESSION['user_add_error'] = 'Failed to add user';
-            header('Location: ' . $_SERVER['PHP_SELF']);
-        }
-        exit;
-    } catch (Exception $e) {
-        $logger->error('User adding failed', ['error' => $e->getMessage()]);
-        $_SESSION['user_add_error'] = 'Failed to add user';
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
-    $logger->debug("delete_user request received");
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $logger->error("Invalid CSRF token");
-        die('Invalid CSRF token');
-    }
-
-
-    $del_user_id = trim($_POST['user_id']);
-
-    try {
-        $result = $userService->deleteUser($del_user_id);
-        if ($result) {
-            $logger->info("User deleted successfully");
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?user_delete=success');
-        } else {
-            $logger->error("User deletion failed");
-            $_SESSION['user_delete_error'] = 'Failed to delete user';
-            header('Location: ' . $_SERVER['PHP_SELF']);
-        }
-        exit;
-    } catch (Exception $e) {
-        $logger->error('User deletion failed', ['error' => $e->getMessage()]);
-        $_SESSION['user_delete_error'] = 'Failed to delete user';
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-}
-
+//-----------mess------
 
 // Ustawianie stanu checkboxa na podstawie przesłania formularza
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -194,42 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        $logger->error("Nieprawidłowy token CSRF");
-        die('Nieprawidłowy token CSRF');
-    }
-
-    if (isset($_POST['enable_module'])) {
-        $moduleName = $_POST['module_name'];
-
-        try {
-            $moduleService->toggleModule($moduleName, true);
-            $logger->info("Moduł {$moduleName} został włączony");
-            header("Location: panel.php?module_enabled={$moduleName}");
-            exit;
-        } catch (Exception $e) {
-            $logger->error("Błąd przy włączaniu modułu: {$e->getMessage()}");
-            header("Location: panel.php?module_error=enable_failed");
-            exit;
-        }
-    }
-
-    if (isset($_POST['disable_module'])) {
-        $moduleName = $_POST['module_name'];
-
-        try {
-            $moduleService->toggleModule($moduleName, false);
-            $logger->info("Moduł {$moduleName} został wyłączony");
-            header("Location: panel.php?module_disabled={$moduleName}");
-            exit;
-        } catch (Exception $e) {
-            $logger->error("Błąd przy wyłączaniu modułu: {$e->getMessage()}");
-            header("Location: panel.php?module_error=disable_failed");
-            exit;
-        }
-    }
-}
+// ------ mess
 
 
 ?>
@@ -243,52 +37,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="../../public/assets/styles/style.css" rel="stylesheet" type="text/css">
-    <link href="../../public/assets/styles/admin.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/style.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/admin.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<h1>Witaj, <?= htmlspecialchars($user) ?>!</h1>
+<h1>Witaj, <?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?>!</h1>
 
-<button onclick="location.href = 'logout.php';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
-<button onclick="window.open('../index.php', '_blank');"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
+<button onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
+<button onclick="window.open('/display', '_blank');"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
 
 <div id="announcement">
     <?php
-    if (isset($_GET['delete']) && $_GET['delete'] == 'success') {
-        echo '<div class="sucess"> Ogłoszenie zostało usunięte!</div>';
+    if (SessionHelper::has('error')) {
+        echo '<div class="error">' . SessionHelper::get('error') . '</div>';
     }
-    if (isset($_SESSION['delete_error'])) {
-        echo '<div class="error">' . htmlspecialchars($_SESSION['delete_error']) . '</div>';
-        unset($_SESSION['delete_error']);
-    }
-
-    if (isset($_GET['add']) && $_GET['add'] == 'success') {
-        echo '<div class="success">Ogłoszenie zostało dodane!</div>';
-    }
-    if (isset($_SESSION['add_error'])) {
-        echo '<div class="error">' . htmlspecialchars($_SESSION['add_error']) . '</div>';
-        unset($_SESSION['add_error']);
-    }
-
-    // Sprawdzanie, czy wyświetlać tylko ważne ogłoszenia (domyślnie "wszystkie")
-    $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
     ?>
 
-    <form method="POST" action="panel.php" id="display-valid-announcements-only">
-        <label>
-            <input type="checkbox"
-                   name="display-valid-announcements-only"
-                   onchange="this.form.submit();"
-                   placeholder="display only valid announcements"
-                <?php if ($showOnlyValid) echo 'checked'; ?>>
-            Wyświetlaj tylko ważne ogłoszenia
-        </label>
-    </form>
-
-
-    <form method="POST" action="panel.php" id="form">
+    <form method="POST" action="panel/add_announcement">
         <label>
             <input type="text" name="title" placeholder="Title">
         </label>
@@ -299,123 +66,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="date" name="valid_until" placeholder="Valid until">
         </label>
         <input type="submit" name="add_announcement" value="Add">
-        <input type="hidden" name="csrf_token" value="<?php htmlspecialchars($_SESSION['csrf_token']) ?>">
-        <input type="hidden" name="user_id" value="<?php htmlspecialchars($_SESSION['user_id']) ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
     </form>
 
-    <?php
+    <?php if (!empty($announcements)): ?>
+        <?php foreach ($announcements as $announcement): ?>
+            <div id="announcement">
+                <h3><?= htmlspecialchars($announcement['title']) ?></h3>
+                <p>Autor: <?= htmlspecialchars($announcement['user_id']) ?> | <?= htmlspecialchars($announcement['date']) ?></p>
+                <p>Ważne do: <?= htmlspecialchars($announcement['valid_until']) ?></p>
+                <p><?= htmlspecialchars($announcement['text']) ?></p>
 
-    // Pobieranie ogłoszeń na podstawie stanu checkboxa
-    if ($showOnlyValid) {
-        $announcements = $announcementService->getValidAnnouncements(); // Tylko ważne ogłoszenia
-    } else {
-        $announcements = $announcementService->getAnnouncements(); // Wszystkie ogłoszenia
-    }
+                <!-- Formularz usunięcia ogłoszenia -->
+                <form method="POST" action="/panel/delete_announcement" onsubmit="return confirm('Czy na pewno chcesz usunąć to ogłoszenie?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
+                    <button type="submit" name="delete_announcement">Usuń</button>
+                </form>
 
-
-    $user_service = new UserModel($logger, $pdo);
-    foreach ($announcements as $announcement) {
-        try {
-            $user = $user_service->getUserById($announcement['user_id']);
-            $author_username = $user['username'] ?? 'Nieznany użytkownik';
-        } catch (Exception $e) {
-            $author_username = $announcement['user_id'] ?? 'Nieznany autor';
-        }
-        echo "<div id='announcement'>";
-        // Announcement
-        echo "<h3>" . htmlspecialchars($announcement['title']) . "</h3><br>";
-        echo "Autor: " . $author_username . " | " . htmlspecialchars($announcement['date']) . "<br>";
-        echo "Ważne do: " . htmlspecialchars($announcement['valid_until']) . "<br>";
-        echo htmlspecialchars($announcement['text']) . "<br><br>";
-        // Delete form
-        echo "<form method='POST' onsubmit='return confirm(\"Are you sure you want to delete this announcement?\");'>";
-        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='hidden' name='announcement_id' value='" . htmlspecialchars($announcement['id']) . "'>";
-        echo "<input type='hidden' name='csrf_token' value=' " . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($_SESSION['user_id']) . "'>";
-        echo "<button type='submit' name='delete_announcement'>Usuń</button>";
-        echo "</form>";
-        // Edit form
-        // TODO Dodanie edycji ogłoszenia
-        echo "<form method='POST' onsubmit='return confirm(\"Are you sure you want to make changes to this announcement?\");'>";
-        echo "<input type='text' name='title' placeholder='Title' >";
-        echo "<input type='text' name='text' placeholder='Text'>";
-        echo "<input type='date' name='valid_until' placeholder='Valid until'>";
-        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='hidden' name='announcement_id' value='" . htmlspecialchars($announcement['id']) . "'>";
-        echo "<input type='hidden' name='csrf_token' value=' " . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($_SESSION['user_id']) . "'>";
-        echo "<button type='submit' name='edit_announcement'>Edytuj</button>";
-        echo "</form>";
-        // Div close tag
-        echo "</div>";
-    }
-
-    ?>
+                <!-- Formularz edycji ogłoszenia -->
+                <form method="POST" action="/panel/edit_announcement">
+                    <input type="text" name="title" value="<?= htmlspecialchars($announcement['title']) ?>">
+                    <input type="text" name="text" value="<?= htmlspecialchars($announcement['text']) ?>">
+                    <input type="date" name="valid_until" value="<?= htmlspecialchars($announcement['valid_until']) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
+                    <button type="submit" name="edit_announcement">Edytuj</button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Brak ogłoszeń do wyświetlenia.</p>
+    <?php endif; ?>
 </div>
 
 <div id="users">
-        <?php
-        if (isset($_GET['user_add']) && $_GET['user_add'] == 'success') {
-            echo '<div class="success">Uzytkownik został dodany!</div>';
-        }
-        if (isset($_SESSION['user_add_error'])) {
-            echo '<div class="error">' . htmlspecialchars($_SESSION['user_add_error']) . '</div>';
-            unset($_SESSION['user_add_error']);
-        }
-        if (isset($_GET['user_delete']) && $_GET['user_delete'] == 'success') {
-            echo '<div class="success">Uzytkownik został usunięty!</div>';
-        }
-        if (isset($_SESSION['user_delete_error'])) {
-            echo '<div class="error">' . htmlspecialchars($_SESSION['user_delete_error']) . '</div>';
-            unset($_SESSION['user_delete_error']);
-        }
+    <form method="POST" action="panel/add_user">
+        <label>
+            <input type="text" name="username" placeholder="Username">
+        </label>
+        <label>
+            <input type="text" name="password" placeholder="Password">
+        </label>
+        <input type="submit" name="add_user" value="Add">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+        <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
+    </form>
 
-        $users = $userService->getUsers();
-        foreach ($users as $user) {
-            echo "<div id='user'>";
-            echo "<h3>" . htmlspecialchars($user['username']) . "</h3><br>";
-            echo "ID". htmlspecialchars($user['id']) . "<br>";
-            echo ");'>";
-            echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-            echo "<input type='hidden' name='user_id' value='" . htmlspecialchars($user['id']) . "'>";
-            echo "<button type='submit' name='delete_user'>Usuń</button>";
-            echo "</form>";
-        }
+    <?php if (!empty($users)): ?>
+        <?php foreach ($users as $user): ?>
+            <div id="announcement">
+                <h3><?= htmlspecialchars($user['username']) ?></h3>
 
-        echo ");'>";
-        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='text' name='username'>";
-        echo "<input type='text' name='password'>";
-        echo "<button type='submit' name='add_user'>Dodaj uzytkownika</button>";
-        echo "</form>";
-        ?>
+                <!-- Formularz usunięcia użytkownika -->
+                <form method="POST" action="/panel/delete_user" onsubmit="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="user_to_delete_id" value="<?= htmlspecialchars($user['id']) ?>">
+                    <button type="submit" name="delete_user">Usuń</button>
+                </form>
+
+                <!-- Formularz edycji uzytkownika -->
+                <form method="POST" action="/panel/edit_user">
+                    <label>
+                        <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>">
+                    </label>
+                    <label>
+                        <input type="text" name="password">
+                    </label>
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="user_to_edit_id" value="<?= htmlspecialchars($user['id']) ?>">
+                    <button type="submit" name="edit_announcement">Edytuj</button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Brak ogłoszeń do wyświetlenia.</p>
+    <?php endif; ?>
 </div>
 
 <div id="modules">
-    <?php
-    $modules = $moduleService->getModules();
+    <?php if (!empty($modules)): ?>
+        <?php foreach ($modules as $module): ?>
+            <div id="module">
+                <h3><?= htmlspecialchars($module['module_name']) ?></h3>
+                <p>Status: <?= ($module['is_active'] ? "Włączony" : "Wyłączony") ?></p>
 
-    foreach ($modules as $module) {
-        echo "<div id='module'>";
-        echo "<h3>" . htmlspecialchars($module['module_name']) . "</h3><br>";
-        echo "Status: " . ($module['is_active'] ? "Enabled" : "Disabled") . "<br>";
-        echo "<form method='POST' action='panel.php'>";
-        echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-        echo "<input type='hidden' name='module_name' value='" . htmlspecialchars($module['module_name']) . "'>";
-        echo "<input type='hidden' name='module_id' value='" . htmlspecialchars($module['id']) . "'>";
-        if ($module['is_active']) {
-            echo "<button type='submit' name='disable_module'>Disable</button>";
-        } else {
-            echo "<button type='submit' name='enable_module'>Enable</button>";
-        }
-        echo "</form>";
-        echo "</div>";
-    }
-    ?>
+                <!-- Formularz włączania/wyłączania modułu -->
+                <form method="POST" action="/panel/toggle_module" onsubmit="return confirm('Czy na pewno chcesz zmienić stan modułu?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="module_name" value="<?= htmlspecialchars($module['module_name']) ?>">
+                    <input type="hidden" name="enable" value="<?= $module['is_active'] ? '0' : '1' ?>">
+                    <button type="submit"><?= $module['is_active'] ? "Wyłącz" : "Włącz" ?></button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Brak ogłoszeń do wyświetlenia.</p>
+    <?php endif; ?>
+
 </div>
-<!-- IMPORT FOOTER -->
-<?php include('../functions/footer.php'); ?>
 
+<!-- IMPORT FOOTER -->
+<?php include('functions/footer.php'); ?>
 </body>
 </html>

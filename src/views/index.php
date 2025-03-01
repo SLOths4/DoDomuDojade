@@ -3,27 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title>DoDomuDojadę</title>
-    <link rel="icon" type="image/x-icon" href="../../public/assets/resources/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/resources/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="../../public/assets/styles/style.css" rel="stylesheet" type="text/css">
+    <link href="assets/styles/style.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <?php
-    require_once __DIR__ . '/../../vendor/autoload.php';
-
-    ?>
-
+  <script>
+      function parseJson(response) {
+          try {
+              response = typeof response === 'string' ? JSON.parse(response) : response;
+          } catch (e) {
+              console.error("Błąd parsowania JSON:", e);
+          }
+      }
+  </script>
     <div class="div">
         <div id="version-container" class="div">
             <script>
                 function getVersion() {
                     $.ajax({
-                        url: 'refresh.php',
-                        type: 'GET',
+                        url: '/display/get_version',
+                        type: 'POST',
                         dataType: 'json',
                         data: { function: 'getVersion' },
                         success: function(response) {
@@ -37,8 +41,8 @@
                             }
 
                             // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
-                            if (response.version) {
-                                let version = response.version;
+                            if (response.data) {
+                                let version = response.data;
                                 $('#version-container').html(version);
                             } else {
                                 $('#version-container').html('<p>Błąd: Brak danych wersji</p>');
@@ -92,7 +96,7 @@
                 updateClock(); // Wywołanie na starcie
             </script>
         </div>
-        <div class="div"><img src="../../public/assets/resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
+        <div class="div"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
     </div>
 
     <div id="countdown" class="div">
@@ -101,8 +105,8 @@
             function loadCountdownData() {
 
                 $.ajax({
-                    url: 'refresh.php',
-                    type: 'GET',
+                    url: '/display/get_countdown',
+                    type: 'POST',
                     dataType: 'json',
                     data: { function: 'countdownData' },
                     success: function(response) {
@@ -151,13 +155,12 @@
         <script>
             function loadWeatherData() {
                 $.ajax({
-                    url: 'refresh.php',
-                    type: 'GET',
+                    url: '/display/get_weather',
+                    type: 'POST',
                     dataType: 'json',
                     data: { function: 'weatherData' },
                     success: function(response) {
                         try {
-                            // Jeśli odpowiedź zwrócona jako string, parsujemy na JSON
                             response = typeof response === 'string' ? JSON.parse(response) : response;
                         } catch (e) {
                             console.error("Błąd parsowania JSON:", e);
@@ -170,9 +173,8 @@
                             return;
                         }
 
-                        // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
                         if (response.success && response.data) {
-                            let data = response.data; // Dane pogodowe
+                            let data = response.data;
                             let content = `
                                 <p><i class="fa-solid fa-temperature-three-quarters"></i> ${data.temperature}°C</p>
                                 <p><i class="fa-solid fa-gauge"></i> ${data.pressure} hPa</p>
@@ -202,8 +204,8 @@
             function loadCalendarData() {
 
                 $.ajax({
-                    url: 'app/../refresh.php',
-                    type: 'GET',
+                    url: '/display/get_events',
+                    type: 'POST',
                     dataType: 'json',
                     data: { function: 'calendarData' },
                     success: function(response) {
@@ -258,8 +260,8 @@
         <script>
             function loadTramData() {
                 $.ajax({
-                    url: '../app/refresh.php',
-                    type: 'GET',
+                    url: '/display/get_departures',
+                    type: 'POST',
                     dataType: 'json',
                     data: { function: 'tramData' },
                     success: function(response) {
@@ -320,7 +322,6 @@
                 });
             }
 
-            //Odświeżanie co 5 sekund
             setInterval(loadTramData, 5000);
             loadTramData();
         </script>
@@ -332,8 +333,8 @@
         <script>
             function loadAnnouncements() {
                 $.ajax({
-                    url: 'refresh.php',
-                    type: 'GET',
+                    url: '/display/get_announcements',
+                    type: 'POST',
                     dataType: 'json',
                     data: { function: 'announcementsData' },
                     success: function(response) {

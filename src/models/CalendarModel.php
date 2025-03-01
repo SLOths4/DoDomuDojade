@@ -14,10 +14,8 @@ use src\core\Model;
 class CalendarModel extends Model
 {
     private string $icalUrl;
-    private Logger $logger;
 
     public function __construct(string $icalUrl) {
-        $this->logger = self::initLogger();
         $this->icalUrl = $icalUrl;
     }
 
@@ -33,17 +31,17 @@ class CalendarModel extends Model
 
         if ($icalData === false) {
             $error = error_get_last();
-            $this->logger->error("Error fetching iCal data: " . $error['message']);
+            self::$logger->error("Error fetching iCal data: " . $error['message']);
             throw new Exception("Error fetching iCal data: " . $error['message']);
         } else {
-            $this->logger->debug("Successfully fetched the iCal data");
+            self::$logger->debug("Successfully fetched the iCal data");
         }
       
         if (strpos($icalData, 'BEGIN:VEVENT') === false) {
-            $this->logger->debug("No events found in the iCal data.");
+            self::$logger->debug("No events found in the iCal data.");
             return [];
         } else {
-            $this->logger->debug("Found events in the iCal data.");
+            self::$logger->debug("Found events in the iCal data.");
         }
 
         // Parse the iCal data
@@ -103,7 +101,7 @@ class CalendarModel extends Model
                 }
             }
         } catch (Exception $e) {
-            $this->logger->error("Date parsing failed: " . $e->getMessage());
+            self::$logger->error("Date parsing failed: " . $e->getMessage());
         }
     }
 

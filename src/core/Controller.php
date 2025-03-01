@@ -2,31 +2,17 @@
 
 namespace src\core;
 
-use Exception;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use Monolog\Logger;
-
-class Controller {
-    private static Logger $logger;
-
-    public static function initLogger(): Logger
-    {
-        if (!isset(self::$logger)){
-            try {
-                self::$logger = new Logger('controllers');
-                self::$logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/src.logs', Level::Debug));
-            } catch (Exception $e) {
-                self::$logger->error("Wystąpił błąd: " . $e->getMessage());
-            }
-        }
-        return self::$logger;
-    }
+class Controller extends CommonService {
 
     protected function render($view, $data = []): void
     {
         extract($data);
-
-        include "views/$view.php";
+        $file = __DIR__ . "/../views/$view.php";
+        if (file_exists($file)) {
+            include $file;
+        } else {
+            echo "Plik widoku nie został znaleziony: $file";
+        }
     }
+
 }

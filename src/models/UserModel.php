@@ -2,7 +2,6 @@
 namespace src\models;
 
 use Exception;
-use Monolog\Logger;
 use PDO;
 use PDOException;
 use RuntimeException;
@@ -14,16 +13,12 @@ use src\core\Model;
  */
 class UserModel extends Model
 {
-    private PDO $pdo;
-    private Logger $logger;
     private string $TABLE_NAME;
 
     public function __construct() {
-        $this->logger = self::initLogger();
-        $this->pdo = self::initDatabase();
         $this->TABLE_NAME = self::getConfigVariable('USERS_TABLE_NAME') ?? 'users';
 
-        $this->logger->debug("Users table name being used: $this->TABLE_NAME");
+        self::$logger->debug("Users table name being used: $this->TABLE_NAME");
     }
 
     /**
@@ -32,10 +27,10 @@ class UserModel extends Model
     public function getUsers(): array {
         try {
             $query = "SELECT * FROM $this->TABLE_NAME";
-            $this->logger->info("Fetching all users.");
+            self::$logger->info("Fetching all users.");
             return $this->executeStatement($query);
         } catch (Exception $e) {
-            $this->logger->error("Error fetching users: " . $e->getMessage());
+            self::$logger->error("Error fetching users: " . $e->getMessage());
             throw new RuntimeException('Error fetching users');
         }
     }
@@ -48,11 +43,11 @@ class UserModel extends Model
         try {
             $query = "SELECT * FROM $this->TABLE_NAME WHERE id = :userId";
             $params = [':userId' => [$userId, PDO::PARAM_INT]];
-            $this->logger->info("Fetching user with ID: $userId.");
+            self::$logger->info("Fetching user with ID: $userId.");
             $result = $this->executeStatement($query, $params);
             return $result[0];
         } catch (Exception $e) {
-            $this->logger->error("Error fetching user with ID: $userId: " . $e->getMessage());
+            self::$logger->error("Error fetching user with ID: $userId: " . $e->getMessage());
             throw new RuntimeException('Error fetching user with ID: $userId');
         }
     }
@@ -64,24 +59,25 @@ class UserModel extends Model
      */
     function getUserByUsername(string $username): array
     {
-        $this->logger->info("Fetching user with username: $username.");
+        self::$logger->info("Fetching user with username: $username.");
 
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->bindParam(':username', $username);
+        $query = "SELECT * FROM users WHERE username = :username";
+        $params = [
+            ':username' => [$username, PDO::PARAM_STR],
+        ];
 
         try {
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->executeStatement($query, $params);
 
             if (!$user) {
-                $this->logger->error('No user found with this username.');
+                self::$logger->error('No user found with this username.');
                 return [];
             }
 
-            $this->logger->debug('Fetched user data: ' . json_encode($user));
+            self::$logger->debug('Fetched user data: ' . json_encode($user));
             return $user;
         } catch (Exception $e) {
-            $this->logger->error('Error fetching user by username: ' . $e->getMessage());
+            self::$logger->error('Error fetching user by username: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -101,10 +97,10 @@ class UserModel extends Model
                 ':created_at' => [date('Y-m-d'), PDO::PARAM_STR],
             ];
             $this->executeStatement($query, $params);
-            $this->logger->info("Added new user.");
+            self::$logger->info("Added new user.");
             return true;
         } catch (Exception $e) {
-            $this->logger->error("Error adding new user: " . $e->getMessage());
+            self::$logger->error("Error adding new user: " . $e->getMessage());
             throw new RuntimeException('Error adding new user');
         }
     }
@@ -124,10 +120,10 @@ class UserModel extends Model
                 ':userId' => [$userId, PDO::PARAM_INT],
             ];
             $this->executeStatement($query, $params);
-            $this->logger->info("User updated.");
+            self::$logger->info("User updated.");
             return true;
         } catch (PDOException $e) {
-            $this->logger->error("Error updating user: " . $e->getMessage());
+            self::$logger->error("Error updating user: " . $e->getMessage());
             throw new RuntimeException('Error updating user');
         }
     }
@@ -141,10 +137,10 @@ class UserModel extends Model
             $query = "DELETE FROM $this->TABLE_NAME WHERE id = :userId";
             $params = [':userId' => [$userId, PDO::PARAM_INT]];
             $this->executeStatement($query, $params);
-            $this->logger->info("User deleted.");
+            self::$logger->info("User deleted.");
             return true;
         } catch (PDOException $e) {
-            $this->logger->error("Error deleting user: " . $e->getMessage());
+            self::$logger->error("Error deleting user: " . $e->getMessage());
             throw new RuntimeException('Error deleting user');
         }
     }
