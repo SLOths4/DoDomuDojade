@@ -26,10 +26,10 @@ class WeatherModel extends Model
     public function __construct() {
         $this->httpClient = HttpClient::create();
 
-        $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL') ?? $this->logger->error("IMGW endpoint is missing.") && throw new RuntimeException('IMGW endpoint is missing.');
-        $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT') ?? $this->logger->error("Airly endpoint is missing.") && throw new RuntimeException('Airly endpoint is missing.');
-        $this->airlyApiKey = $this->getEnvVariable('AIRLY_API_KEY') ?? $this->logger->error('Airly API key is missing.') && throw new RuntimeException('Airly API key is missing.');
-        $this->airlyLocationId = ltrim($this->getEnvVariable('AIRLY_LOCATION_ID'), '/') ?? $this->logger->error('Airly location ID is missing.') && throw new RuntimeException('Airly location ID is missing.');
+        $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL') ?? self::$logger->error("IMGW endpoint is missing.") && throw new RuntimeException('IMGW endpoint is missing.');
+        $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT') ?? self::$logger->error("Airly endpoint is missing.") && throw new RuntimeException('Airly endpoint is missing.');
+        $this->airlyApiKey = $this->getEnvVariable('AIRLY_API_KEY') ?? self::$logger->error('Airly API key is missing.') && throw new RuntimeException('Airly API key is missing.');
+        $this->airlyLocationId = ltrim($this->getEnvVariable('AIRLY_LOCATION_ID'), '/') ?? self::$logger->error('Airly location ID is missing.') && throw new RuntimeException('Airly location ID is missing.');
         $this->airQualityUrl = $this->airlyUrl . $this->airlyLocationId;
     }
 

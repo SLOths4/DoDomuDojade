@@ -41,10 +41,6 @@ class PanelController extends Controller
     {
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== SessionHelper::get('csrf_token')) {
             self::$logger->error("Nieprawidłowy token CSRF.");
-
-            // TODO UNSAFE
-            self::$logger->error("OCZEKIWANO:  " . SessionHelper::get('csrf_token') . "   OTRZYMANO:    " . $_POST['csrf_token'] );
-
             SessionHelper::set('error', 'Nieprawidłowy token CSRF.');
             header("Location: /login");
             exit;

@@ -86,9 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Formularz edycji ogłoszenia -->
                 <form method="POST" action="/panel/edit_announcement">
-                    <input type="text" name="title" value="<?= htmlspecialchars($announcement['title']) ?>">
-                    <input type="text" name="text" value="<?= htmlspecialchars($announcement['text']) ?>">
-                    <input type="date" name="valid_until" value="<?= htmlspecialchars($announcement['valid_until']) ?>">
+                    <label>
+                        <input type="text" name="title" value="<?= htmlspecialchars($announcement['title']) ?>">
+                    </label>
+                    <label>
+                        <input type="text" name="text" value="<?= htmlspecialchars($announcement['text']) ?>">
+                    </label>
+                    <label>
+                        <input type="date" name="valid_until" value="<?= htmlspecialchars($announcement['valid_until']) ?>">
+                    </label>
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
                     <button type="submit" name="edit_announcement">Edytuj</button>

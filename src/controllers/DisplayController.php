@@ -104,11 +104,9 @@ class DisplayController extends Controller
                 if (!empty($departures)) {
                     self::$logger->debug('Pomyślnie pobrano dane tramwajowe.');
                     echo json_encode(['success' => true, 'is_active' => true, 'data' => $departures]);
-                    exit;
                 } else {
                     self::$logger->warning('Brak danych o odjazdach dla wszystkich przystanków.');
                     echo json_encode(['success' => false, 'is_active' => true, 'message' => 'Brak danych o odjazdach dla wybranych przystanków.']);
-                    exit;
                 }
 
                 exit;
