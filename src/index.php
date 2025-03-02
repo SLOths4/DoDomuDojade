@@ -17,8 +17,104 @@
 
     ?>
 
-    <div class="bg-cyan-900">
-        <div id="version-container" class="div">
+    <div class="flex mx-1">
+    <div class="flex bg-cyan-200 h-20 rounded-l-2xl justify-center items-center pl-3 pr-3"><img src="resources/logo_samo_kolor.png" alt="logo" width="50" height="50"></div>
+        <div id="date" class="flex bg-cyan-200 h-20 justify-center items-center pl-2 pr-2 font-mono text-[20px] font-extrabold">
+            <script>
+                function updateDate() {
+                    const dateElement = document.getElementById('date');
+                    if (!dateElement) return;
+
+                    const now = new Date();
+                    const day = now.getDate().toString().padStart(2, '0');
+                    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                    const year = now.getFullYear();
+
+                    dateElement.innerHTML = `<h2><i class="fa-solid fa-calendar"></i> ${day}.${month}.${year}</h2>`;
+                }
+
+                setInterval(updateDate, 1000);
+                updateDate();
+            </script>
+        </div>
+        <div id="time" class="flex bg-cyan-200 h-20 justify-center items-center pl-2 pr-2 font-mono text-[20px] font-extrabold">
+            <script>
+                function updateClock() {
+                    const timeElement = document.getElementById('time');
+                    if (!timeElement) return;
+
+                    const now = new Date();
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+                    timeElement.innerHTML = `<h2><i class="fa-solid fa-clock"></i> ${hours}:${minutes}:${seconds}</h2>`;
+                }
+
+                // Aktualizacja zegara co 1 sekundę
+                setInterval(updateClock, 1000);
+                updateClock(); // Wywołanie na starcie
+            </script>
+        </div>  
+        <div id="weather" class="flex bg-cyan-200 h-20 justify-center items-center pl-2 pr-2 font-mono text-[20px]"><h2 class="text-center font-extrabold">Dzisiejsza<br>pogoda</h2></div>
+        <div id="temperature-div" class="flex bg-cyan-200 h-20 justify-center items-center pl-2 pr-2 font-mono text-[20px]">Ładowanie...</div>
+        <div id="pressure-div" class="flex bg-cyan-200 h-20 justify-center items-center pl-2 pr-2 font-mono text-[20px]">Ładowanie...</div>
+        <div id="airly-div" class="flex flex-1 ml-auto bg-cyan-200 h-20 rounded-r-2xl justify-center items-center pl-2 pr-2 font-mono text-[20px]">Ładowanie...</div>
+            <script>
+                function loadWeatherData() {
+                    $.ajax({
+                        url: 'refresh.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { function: 'weatherData' },
+                        success: function(response) {
+                            try {
+                                // Jeśli odpowiedź zwrócona jako string, parsujemy na JSON
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                                $('#weather-container').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
+                                return;
+                            }
+
+                            if (response.is_active===false) {
+                                $('#weather').remove();
+                                return;
+                            }
+
+                            // Sprawdzamy, czy odpowiedź jest poprawna i czy zawiera dane
+                            if (response.success && response.data) {
+                                let data = response.data; // Dane pogodowe
+                                let content = `
+                                    <p><i class="fa-solid fa-temperature-three-quarters"></i> ${data.temperature}°C</p>
+                                `;
+                                let content1 = `
+                                    <p><i class="fa-solid fa-gauge"></i> ${data.pressure} hPa</p>
+                                `;
+                                let content2 = `
+                                    <p>Indeks jakości powietrza (Airly): ${data.airlyIndex}</p>
+                                `;
+                                $('#temperature-div').html(content);
+                                $('#pressure-div').html(content1);
+                                $('#airly-div').html(content2);
+                            } else {
+                                $('#temperature-div').html('<p>Błąd: Brak danych pogodowych</p>');
+                                $('#pressure-div').html('<p>Błąd: Brak danych pogodowych</p>');
+                                $('#airly-div').html('<p>Błąd: Brak danych pogodowych</p>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#weather-container').html('<p>Błąd ładowania danych pogodowych.</p>');
+                        }
+                    });
+                }
+
+                setInterval(loadWeatherData, 900000)
+                loadWeatherData();
+            </script>
+        <!--
+        <div id="version-container" class="flex bg-blue-900 h-20 justify-center items-center pl-2 pr-2 font-mono text-[12px] font-extrabold">
             <script>
                 function getVersion() {
                     $.ajax({
@@ -55,46 +151,8 @@
                 getVersion();
             </script>
         </div>
-        <div id="date" class="div">
-            <script>
-                function updateDate() {
-                    const dateElement = document.getElementById('date');
-                    if (!dateElement) return;
-
-                    const now = new Date();
-                    const day = now.getDate().toString().padStart(2, '0');
-                    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                    const year = now.getFullYear();
-
-                    dateElement.innerHTML = `<h2><i class="fa-solid fa-calendar"></i> ${day}.${month}.${year}</h2>`;
-                }
-
-                setInterval(updateDate, 1000);
-                updateDate();
-            </script>
-        </div>
-        <div id="time" class="div">
-            <script>
-                function updateClock() {
-                    const timeElement = document.getElementById('time');
-                    if (!timeElement) return;
-
-                    const now = new Date();
-                    const hours = now.getHours().toString().padStart(2, '0');
-                    const minutes = now.getMinutes().toString().padStart(2, '0');
-                    const seconds = now.getSeconds().toString().padStart(2, '0');
-
-                    timeElement.innerHTML = `<h2><i class="fa-solid fa-clock"></i> ${hours}:${minutes}:${seconds}</h2>`;
-                }
-
-                // Aktualizacja zegara co 1 sekundę
-                setInterval(updateClock, 1000);
-                updateClock(); // Wywołanie na starcie
-            </script>
-        </div>
-        <div class="div"><img src="resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
+            -->
     </div>
-
     <div id="countdown" class="div">
         <h2>Odliczanie</h2>
         <script>
@@ -130,12 +188,12 @@
 
                         } else {
                             console.error("Brak danych do wyświetlenia:", response);
-                            $('#countdown').html('<p>Błąd: Brak danych</p>');
+                            $('#countdown').html('<p>Błąd: Brak danych do odliczania</p>');
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error("Błąd ładowania AJAX: ", error);
-                        $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
+                        $('#countdown').html('<p>Błąd ładowania odliczania.</p>');
                     }
                 });
             }
