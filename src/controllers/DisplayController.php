@@ -4,7 +4,6 @@ namespace src\controllers;
 
 use Exception;
 use src\core\Controller;
-use src\core\SessionHelper;
 use src\models\AnnouncementsModel;
 use src\models\CalendarModel;
 use src\models\CountdownModel;
@@ -23,6 +22,9 @@ class DisplayController extends Controller
     private CalendarModel $calendarModel;
     private WeatherModel $weatherModel;
 
+    /**
+     * @throws Exception
+     */
     function __construct()
     {
         ModuleModel::initDatabase();
@@ -41,7 +43,7 @@ class DisplayController extends Controller
 
     public function index(): void
     {
-        $this->render('index');
+        $this->render('display');
     }
 
     public function getVersion(): void
@@ -51,7 +53,7 @@ class DisplayController extends Controller
             try {
                 echo json_encode(['success' => true, 'is_active' => true, 'data' => trim(shell_exec('git describe --tags --abbrev=0'))]);
                 exit;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 self::$logger->error('Unable to fetch version', ['error' => $e->getMessage()]);
                 exit;
             }
@@ -110,7 +112,7 @@ class DisplayController extends Controller
                 }
 
                 exit;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 self::$logger->error('Błąd podczas przetwarzania danych tramwajowych: ' . $e->getMessage());
                 echo json_encode(['success' => false, 'is_active' => true, 'message' => 'Błąd w trakcie przetwarzania danych tramwajowych: ' . $e->getMessage()]);
                 exit;
@@ -200,12 +202,11 @@ class DisplayController extends Controller
                     ];
                     self::$logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
                     echo json_encode(['success' => true, 'data' => $response]);
-                    exit;
                 } else {
                     self::$logger->warning('Brak dostępnych danych odliczania.');
                     echo json_encode(['success' => false, 'message' => 'Brak dostępnych danych odliczania.']);
-                    exit;
                 }
+                exit;
             } catch (Exception $e) {
                 self::$logger->error('Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage()]);
@@ -247,12 +248,11 @@ class DisplayController extends Controller
                     }
                     self::$logger->debug('Pomyślnie pobrano dane wydarzenia.');
                     echo json_encode(['success' => true, 'data' => $response]);
-                    exit;
                 } else {
                     self::$logger->warning('Brak dostępnych danych o wydarzeniach.');
                     echo json_encode(['success' => false, 'message' => 'Brak danych o wydarzeniach.']);
-                    exit;
                 }
+                exit;
             } catch (Exception $e) {
                 self::$logger->error('Błąd podczas przetwarzania wydarzeń: ' . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania wydarzeń: ' . $e->getMessage()]);

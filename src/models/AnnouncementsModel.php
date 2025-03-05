@@ -3,8 +3,8 @@
 namespace src\models;
 
 use DateTime;
+use Exception;
 use InvalidArgumentException;
-use Monolog\Logger;
 use PDO;
 use PDOException;
 use RuntimeException;
@@ -71,6 +71,7 @@ class AnnouncementsModel extends Model {
     /**
      * Fetches all entries from provided announcements table
      * @return array
+     * @throws Exception
      */
     public function getAnnouncements(): array {
         try {
@@ -86,6 +87,7 @@ class AnnouncementsModel extends Model {
     /**
      * Fetches all valid announcements
      * @return array
+     * @throws Exception
      */
     public function getValidAnnouncements(): array{
         try {
@@ -113,6 +115,7 @@ class AnnouncementsModel extends Model {
      * @param string $validUntil
      * @param int $userId
      * @return bool
+     * @throws Exception
      */
     public function addAnnouncement(string $title, string $text, string $validUntil, int $userId): bool {
         self::$logger->debug("Received values:", [
@@ -160,6 +163,7 @@ class AnnouncementsModel extends Model {
      * @param string $newValue
      * @param int $userId
      * @return bool
+     * @throws Exception
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
         if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
@@ -195,6 +199,7 @@ class AnnouncementsModel extends Model {
      * @param int $announcementId
      * @param int $userId
      * @return bool
+     * @throws Exception
      */
     public function deleteAnnouncement(int $announcementId, int $userId): bool {
         try {
@@ -220,6 +225,7 @@ class AnnouncementsModel extends Model {
      * Fetches announcements by id
      * @param int $announcementId
      * @return array
+     * @throws Exception
      */
     public function getAnnouncementById(int $announcementId): array {
         try {
@@ -247,6 +253,7 @@ class AnnouncementsModel extends Model {
      * Fetches announcements by provided title from database
      * @param string $announcementTitle
      * @return array
+     * @throws Exception
      */
     public function getAnnouncementByTitle(string $announcementTitle): array {
         try {

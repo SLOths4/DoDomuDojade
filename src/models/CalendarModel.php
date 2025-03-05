@@ -48,11 +48,11 @@ class CalendarModel extends Model
 
     /**
      * iCal events extracting function
-     * @param array $icalData
+     * @param string $icalData
      * @return array
      * @throws Exception
      */
-    private function parse_ical_data(array $icalData): array
+    private function parse_ical_data(string $icalData): array
     {
         $events = [];
         preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches);

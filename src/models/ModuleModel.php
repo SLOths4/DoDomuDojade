@@ -2,6 +2,7 @@
 
 namespace src\models;
 
+use Exception;
 use PDO;
 use src\core\Model;
 
@@ -21,6 +22,7 @@ class ModuleModel extends Model
      *
      * @param string $moduleName
      * @return bool
+     * @throws Exception
      */
     public function isModuleVisible(string $moduleName): bool
     {
@@ -57,6 +59,7 @@ class ModuleModel extends Model
      *
      * @param string $moduleName
      * @return bool
+     * @throws Exception
      */
     public function isModuleActive(string $moduleName): bool
     {
@@ -87,6 +90,7 @@ class ModuleModel extends Model
      * Pobiera wszystkie moduły z tabeli.
      *
      * @return array
+     * @throws Exception
      */
     public function getModules(): array
     {
@@ -108,6 +112,7 @@ class ModuleModel extends Model
      *
      * @param string $moduleName
      * @return array
+     * @throws Exception
      */
     public function getModule(string $moduleName): array
     {
@@ -135,6 +140,7 @@ class ModuleModel extends Model
      * Pobiera wszystkie aktywne moduły.
      *
      * @return array
+     * @throws Exception
      */
     public function getActiveModules(): array
     {
@@ -157,6 +163,7 @@ class ModuleModel extends Model
      * @param string $moduleName
      * @param bool $status
      * @return void
+     * @throws Exception
      */
     public function toggleModule(string $moduleName, bool $status): void
     {

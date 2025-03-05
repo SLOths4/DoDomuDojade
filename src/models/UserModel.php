@@ -110,6 +110,7 @@ class UserModel extends Model
      * @param string $username
      * @param string $password
      * @return bool Success
+     * @throws Exception
      */
     public function updateUser(int $userId, string $username, string $password): bool {
         try {
@@ -131,6 +132,7 @@ class UserModel extends Model
     /**
      * @param int $userId
      * @return bool Success
+     * @throws Exception
      */
     public function deleteUser(int $userId): bool {
         try {

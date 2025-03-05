@@ -18,17 +18,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class MetarModel extends Model
 {
-    private const array ENV_VARIABLES = ['METAR_URL'];
     private HttpClientInterface $httpClient;
-    private Logger $logger;
     private string $metar_url;
 
 
-    public function __construct(Logger $loggerInstance)
+    public function __construct()
     {
         $this->httpClient = HttpClient::create();
         $this->metar_url =  $this->getEnvVariable("METAR_URL");
-        $this->logger = $loggerInstance;
     }
 
     /**
@@ -41,7 +38,7 @@ class MetarModel extends Model
     public function getMetar(string $airportIcaoCode): array
     {
         if (!$this->isValidIcaoCode($airportIcaoCode)) {
-            $this->logger->error("Invalid ICAO code provided.");
+            self::$logger->error("Invalid ICAO code provided.");
             return [];
         }
 
@@ -51,7 +48,7 @@ class MetarModel extends Model
             $xmlContent = $this->fetchData($url);
             return $this->extractMetarData($xmlContent);
         } catch (Exception $e) {
-            $this->logger->error('Error occurred while fetching METAR data: ' . $e->getMessage());
+            self::$logger->error('Error occurred while fetching METAR data: ' . $e->getMessage());
         }
 
         return [];
@@ -68,7 +65,7 @@ class MetarModel extends Model
     {
         $xml = simplexml_load_string($xmlString, "SimpleXMLElement", LIBXML_NOCDATA);
         if ($xml === false) {
-            $this->logger->error("Nie udało się sparsować danych XML");
+            self::$logger->error("Nie udało się sparsować danych XML");
             return [];
         }
 
@@ -110,7 +107,7 @@ class MetarModel extends Model
         ServerExceptionInterface |
         TransportExceptionInterface $e
         ) {
-            $this->logger->error("An error occurred while fetching data from $url: " . $e->getMessage());
+            self::$logger->error("An error occurred while fetching data from $url: " . $e->getMessage());
         }
 
         return '';
