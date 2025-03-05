@@ -220,7 +220,9 @@
 
     <div id="calendar" class="div">
         <h2>Wydarzenia</h2>
-          <div id="calendar-container">Ładowanie danych...</div>
+        <body>
+        <div class="loader"></div>
+        </body>
         <script>
             function loadCalendarData() {
 
