@@ -90,19 +90,25 @@ class PanelController extends Controller
             self::$logger->debug("Rozpoczęto weryfikację użytkownika.");
             $this->checkCsrf();
 
-            $username = $_POST['username'] ?? '';
-            $password = $_POST['password'] ?? '';
+            $username = trim($_POST['username']) ?? '';
+            $password = trim($_POST['password']) ?? '';
+
+            if (empty($password) or empty($username)) {
+                self::$logger->error("Password or username cannot be null!");
+                SessionHelper::set("error", "Password or username cannot be null!");
+                header("Location: /login");
+            }
 
             $user = $this->userModel->getUserByUsername($username);
 
             if ($user && password_verify($password, $user[0]['password'])) {
-                self::$logger->info("Prawidłowe hasło dla podanej nazwy użytkownika! ");
+                self::$logger->info("Prawidłowe hasło dla podanej nazwy użytkownika!");
                 $this->setCsrf();
                 SessionHelper::set('user_id', $user[0]['id']);
                 header("Location: /panel");
             } else {
-                self::$logger->error("Nieprawidłowe hasło dla podanej nazwy użytkownika! ");
-                SessionHelper::set('error', 'Nieprawidłowa nazwa użytkownika lub hasło');
+                self::$logger->error("Nieprawidłowe hasło dla podanej nazwy użytkownika!");
+                SessionHelper::set('error', 'Incorrect username or password!');
                 header("Location: /login");
             }
             exit;
