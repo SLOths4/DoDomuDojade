@@ -14,8 +14,8 @@ class CalendarModel extends Model
 {
     private string $icalUrl;
 
-    public function __construct(string $icalUrl) {
-        $this->icalUrl = $icalUrl;
+    public function __construct() {
+        $this->icalUrl = self::getEnvVariable('CALENDAR_URL');
     }
 
     /**
