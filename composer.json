@@ -1,6 +1,6 @@
 {
-    "name": "sloths4/dodomu-dojade",
-    "description": "This is DoDomuDojadę src repository.",
+    "name": "sloths4/dodomudojade",
+    "description": "This is DoDomuDojadę app repository.",
     "require": {
         "ext-json": "*",
         "ext-pdo": "*",
@@ -17,9 +17,6 @@
         "psr-4": {
                 "src\\": "src/"
             }
-    },
-    "scripts": {
-        "test": "phpunit"
     },
     "license": "CC-BY-NC-4.0"
 }
