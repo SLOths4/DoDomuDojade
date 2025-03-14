@@ -362,16 +362,40 @@
                                         response.data.forEach(announcement => {
                                             content += `
                                         <div class="bg-beige my-2 px-2 py-2 rounded-2xl shadow-custom">
-                                            <h3>${announcement.title}</h3>
-                                            <p><i class="fa-solid fa-user"></i> ${announcement.author}</p>
-                                            <p>${announcement.text}</p>
-                                            <p><small><i class="fa-solid fa-calendar"></i><strong> Utworzono:</strong> ${announcement.date}</small> – <small><strong>Ważne do:</strong> ${announcement.validUntil}</small></p>
+                                            <h3 id="fade1" style="display:none" >${announcement.title}</h3>
+                                            <p id="fade2" style="display:none" ><i class="fa-solid fa-user"></i> ${announcement.author}</p>
+                                            <p id="fade3" style="display:none" >${announcement.text}</p>
+                                            <p id="fade4" style="display:none" ><small><i class="fa-solid fa-calendar"></i><strong> Utworzono:</strong> ${announcement.date}</small> – <small><strong>Ważne do:</strong> ${announcement.validUntil}</small></p>
                                         </div>
                                     `;
                                         });
-                                        content += '</div>';
-                                        $('#announcements-container').html(content);
-                                    }
+                                        $(document).ready(function (){
+                                            let i = 0;
+                                            function LowTaperFade() {
+
+                                                if (i >= response.data.length) {
+                                                    i = 0
+                                                }
+
+                                                announcement = response.data[i];
+                                                title = announcement.title;
+                                                author = announcement.author;
+                                                text = announcement.text;
+                                                date = announcement.date;
+                                                $("#fade1").html(title).fadeIn(1000);
+                                                $("#fade2").html('<i class="fa-solid fa-user"></i>' + author).fadeIn(1000);
+                                                $("#fade3").html(text).fadeIn(1000);
+                                                $("#fade4").html('<i class="fa-solid fa-calendar"></i>' + date).fadeIn(1000);
+                                                $("#fade1").delay(1000).fadeOut(1000);
+                                                $("#fade2").delay(1000).fadeOut(1000);
+                                                $("#fade3").delay(1000).fadeOut(1000);
+                                                $("#fade4").delay(1000).fadeOut(1000);
+                                                i += 1;
+
+                                            }
+                                            setInterval(LowTaperFade,3000);
+                                        });
+
                                 } else {
                                     console.error("Brak danych lub błąd odpowiedzi:", response);
                                     $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
