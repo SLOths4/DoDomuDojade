@@ -13,5 +13,5 @@
 </head>
 <body>
     <h1 style="text-align: center">404 Resource not found</h1>
-    <h2 style="text-align: center">Tutaj nawet Igor nie mieszka</h2>
+    <h2 style="text-align: center">Tutaj nawet Kombus nie dojezdza</h2>
 </body>

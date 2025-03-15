@@ -120,7 +120,8 @@ class PanelController extends Controller
 
     public function deleteAnnouncement(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_announcement'])) {
+        self::$logger->info("TEST------------");
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             self::$logger->debug("delete_announcement request received");
             $this->checkCsrf();
 
