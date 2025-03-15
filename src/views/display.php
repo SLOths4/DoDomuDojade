@@ -334,60 +334,90 @@
 
             <div id="announcements" class="px-2 py-2">
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
-                <script>
-                    function loadAnnouncements() {
-                        $.ajax({
-                            url: '/display/get_announcements',
-                            type: 'POST',
-                            dataType: 'json',
-                            data: { function: 'announcementsData' },
-                            success: function(response) {
+            </div>
+
+            <script>
+                let fadeInterval;
+
+                function displayAnnouncement(announcement) {
+                    const html = `
+                      <div class="announcement">
+                        <h3>${announcement.title}</h3>
+                        <p><i class="fa-solid fa-user"></i> ${announcement.author}</p>
+                        <p>${announcement.text}</p>
+                        <p>
+                          <small>
+                            <i class="fa-solid fa-calendar"></i> <strong>Utworzono:</strong> ${announcement.date}
+                          </small> –
+                          <small><strong>Ważne do:</strong> ${announcement.validUntil}</small>
+                        </p>
+                      </div>
+                    `;
+                    $('#announcements-container').html(html);
+                }
+
+                function startAnnouncementRotation(announcements) {
+                    if (fadeInterval) {
+                        clearInterval(fadeInterval);
+                    }
+                    let current = 0;
+                    displayAnnouncement(announcements[current]);
+
+                    fadeInterval = setInterval(() => {
+                        $('.announcement').fadeOut(2000, function() {
+                            current = (current + 1) % announcements.length;
+                            displayAnnouncement(announcements[current]);
+                            $('.announcement').fadeIn(2000);
+                        });
+                    }, 6000);
+                }
+
+                function loadAnnouncements() {
+                    $.ajax({
+                        url: '/display/get_announcements',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { function: 'announcementsData' },
+                        success: function(response) {
+                            if (typeof response === 'string') {
                                 try {
-                                    response = typeof response === 'string' ? JSON.parse(response) : response;
+                                    response = JSON.parse(response);
                                 } catch (e) {
                                     console.error("Błąd parsowania JSON:", e);
-                                }
-
-                                if (response.is_active===false) {
-                                    $('#announcements').remove();
+                                    $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
                                     return;
                                 }
-
-                                if (response.success && Array.isArray(response.data)) {
-                                    // Sprawdzenie, czy lista danych jest pusta
-                                    if (response.data.length === 0) {
-                                        $('#announcements-container').html('<p>Brak ważnych ogłoszeń.</p>');
-                                    } else {
-                                        let content = '<div class="announcements-list">';
-                                        response.data.forEach(announcement => {
-                                            content += `
-                                        <div class="bg-beige my-2 px-2 py-2 rounded-2xl shadow-custom">
-                                            <h3>${announcement.title}</h3>
-                                            <p><i class="fa-solid fa-user"></i> ${announcement.author}</p>
-                                            <p>${announcement.text}</p>
-                                            <p><small><i class="fa-solid fa-calendar"></i><strong> Utworzono:</strong> ${announcement.date}</small> – <small><strong>Ważne do:</strong> ${announcement.validUntil}</small></p>
-                                        </div>
-                                    `;
-                                        });
-                                        content += '</div>';
-                                        $('#announcements-container').html(content);
-                                    }
-                                } else {
-                                    console.error("Brak danych lub błąd odpowiedzi:", response);
-                                    $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
-                                }
-                            },
-                            error: function() {
-                                console.error("Błąd ładowania danych AJAX.");
-                                $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
                             }
-                        });
-                    }
 
-                    setInterval(loadAnnouncements, 60000);
+                            if (response.is_active === false) {
+                                $('#announcements').remove();
+                                return;
+                            }
+
+                            if (response.success && Array.isArray(response.data)) {
+                                if (response.data.length === 0) {
+                                    $('#announcements-container').html('<p>Brak ważnych ogłoszeń.</p>');
+                                } else {
+                                    startAnnouncementRotation(response.data);
+                                }
+                            } else {
+                                console.error("Brak danych lub błąd odpowiedzi:", response);
+                                $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
+                            }
+                        },
+                        error: function() {
+                            console.error("Błąd ładowania danych AJAX.");
+                            $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
+                        }
+                    });
+                }
+
+                $(document).ready(function() {
                     loadAnnouncements();
-                </script>
-            </div>
+                    setInterval(loadAnnouncements, 60000);
+                });
+            </script>
+
         </div>
     </div>
   </body>
