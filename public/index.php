@@ -3,12 +3,14 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use FastRoute\RouteCollector;
+use function FastRoute\simpleDispatcher;
 use src\controllers\ErrorController;
 use src\controllers\PanelController;
-use function FastRoute\simpleDispatcher;
 use src\controllers\DisplayController;
+use src\controllers\HomeController;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
+    $r->addRoute('GET', '/', [HomeController::class, 'index']);
     $r->addRoute('GET', '/display', [DisplayController::class, 'index']);
     $r->addRoute('GET', '/panel', [PanelController::class, 'index']);
     $r->addRoute('GET', '/login', [PanelController::class, 'login']);

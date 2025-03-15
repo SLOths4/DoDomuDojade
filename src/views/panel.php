@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <link href="/assets/styles/style.css" rel="stylesheet" type="text/css">
     <link href="/assets/styles/admin.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
+    <script src="/scripts/panel.js"></script>
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -81,8 +83,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="POST" action="/panel/delete_announcement" onsubmit="return confirm('Czy na pewno chcesz usunąć to ogłoszenie?');">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
-                    <button type="submit" name="delete_announcement">Usuń</button>
+                    <button type="submit" name="delete_announcement" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Usuń</button>
                 </form>
+
+                <!-- Modal potwierdzenia -->
+                <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+                    <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                        <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
+                        <p class="mb-6">Czy na pewno chcesz usunąć to ogłoszenie?</p>
+                        <div class="flex justify-end">
+                            <button id="cancelBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                                Anuluj
+                            </button>
+                            <button id="confirmBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                                Usuń
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Formularz edycji ogłoszenia -->
                 <form method="POST" action="/panel/edit_announcement">
