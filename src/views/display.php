@@ -171,7 +171,7 @@
     <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
         <div id="left" class="bg-white rounded-2xl h-[800px] mr-1 shadow-custom">
             <div id="tram" class="bg-white rounded-2xl h-[792px] mr-1">
-                <div id="tram-container" class="px-2 py-2 ml-2 my-2">Ładowanie danych...</div>
+                <div id="tram-container" class=" px-2 py-2 ml-2 my-2">Ładowanie danych...</div>
                 <script>
                     function loadTramData() {
                         $.ajax({
@@ -196,12 +196,12 @@
                                 if (response.success && Array.isArray(response.data)) {
 
                                     let content = `
-                <table>
+                <table class="table-fixed w-full">
                     <thead>
                         <tr>
-                            <th>Linia</th>
-                            <th>Kierunek</th>
-                            <th>Czas do odjazdu</th>
+                            <th class="w-1/4"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
+                            <th class="w-1/2"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
+                            <th class="w-1/4"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Czas do odjazdu</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -210,16 +210,16 @@
                                         if (index < 16) {
                                             content += `
                                                     <tr class="text-[29px]">
-                                                        <td><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> ${tram.line}</td>
-                                                        <td class="px-2"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> ${tram.direction}</td>`
+                                                        <td class="text-center"> ${tram.line}</td>
+                                                        <td class="px-4 text-center"> ${tram.direction}</td>`
                                             if (tram.minutes === 0) {
-                                                content += `<td><i class="fa-solid fa-clock" style="color: #4A73AF"></i> odjeżdża </td>`;
+                                                content += `<td class="text-center"> odjeżdża </td>`;
                                             } else if (tram.minutes < 60) {
-                                                content += `<td><i class="fa-solid fa-clock" style="color: #4A73AF"></i> ${tram.minutes} min</td>`;
+                                                content += `<td class="text-center"> ${tram.minutes} min</td>`;
                                             } else {
                                                 let hours = Math.floor(tram.minutes / 60);
                                                 let minutes = tram.minutes % 60;
-                                                content += `<td><i class="fa-solid fa-clock" style="color: #4A73AF"></i> ${hours}h ${minutes}min</td>`;
+                                                content += `<td class="text-center"> ${hours}h ${minutes}min</td>`;
                                             }
                                             content += `</tr>`;
                                             index += 1;
