@@ -55,7 +55,11 @@ class CalendarModel extends Model
     private function parse_ical_data(string $icalData): array
     {
         $events = [];
-        preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches);
+        if(preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches)) {
+            self::$logger->debug("Found " . count($matches[1]) . " events in the iCal data.");
+        } else {
+            self::$logger->debug("Could not parse the iCal data.");
+        }
         $currentDate = new DateTime();
     
         foreach ($matches[1] as $eventData) {
@@ -67,6 +71,11 @@ class CalendarModel extends Model
             
             return $dateA <=> $dateB;
         });
+        if (!empty($events)) {
+            self::$logger->debug("Found final events in the iCal data.");
+        } else {
+            self::$logger->debug("There were no final events the iCal data.");
+        }
         return $events;
     }
 
@@ -89,12 +98,15 @@ class CalendarModel extends Model
     
             $daysUntilEvent = $this->calculate_days_until_event($eventDate, $currentDate);
             if ($this->should_include_event($eventDate, $currentDate, $daysUntilEvent)) {
+                self::$logger->debug("Added an event to the iCal data.");
                 $events[] = $event;
+            } else {
+                self::$logger->debug("Could not add the event to the iCal data.");
             }
     
             if (!empty($event['rrule'])) {
-                $startDate = DateTime::createFromFormat('Ymd\THis', substr($event['start'], 0, 15));
-                $endDate = DateTime::createFromFormat('Ymd\THis', substr($event['end'], 0, 15));
+                $startDate = DateTime::createFromFormat('H.i - d.m.Y', ($event['start']));
+                $endDate = DateTime::createFromFormat('H.i - d.m.Y', ($event['end']));
                 if ($startDate && $endDate) {
                     $this->generateRecurringEvents($events, $event, $startDate, $endDate);
                 }
@@ -132,16 +144,22 @@ class CalendarModel extends Model
         $event['start'] = $event['start'][1] ?? '';
         $event['end'] = $event['end'][1] ?? '';
         $event['end1'] = $event['end1'][1] ?? '';
+
+        if (!empty($event)) {
+            self::$logger->debug("event has contents");
+        } else {
+            self::$logger->debug("event has no contents");
+        }
     
         return $event;
     }
 
     /**
      * Event date formatting function
-     * @param mixed $event
+     * @param array $event
      * @return void
      */
-    private function format_event_dates(mixed &$event): void
+    private function format_event_dates(array &$event): void
     {
         $timezone = strlen($event['start']) < 17;
         if ($timezone) {
@@ -178,7 +196,10 @@ class CalendarModel extends Model
      */
     private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate): int
     {
+        $currentDate->setTime(0, 0, 0);
+        $eventDate->setTime(0, 0, 0);
         $interval = $currentDate->diff($eventDate);
+        self::$logger->debug("EVENT is within " . $interval->days . "days from now");
         return $interval->days;
     }
 
@@ -191,6 +212,11 @@ class CalendarModel extends Model
      */
     private function should_include_event(DateTime $eventDate, DateTime $currentDate, int $daysUntilEvent): bool
     {
+        if ($eventDate > $currentDate && $daysUntilEvent <= 7) {
+            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is validd.");
+        } else {
+            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is not validd.");
+        }
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
 
@@ -213,9 +239,6 @@ class CalendarModel extends Model
 
         $count = isset($rruleParts['COUNT']) ? (int)$rruleParts['COUNT'] : PHP_INT_MAX;
         $maxDate = new DateTime('2025-06-30');
-        
-        // Pobiera informację o dniu tygodnia, jeśli istnieje
-        $byday = $rruleParts['BYDAY'] ?? '';
 
         $interval = match ($freq) {
             'DAILY' => '+1 day',
@@ -225,10 +248,14 @@ class CalendarModel extends Model
         };
 
         if (!$interval) return;
+        $currentrecurDate = new DateTime();
 
         for ($i = 1; $i < $count; $i++) {
             $startDate->modify($interval);
             $endDate->modify($interval);
+
+            $eventrecurDate = $endDate;
+            $daysUntilrecurEvent = $this->calculate_days_until_event($eventrecurDate, $currentrecurDate);
 
             if ($startDate > $maxDate) break;
 
@@ -236,7 +263,9 @@ class CalendarModel extends Model
             $newEvent['start'] = $startDate->format('H.i - d.m.Y');
             $newEvent['end'] = $endDate->format('H.i - d.m.Y');
 
-            $events[] = $newEvent;
+            if ($this->should_include_event($eventrecurDate, $currentrecurDate, $daysUntilrecurEvent)) {
+                $events[] = $newEvent;
+            }
         }
     }
 }

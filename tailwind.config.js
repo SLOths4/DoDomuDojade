@@ -7,7 +7,9 @@ export default {
         'custom': '0 4px 12px rgba(0, 0, 0, 0.1)',
       },
       colors: {
-        'beige': '#F9FAFB'
+        'beige': '#F9FAFB',
+        'school1': '#8ABAE2',
+        'school2': '#4A73AF'
       }
     },
   },
