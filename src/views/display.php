@@ -14,9 +14,9 @@
   </head>
   <body>
     <div class="flex mx-1 my-2">
-        <div class="flex flex-none bg-white h-20 rounded-2xl mr-1 shadow-custom">
-            <div class="flex bg-white h-20 rounded-l-2xl justify-center items-center pl-3 pr-3"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="30" height="30"></div>
-            <div id="date" class="flex bg-white h-20 justify-center items-center pl-3 pr-3 font-mono text-[20px] font-extrabold">
+        <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
+            <div class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
+            <div id="date" class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold">
                 <script>
                     function updateDate() {
                         const dateElement = document.getElementById('date');
@@ -34,7 +34,7 @@
                     updateDate();
                 </script>
             </div>
-            <div id="time" class="flex bg-white rounded-r-2xl h-20 justify-center items-center pl-3 pr-3 font-mono text-[20px] font-extrabold">
+            <div id="time" class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold">
                 <script>
                     function updateClock() {
                         const timeElement = document.getElementById('time');
@@ -48,130 +48,132 @@
                         timeElement.innerHTML = `<h2><i class="fa-solid fa-clock" style="color: #4A73AF"></i> ${hours}:${minutes}:${seconds}</h2>`;
                     }
 
-                    // Aktualizacja zegara co 1 sekundę
                     setInterval(updateClock, 1000);
-                    updateClock(); // Wywołanie na starcie
+                    updateClock();
                 </script>
             </div>
         </div>
-        <div class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom justify-center items-center">
-            <div id="temperature-div" class="flex bg-white h-20 justify-center items-center pl-3 pr-3 font-mono text-[20px] font-extrabold">Ładowanie...</div>
-            <div id="pressure-div" class="flex bg-white h-20 justify-center items-center pl-3 pr-3 font-mono text-[20px] font-extrabold">Ładowanie...</div>
-            <div id="airly-div" class="flex bg-white h-20 justify-center items-center pl-3 pr-3 font-mono text-[20px] font-extrabold">Ładowanie...</div>
+
+        <div class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom overflow-hidden justify-around items-center">
+            <div id="temperature" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="pressure" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="airly" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
             <script>
-            function loadWeatherData() {
-                $.ajax({
-                    url: '/display/get_weather',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { function: 'weatherData' },
-                    success: function(response) {
-                        try {
-                            response = typeof response === 'string' ? JSON.parse(response) : response;
-                        } catch (e) {
-                            console.error("Błąd parsowania JSON:", e);
-                            $('#temperature-div').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
-                            $('#pressure-div').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
-                            $('#airly-div').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
-                            return;
-                        }
+                function loadWeatherData() {
+                    $.ajax({
+                        url: '/display/get_weather',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { function: 'weatherData' },
+                        success: function(response) {
+                            try {
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                                $('#temperature').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
+                                $('#pressure').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
+                                $('#airly').html('<p>Błąd danych pogodowych (nie można przetworzyć odpowiedzi).</p>');
+                                return;
+                            }
 
-                        if (response.is_active===false) {
-                            $('#temperature-div').remove();
-                            $('#pressure-div').remove();
-                            $('#airly-div').remove();
-                            return;
-                        }
+                            if (response.is_active===false) {
+                                $('#temperature').remove();
+                                $('#pressure').remove();
+                                $('#airly').remove();
+                                return;
+                            }
 
-                        if (response.success && response.data) {
-                            let data = response.data;
-                            let content = `
-                                <p><i class="fa-solid fa-temperature-three-quarters" style="color: #4A73AF"></i> ${data.temperature}°C</p>
-                            `;
-                            let content1 = `
-                                <p><i class="fa-solid fa-gauge"  style="color: #4A73AF"></i> ${data.pressure} hPa</p>
-                            `;
-                            let content2 = `
-                                <p><span style="color: #4A73AF">AQI</span>: ${data.airlyIndex}</p>
-                            `;
-                            $('#temperature-div').html(content);
-                            $('#pressure-div').html(content1);
-                            $('#airly-div').html(content2);
-                        } else {
-                            $('#temperature-div').html('<p>Błąd: Brak danych pogodowych</p>');
-                            $('#pressure-div').html('<p>Błąd: Brak danych pogodowych</p>');
-                            $('#airly-div').html('<p>Błąd: Brak danych pogodowych</p>');
+                            if (response.success && response.data) {
+                                let data = response.data;
+                                let content = `
+                                    <p><i class="fa-solid fa-temperature-three-quarters" style="color: #4A73AF"></i> ${data.temperature}°C</p>
+                                `;
+                                let content1 = `
+                                    <p><i class="fa-solid fa-gauge"  style="color: #4A73AF"></i> ${data.pressure} hPa</p>
+                                `;
+                                let content2 = `
+                                    <p><span style="color: #4A73AF">AQI</span>: ${data.airlyIndex}</p>
+                                `;
+                                $('#temperature').html(content);
+                                $('#pressure').html(content1);
+                                $('#airly').html(content2);
+                            } else {
+                                $('#temperature').html('<p>Błąd: Brak danych pogodowych</p>');
+                                $('#pressure').html('<p>Błąd: Brak danych pogodowych</p>');
+                                $('#airly').html('<p>Błąd: Brak danych pogodowych</p>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#temperature').html('<p>Błąd ładowania danych pogodowych.</p>');
+                            $('#pressure').html('<p>Błąd ładowania danych pogodowych.</p>');
+                            $('#airly').html('<p>Błąd ładowania danych pogodowych.</p>');
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Błąd ładowania AJAX: ", error);
-                        $('#temperature-div').html('<p>Błąd ładowania danych pogodowych.</p>');
-                        $('#pressure-div').html('<p>Błąd ładowania danych pogodowych.</p>');
-                        $('#airly-div').html('<p>Błąd ładowania danych pogodowych.</p>');
-                    }
-                });
-            }
+                    });
+                }
 
-            setInterval(loadWeatherData, 900000)
-            loadWeatherData();
-        </script>
+                setInterval(loadWeatherData, 900000)
+                loadWeatherData();
+            </script>
+
+            <div id="countdown" class="flex bg-white h-20 justify-center items-center pl-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+
+            <script>
+                function loadCountdownData() {
+
+                    $.ajax({
+                        url: '/display/get_countdown',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { function: 'countdownData' },
+                        success: function(response) {
+                            try {
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                            }
+
+                            if (response.is_active===false) {
+                                $('#countdown').remove();
+                                return;
+                            }
+
+
+                            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                                let item = response.data[0];
+                                let content = '';
+                                let timestamp = parseInt(item.count_to, 10);
+
+                                content += `<p>${item.title}</p>`;
+                                content += `<p>${new Date(timestamp)}</p>`
+
+                                $('#countdown').html(content);
+
+                            } else {
+                                console.error("Brak danych do wyświetlenia:", response);
+                                $('#countdown').html('<p>Błąd: Brak danych</p>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
+                        }
+                    });
+                }
+
+                setInterval(loadCountdownData, 60000);
+                loadCountdownData();
+            </script>
         </div>
     </div>
 
-    <div id="countdown" class="div">
-        <h2>Odliczanie</h2>
-        <script>
-            function loadCountdownData() {
-
-                $.ajax({
-                    url: '/display/get_countdown',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { function: 'countdownData' },
-                    success: function(response) {
-                        try {
-                            response = typeof response === 'string' ? JSON.parse(response) : response;
-                        } catch (e) {
-                            console.error("Błąd parsowania JSON:", e);
-                        }
-
-                        if (response.is_active===false) {
-                            $('#countdown').remove();
-                            return;
-                        }
-
-
-                        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
-                            let item = response.data[0];
-                            let content = '';
-                            let timestamp = parseInt(item.count_to, 10);
-
-                            content += `<p>Title: ${item.title}</p>`;
-                            content += `<p>Kontent: ${new Date(timestamp)}</p>`
-
-                            $('#countdown').html(content);
-
-                        } else {
-                            console.error("Brak danych do wyświetlenia:", response);
-                            $('#countdown').html('<p>Błąd: Brak danych</p>');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Błąd ładowania AJAX: ", error);
-                        $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
-                    }
-                });
-            }
-
-            setInterval(loadCountdownData, 60000); // 1 min
-            loadCountdownData();
-        </script>
-    </div>
-
     <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
-        <div id="left" class="bg-white rounded-2xl h-[800px] mr-1 shadow-custom">
-            <div id="tram" class="bg-white rounded-2xl h-[792px] mr-1">
-                <div id="tram-container" class=" px-2 py-2 ml-2 my-2">Ładowanie danych...</div>
+        <div id="left" class="bg-white rounded-2xl h-[800px] shadow-custom">
+
+            <div id="tram" class="bg-white rounded-2xl h-[792px]">
+
+                <div id="tram-container" class="py-1">Ładowanie danych...</div>
+
                 <script>
                     function loadTramData() {
                         $.ajax({
@@ -199,9 +201,9 @@
                 <table class="table-fixed w-full">
                     <thead>
                         <tr>
-                            <th class="w-1/4"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-                            <th class="w-1/2"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-                            <th class="w-1/4"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Czas do odjazdu</th>
+                            <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
+                            <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
+                            <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -209,17 +211,17 @@
                                     response.data.forEach(tram => {
                                         if (index < 16) {
                                             content += `
-                                                    <tr class="text-[29px]">
+                                                    <tr class="text-[28px]">
                                                         <td class="text-center"> ${tram.line}</td>
-                                                        <td class="px-4 text-center"> ${tram.direction}</td>`
+                                                        <td class="text-center"> ${tram.direction}</td>`
                                             if (tram.minutes === 0) {
-                                                content += `<td class="text-center"> odjeżdża </td>`;
+                                                content += `<td class="text-center"> odj </td>`;
                                             } else if (tram.minutes < 60) {
-                                                content += `<td class="text-center"> ${tram.minutes} min</td>`;
+                                                content += `<td class="text-center"> ${tram.minutes} m</td>`;
                                             } else {
                                                 let hours = Math.floor(tram.minutes / 60);
                                                 let minutes = tram.minutes % 60;
-                                                content += `<td class="text-center"> ${hours}h ${minutes}min</td>`;
+                                                content += `<td class="text-center"> ${hours}h ${minutes}m</td>`;
                                             }
                                             content += `</tr>`;
                                             index += 1;
@@ -244,67 +246,11 @@
                     loadTramData();
                 </script>
             </div>
+
         </div>
-        <div id="right" class="bg-white rounded-2xl px-2 py-2 ml-1 shadow-custom">
-            <div id="calendar" class="px-2 py-2 mx-2 my-2">
-                <h2 class="mb-2"><strong>Wydarzenia</strong></h2>
-                <div id="calendar-container">Ładowanie danych...</div>
-                <script>
-                    function loadCalendarData() {
-
-                        $.ajax({
-                            url: '/display/get_events',
-                            type: 'POST',
-                            dataType: 'json',
-                            data: { function: 'calendarData' },
-                            success: function(response) {
-                                try {
-                                    response = typeof response === 'string' ? JSON.parse(response) : response;
-                                } catch (e) {
-                                    console.error("Błąd parsowania JSON:", e);
-                                }
-
-                                if (response.is_active===false) {
-                                    $('#calendar').remove();
-                                    return;
-                                }
-
-                                if (response.success && Array.isArray(response.data)) {
-                                    let content = '';
-                                    response.data.forEach(cal => {
-                                        if (cal.summary) {
-                                            content += `<div class="bg-beige px-2 py-1 rounded-2xl shadow-custom text-[20px]"><p><i class='fa-regular fa-calendar' style="color: #4A73AF"></i> Wydarzenie: ${cal.summary}</p>`;
-                                        } else {
-                                            content += `<div class="bg-beige px-2 py-1 rounded-2xl shadow-custom text-[20px]"><p><i class='fa-regular fa-calendar' style="color: #4A73AF"></i> Wydarzenie</p>`;
-                                        }
-                                        content += `<p><i class='fa-solid fa-hourglass-start' style="color: #4A73AF"></i> Start: ${cal.start}</p>`;
-                                        content += `<p><i class='fa-solid fa-hourglass-end' style="color: #4A73AF"></i> Koniec: ${cal.end}</p>`;
-                                        if (cal.description) {
-                                            content += `<p>Opis: ${cal.description}</p></div><br>`;
-                                        } else {
-                                            content += `</div><br>`;
-                                        }
-                                    });
-                                    $('#calendar-container').html(content);
-                                } else {
-                                    console.error("Brak danych do wyświetlenia:", response);
-                                    $('#calendar-container').html('<p>Błąd: Brak danych</p>');
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.error("Błąd ładowania AJAX: ", error);
-                                $('#calendar-container').html('<p>Błąd ładowania danych kalendarza.</p>');
-                            }
-                        });
-                    }
-                    //Odświeżanie co minutę
-                    setInterval(loadCalendarData, 60000); // 1 min
-                    loadCalendarData();
-                </script>
-            </div>
-
+        
+        <div id="middle" class="bg-white rounded-2xl h-[800px] mx-2 shadow-custom">
             <div id="announcements" class="px-2 py-2 mx-2 my-2">
-                <h2 class="mb-2"><strong>Ogłoszenia</strong></h2>
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
             </div>
 
@@ -389,7 +335,65 @@
                     setInterval(loadAnnouncements, 60000);
                 });
             </script>
+        </div>
+        
+        <div id="right" class="bg-white rounded-2xl px-2 py-2 shadow-custom">
+            <div id="calendar" class="px-2 py-2 mx-2 my-2">
+                <h2 class="mb-2"><strong>Wydarzenia</strong></h2>
+                <div id="calendar-container" class="text-[20px]">Ładowanie danych...</div>
+                <script>
+                    function loadCalendarData() {
 
+                        $.ajax({
+                            url: '/display/get_events',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { function: 'calendarData' },
+                            success: function(response) {
+                                try {
+                                    response = typeof response === 'string' ? JSON.parse(response) : response;
+                                } catch (e) {
+                                    console.error("Błąd parsowania JSON:", e);
+                                }
+
+                                if (response.is_active===false) {
+                                    $('#calendar').remove();
+                                    return;
+                                }
+
+                                if (response.success && Array.isArray(response.data)) {
+                                    let content = '';
+                                    response.data.forEach(cal => {
+                                        if (cal.summary) {
+                                            content += `<div class="bg-beige px-2 py-1 rounded-2xl shadow-custom text-[20px]"><p><i class='fa-regular fa-calendar' style="color: #4A73AF"></i> Wydarzenie: ${cal.summary}</p>`;
+                                        } else {
+                                            content += `<div class="bg-beige px-2 py-1 rounded-2xl shadow-custom text-[20px]"><p><i class='fa-regular fa-calendar' style="color: #4A73AF"></i> Wydarzenie</p>`;
+                                        }
+                                        content += `<p><i class='fa-solid fa-hourglass-start' style="color: #4A73AF"></i> Start: ${cal.start}</p>`;
+                                        content += `<p><i class='fa-solid fa-hourglass-end' style="color: #4A73AF"></i> Koniec: ${cal.end}</p>`;
+                                        if (cal.description) {
+                                            content += `<p>Opis: ${cal.description}</p></div><br>`;
+                                        } else {
+                                            content += `</div><br>`;
+                                        }
+                                    });
+                                    $('#calendar-container').html(content);
+                                } else {
+                                    console.error("Brak danych do wyświetlenia:", response);
+                                    $('#calendar-container').html('<p>Błąd: Brak danych</p>');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Błąd ładowania AJAX: ", error);
+                                $('#calendar-container').html('<p>Błąd ładowania danych kalendarza.</p>');
+                            }
+                        });
+                    }
+                    //Odświeżanie co minutę
+                    setInterval(loadCalendarData, 60000); // 1 min
+                    loadCalendarData();
+                </script>
+            </div>
         </div>
     </div>
   </body>

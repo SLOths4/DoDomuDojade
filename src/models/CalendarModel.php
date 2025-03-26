@@ -196,8 +196,6 @@ class CalendarModel extends Model
      */
     private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate): int
     {
-        $currentDate->setTime(0, 0, 0);
-        $eventDate->setTime(0, 0, 0);
         $interval = $currentDate->diff($eventDate);
         self::$logger->debug("EVENT is within " . $interval->days . "days from now");
         return $interval->days;
