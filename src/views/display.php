@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DoDomuDojadę</title>
-    <link rel="icon" type="image/x-icon" href="assets/resources/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="assets/styles/output.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
@@ -55,9 +55,9 @@
         </div>
 
         <div class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom overflow-hidden justify-around items-center">
-            <div id="temperature" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-            <div id="pressure" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-            <div id="airly" class="flex bg-white h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="temperature" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="pressure" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="airly" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
             <script>
                 function loadWeatherData() {
                     $.ajax({
@@ -92,7 +92,7 @@
                                     <p><i class="fa-solid fa-gauge"  style="color: #4A73AF"></i> ${data.pressure} hPa</p>
                                 `;
                                 let content2 = `
-                                    <p><span style="color: #4A73AF">AQI</span>: ${data.airlyIndex}</p>
+                                    <p><i class="fas fa-air-freshener" style="color: #4A73AF"></i> ${data.airlyIndex}</p>
                                 `;
                                 $('#temperature').html(content);
                                 $('#pressure').html(content1);
@@ -116,7 +116,7 @@
                 loadWeatherData();
             </script>
 
-            <div id="countdown" class="flex bg-white h-20 justify-center items-center pl-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div id="countdown" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
 
             <script>
                 function loadCountdownData() {
@@ -339,7 +339,6 @@
         
         <div id="right" class="bg-white rounded-2xl px-2 py-2 shadow-custom">
             <div id="calendar" class="px-2 py-2 mx-2 my-2">
-                <h2 class="mb-2"><strong>Wydarzenia</strong></h2>
                 <div id="calendar-container" class="text-[20px]">Ładowanie danych...</div>
                 <script>
                     function loadCalendarData() {

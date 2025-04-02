@@ -20,10 +20,10 @@ class CountdownModel extends Model
     public function getCurrentCountdown(): array
     {
         try {
-            $currentTime = date('Y-m-d');
+            $currentTime = time() * 1000;
             self::$logger->info('Rozpoczęcie pobierania obecnego odliczania.', ['current_time' => $currentTime]);
 
-            $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to <= :current_time LIMIT 1";
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to > :current_time ORDER BY count_to ASC LIMIT 1";
 
             $result  = $this->executeStatement($query, [
                 ":current_time" => [$currentTime, PDO::PARAM_STR]
@@ -35,7 +35,7 @@ class CountdownModel extends Model
                 self::$logger->info('Nie znaleziono odliczania spełniającego kryteria.');
             }
 
-            return $result[0] ?: [];
+            return $result[0] ?? [];
         } catch (Exception $e) {
             self::$logger->error('Wystąpił błąd w getCurrentCountdown: ' . $e->getMessage());
             return [];

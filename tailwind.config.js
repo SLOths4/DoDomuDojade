@@ -9,7 +9,14 @@ export default {
       colors: {
         'beige': '#F9FAFB',
         'school1': '#8ABAE2',
-        'school2': '#4A73AF'
+        'school2': '#4A73AF',
+        primary: {
+          '100': '#8FADC9',  // Najjaśniejszy, pastelowy błękit
+          '200': '#8ABAE2',  // Jasny, lekko nasycony niebieski
+          '300': '#5490BA',  // Średni, chłodny niebieski
+          '400': '#4A73AF'
+        },
+        secondary: {'100':'#FBC13B', '200':'#FDAC32'}
       }
     },
   },
