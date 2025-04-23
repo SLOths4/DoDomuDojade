@@ -138,16 +138,25 @@
                                 return;
                             }
 
-
                             if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+
                                 let item = response.data[0];
                                 let content = '';
-                                let timestamp = parseInt(item.count_to, 10);
+                                let timestamp = (item.count_to);
+                                function countdown() {
+                                    let now = new Date().getTime();
+                                    let distance = timestamp - now;
 
-                                content += `<p>${item.title}</p>`;
-                                content += `<p>${new Date(timestamp)}</p>`
+                                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    let hours = Math.floor(distance / (1000 * 60 * 60));
+                                    let minutes = Math.floor(distance / 1000 / 60);
+                                    let seconds = Math.floor(distance / 1000);
 
-                                $('#countdown').html(content);
+                                    content = `<p>Do ${item.title} zostało ${seconds} sekund.</p>`;
+
+                                    $('#countdown').html(content);
+                                }
+                                setInterval(countdown,1000);
 
                             } else {
                                 console.error("Brak danych do wyświetlenia:", response);
