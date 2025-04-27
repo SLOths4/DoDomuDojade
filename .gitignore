@@ -49,3 +49,6 @@ docs/
 
 # Ignore any calendar data files
 calendar_data/
+
+# Ignore any database-related files
+*.sqlite
