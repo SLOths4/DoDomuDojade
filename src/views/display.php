@@ -15,8 +15,8 @@
   <body>
     <div class="flex mx-1 my-2">
         <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
-            <div class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
-            <div id="date" class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold">
+            <div class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
+            <div id="date" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
                 <script>
                     function updateDate() {
                         const dateElement = document.getElementById('date');
@@ -34,7 +34,7 @@
                     updateDate();
                 </script>
             </div>
-            <div id="time" class="flex h-full justify-center items-center pl-3 pr-3 font-mono text-xl font-extrabold">
+            <div id="time" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
                 <script>
                     function updateClock() {
                         const timeElement = document.getElementById('time');
@@ -176,15 +176,20 @@
         </div>
     </div>
 
+
     <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
-        <div id="left" class="bg-white rounded-2xl h-[800px] shadow-custom">
+        <div id="left" class="bg-white rounded-2xl h-full shadow-custom">
 
-            <div id="tram" class="bg-white rounded-2xl h-[792px]">
+            <div id="tram" class="bg-white rounded-2xl h-full">
 
-                <div id="tram-container" class="py-1">Ładowanie danych...</div>
+                <div id="tram-container" class="py-1 pr-2 h-full">Ładowanie danych...</div>
 
                 <script>
-                    function loadTramData() {
+                    let firstload = true;
+
+                    function loadTramData0() {
+                        if (!firstload) return;
+
                         $.ajax({
                             url: '/display/get_departures',
                             type: 'POST',
@@ -206,6 +211,7 @@
 
                                 if (response.success && Array.isArray(response.data)) {
 
+
                                     let content = `
                 <table class="table-fixed w-full">
                     <thead>
@@ -216,29 +222,128 @@
                         </tr>
                     </thead>
                     <tbody>`;
-                                    let index = 0
-                                    response.data.forEach(tram => {
-                                        if (index < 16) {
-                                            content += `
-                                                    <tr class="text-[28px]">
-                                                        <td class="text-center"> ${tram.line}</td>
-                                                        <td class="text-center"> ${tram.direction}</td>`
-                                            if (tram.minutes === 0) {
-                                                content += `<td class="text-center"> odj </td>`;
-                                            } else if (tram.minutes < 60) {
-                                                content += `<td class="text-center"> ${tram.minutes} m</td>`;
-                                            } else {
-                                                let hours = Math.floor(tram.minutes / 60);
-                                                let minutes = tram.minutes % 60;
-                                                content += `<td class="text-center"> ${hours}h ${minutes}m</td>`;
-                                            }
-                                            content += `</tr>`;
-                                            index += 1;
-                                        }});
+                                    if (response.data.length > 0) {
+                                        let firstTram = response.data[0]; // Handle the first tram separately
+                                        content += `
+                                            <tr id="first" class="text-[28px]">
+                                            <td class="text-center"> ${firstTram.line}</td>
+                                            <td class="text-center"> ${firstTram.direction}</td>`;
+                                        if (firstTram.minutes === 0) {
+                                            content += `<td class="text-center">odjeżdża</td>`;
+                                        } else if (firstTram.minutes === 1) {
+                                            content += `<td class="text-center"> ${firstTram.minutes} minuta</td>`;
+                                        } else if (firstTram.minutes < 60) {
+                                            content += `<td class="text-center"> ${firstTram.minutes} minut</td>`;
+                                        } else {
+                                            let hours = Math.floor(firstTram.minutes / 60);
+                                            let minutes = firstTram.minutes % 60;
+                                            content += `<td class="text-center"> ${hours}h ${minutes} minut</td>`;
+                                        }
+                                        content += `</tr>`;
+                                    }
                                     content += `
                                             </tbody>
                                         </table>`;
                                     $('#tram-container').html(content);
+
+                                    let firstContainerJs = document.getElementById('first');
+                                    if (firstContainerJs) {  // Check if the element exists
+                                        let firstStyle = window.getComputedStyle(firstContainerJs);
+                                        let firstheight = firstStyle.getPropertyValue('height');
+                                        firstheight = removeSuffix(firstheight, "px");
+                                        Number(firstheight);
+                                        console.log(firstheight);
+                                    } else {
+                                        console.warn("Element with ID 'first' not found.");
+                                    }
+
+                                    firstload = false;
+
+                                } else {
+                                    console.error("Brak danych do wyświetlenia:", response);
+                                    $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Błąd ładowania AJAX: ", error);
+                                $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                            }
+                        });
+                    }
+                    let loadTramDataFromZero = false;
+                    function loadTramData() {
+                        $.ajax({
+                            url: '/display/get_departures',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { function: 'tramData' },
+                            success: function(response) {
+                                console.debug("Ładowanie danych tramwajowych");
+
+                                try {
+                                    response = typeof response === 'string' ? JSON.parse(response) : response;
+                                } catch (e) {
+                                    console.error("Błąd parsowania JSON:", e);
+                                }
+
+                                if (response.is_active === false) {
+                                    $('#tram').remove();
+                                    return;
+                                }
+
+                                if (response.success && Array.isArray(response.data)) {
+                                    let startIndex = loadTramDataFromZero ? 0 : 1;  // <- ważne!
+                                    let content = '';
+                                    let content1 = `<table class="table-fixed w-full"><tbody>`;
+                                    let content0 = `
+                <table class="table-fixed w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
+                            <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
+                            <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                                    if (startIndex == 0) {
+                                        content += content0
+                                    } else {
+                                        content += content1
+                                    }
+                                    for (let index = startIndex; index < response.data.length && index < 16; index++) {
+                                        let tram = response.data[index];
+                                        content += `
+                                                <tr class="text-[28px]">
+                                                <td class="text-center w-1/6">${tram.line}</td>
+                                                <td class="text-center w-4/6">${tram.direction}</td>`;
+
+                                        if (tram.minutes === 0) {
+                                            content += `<td class="text-center w-1/6">odjeżdża</td>`;
+                                        } else if (tram.minutes === 1) {
+                                            content += `<td class="text-center"> ${tram.minutes} minuta</td>`;
+                                        } else if (tram.minutes < 60) {
+                                            content += `<td class="text-center w-1/6">${tram.minutes} minut</td>`;
+                                        } else {
+                                            let hours = Math.floor(tram.minutes / 60);
+                                            let minutes = tram.minutes % 60;
+                                            content += `<td class="text-center w-1/6">${hours}h ${minutes} minut</td>`;
+                                        }
+                                        content += `</tr>`;
+                                    }
+                                    content += `</tbody></table>`;
+
+                                    // Używaj append tylko, jeśli startIndex == 1, inaczej podmieniaj cały kontener:
+                                    if (startIndex === 1) {
+                                        $('#tram-container').append(content);
+                                    } else {
+                                        $('#tram-container').html(content);
+                                    }
+
+                                    // Po pierwszym wywołaniu przełącz flagę, żeby za kolejnym razem pokazywać wszystko:
+                                    if (!loadTramDataFromZero) {
+                                        loadTramDataFromZero = true;
+                                    }
+
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
                                     $('#tram-container').html('<p>Błąd: Brak danych</p>');
@@ -251,14 +356,28 @@
                         });
                     }
 
+                    let tramContainerJs = document.getElementById('left');
+                    let tramStyle = window.getComputedStyle(tramContainerJs);
+                    let height = tramStyle.getPropertyValue('height');
+                    function removeSuffix(str, suffix) {
+                        if (str.endsWith(suffix)) {
+                            return str.slice(0, -suffix.length);
+                        }
+                        return str; // Return original string if suffix is not found
+                    }
+                    height = removeSuffix(height, "px");
+                    Number(height);
+                    console.log(height);
+
                     setInterval(loadTramData, 50000);
+                    loadTramData0();
                     loadTramData();
                 </script>
             </div>
 
         </div>
         
-        <div id="middle" class="bg-white rounded-2xl h-[800px] mx-2 shadow-custom">
+        <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom">
             <div id="announcements" class="px-2 py-2 mx-2 my-2">
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
             </div>
@@ -266,38 +385,57 @@
             <script>
                 let fadeInterval;
 
-                function displayAnnouncement(announcement) {
-                    const html = `
-                      <div class="announcement bg-beige rounded-2xl px-2 py-2 shadow-custom">
-                        <h3>${announcement.title}</h3>
-                        <p><i class="fa-solid fa-user" style="color: #4A73AF"></i> ${announcement.author}</p>
-                        <p>${announcement.text}</p>
-                        <p>
-                          <small>
-                            <i class="fa-solid fa-calendar" style="color: #4A73AF"></i> <strong>Utworzono:</strong> ${announcement.date}
-                          </small> –
-                          <small><strong>Ważne do:</strong> ${announcement.validUntil}</small>
-                        </p>
-                      </div>
-                    `;
+                function displayAnnouncements(announcementsChunk) {
+                    const html = announcementsChunk.map(announcement => `
+                        <div class="announcement bg-beige rounded-2xl px-2 py-2 shadow-custom mb-4">
+                            <h3>${announcement.title}</h3>
+                            <p><i class="fa-solid fa-user" style="color: #4A73AF"></i> ${announcement.author}</p>
+                            <p>${announcement.text}</p>
+                            <p>
+                              <small>
+                                <i class="fa-solid fa-calendar" style="color: #4A73AF"></i> <strong>Utworzono:</strong> ${announcement.date}
+                              </small> –
+                              <small><strong>Ważne do:</strong> ${announcement.validUntil}</small>
+                            </p>
+                        </div>
+                    `).join('');
+
                     $('#announcements-container').html(html);
+                }
+
+                function chunkArray(array, chunkSize) {
+                    const chunks = [];
+                    for (let i = 0; i < array.length; i += chunkSize) {
+                        chunks.push(array.slice(i, i + chunkSize));
+                    }
+                    return chunks;
                 }
 
                 function startAnnouncementRotation(announcements) {
                     if (fadeInterval) {
                         clearInterval(fadeInterval);
                     }
-                    let current = 0;
-                    displayAnnouncement(announcements[current]);
+
+                    const announcementGroups = chunkArray(announcements, 4);
+
+                    if (announcementGroups.length === 1) {
+                        displayAnnouncements(announcementGroups[0]);
+                        return;
+                    }
+
+                    let currentGroup = 0;
+
+                    displayAnnouncements(announcementGroups[currentGroup]);
 
                     fadeInterval = setInterval(() => {
-                        $('.announcement').fadeOut(2000, function() {
-                            current = (current + 1) % announcements.length;
-                            displayAnnouncement(announcements[current]);
-                            $('.announcement').fadeIn(2000);
+                        $('#announcements-container').fadeOut(1000, function () {
+                            currentGroup = (currentGroup + 1) % announcementGroups.length;
+                            displayAnnouncements(announcementGroups[currentGroup]);
+                            $('#announcements-container').fadeIn(1000);
                         });
-                    }, 6000);
+                    }, 8000);
                 }
+
 
                 function loadAnnouncements() {
                     $.ajax({
@@ -345,8 +483,8 @@
                 });
             </script>
         </div>
-        
-        <div id="right" class="bg-white rounded-2xl px-2 py-2 shadow-custom">
+
+      <!--  <div id="right" class="bg-white rounded-2xl px-2 py-2 shadow-custom">
             <div id="calendar" class="px-2 py-2 mx-2 my-2">
                 <div id="calendar-container" class="text-[20px]">Ładowanie danych...</div>
                 <script>
@@ -402,7 +540,7 @@
                     loadCalendarData();
                 </script>
             </div>
-        </div>
+        </div> -->
     </div>
   </body>
 </html>

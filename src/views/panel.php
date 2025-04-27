@@ -4,6 +4,8 @@ namespace src\views;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use src\core\SessionHelper;
+use DateMalformedStringException;
+use DateTime;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -57,83 +59,131 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <button onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
 <button onclick="window.open('/display', '_blank');"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
 
-<div id="announcement" class="container mx-auto p-4">
+<div id="announcement" class="grid grid-flow-col auto-cols-auto w-full overflow-x-auto mx-auto p-4">
     <?php if (SessionHelper::has('error')): ?>
         <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
             <?= htmlspecialchars(SessionHelper::get('error')) ?>
         </div>
     <?php endif; ?>
 
-    <!-- Formularz dodawania ogłoszenia -->
-    <form method="POST" action="panel/add_announcement" class="mb-6 p-4 bg-white rounded shadow">
-        <div class="mb-2">
-            <label>
-                <input type="text" name="title" placeholder="Title" class="w-full p-2 border rounded" required>
-            </label>
+    <div class="items-center">
+        <div class="max-w-2xs">
+            <!-- Formularz dodawania ogłoszenia -->
+            <form method="POST" action="panel/add_announcement" class="mb-6 p-4 bg-white rounded shadow-lg">
+                <div class="mb-2">
+                    <label>
+                        <input type="text" name="title" placeholder="Title" class="w-full p-2 border rounded" required>
+                    </label>
+                </div>
+                <div class="mb-2">
+                    <label>
+                        <input type="text" name="text" placeholder="Text" class="w-full p-2 border rounded" required>
+                    </label>
+                </div>
+                <div class="mb-2">
+                    <label>
+                        <input type="date" name="valid_until" placeholder="Valid until" class="w-full p-2 border rounded" required>
+                    </label>
+                </div>
+                <div class="flex items-center justify-center">
+                    <input type="submit" name="add_announcement" value="Add" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                </div>
+            </form>
         </div>
-        <div class="mb-2">
-            <label>
-                <input type="text" name="text" placeholder="Text" class="w-full p-2 border rounded" required>
-            </label>
-        </div>
-        <div class="mb-2">
-            <label>
-                <input type="date" name="valid_until" placeholder="Valid until" class="w-full p-2 border rounded" required>
-            </label>
-        </div>
-        <div class="flex items-center justify-between">
-            <input type="submit" name="add_announcement" value="Add" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-        </div>
-    </form>
 
-    <?php if (!empty($announcements)): ?>
-        <table id="announcementsTable" class="min-w-full bg-white border">
-            <thead class="bg-gray-200">
-            <tr>
-                <th class="px-4 py-2 border">Tytuł</th>
-                <th class="px-4 py-2 border">Autor / Data</th>
-                <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
-                <th class="px-4 py-2 border">Treść</th>
-                <th class="px-4 py-2 border">Akcje</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($announcements as $announcement): ?>
+        <div class="bg-white p-6 rounded shadow-lg max-w-2xs">
+            <form method="POST" action="panel/add_user" class="text-center">
+                <label>
+                    <input class="text-center" type="text" name="username" placeholder="Username">
+                </label>
+                <label>
+                    <input class="text-center" type="text" name="password" placeholder="Password">
+                </label>
+                <input type="submit" name="add_user" value="Add">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
+            </form>
+        </div>
+    </div>
+    <div class="mx-2">
+        <div class="text-center" id="modules">
+            <?php if (!empty($modules)): ?>
+                <?php foreach ($modules as $module): ?>
+                    <div id="module">
+                        <h3><?= htmlspecialchars($module['module_name']) ?></h3>
+                        <p>Status: <?= ($module['is_active'] ? "Włączony 🟢" : "Wyłączony 🔴") ?></p>
+
+                        <!-- Formularz włączania/wyłączania modułu -->
+                        <form method="POST" action="/panel/toggle_module" onsubmit="return confirm('Czy na pewno chcesz zmienić stan modułu?');">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                            <input type="hidden" name="module_name" value="<?= htmlspecialchars($module['module_name']) ?>">
+                            <input type="hidden" name="enable" value="<?= $module['is_active'] ? '0' : '1' ?>">
+                            <button class="p-1" type="submit"><?= $module['is_active'] ? "Wyłącz" : "Włącz" ?></button>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>Brak ogłoszeń do wyświetlenia.</p>
+            <?php endif; ?>
+
+        </div>
+    </div>
+    <div>
+        <?php if (!empty($announcements)): ?>
+            <table id="announcementsTable" class="min-w-full bg-white border">
+                <thead class="bg-gray-200">
                 <tr>
-                    <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
-                    <td class="px-4 py-2 border">
-                        Autor: <?= htmlspecialchars($announcement['user_id']) ?><br>
-                        <?= htmlspecialchars($announcement['date']) ?>
-                    </td>
-                    <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
-                    <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
-                    <td class="px-4 py-2 border space-x-2">
-                        <!-- Formularz usunięcia ogłoszenia -->
-                        <form method="POST" action="/panel/delete_announcement" class="delete-form inline">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                            <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
-
-                            <button type="button" class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
-                                Usuń
-                            </button>
-                        </form>
-                        <!-- Formularz edycji ogłoszenia -->
-                        <form method="POST" name="edit_announcement" action="/panel/edit_announcement" class="inline">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                            <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
-                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded">
-                                Edytuj
-                            </button>
-                        </form>
-                    </td>
+                    <th class="px-4 py-2 border">Tytuł</th>
+                    <th class="px-4 py-2 border">Autor / Data</th>
+                    <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
+                    <th class="px-4 py-2 border">Treść</th>
+                    <th class="px-4 py-2 border">Akcje</th>
                 </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>Brak ogłoszeń do wyświetlenia.</p>
-    <?php endif; ?>
+                </thead>
+                <tbody>
+                <?php foreach ($announcements as $announcement): ?>
+                    <tr>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
+                        <td class="px-4 py-2 border">
+                            Autor: <?= htmlspecialchars($announcement['user_id']) ?><br>
+                            <?= htmlspecialchars($announcement['date']) ?>
+                        </td>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?>
+                            <?php
+                            $validDate = new DateTime(htmlspecialchars($announcement['valid_until']));
+                            $now = new DateTime('today midnight');
+                            echo $validDate->format('d.m.Y');;
+                            echo ($validDate >= $now ? '🟢' : '🔴' );
+                            ?></td>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
+                        <td class="px-4 py-2 border space-x-2">
+                            <!-- Formularz usunięcia ogłoszenia -->
+                            <form method="POST" action="/panel/delete_announcement" class="delete-form inline">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                                <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
+
+                                <button type="button" class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
+                                    Usuń
+                                </button>
+                            </form>
+                            <!-- Formularz edycji ogłoszenia -->
+                            <form method="POST" name="edit_announcement" action="/panel/edit_announcement" class="inline">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                                <input type="hidden" name="announcement_id" value="<?= htmlspecialchars($announcement['id']) ?>">
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded">
+                                    Edytuj
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>Brak ogłoszeń do wyświetlenia.</p>
+        <?php endif; ?>
+    </div>
 </div>
 
 <!-- Modal potwierdzenia (umieszczony poza pętlą) -->
@@ -197,29 +247,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 </script>
 
-<div id="users">
-    <form method="POST" action="panel/add_user">
-        <label>
-            <input type="text" name="username" placeholder="Username">
-        </label>
-        <label>
-            <input type="text" name="password" placeholder="Password">
-        </label>
-        <input type="submit" name="add_user" value="Add">
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-        <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
-    </form>
+<div id="users" class="grid grid-flow-col auto-cols-fr overflow-x-auto p-4 mx-4 bg-white rounded-2xl shadow-lg">
 
     <?php if (!empty($users)): ?>
         <?php foreach ($users as $user): ?>
-            <div id="announcement">
+            <div id="announcement" class="mx-2">
                 <h3><?= htmlspecialchars($user['username']) ?></h3>
 
                 <!-- Formularz usunięcia użytkownika -->
-                <form method="POST" action="/panel/delete_user" onsubmit="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
+                <form class="mb-2" method="POST" action="/panel/delete_user" onsubmit="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="user_to_delete_id" value="<?= htmlspecialchars($user['id']) ?>">
-                    <button type="submit" name="delete_user">Usuń</button>
+                    <button class="p-1" type="submit" name="delete_user">Usuń</button>
                 </form>
 
                 <!-- Formularz edycji uzytkownika -->
@@ -232,35 +271,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </label>
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="user_to_edit_id" value="<?= htmlspecialchars($user['id']) ?>">
-                    <button type="submit" name="edit_announcement">Edytuj</button>
+                    <button class="p-1" type="submit" name="edit_announcement">Edytuj</button>
                 </form>
             </div>
         <?php endforeach; ?>
     <?php else: ?>
         <p>Brak ogłoszeń do wyświetlenia.</p>
     <?php endif; ?>
-</div>
-
-<div id="modules">
-    <?php if (!empty($modules)): ?>
-        <?php foreach ($modules as $module): ?>
-            <div id="module">
-                <h3><?= htmlspecialchars($module['module_name']) ?></h3>
-                <p>Status: <?= ($module['is_active'] ? "Włączony" : "Wyłączony") ?></p>
-
-                <!-- Formularz włączania/wyłączania modułu -->
-                <form method="POST" action="/panel/toggle_module" onsubmit="return confirm('Czy na pewno chcesz zmienić stan modułu?');">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                    <input type="hidden" name="module_name" value="<?= htmlspecialchars($module['module_name']) ?>">
-                    <input type="hidden" name="enable" value="<?= $module['is_active'] ? '0' : '1' ?>">
-                    <button type="submit"><?= $module['is_active'] ? "Wyłącz" : "Włącz" ?></button>
-                </form>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>Brak ogłoszeń do wyświetlenia.</p>
-    <?php endif; ?>
-
 </div>
 
 <!-- IMPORT FOOTER -->

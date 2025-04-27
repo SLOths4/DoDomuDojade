@@ -44,14 +44,14 @@ button:disabled {
 }
 
 /* Karty z ogłoszeniami */
-#announcement {
+/* #announcement {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
     margin: 20px auto;
-    padding: 0 10px; /* Pasek dla karty */
-}
+    padding: 0 10px;
+} */
 
 #announcement > div {
     background-color: #FFFFFF; /* Biel dla przejrzystości */
