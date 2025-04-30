@@ -461,7 +461,7 @@
 
                             if (response.success && Array.isArray(response.data)) {
                                 if (response.data.length === 0) {
-                                    $('#announcements-container').html('<p>Brak ważnych ogłoszeń.</p>');
+                                    $('#announcements-container').html('<div class="p-2 bg-yellow-50 border border-yellow-500 text-center text-yellow-500 rounded-lg shadow-lg"><i class="fa-solid fa-circle-info"></i> Brak ważnych ogłoszeń.</div>');
                                 } else {
                                     startAnnouncementRotation(response.data);
                                 }

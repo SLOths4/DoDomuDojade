@@ -52,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </head>
-<body>
+<body class="text-primary-400 dark:text-primary-300 bg-white dark:bg-gray-900">
 
-<h1>Witaj, <?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?>!</h1>
+<h1 class="text-primary-400 dark:text-primary-300">Witaj, <?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?>!</h1>
 
-<button onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
-<button onclick="window.open('/display', '_blank');"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
+<button class="p-1" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
+<button class="p-1" onclick="window.open('/display', '_blank');"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
 
 <div id="announcement" class="grid grid-flow-col auto-cols-auto w-full overflow-x-auto mx-auto p-4">
     <?php if (SessionHelper::has('error')): ?>
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="items-center">
         <div class="max-w-2xs">
             <!-- Formularz dodawania ogłoszenia -->
-            <form method="POST" action="panel/add_announcement" class="mb-6 p-4 bg-white rounded shadow-lg">
+            <form method="POST" action="panel/add_announcement" class="mb-6 p-4 bg-beige dark:bg-gray-700 rounded shadow-lg">
                 <div class="mb-2">
                     <label>
                         <input type="text" name="title" placeholder="Title" class="w-full p-2 border rounded" required>
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
-        <div class="bg-white p-6 rounded shadow-lg max-w-2xs">
+        <div class="bg-white p-6 rounded shadow-lg max-w-2xs bg-beige dark:bg-gray-700">
             <form method="POST" action="panel/add_user" class="text-center">
                 <label>
                     <input class="text-center" type="text" name="username" placeholder="Username">
