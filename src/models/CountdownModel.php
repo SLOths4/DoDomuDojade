@@ -64,8 +64,8 @@ class CountdownModel extends Model
 
             $query = "INSERT INTO $this->TABLE_NAME (title, count_to) VALUES (:title, :count_to)";
             $this->executeStatement($query, [
-                ":title" => $title,
-                ":count_to" => $count_to
+                ":title" => [$title, PDO::PARAM_STR],
+                ":count_to" => [$count_to, PDO::PARAM_STR]
             ]);
 
             self::$logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $count_to]);
@@ -76,14 +76,14 @@ class CountdownModel extends Model
         }
     }
 
-    public function removeCountdown(int $id): bool
+    public function deleteCountdown(int $id): bool
     {
         try {
             self::$logger->info('Rozpoczęcie usuwania odliczania.', ['id' => $id]);
 
             $query = "DELETE FROM $this->TABLE_NAME WHERE id = :id";
             $this->executeStatement($query, [
-                ":id" => $id
+                ":id" => [$id, PDO::PARAM_INT]
             ]);
 
             self::$logger->info('Usunięto odliczanie.', ['id' => $id]);
@@ -101,9 +101,9 @@ class CountdownModel extends Model
 
             $query = "UPDATE $this->TABLE_NAME SET title = :title, count_to = :count_to WHERE id = :id";
             $this->executeStatement($query, [
-                ":title" => $title,
-                ":count_to" => $count_to,
-                ":id" => $id
+                ":title" => [$title, PDO::PARAM_STR],
+                ":count_to" => [$count_to, PDO::PARAM_STR],
+                ":id" => [$id, PDO::PARAM_INT]
             ]);
 
             self::$logger->info('Zaktualizowano odliczanie.', ['id' => $id, 'title' => $title, 'count_to' => $count_to]);

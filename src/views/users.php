@@ -21,8 +21,6 @@ SessionHelper::remove('error');
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="/assets/styles/style.css" rel="stylesheet" type="text/css">
-    <link href="/assets/styles/admin.css" rel="stylesheet" type="text/css">
     <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script src="/scripts/panel.js"></script>
 
@@ -35,16 +33,55 @@ SessionHelper::remove('error');
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </head>
 <body>
-<div id="navbar" class="fixed top-0 right-0 left-0 flex">
-    <div id="profile" class="absolute right-0 z-10 mt-2 w-48 origin-top-right  py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden">
-        <div id="profile-picture" class="rounded-md"></div>
-        <div id="profile-name" class="">
-            <?= htmlspecialchars($user['username']) ?>
-        </div>
-    </div>
-</div>
+    <?php include('functions/navbar.php'); ?>
 
-<!-- IMPORT FOOTER -->
-<?php include('functions/footer.php'); ?>
+    <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow"">
+        <div class="mb-2">
+            <label>
+                <input type="text" name="username" placeholder="Nazwa uzytkownika" class="w-full p-2 border rounded" required>
+            </label>
+        </div>
+        <div class="mb-2">
+            <label>
+                <input type="text" name="password" placeholder="Hasło" class="w-full p-2 border rounded" required>
+            </label>
+        </div>
+        <input type="submit" name="add_user" value="Dodaj" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+        <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
+    </form>
+
+    <?php if (!empty($users)): ?>
+        <?php foreach ($users as $user): ?>
+            <div id="announcement">
+                <h3><?= htmlspecialchars($user['username']) ?></h3>
+
+                <!-- Formularz usunięcia użytkownika -->
+                <form method="POST" action="/panel/delete_user" onsubmit="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="user_to_delete_id" value="<?= htmlspecialchars($user['id']) ?>">
+                    <button type="submit" name="delete_user">Usuń</button>
+                </form>
+
+                <!-- Formularz edycji uzytkownika -->
+                <form method="POST" action="/panel/edit_user">
+                    <label>
+                        <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>">
+                    </label>
+                    <label>
+                        <input type="text" name="password">
+                    </label>
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="user_to_edit_id" value="<?= htmlspecialchars($user['id']) ?>">
+                    <button type="submit" name="edit_announcement">Edytuj</button>
+                </form>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Brak uzytkowników do wyświetlenia.</p>
+    <?php endif; ?>
+
+    <?php include('functions/footer.php'); ?>
 </body>
 </html>

@@ -104,6 +104,36 @@ class PanelController extends Controller
         ]);
     }
 
+    public function announcements(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $user = $this->userModel->getUserById($userId);
+        $announcements = $this->announcementsModel->getAnnouncements();
+        $this->render('announcements', [
+            'user' => $user,
+            'announcements' => $announcements
+        ]);
+    }
+
+    public function modules(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $user = $this->userModel->getUserById($userId);
+        $modules = $this->moduleModel->getModules();
+        $this->render('modules', [
+            'user' => $user,
+            'modules' => $modules
+        ]);
+    }
+
     #[NoReturn] public function logout(): void
     {
         SessionHelper::destroy();
@@ -169,12 +199,12 @@ class PanelController extends Controller
                     self::$logger->error("Announcement could not be deleted");
                     SessionHelper::set('error', 'Failed to delete announcement');
                 }
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'An error occurred while deleting the announcement');
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
         }
@@ -199,12 +229,12 @@ class PanelController extends Controller
                     self::$logger->error("Announcement adding failed");
                     $_SESSION['error'] = 'Failed to add announcement';
                 }
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('Announcement adding failed', ['error' => $e->getMessage()]);
                 $_SESSION['error'] = 'Failed to add announcement';
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
         }
@@ -226,7 +256,7 @@ class PanelController extends Controller
 
             if (empty($newAnnouncementTitle) || empty($newAnnouncementText) || empty($newAnnouncementValidUntil)) {
                 SessionHelper::set('error', 'All fields must be filled.');
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
 
@@ -248,7 +278,7 @@ class PanelController extends Controller
                     self::$logger->debug("Updated field: $field", ['announcement_id' => $announcementId]);
                 }
 
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('Announcement update failed', [
@@ -256,7 +286,7 @@ class PanelController extends Controller
                     'error' => $e->getMessage()
                 ]);
                 SessionHelper::set('error', 'Announcement update failed');
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
 
@@ -272,7 +302,7 @@ class PanelController extends Controller
             if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
                 self::$logger->error("Username and password are required");
                 SessionHelper::set('error', 'Username and password are required!');
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             }
 
@@ -288,12 +318,12 @@ class PanelController extends Controller
                     self::$logger->error("User adding failed");
                     SessionHelper::set('error', 'Failed to add user');
                 }
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('User adding failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to add user');
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             }
         }
@@ -316,12 +346,12 @@ class PanelController extends Controller
                     self::$logger->error("User deletion failed");
                     SessionHelper::set('error', 'Failed to delete user');
                 }
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('User deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to delete user');
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             }
         }
@@ -333,14 +363,55 @@ class PanelController extends Controller
 
     public function addCountdown() : void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_countdown'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
 
             $title = trim($_POST['title']);
             $count_to = $_POST['count_to'];
+            $userId = SessionHelper::get('user_id');
 
+            if (empty($title) || empty($count_to)) {
+                SessionHelper::set('error', 'All fields must be filled.');
+            }
 
+            try {
+                $this->countdownModel->addCountdown($title, $count_to);
+                self::$logger->info("Countdown added successfully");
+                header('Location: /panel/countdowns');;
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
         }
+    }
+
+    public function deleteCountdown(): void
+    {
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            $countdownId = $_POST['countdown_id'];
+
+            try {
+                $this->countdownModel->deleteCountdown($countdownId);
+                self::$logger->info("Countdown deleted successfully");
+                header('Location: /panel/countdowns');;
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown deletion failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to delete countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
+        }
+    }
+
+    public function editCountdown(): void {
+        // TODO dodanie edycji odliczania
     }
 
     public function toggleModule(): void

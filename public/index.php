@@ -23,6 +23,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/panel/delete_user', [PanelController::class, 'deleteUser']);
     $r->addRoute('POST', '/panel/edit_user', [PanelController::class, 'editUser']);
     $r->addRoute('POST', '/panel/toggle_module', [PanelController::class, 'toggleModule']);
+    $r->addRoute('POST', '/panel/add_countdown', [PanelController::class, 'addCountdown']);
+    $r->addRoute('POST', '/panel/delete_countdown', [PanelController::class, 'deleteCountdown']);;
     // metody pomocnicze do display'u
     $r->addRoute('POST', '/display/get_version', [DisplayController::class, 'getVersion']);
     $r->addRoute('POST', '/display/get_departures', [DisplayController::class, 'getDepartures']);
@@ -33,6 +35,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     // panel
     $r->addRoute('GET', '/panel/users', [PanelController::class, 'users']);
     $r->addRoute('GET', '/panel/countdowns', [PanelController::class, 'countdowns']);
+    $r->addRoute('GET', '/panel/announcements', [PanelController::class, 'announcements']);
+    $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules']);
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
