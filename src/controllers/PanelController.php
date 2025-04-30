@@ -96,8 +96,10 @@ class PanelController extends Controller
             header("Location: /login");
             exit;
         }
+        $user = $this->userModel->getUserById($userId);
         $countdowns = $this->countdownModel->getCountdowns();
         $this->render('countdowns', [
+            'user' => $user,
             'countdowns' => $countdowns
         ]);
     }
@@ -333,6 +335,9 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_countdown'])) {
             $this->checkCsrf();
+
+            $title = trim($_POST['title']);
+            $count_to = $_POST['count_to'];
 
 
         }
