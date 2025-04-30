@@ -7,6 +7,7 @@ use JetBrains\PhpStorm\NoReturn;
 use src\core\CommonService;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
+use src\models\CountdownModel;
 use src\models\ModuleModel;
 use src\models\UserModel;
 use src\core\SessionHelper;
@@ -20,6 +21,7 @@ class PanelController extends Controller
     private UserModel $userModel;
     private AnnouncementsModel $announcementsModel;
     private ModuleModel $moduleModel;
+    private CountdownModel $countdownModel;
 
     function __construct()
     {
@@ -28,6 +30,7 @@ class PanelController extends Controller
         $this->userModel = new UserModel();
         $this->announcementsModel = new AnnouncementsModel();
         $this->moduleModel = new ModuleModel();
+        $this->countdownModel = new CountdownModel();
     }
 
     private function setCsrf(): void
@@ -68,6 +71,34 @@ class PanelController extends Controller
             'announcements' => $announcements,
             'users' => $users,
             'modules' => $modules
+        ]);
+    }
+
+    public function users(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $user = $this->userModel->getUserById($userId);
+        $users = $this->userModel->getUsers();
+        $this->render('users', [
+            'user' => $user,
+            'users' => $users
+        ]);
+    }
+
+    public function countdowns(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $countdowns = $this->countdownModel->getCountdowns();
+        $this->render('countdowns', [
+            'countdowns' => $countdowns
         ]);
     }
 
@@ -120,7 +151,6 @@ class PanelController extends Controller
 
     public function deleteAnnouncement(): void
     {
-        self::$logger->info("TEST------------");
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             self::$logger->debug("delete_announcement request received");
             $this->checkCsrf();
@@ -179,7 +209,56 @@ class PanelController extends Controller
     }
 
     public function editAnnouncement(): void {
-      // TODO
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_announcement'])) {
+            self::$logger->debug("edit_announcement request received");
+            $this->checkCsrf();
+
+            $newAnnouncementTitle = trim($_POST['title']);
+            $newAnnouncementText = trim($_POST['text']);
+            $newAnnouncementValidUntil = $_POST['valid_until'];
+
+            $userId = SessionHelper::get('user_id');
+
+            $announcementId = $_POST['announcement_id'];
+            $announcement = $this->announcementsModel->getAnnouncementById($announcementId);
+
+            if (empty($newAnnouncementTitle) || empty($newAnnouncementText) || empty($newAnnouncementValidUntil)) {
+                SessionHelper::set('error', 'All fields must be filled.');
+                header('Location: /panel');
+                exit;
+            }
+
+            try {
+                $updates = [];
+
+                if ($newAnnouncementTitle !== $announcement[0]['title']) {
+                    $updates['title'] = $newAnnouncementTitle;
+                }
+                if ($newAnnouncementText !== $announcement[0]['text']) {
+                    $updates['text'] = $newAnnouncementText;
+                }
+                if ($newAnnouncementValidUntil !== $announcement[0]['valid_until']) {
+                    $updates['valid_until'] = $newAnnouncementValidUntil;
+                }
+
+                foreach ($updates as $field => $value) {
+                    $this->announcementsModel->updateAnnouncementField($announcementId, $field, $value, $userId);
+                    self::$logger->debug("Updated field: $field", ['announcement_id' => $announcementId]);
+                }
+
+                header('Location: /panel');
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Announcement update failed', [
+                    'announcement_id' => $announcementId,
+                    'error' => $e->getMessage()
+                ]);
+                SessionHelper::set('error', 'Announcement update failed');
+                header('Location: /panel');
+                exit;
+            }
+
+        }
     }
 
     public function addUser(): void
@@ -248,6 +327,15 @@ class PanelController extends Controller
 
     public function editUser(): void {
         // TODO
+    }
+
+    public function addCountdown() : void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_countdown'])) {
+            $this->checkCsrf();
+
+
+        }
     }
 
     public function toggleModule(): void

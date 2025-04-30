@@ -30,6 +30,9 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/display/get_weather', [DisplayController::class, 'getWeather']);
     $r->addRoute('POST', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
     $r->addRoute('POST', '/display/get_events', [DisplayController::class, 'getEvents']);
+    // panel
+    $r->addRoute('GET', '/panel/users', [PanelController::class, 'users']);
+    $r->addRoute('GET', '/panel/countdowns', [PanelController::class, 'countdowns']);
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
