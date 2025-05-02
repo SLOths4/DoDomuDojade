@@ -241,7 +241,7 @@ class PanelController extends Controller
     }
 
     public function editAnnouncement(): void {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_announcement'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             self::$logger->debug("edit_announcement request received");
             $this->checkCsrf();
 
@@ -253,12 +253,6 @@ class PanelController extends Controller
 
             $announcementId = $_POST['announcement_id'];
             $announcement = $this->announcementsModel->getAnnouncementById($announcementId);
-
-            if (empty($newAnnouncementTitle) || empty($newAnnouncementText) || empty($newAnnouncementValidUntil)) {
-                SessionHelper::set('error', 'All fields must be filled.');
-                header('Location: /panel/announcements');
-                exit;
-            }
 
             try {
                 $updates = [];
@@ -358,7 +352,11 @@ class PanelController extends Controller
     }
 
     public function editUser(): void {
-        // TODO
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            //TODO
+        }
     }
 
     public function addCountdown() : void
@@ -411,7 +409,43 @@ class PanelController extends Controller
     }
 
     public function editCountdown(): void {
-        // TODO dodanie edycji odliczania
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            $newCountdownTitle = trim($_POST['title']);
+            $newCountdownCountTo = $_POST['count_to'];
+            $countdownId = $_POST['countdown_id'];
+
+            $userId = SessionHelper::get('user_id');
+
+            $countdown = $this->countdownModel->getCountdownById($countdownId);
+
+            try {
+                $updates = [];
+
+                if ($newCountdownTitle !== $countdown[0]['title']) {
+                    $updates['title'] = $newCountdownTitle;
+                }
+
+                if ($newCountdownCountTo !== $countdown[0]['count_to']) {
+                    $updates['count_to'] = $newCountdownCountTo;
+                }
+
+                foreach ($updates as $field => $value) {
+                    $this->countdownModel->updateCountdownField($countdownId, $field, $value, $userId);
+                    self::$logger->debug("Updated field: $field", ['announcement_id' => $countdownId]);
+                }
+
+                self::$logger->info("Countdown updated successfully");
+                header('Location: /panel/countdowns');
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
+        }
     }
 
     public function toggleModule(): void

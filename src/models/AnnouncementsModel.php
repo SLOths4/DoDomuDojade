@@ -11,11 +11,10 @@ use RuntimeException;
 use src\core\Model;
 
 /**
- * Class used for operations on table storing announcements in provided database
+ * Class used for operations on table storing announcements in a provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class AnnouncementsModel extends Model {
-    // Database structure: id | title | text | date (posted on) | valid_until | user_id (user making changes)
     private string $TABLE_NAME;
     private string $DATE_FORMAT;
     private int $MAX_TITLE_LENGTH;
@@ -23,7 +22,6 @@ class AnnouncementsModel extends Model {
     private array $ALLOWED_FIELDS;
 
     public function __construct() {
-        // settings
         $this->TABLE_NAME = self::getConfigVariable("ANNOUNCEMENTS_TABLE_NAME") ?? 'announcements';
         $this->DATE_FORMAT = self::getConfigVariable("DATE_FORMAT") ?? 'Y-m-d';
         $this->MAX_TITLE_LENGTH = self::getConfigVariable("MAX_TITLE_LENGTH") ?? 255;
@@ -109,7 +107,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Adds new announcement
+     * Adds a new announcement
      * @param string $title
      * @param string $text
      * @param string $validUntil
@@ -157,7 +155,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Updated chosen filed of announcement with given value
+     * Updated chosen filed of an announcement with given value
      * @param int $announcementId
      * @param string $field
      * @param string $newValue
@@ -237,7 +235,7 @@ class AnnouncementsModel extends Model {
             $result = $this->executeStatement($query, $params);
 
             if (!$result) {
-                self::$logger->warning("No announcement found with ID: $announcementId");
+                self::$logger->error("No announcement found with ID: $announcementId");
                 return [];
             }
 
@@ -250,7 +248,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Fetches announcements by provided title from database
+     * Fetches announcements by provided title from a database
      * @param string $announcementTitle
      * @return array
      * @throws Exception

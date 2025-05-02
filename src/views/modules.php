@@ -39,7 +39,6 @@ SessionHelper::remove('error');
                     <h3><?= htmlspecialchars($module['module_name']) ?></h3>
                     <p>Status: <?= ($module['is_active'] ? "Włączony" : "Wyłączony") ?></p>
 
-                    <!-- Formularz włączania/wyłączania modułu -->
                     <form method="POST" action="/panel/toggle_module" onsubmit="return confirm('Czy na pewno chcesz zmienić stan modułu?');">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                         <input type="hidden" name="module_name" value="<?= htmlspecialchars($module['module_name']) ?>">

@@ -30,9 +30,7 @@ class MetarModel extends Model
 
     /**
      * Pobiera dane METAR dla danego kodu ICAO.
-     *
      * @param string $airportIcaoCode
-     *
      * @return array
      */
     public function getMetar(string $airportIcaoCode): array
@@ -41,7 +39,6 @@ class MetarModel extends Model
             self::$logger->error("Invalid ICAO code provided.");
             return [];
         }
-
 
         try {
             $url = $this->metar_url . $airportIcaoCode;
@@ -56,9 +53,7 @@ class MetarModel extends Model
 
     /**
      * Ekstrahuje dane METAR z ciągu XML i konwertuje je do tablicy.
-     *
      * @param string $xmlString Surowy ciąg XML pobrany z API
-     *
      * @return array Zmapowane dane METAR
      */
     private function extractMetarData(string $xmlString): array

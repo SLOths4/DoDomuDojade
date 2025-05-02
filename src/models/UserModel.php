@@ -8,7 +8,7 @@ use RuntimeException;
 use src\core\Model;
 
 /**
- * Class used for operations on table storing users in provided database
+ * Class used for operations on table-storing users in a provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class UserModel extends Model
@@ -23,6 +23,7 @@ class UserModel extends Model
 
     /**
      * @return array Array of users in the database
+     * @throws Exception
      */
     public function getUsers(): array {
         try {
@@ -38,6 +39,7 @@ class UserModel extends Model
     /**
      * @param int $userId User id
      * @return array User entry from the database
+     * @throws Exception
      */
     public function getUserById(int $userId): array {
         try {
@@ -85,7 +87,7 @@ class UserModel extends Model
     /**
      * @param string $username
      * @param string $password
-     * @return bool Success
+     * @return bool
      */
     public function addUser(string $username, string $password): bool {
         try {
@@ -109,7 +111,7 @@ class UserModel extends Model
      * @param int $userId
      * @param string $username
      * @param string $password
-     * @return bool Success
+     * @return bool
      * @throws Exception
      */
     public function updateUser(int $userId, string $username, string $password): bool {
@@ -131,7 +133,7 @@ class UserModel extends Model
 
     /**
      * @param int $userId
-     * @return bool Success
+     * @return bool
      * @throws Exception
      */
     public function deleteUser(int $userId): bool {

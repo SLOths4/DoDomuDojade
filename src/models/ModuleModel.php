@@ -18,8 +18,7 @@ class ModuleModel extends Model
     }
 
     /**
-     * Sprawdza, czy moduł jest widoczny na podstawie czasu i statusu aktywności.
-     *
+     * Checks if a module is visible based on current time and status.
      * @param string $moduleName
      * @return bool
      * @throws Exception
@@ -34,29 +33,32 @@ class ModuleModel extends Model
                   AND end_time >= :current_time
                   LIMIT 1";
 
-        self::$logger->debug('Sprawdzanie widoczności modułu', [
-            'nazwa_modułu' => $moduleName,
-            'bieżący_czas' => $currentTime,
+        self::$logger->debug('Checking visibility of module:', [
+            'module_name' => $moduleName,
+            'current_time' => $currentTime,
         ]);
 
-        $statement = $this->executeStatement($query, [
-            'module_name' => [$moduleName, PDO::PARAM_STR],
-            'current_time' => [$currentTime, PDO::PARAM_STR],
-        ]);
+        try {
+            $statement = $this->executeStatement($query, [
+                'module_name' => [$moduleName, PDO::PARAM_STR],
+                'current_time' => [$currentTime, PDO::PARAM_STR],
+            ]);
 
-        $isVisible = !empty($statement);
+            $isVisible = !empty($statement);
 
-        self::$logger->info('Widoczność modułu została sprawdzona', [
-            'nazwa_modułu' => $moduleName,
-            'jest_widoczny' => $isVisible,
-        ]);
+            self::$logger->info('Visibility of module was checked.', [
+                'module_namee' => $moduleName,
+                'is_visible' => $isVisible,
+            ]);
 
-        return $isVisible;
+            return $isVisible;
+        } catch (Exception $e) {
+            throw new Exception('Error checking visibility of module: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Sprawdza, czy moduł jest aktywny.
-     *
+     * Checks if module is active.
      * @param string $moduleName
      * @return bool
      * @throws Exception
@@ -68,27 +70,30 @@ class ModuleModel extends Model
                   AND is_active = 1
                   LIMIT 1";
 
-        self::$logger->debug('Sprawdzanie czy moduł jest aktywny', [
-            'nazwa_modułu' => $moduleName,
+        self::$logger->debug('Checking status of model:', [
+            'module_name' => $moduleName,
         ]);
 
-        $statement = $this->executeStatement($query, [
-            'module_name' => [$moduleName, PDO::PARAM_STR],
-        ]);
+        try {
+            $statement = $this->executeStatement($query, [
+                'module_name' => [$moduleName, PDO::PARAM_STR],
+            ]);
 
-        $isActive = !empty($statement);
+            $isActive = !empty($statement);
 
-        self::$logger->info('Status aktywności modułu został sprawdzony', [
-            'nazwa_modułu' => $moduleName,
-            'jest_aktywny' => $isActive,
-        ]);
+            self::$logger->info('Status of model was checked.', [
+                'module_name' => $moduleName,
+                'is_active' => $isActive,
+            ]);
 
-        return $isActive;
+            return $isActive;
+        } catch (Exception $e) {
+            throw new Exception('Error checking status of model: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Pobiera wszystkie moduły z tabeli.
-     *
+     * Fetches all modules.
      * @return array
      * @throws Exception
      */
@@ -96,70 +101,79 @@ class ModuleModel extends Model
     {
         $query = "SELECT * FROM $this->moduleTableName";
 
-        self::$logger->debug('Pobieranie wszystkich modułów');
+        self::$logger->debug('Fetching all modules.');
 
-        $modules = $this->executeStatement($query);
+        try {
+            $modules = $this->executeStatement($query);
 
-        self::$logger->info('Wszystkie moduły zostały pobrane', [
-            'liczba_modułów' => count($modules),
-        ]);
+            self::$logger->info('All modules fetched successfully.', [
+                'number_of_modules' => count($modules),
+            ]);
 
-        return $modules;
+            return $modules;
+        } catch (Exception $e) {
+            throw new Exception('Error fetching modules: ' . $e->getMessage());
+        }
+
     }
 
     /**
-     * Pobiera dane pojedynczego modułu na podstawie jego nazwy.
-     *
+     * Fetches module details by name.
      * @param string $moduleName
      * @return array
      * @throws Exception
      */
-    public function getModule(string $moduleName): array
+    public function getModuleByName(string $moduleName): array
     {
         $query = "SELECT * FROM $this->moduleTableName WHERE module_name = :module_name LIMIT 1";
 
-        self::$logger->debug('Pobieranie szczegółów pojedynczego modułu', [
-            'nazwa_modułu' => $moduleName,
+        self::$logger->debug('Fetching module details by name:', [
+            'module_name' => $moduleName,
         ]);
 
-        $statement = $this->executeStatement($query, [
-            'module_name' => [$moduleName, PDO::PARAM_STR],
-        ]);
+        try {
+            $statement = $this->executeStatement($query, [
+                'module_name' => [$moduleName, PDO::PARAM_STR],
+            ]);
 
-        $module = $statement[0] ?: [];
+            $module = $statement[0] ?: [];
 
-        self::$logger->info('Moduł został pobrany', [
-            'nazwa_modułu' => $moduleName,
-            'wynik' => $module,
-        ]);
+            self::$logger->info('Module details fetched successfully.', [
+                'module_name' => $moduleName,
+                'details' => $module,
+            ]);
 
-        return $module;
+            return $module;
+        } catch (Exception $e) {
+            throw new Exception('Error fetching module details: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Pobiera wszystkie aktywne moduły.
-     *
+     * Fetches all available modules.
      * @return array
      * @throws Exception
      */
     public function getActiveModules(): array
     {
         $query = "SELECT * FROM $this->moduleTableName WHERE is_active = 1";
+        self::$logger->debug('Fetching active modules.');
 
-        self::$logger->debug('Pobieranie aktywnych modułów');
+        try {
+            $activeModules = $this->executeStatement($query);
 
-        $activeModules = $this->executeStatement($query);
+            self::$logger->info('Active modules fetched successfully.', [
+                'number_of_active_modules' => count($activeModules),
+            ]);
 
-        self::$logger->info('Aktywne moduły zostały pobrane', [
-            'liczba_aktywnych_modułów' => count($activeModules),
-        ]);
-
-        return $activeModules;
+            return $activeModules;
+        } catch (Exception $e) {
+            throw new Exception('Error fetching active modules: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Zmienia status aktywności modułu.
-     *
+     * Changes module status.
      * @param string $moduleName
      * @param bool $status
      * @return void
@@ -169,19 +183,23 @@ class ModuleModel extends Model
     {
         $query = "UPDATE $this->moduleTableName SET is_active = :status WHERE module_name = :module_name";
 
-        self::$logger->debug('Zmiana statusu modułu', [
-            'nazwa_modułu' => $moduleName,
-            'nowy_status' => $status,
+        self::$logger->debug('Changing module status', [
+            'module_name' => $moduleName,
+            'module_status' => $status,
         ]);
 
-        $this->executeStatement($query, [
-            'status' => [$status ? 1 : 0, PDO::PARAM_INT],
-            'module_name' => [$moduleName, PDO::PARAM_STR],
-        ]);
+        try {
+            $this->executeStatement($query, [
+                'status' => [$status ? 1 : 0, PDO::PARAM_INT],
+                'module_name' => [$moduleName, PDO::PARAM_STR],
+            ]);
 
-        self::$logger->info('Status modułu został zmieniony', [
-            'nazwa_modułu' => $moduleName,
-            'nowy_status' => $status,
-        ]);
+            self::$logger->info('Module status changed successfully.', [
+                'module_name' => $moduleName,
+                'status' => $status,
+            ]);
+        } catch (Exception $e) {
+            throw new Exception('Error changing module status: ' . $e->getMessage());
+        }
     }
 }

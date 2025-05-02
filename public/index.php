@@ -19,6 +19,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/panel/authenticate', [PanelController::class, 'authenticate']);
     $r->addRoute('POST', '/panel/add_announcement', [PanelController::class, 'addAnnouncement']);
     $r->addRoute('POST', '/panel/delete_announcement', [PanelController::class, 'deleteAnnouncement']);
+    $r->addRoute('POST', '/panel/edit_announcement', [PanelController::class, 'editAnnouncement']);
     $r->addRoute('POST', '/panel/add_user', [PanelController::class, 'addUser']);
     $r->addRoute('POST', '/panel/delete_user', [PanelController::class, 'deleteUser']);
     $r->addRoute('POST', '/panel/edit_user', [PanelController::class, 'editUser']);

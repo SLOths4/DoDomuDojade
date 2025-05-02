@@ -2,7 +2,7 @@
 namespace src\core;
 
 use Exception;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Dotenv\Dotenv;
@@ -18,8 +18,9 @@ class CommonService
     {
         if (self::$logger === null) {
             try {
-                self::$logger = new Logger('controllers');
-                self::$logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/src.log', Level::Debug));
+                self::$logger = new Logger('app');
+                $handler = new RotatingFileHandler(__DIR__ . '/../logs/app.log', 7, Level::Debug);
+                self::$logger->pushHandler($handler);
             } catch (Exception $e) {
                 error_log("Wystąpił błąd podczas inicjalizacji loggera: " . $e->getMessage());
                 throw $e;
@@ -28,10 +29,10 @@ class CommonService
         return self::$logger;
     }
 
-
     /**
      * @param string $variable
      * @return mixed|null
+     * @throws Exception
      */
     public static function getConfigVariable(string $variable): mixed
     {
@@ -65,10 +66,9 @@ class CommonService
 
     /**
      * Pobiera zmienną z pliku .env
-     *
      * @param string $variableName
-     *
      * @return string|null
+     * @throws Exception
      */
     public static function getEnvVariable(string $variableName): ?string {
         self::initLogger();
@@ -84,7 +84,4 @@ class CommonService
 
         return $value;
     }
-
-
-
 }
