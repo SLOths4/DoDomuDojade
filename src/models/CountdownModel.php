@@ -2,6 +2,8 @@
 
 namespace src\models;
 
+use DateTime;
+use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use PDO;
@@ -18,6 +20,16 @@ class CountdownModel extends Model
         $this->TABLE_NAME = self::getConfigVariable('COUNTDOWN_TABLE_NAME') ?: 'countdowns';
         $this->ALLOWED_FIELDS = self::getConfigVariable("ALLOWED_FIELDS") ?? ['title', 'count_to'];
         self::$logger->info('Countdowns table name in being used: ' . $this->TABLE_NAME);
+    }
+
+    private function __checkDatabaseStructure(): void
+    {
+        try {
+
+        } catch (Exception $e) {
+            self::$logger->error("Error checking database structure: " . $e->getMessage());
+            throw new RuntimeException('Error checking database structure');
+        }
     }
 
     /**
@@ -54,7 +66,7 @@ class CountdownModel extends Model
     public function getCurrentCountdown(): array
     {
         try {
-            $currentTime = time() * 1000;
+            $currentTime = date('Y-m-d H:i:s');
             self::$logger->info('Rozpoczęcie pobierania obecnego odliczania.', ['current_time' => $currentTime]);
 
             $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to > :current_time ORDER BY count_to ASC LIMIT 1";
@@ -99,20 +111,28 @@ class CountdownModel extends Model
      * Adds a countdown with given parameters
      * @param string $title
      * @param string $countTo
+     * @param int $userId
      * @return bool
      */
-    public function addCountdown(string $title, string $countTo): bool
+    public function addCountdown(string $title, string $countTo, int $userId): bool
     {
         try {
-            self::$logger->info('Rozpoczęcie dodawania nowego odliczania.', ['title' => $title, 'count_to' => $countTo]);
+            self::$logger->info('Rozpoczęcie dodawania nowego odliczania.', ['title' => $title, 'count_to' => $countTo, 'userId' => $userId]);
 
-            $query = "INSERT INTO $this->TABLE_NAME (title, count_to) VALUES (:title, :count_to)";
+            $dateTime = DateTime::createFromFormat('Y-m-d\TH:i' , $countTo) ?: DateTime::createFromFormat('Y-m-d H:i:s', $countTo);
+            if (!$dateTime) {
+                throw new InvalidArgumentException("Nieprawidłowy format daty count_to: $countTo");
+            }
+            $formattedDate = $dateTime->format('Y-m-d H:i:s');
+
+            $query = "INSERT INTO $this->TABLE_NAME (title, count_to, user_id) VALUES (:title, :count_to, :user_id)";
             $this->executeStatement($query, [
                 ":title" => [$title, PDO::PARAM_STR],
-                ":count_to" => [$countTo, PDO::PARAM_STR]
+                ":count_to" => [$formattedDate, PDO::PARAM_STR],
+                ":user_id" => [$userId, PDO::PARAM_INT],
             ]);
 
-            self::$logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $countTo]);
+            self::$logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $formattedDate, 'userId' => $userId]);
             return true;
         } catch (Exception $e) {
             self::$logger->error('Wystąpił błąd w addCountdown: ' . $e->getMessage());
@@ -144,7 +164,7 @@ class CountdownModel extends Model
     }
 
     /**
-     * Updated chosen filed of a countdown with given value
+     * Updated chosen filed of a countdown with a given value
      * @param int $countdownId
      * @param string $field
      * @param string $newValue

@@ -16,7 +16,7 @@ SessionHelper::remove('error');
 <html lang="pl">
 <head>
     <title>Login</title>
-    <link href="assets/styles/output.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
 </head>
 <body class="dark:bg-gray-900 dark:text-white">

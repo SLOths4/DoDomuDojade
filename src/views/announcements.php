@@ -16,7 +16,7 @@ SessionHelper::remove('error');
 <head>
     <meta charset="utf-8">
     <title>Panel | DoDomuDojadę</title>
-    <link rel="icon" type="image/x-icon" href="assets/resources/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap" rel="stylesheet">
@@ -66,7 +66,8 @@ SessionHelper::remove('error');
         <thead class="bg-gray-200">
         <tr>
             <th class="px-4 py-2 border">Tytuł</th>
-            <th class="px-4 py-2 border">Autor / Data</th>
+            <th class="px-4 py-2 border">Autor</th>
+            <th class="px-4 py-2 border">Data publikacji</th>
             <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
             <th class="px-4 py-2 border">Treść</th>
             <th class="px-4 py-2 border">Akcje</th>
@@ -76,14 +77,12 @@ SessionHelper::remove('error');
         <?php foreach ($announcements as $announcement): ?>
             <tr>
                 <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
-                <td class="px-4 py-2 border">
-                    Autor: <?= htmlspecialchars($announcement['user_id']) ?><br>
-                    <?= htmlspecialchars($announcement['date']) ?>
+                <td class="px-4 py-2 border"><?= htmlspecialchars($users[$announcement['user_id']]['username'] ?? "Nieznany użytkownik") ?><br>
                 </td>
+                <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
                 <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
                 <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
                 <td class="px-4 py-2 border space-x-2">
-                    <!-- Przyciski z atrybutem data-announcement-id -->
                     <button type="button"
                             class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
                             data-announcement-id="<?= htmlspecialchars($announcement['id']) ?>">
@@ -151,7 +150,7 @@ SessionHelper::remove('error');
                 <label for="edit_valid_until" class="block text-sm font-medium text-gray-700">Ważne do</label>
                 <input type="date" id="edit_valid_until" name="valid_until" class="w-full p-2 border rounded" required>
             </div>
-            <!-- Akcja: Zapisz / Anuluj -->
+
             <div class="flex justify-end">
                 <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                     Anuluj
@@ -183,26 +182,22 @@ SessionHelper::remove('error');
             confirmEdit: document.getElementById('confirmEditBtn')
         };
 
-        // Helper: Show & Hide Modal
         const toggleModal = (modal, show) => {
             modal.classList.toggle('hidden', !show);
         };
 
-        // Add event listener to array of buttons
         const addClickEventToButtons = (selector, callback) => {
             document.querySelectorAll(selector).forEach(btn => {
                 btn.addEventListener('click', callback);
             });
         };
 
-        // Handle delete button click
         const handleDeleteButtonClick = (event) => {
             event.preventDefault();
             forms.delete.querySelector('input[name="announcement_id"]').value = event.currentTarget.getAttribute('data-announcement-id');
             toggleModal(modals.confirmation, true);
         };
 
-        // Handle edit button click: fill form and show modal
         const handleEditButtonClick = (event) => {
             event.preventDefault();
             const btn = event.currentTarget;
@@ -211,16 +206,14 @@ SessionHelper::remove('error');
             forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
             forms.edit.querySelector('#edit_text').value = btn.getAttribute('data-text');
             forms.edit.querySelector('#edit_valid_until').value = btn.getAttribute('data-valid-until');
-            
+
             toggleModal(modals.edition, true);
         };
 
-        // Event listeners for delete actions
         addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
         buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
         buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
 
-        // Event listeners for edit actions
         addClickEventToButtons('.edit-btn', handleEditButtonClick);
         buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
         buttons.confirmEdit.addEventListener('click', () => forms.edit.submit());

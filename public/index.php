@@ -25,7 +25,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/panel/edit_user', [PanelController::class, 'editUser']);
     $r->addRoute('POST', '/panel/toggle_module', [PanelController::class, 'toggleModule']);
     $r->addRoute('POST', '/panel/add_countdown', [PanelController::class, 'addCountdown']);
-    $r->addRoute('POST', '/panel/delete_countdown', [PanelController::class, 'deleteCountdown']);;
+    $r->addRoute('POST', '/panel/delete_countdown', [PanelController::class, 'deleteCountdown']);
+    $r->addRoute('POST', '/panel/edit_countdown', [PanelController::class, 'editCountdown']);
     // metody pomocnicze do display'u
     $r->addRoute('POST', '/display/get_version', [DisplayController::class, 'getVersion']);
     $r->addRoute('POST', '/display/get_departures', [DisplayController::class, 'getDepartures']);

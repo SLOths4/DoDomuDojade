@@ -4,6 +4,6 @@
         <span>&#169; <?= date("Y")?> SLOths4</span>
     </div>
     <div>
-        <img alt="Społeczna Czwórka liceum logo" src="assets/resources/logo.png" class="h-12">
+        <img alt="Społeczna Czwórka liceum logo" src="/assets/resources/logo.png" class="h-12">
     </div>
 </div>

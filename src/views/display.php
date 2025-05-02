@@ -125,15 +125,15 @@
                         url: '/display/get_countdown',
                         type: 'POST',
                         dataType: 'json',
-                        data: { function: 'countdownData' },
-                        success: function(response) {
+                        data: {function: 'countdownData'},
+                        success: function (response) {
                             try {
                                 response = typeof response === 'string' ? JSON.parse(response) : response;
                             } catch (e) {
                                 console.error("Błąd parsowania JSON:", e);
                             }
 
-                            if (response.is_active===false) {
+                            if (response.is_active === false) {
                                 $('#countdown').remove();
                                 return;
                             }
@@ -142,30 +142,42 @@
 
                                 let item = response.data[0];
                                 let content = '';
-                                let timestamp = (item.count_to);
+                                let timestamp = new Date(item.count_to).getTime();
+
                                 function countdown() {
                                     let now = new Date().getTime();
                                     let distance = timestamp - now;
 
                                     let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                    let hours = Math.floor(distance / (1000 * 60 * 60));
-                                    let minutes = Math.floor(distance / 1000 / 60);
-                                    let seconds = Math.floor(distance / 1000);
+                                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                                    content = `<p>Do ${item.title} zostało ${seconds} sekund.</p>`;
+                                    content = `<p>Do ${item.title} zostało `;
+                                    if (days > 0) {
+                                        content += `${days} dni `;
+                                    }
+                                    if (hours > 0) {
+                                        content += `${hours} godzin `;
+                                    }
+                                    if (minutes > 0) {
+                                        content += `${minutes} minut `;
+                                    }
+                                    content += `${seconds} sekund.</p>`;
 
                                     $('#countdown').html(content);
                                 }
-                                setInterval(countdown,1000);
+
+                                setInterval(countdown, 1000);
 
                             } else {
                                 console.error("Brak danych do wyświetlenia:", response);
                                 $('#countdown').html('<p>Błąd: Brak danych</p>');
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error("Błąd ładowania AJAX: ", error);
-                            $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
+                            $('#countdown').html('<p>Błąd ładowania danych odliczania.</p>');
                         }
                     });
                 }

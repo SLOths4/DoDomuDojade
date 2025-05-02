@@ -27,9 +27,19 @@ class UserModel extends Model
      */
     public function getUsers(): array {
         try {
-            $query = "SELECT * FROM $this->TABLE_NAME";
+            $query = "SELECT * FROM $this->TABLE_NAME ORDER BY id ASC";
             self::$logger->info("Fetching all users.");
-            return $this->executeStatement($query);
+
+            $users = $this->executeStatement($query);
+
+            $sortedUsers = [];
+            foreach ($users as $user) {
+                $sortedUsers[$user['id']] = $user;
+            }
+
+            ksort($sortedUsers);
+
+            return $sortedUsers;
         } catch (Exception $e) {
             self::$logger->error("Error fetching users: " . $e->getMessage());
             throw new RuntimeException('Error fetching users');

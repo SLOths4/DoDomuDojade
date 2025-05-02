@@ -97,9 +97,11 @@ class PanelController extends Controller
             exit;
         }
         $user = $this->userModel->getUserById($userId);
+        $users = $this->userModel->getUsers();
         $countdowns = $this->countdownModel->getCountdowns();
         $this->render('countdowns', [
             'user' => $user,
+            'users' => $users,
             'countdowns' => $countdowns
         ]);
     }
@@ -112,9 +114,11 @@ class PanelController extends Controller
             exit;
         }
         $user = $this->userModel->getUserById($userId);
+        $users = $this->userModel->getUsers();
         $announcements = $this->announcementsModel->getAnnouncements();
         $this->render('announcements', [
             'user' => $user,
+            'users' => $users,
             'announcements' => $announcements
         ]);
     }
@@ -249,6 +253,12 @@ class PanelController extends Controller
             $newAnnouncementText = trim($_POST['text']);
             $newAnnouncementValidUntil = $_POST['valid_until'];
 
+            if (empty($newAnnouncementTitle) || empty($newAnnouncementText)) {
+                SessionHelper::set('error', 'All fields must be filled.');
+                header('Location: /panel/announcements');
+                exit;
+            }
+
             $userId = SessionHelper::get('user_id');
 
             $announcementId = $_POST['announcement_id'];
@@ -300,7 +310,6 @@ class PanelController extends Controller
                 exit;
             }
 
-
             $username = trim($_POST['username']);
             $password = trim($_POST['password']);
 
@@ -325,12 +334,11 @@ class PanelController extends Controller
 
     public function deleteUser(): void
     {
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_to_delete_id'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             self::$logger->debug("delete_user request received");
             $this->checkCsrf();
 
-            $userToDelete = trim($_POST['user_to_delete_id']);
+            $userToDelete = trim($_POST['user_id']);
 
             try {
                 $result = $this->userModel->deleteUser($userToDelete);
@@ -373,7 +381,7 @@ class PanelController extends Controller
             }
 
             try {
-                $this->countdownModel->addCountdown($title, $count_to);
+                $this->countdownModel->addCountdown($title, $count_to, $userId);
                 self::$logger->info("Countdown added successfully");
                 header('Location: /panel/countdowns');;
                 exit;
@@ -433,7 +441,7 @@ class PanelController extends Controller
 
                 foreach ($updates as $field => $value) {
                     $this->countdownModel->updateCountdownField($countdownId, $field, $value, $userId);
-                    self::$logger->debug("Updated field: $field", ['announcement_id' => $countdownId]);
+                    self::$logger->debug("Updated field: $field", ['countdown_id' => $countdownId]);
                 }
 
                 self::$logger->info("Countdown updated successfully");

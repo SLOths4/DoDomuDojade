@@ -35,10 +35,10 @@ SessionHelper::remove('error');
 <body>
     <?php include('functions/navbar.php'); ?>
 
-    <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow"">
+    <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow">
         <div class="mb-2">
             <label>
-                <input type="text" name="username" placeholder="Nazwa uzytkownika" class="w-full p-2 border rounded" required>
+                <input type="text" name="username" placeholder="Nazwa użytkownika" class="w-full p-2 border rounded" required>
             </label>
         </div>
         <div class="mb-2">
@@ -53,34 +53,93 @@ SessionHelper::remove('error');
     </form>
 
     <?php if (!empty($users)): ?>
-        <?php foreach ($users as $user): ?>
-            <div id="announcement">
-                <h3><?= htmlspecialchars($user['username']) ?></h3>
-
-                <!-- Formularz usunięcia użytkownika -->
-                <form method="POST" action="/panel/delete_user" onsubmit="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                    <input type="hidden" name="user_to_delete_id" value="<?= htmlspecialchars($user['id']) ?>">
-                    <button type="submit" name="delete_user">Usuń</button>
-                </form>
-
-                <!-- Formularz edycji uzytkownika -->
-                <form method="POST" action="/panel/edit_user">
-                    <label>
-                        <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>">
-                    </label>
-                    <label>
-                        <input type="text" name="password">
-                    </label>
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                    <input type="hidden" name="user_to_edit_id" value="<?= htmlspecialchars($user['id']) ?>">
-                    <button type="submit" name="edit_announcement">Edytuj</button>
-                </form>
-            </div>
-        <?php endforeach; ?>
+        <table id="usersTable" class="min-w-full bg-white border">
+            <thead class="bg-gray-200">
+            <tr>
+                <th class="px-4 py-2 border">Id</th>
+                <th class="px-4 py-2 border">Nazwa użytkownika</th>
+                <th class="px-4 py-2 border">Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($user['id']) ?></td>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($user['username']) ?></td>
+                    <td class="px-4 py-2 border space-x-2">
+                        <button type="button"
+                                class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                data-user-id="<?= htmlspecialchars($user['id']) ?>">
+                            Usuń
+                        </button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php else: ?>
-        <p>Brak uzytkowników do wyświetlenia.</p>
+        <p>Brak ogłoszeń do wyświetlenia.</p>
     <?php endif; ?>
+
+    <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+        <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+        <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+            <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
+            <p class="mb-6">Czy na pewno chcesz usunąć tego użytkownika? Tej operacji nie można cofnąć.</p>
+            <div class="flex justify-end">
+                <button id="cancelDeleteBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                    Anuluj
+                </button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    Usuń
+                </button>
+            </div>
+        </div>
+
+        <form method="POST" action="/panel/delete_user" class="delete-form hidden">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+            <input type="hidden" name="user_id" value="">
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modals = {
+                confirmation: document.getElementById('confirmationModal'),
+            };
+
+            const forms = {
+                delete: document.querySelector('#confirmationModal form.delete-form'),
+            };
+
+            const buttons = {
+                cancelDelete: document.getElementById('cancelDeleteBtn'),
+                confirmDelete: document.getElementById('confirmDeleteBtn'),
+            };
+
+            const toggleModal = (modal, show) => {
+                modal.classList.toggle('hidden', !show);
+            };
+
+            const addClickEventToButtons = (selector, callback) => {
+                document.querySelectorAll(selector).forEach(btn => {
+                    btn.addEventListener('click', callback);
+                });
+            };
+
+            const handleDeleteButtonClick = (event) => {
+                event.preventDefault();
+                forms.delete.querySelector('input[name="user_id"]').value = event.currentTarget.getAttribute('data-user-id');
+                toggleModal(modals.confirmation, true);
+            };
+
+            addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
+            buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
+            buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
+
+        });
+    </script>
 
     <?php include('functions/footer.php'); ?>
 </body>

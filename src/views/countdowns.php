@@ -41,10 +41,10 @@ SessionHelper::remove('error');
             </div>
             <div class="mb-2">
                 <label>
-                    <input type="date" name="count_to" class="w-full p-2 border rounded" required>
+                    <input type="datetime-local" name="count_to" class="w-full p-2 border rounded" required>
                 </label>
             </div>
-            <input type="submit" name="add_countdown" value="Add">
+            <input type="submit" name="add_countdown" value="Dodaj" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
             <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
         </form>
@@ -55,7 +55,7 @@ SessionHelper::remove('error');
                 <tr>
                     <th class="px-4 py-2 border">Nazwa wydarzenia</th>
                     <th class="px-4 py-2 border">Autor</th>
-                    <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Data</th>
+                    <th class="px-4 py-2 border" data-type="datetime-local">Data</th>
                     <th class="px-4 py-2 border">Akcje</th>
                 </tr>
                 </thead>
@@ -63,27 +63,21 @@ SessionHelper::remove('error');
                 <?php foreach ($countdowns as $countdown): ?>
                     <tr>
                         <td class="px-4 py-2 border"><?= htmlspecialchars($countdown['title']) ?></td>
-                        <td class="px-4 py-2 border"><?= htmlspecialchars($countdown['user_id']) ?? "Brak" ?></td>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($users[$countdown['user_id']]['username'] ?? "Nieznany użytkownik")?></td>
                         <td class="px-4 py-2 border"><?= htmlspecialchars($countdown['count_to']) ?></td>
                         <td class="px-4 py-2 border space-x-2">
-                            <!-- Formularz usunięcia odliczania -->
-                            // TODO dodanie obsługi usunięcia odliczania
-                            <form method="POST" action="/panel/delete_countdown" class="delete-form inline">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                                <input type="hidden" name="countdown_id" value="<?= htmlspecialchars($countdown['id']) ?>">
-
-                                <button type="button" class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
-                                    Usuń
-                                </button>
-                            </form>
-                            <!-- Formularz edycji odliczania -->
-                            <form method="POST" action="/panel/edit_countdown" class="edit-form inline">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                                <input type="hidden" name="countdown_id" value="<?= htmlspecialchars($countdown['id']) ?>">
-                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded">
-                                    Edytuj
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                    data-countdown-id="<?= htmlspecialchars($countdown['id']) ?>">
+                                Usuń
+                            </button>
+                            <button type="button"
+                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
+                                    data-countdown-id="<?= htmlspecialchars($countdown['id']) ?>"
+                                    data-title="<?= htmlspecialchars($countdown['title']) ?>"
+                                    data-count-to="<?= htmlspecialchars($countdown['count_to']) ?>">
+                                Edytuj
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -92,6 +86,115 @@ SessionHelper::remove('error');
         <?php else: ?>
             <p>Brak odliczań do wyświetlenia.</p>
         <?php endif; ?>
+
+        <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+                <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
+                <p class="mb-6">Czy na pewno chcesz usunąć to odliczanie? Tej operacji nie można cofnąć.</p>
+                <div class="flex justify-end">
+                    <button id="cancelDeleteBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                        Anuluj
+                    </button>
+                    <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                        Usuń
+                    </button>
+                </div>
+            </div>
+
+            <form method="POST" action="/panel/delete_countdown" class="delete-form hidden">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                <input type="hidden" name="countdown_id" value="">
+            </form>
+        </div>
+
+        <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10">
+                <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
+                <form method="POST" action="/panel/edit_countdown" id="editCountdownForm">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" id="edit_countdown_id" name="countdown_id">
+
+                    <div class="mb-4">
+                        <label for="edit_title" class="block text-sm font-medium text-gray-700">Tytuł</label>
+                        <input type="text" id="edit_title" name="title" class="w-full p-2 border rounded" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="edit_count_to" class="block text-sm font-medium text-gray-700">Odliczaj do</label>
+                        <input type="datetime-local" id="edit_count_to" name="count_to" class="w-full p-2 border rounded" required>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                            Anuluj
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Zapisz
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const modals = {
+                    confirmation: document.getElementById('confirmationModal'),
+                    edition: document.getElementById('editionModal')
+                };
+
+                const forms = {
+                    delete: document.querySelector('#confirmationModal form.delete-form'),
+                    edit: document.getElementById('editCountdownForm')
+                };
+
+                const buttons = {
+                    cancelDelete: document.getElementById('cancelDeleteBtn'),
+                    confirmDelete: document.getElementById('confirmDeleteBtn'),
+                    cancelEdit: document.getElementById('cancelEditBtn'),
+                    confirmEdit: document.getElementById('confirmEditBtn')
+                };
+
+                const toggleModal = (modal, show) => {
+                    modal.classList.toggle('hidden', !show);
+                };
+
+                const addClickEventToButtons = (selector, callback) => {
+                    document.querySelectorAll(selector).forEach(btn => {
+                        btn.addEventListener('click', callback);
+                    });
+                };
+
+                const handleDeleteButtonClick = (event) => {
+                    event.preventDefault();
+                    forms.delete.querySelector('input[name="countdown_id"]').value = event.currentTarget.getAttribute('data-countdown-id');
+                    toggleModal(modals.confirmation, true);
+                };
+
+                const handleEditButtonClick = (event) => {
+                    event.preventDefault();
+                    const btn = event.currentTarget;
+
+                    forms.edit.querySelector('#edit_countdown_id').value = btn.getAttribute('data-countdown-id');
+                    forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
+                    forms.edit.querySelector('#edit_count_to').value = btn.getAttribute('data-count-to');
+
+                    toggleModal(modals.edition, true);
+                };
+
+                addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
+                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
+                buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
+
+                addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
+                buttons.confirmEdit.addEventListener('click', () => forms.edit.submit());
+            });
+        </script>
 
         <?php include('functions/footer.php'); ?>
     </body>
