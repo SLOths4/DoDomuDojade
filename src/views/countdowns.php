@@ -36,7 +36,7 @@ SessionHelper::remove('error');
         <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white rounded shadow">
             <div class="mb-2">
                 <label>
-                    <input type="text" name="title" placeholder="tytuł" class="w-full p-2 border rounded" required>
+                    <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded" required>
                 </label>
             </div>
             <div class="mb-2">
