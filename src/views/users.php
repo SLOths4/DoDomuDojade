@@ -35,6 +35,21 @@ SessionHelper::remove('error');
 <body>
     <?php include('functions/navbar.php'); ?>
 
+    <?php if (!empty($error)): ?>
+        <div id="errorModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+                <h2 class="text-xl font-semibold text-red-700 mb-4">Wystąpił błąd</h2>
+                <p class="text-gray-700 mb-6"><?= htmlspecialchars($error) ?></p>
+                <div class="flex justify-end">
+                    <button id="closeErrorModal" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Zamknij
+                    </button>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow">
         <div class="mb-2">
             <label>
@@ -107,6 +122,7 @@ SessionHelper::remove('error');
         document.addEventListener('DOMContentLoaded', () => {
             const modals = {
                 confirmation: document.getElementById('confirmationModal'),
+                error: document.getElementById('errorModal')
             };
 
             const forms = {
@@ -116,6 +132,7 @@ SessionHelper::remove('error');
             const buttons = {
                 cancelDelete: document.getElementById('cancelDeleteBtn'),
                 confirmDelete: document.getElementById('confirmDeleteBtn'),
+                closeError: document.getElementById('closeErrorModal'),
             };
 
             const toggleModal = (modal, show) => {
@@ -137,6 +154,16 @@ SessionHelper::remove('error');
             addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
             buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
             buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
+
+            if (modals.error) {
+                modals.error.classList.remove('hidden');
+            }
+
+            if (buttons.closeError) {
+                buttons.closeError.addEventListener('click', () => {
+                    modals.error.classList.add('hidden');
+                });
+            }
 
         });
     </script>

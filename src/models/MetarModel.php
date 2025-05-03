@@ -3,7 +3,6 @@
 namespace src\models;
 
 use Exception;
-use Monolog\Logger;
 use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;

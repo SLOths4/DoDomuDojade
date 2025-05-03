@@ -19,7 +19,7 @@ SessionHelper::remove('error');
     <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
 </head>
-<body class="dark:bg-gray-900 dark:text-white">
+<body class="dark:bg-gray-800 dark:text-white">
     <h2 class="block mb-5 mt-5 text-3xl font-medium dark:text-white text-center">Login</h2>
     <form class="max-w-sm mx-auto" method="POST" action="panel/authenticate">
         <div class="mb-5">

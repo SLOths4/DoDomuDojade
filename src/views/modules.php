@@ -10,6 +10,7 @@ $error = SessionHelper::get('error');
 SessionHelper::remove('error');
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -33,22 +34,118 @@ SessionHelper::remove('error');
         <?php include('functions/navbar.php'); ?>
 
         <?php if (!empty($modules)): ?>
-            <?php foreach ($modules as $module): ?>
-                <div id="module">
-                    <h3><?= htmlspecialchars($module['module_name']) ?></h3>
-                    <p>Status: <?= ($module['is_active'] ? "Włączony" : "Wyłączony") ?></p>
-
-                    <form method="POST" action="/panel/toggle_module" onsubmit="return confirm('Czy na pewno chcesz zmienić stan modułu?');">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                        <input type="hidden" name="module_name" value="<?= htmlspecialchars($module['module_name']) ?>">
-                        <input type="hidden" name="enable" value="<?= $module['is_active'] ? '0' : '1' ?>">
-                        <button type="submit"><?= $module['is_active'] ? "Wyłącz" : "Włącz" ?></button>
-                    </form>
-                    </div>
-            <?php endforeach; ?>
+            <table id="modulesTable" class="min-w-full bg-white border">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-2 border">Nazwa modułu</th>
+                    <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
+                    <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
+                    <th class="px-4 py-2 border" data-type="time">Stan</th>
+                    <th class="px-4 py-2 border" data-type="time">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($modules as $module): ?>
+                    <tr>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($module['module_name']) ?></td>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($module['start_time']) ?></td>
+                        <td class="px-4 py-2 border"><?= htmlspecialchars($module['end_time']) ?></td>
+                        <td class="px-4 py-2 border"><?= $module['is_active'] ? "Włączony" : "Wyłączony" ?></td>
+                        <td class="px-4 py-2 border space-x-2">
+                            <button type="button"
+                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
+                                    data-module-id="<?= htmlspecialchars($module['id']) ?>"
+                                    data-start-time="<?= htmlspecialchars($module['start_time']) ?>"
+                                    data-end-time="<?= htmlspecialchars($module['end_time']) ?>">
+                                Edytuj
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         <?php else: ?>
             <p>Brak modułów do wyświetlenia.</p>
         <?php endif; ?>
+
+        <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10">
+                <h2 class="text-xl font-semibold mb-4">Edytuj godziny wyświetlania modułu</h2>
+                <form method="POST" action="/panel/edit_module" id="editModuleForm">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" id="edit_module_id" name="module_id">
+
+                    <div class="mb-4">
+                        <label for="edit_start_time" class="block text-sm font-medium text-gray-700">Od</label>
+                        <input type="datetime" id="edit_start_time" name="start_time" class="w-full p-2 border rounded">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="edit_end_time" class="block text-sm font-medium text-gray-700">Do</label>
+                        <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded">
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                            Anuluj
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Zapisz
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const modals = {
+                    edition: document.getElementById('editionModal')
+                };
+
+                const forms = {
+                    edit: document.getElementById('editModuleForm')
+                };
+
+                const buttons = {
+                    cancelEdit: document.getElementById('cancelEditBtn'),
+                };
+
+                const toggleModal = (modal, show) => {
+                    modal.classList.toggle('hidden', !show);
+                };
+
+                const handleEditButtonClick = (event) => {
+                    event.preventDefault();
+
+                    const btn = event.currentTarget;
+
+                    // Pobierz wartości z atrybutów data-*
+                    const moduleId = btn.getAttribute('data-module-id');
+                    const startTime = btn.getAttribute('data-start-time');
+                    const endTime = btn.getAttribute('data-end-time');
+
+                    // Uzupełnij formularz w modalu
+                    forms.edit.querySelector('#edit_module_id').value = moduleId;
+                    forms.edit.querySelector('#edit_start_time').value = startTime;
+                    forms.edit.querySelector('#edit_end_time').value = endTime;
+
+                    // Otwórz modal
+                    toggleModal(modals.edition, true);
+                };
+
+                // Dodaj obsługę przycisków "Edytuj"
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', handleEditButtonClick);
+                });
+
+                // Obsługa przycisku "Anuluj"
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
+            });
+        </script>
 
         <?php include('functions/footer.php'); ?>
     </body>

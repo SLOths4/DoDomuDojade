@@ -1,6 +1,6 @@
 <div id="navbar" class="sticky top-0 right-0 left-0 flex z-10 bg-gray-800 items-center">
-    <img class="m-1" src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
-    <p class="font-extrabold text-white px-1">DoDomuDojadę</p>
+    <a href="/panel"><img class="m-1" src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40" ></a>
+    <a href="/panel"><p class="font-extrabold text-white px-1">DoDomuDojadę</p></a>
     <ul class="flex m-0 p-0 z-10 list-none">
         <li>
             <a href="/panel" class="nav-link block text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Panel</a>
@@ -19,10 +19,8 @@
         </li>
     </ul>
     <script>
-        // Get current file name from URL
         const currentPage = window.location.pathname;
 
-        // Loop through all nav links
         document.querySelectorAll('.nav-link').forEach(link => {
             if (link.getAttribute('href') === currentPage) {
                 link.classList.remove('bg-gray-800', 'hover:bg-gray-900');

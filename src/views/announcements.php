@@ -30,7 +30,7 @@ SessionHelper::remove('error');
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </head>
-<body class="font-sans">
+<body class="font-sans dark:bg-gray-800 dark:text-white">
 <?php include('functions/navbar.php'); ?>
 
 <?php if (SessionHelper::has('error')): ?>
@@ -39,20 +39,20 @@ SessionHelper::remove('error');
     </div>
 <?php endif; ?>
 
-<form method="POST" action="/panel/add_announcement" class="mb-6 p-4 bg-white rounded shadow">
+<form method="POST" action="/panel/add_announcement" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
     <div class="mb-2">
         <label>
-            <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded" required>
+            <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
         </label>
     </div>
     <div class="mb-2">
         <label>
-            <input type="text" name="text" placeholder="Tekst" class="w-full p-2 border rounded" required>
+            <input type="text" name="text" placeholder="Tekst" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
         </label>
     </div>
     <div class="mb-2">
         <label>
-            <input type="date" name="valid_until" placeholder="Ważne do" class="w-full p-2 border rounded" required>
+            <input type="date" name="valid_until" placeholder="Ważne do" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
         </label>
     </div>
     <div class="flex items-center justify-between">
@@ -62,8 +62,8 @@ SessionHelper::remove('error');
 </form>
 
 <?php if (!empty($announcements)): ?>
-    <table id="announcementsTable" class="min-w-full bg-white border">
-        <thead class="bg-gray-200">
+    <table id="announcementsTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+        <thead class="bg-gray-200 dark:bg-gray-700">
         <tr>
             <th class="px-4 py-2 border">Tytuł</th>
             <th class="px-4 py-2 border">Autor</th>
@@ -108,7 +108,7 @@ SessionHelper::remove('error');
 <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
     <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-    <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+    <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
         <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
         <p class="mb-6">Czy na pewno chcesz usunąć to ogłoszenie? Tej operacji nie można cofnąć.</p>
         <div class="flex justify-end">
@@ -130,25 +130,25 @@ SessionHelper::remove('error');
 <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
     <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-    <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10">
+    <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
         <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
         <form method="POST" action="/panel/edit_announcement" id="editAnnouncementForm">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
             <input type="hidden" id="edit_announcement_id" name="announcement_id">
 
             <div class="mb-4">
-                <label for="edit_title" class="block text-sm font-medium text-gray-700">Tytuł</label>
-                <input type="text" id="edit_title" name="title" class="w-full p-2 border rounded" required>
+                <label for="edit_title" class="block text-sm font-medium text-gray-700 ">Tytuł</label>
+                <input type="text" id="edit_title" name="title" class="w-full p-2 border rounded dark:bg-gray-950">
             </div>
 
             <div class="mb-4">
-                <label for="edit_text" class="block text-sm font-medium text-gray-700">Treść</label>
-                <textarea id="edit_text" name="text" class="w-full p-2 border rounded" required></textarea>
+                <label for="edit_text" class="block text-sm font-medium text-gray-700 ">Treść</label>
+                <textarea id="edit_text" name="text" class="w-full p-2 border rounded dark:bg-gray-950"></textarea>
             </div>
 
             <div class="mb-4">
-                <label for="edit_valid_until" class="block text-sm font-medium text-gray-700">Ważne do</label>
-                <input type="date" id="edit_valid_until" name="valid_until" class="w-full p-2 border rounded" required>
+                <label for="edit_valid_until" class="block text-sm font-medium text-gray-700 ">Ważne do</label>
+                <input type="date" id="edit_valid_until" name="valid_until" class="w-full p-2 border rounded dark:bg-gray-950">
             </div>
 
             <div class="flex justify-end">

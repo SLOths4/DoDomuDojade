@@ -60,7 +60,7 @@ class UserModel extends Model
             return $result[0];
         } catch (Exception $e) {
             self::$logger->error("Error fetching user with ID: $userId: " . $e->getMessage());
-            throw new RuntimeException('Error fetching user with ID: $userId');
+            throw new RuntimeException("Error fetching user with ID: $userId");
         }
     }
 

@@ -3,7 +3,6 @@
 namespace src\controllers;
 
 use DateTime;
-use DateTimeInterface;
 use Exception;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
