@@ -30,12 +30,12 @@ SessionHelper::remove('error');
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
     </head>
-    <body>
+    <body class="dark:bg-gray-800 dark:text-white">
         <?php include('functions/navbar.php'); ?>
 
         <?php if (!empty($modules)): ?>
-            <table id="modulesTable" class="min-w-full bg-white border">
-                <thead class="bg-gray-200">
+            <table id="modulesTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+                <thead class="bg-gray-200 dark:bg-gray-700">
                 <tr>
                     <th class="px-4 py-2 border">Nazwa modułu</th>
                     <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
@@ -91,7 +91,7 @@ SessionHelper::remove('error');
                         <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                             Anuluj
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <button type="submit" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
                             Zapisz
                         </button>
                     </div>

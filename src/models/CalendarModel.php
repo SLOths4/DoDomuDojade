@@ -146,9 +146,9 @@ class CalendarModel extends Model
         $event['end1'] = $event['end1'][1] ?? '';
 
         if (!empty($event)) {
-            self::$logger->debug("event has contents");
+            self::$logger->debug("Event has contents");
         } else {
-            self::$logger->debug("event has no contents");
+            self::$logger->debug("Event has no contents");
         }
     
         return $event;
@@ -197,7 +197,7 @@ class CalendarModel extends Model
     private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate): int
     {
         $interval = $currentDate->diff($eventDate);
-        self::$logger->debug("EVENT is within " . $interval->days . "days from now");
+        self::$logger->debug("Event is within " . $interval->days . "days from now");
         return $interval->days;
     }
 
@@ -211,9 +211,9 @@ class CalendarModel extends Model
     private function should_include_event(DateTime $eventDate, DateTime $currentDate, int $daysUntilEvent): bool
     {
         if ($eventDate > $currentDate && $daysUntilEvent <= 7) {
-            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is validd.");
+            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is valid.");
         } else {
-            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is not validd.");
+            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is not valid.");
         }
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }

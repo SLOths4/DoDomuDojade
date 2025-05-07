@@ -56,7 +56,7 @@ SessionHelper::remove('error');
         </label>
     </div>
     <div class="flex items-center justify-between">
-        <input type="submit" name="add_announcement" value="Dodaj" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <input type="submit" name="add_announcement" value="Dodaj" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
     </div>
 </form>
@@ -102,7 +102,7 @@ SessionHelper::remove('error');
         </tbody>
     </table>
 <?php else: ?>
-    <p>Brak ogłoszeń do wyświetlenia.</p>
+    <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p></div>
 <?php endif; ?>
 
 <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
@@ -161,7 +161,7 @@ SessionHelper::remove('error');
                 <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                     Anuluj
                 </button>
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                <button type="submit" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
                     Zapisz
                 </button>
             </div>

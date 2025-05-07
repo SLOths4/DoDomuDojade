@@ -32,7 +32,7 @@ SessionHelper::remove('error');
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </head>
-<body>
+<body class="dark:bg-gray-800 dark:text-white">
     <?php include('functions/navbar.php'); ?>
 
     <?php if (!empty($error)): ?>
@@ -42,7 +42,7 @@ SessionHelper::remove('error');
                 <h2 class="text-xl font-semibold text-red-700 mb-4">Wystąpił błąd</h2>
                 <p class="text-gray-700 mb-6"><?= htmlspecialchars($error) ?></p>
                 <div class="flex justify-end">
-                    <button id="closeErrorModal" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <button id="closeErrorModal" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
                         Zamknij
                     </button>
                 </div>
@@ -50,26 +50,26 @@ SessionHelper::remove('error');
         </div>
     <?php endif; ?>
 
-    <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow">
+    <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow dark:bg-gray-900 dark:text-white">
         <div class="mb-2">
             <label>
-                <input type="text" name="username" placeholder="Nazwa użytkownika" class="w-full p-2 border rounded" required>
+                <input type="text" name="username" placeholder="Nazwa użytkownika" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
             </label>
         </div>
         <div class="mb-2">
             <label>
-                <input type="text" name="password" placeholder="Hasło" class="w-full p-2 border rounded" required>
+                <input type="text" name="password" placeholder="Hasło" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
             </label>
         </div>
-        <input type="submit" name="add_user" value="Dodaj" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <input type="submit" name="add_user" value="Dodaj" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400">
 
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
         <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
     </form>
 
     <?php if (!empty($users)): ?>
-        <table id="usersTable" class="min-w-full bg-white border">
-            <thead class="bg-gray-200">
+        <table id="usersTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+            <thead class="bg-gray-200 dark:bg-gray-700">
             <tr>
                 <th class="px-4 py-2 border">Id</th>
                 <th class="px-4 py-2 border">Nazwa użytkownika</th>

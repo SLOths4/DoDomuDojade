@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="flex flex-col justify-center items-center rounded-lg bg-gray-100 dark:bg-gray-900 dark:text-white space-y-4 p-4">
         <h1 class="justify-center text-2xl">Witaj, <?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?>!</h1>
         <p>Panel to miejsce do zarządzania całym serwisem do DoDomuDojadę. W zakładkach powyzej znajdziesz odpowiednie ustawienia.</p>
-        <button onclick="window.open('/display', '_blank');" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
+        <button onclick="window.open('/display', '_blank');" class="flex items-center gap-2 px-4 py-2 !bg-primary-200 text-white rounded-md hover:!bg-primary-400"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
     </div>
 
     <?php include('functions/footer.php'); ?>

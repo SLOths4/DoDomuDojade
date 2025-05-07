@@ -25,33 +25,33 @@ SessionHelper::remove('error');
         <link rel="stylesheet" href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" />
         <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
         <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
+    <body class="dark:bg-gray-800 dark:text-white">
         <?php include('functions/navbar.php'); ?>
 
-        <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white rounded shadow">
+        <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
             <div class="mb-2">
                 <label>
-                    <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded" required>
+                    <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                 </label>
             </div>
             <div class="mb-2">
                 <label>
-                    <input type="datetime-local" name="count_to" class="w-full p-2 border rounded" required>
+                    <input type="datetime-local" name="count_to" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                 </label>
             </div>
-            <input type="submit" name="add_countdown" value="Dodaj" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            <input type="submit" name="add_countdown" value="Dodaj" class="hover:!bg-primary-400 !bg-primary-200 text-white px-4 py-2 rounded">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
             <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
         </form>
 
         <?php if (!empty($countdowns)): ?>
-            <table id="countdownsTable" class="min-w-full bg-white border">
-                <thead class="bg-gray-200">
+            <table id="countdownsTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+                <thead class="bg-gray-200 dark:bg-gray-700">
                 <tr>
                     <th class="px-4 py-2 border">Nazwa wydarzenia</th>
                     <th class="px-4 py-2 border">Autor</th>
@@ -84,8 +84,8 @@ SessionHelper::remove('error');
                 </tbody>
             </table>
         <?php else: ?>
-            <p>Brak odliczań do wyświetlenia.</p>
-        <?php endif; ?>
+            <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p></div>
+<?php endif; ?>
 
         <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
@@ -135,7 +135,7 @@ SessionHelper::remove('error');
                         <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                             Anuluj
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <button type="submit" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
                             Zapisz
                         </button>
                     </div>

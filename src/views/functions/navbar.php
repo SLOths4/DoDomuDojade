@@ -15,7 +15,7 @@
             <a href="/panel/users" class="nav-link block text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Użytkownicy</a>
         </li>
         <li>
-            <a href="/panel/modules" class="nav-link block text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900 rounded-br-lg">Moduły</a>
+            <a href="/panel/modules" class="nav-link block text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Moduły</a>
         </li>
     </ul>
     <script>

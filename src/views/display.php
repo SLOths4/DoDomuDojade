@@ -190,11 +190,11 @@
 
 
     <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
-        <div id="left" class="bg-white rounded-2xl h-full shadow-custom">
+        <div id="left" class="bg-white rounded-2xl h-full shadow-custom py-1">
 
             <div id="tram" class="bg-white rounded-2xl h-full">
 
-                <div id="tram-container" class="py-1 pr-2 h-full">Ładowanie danych...</div>
+                <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
 
                 <script>
                     let firstload = true;
@@ -273,7 +273,9 @@
 
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
-                                    $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                                    let element = document.getElementById("tram-container");
+                                    element.classList.add("m-2", "p-2", "text-[20px]");
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd:Brak danych</p></div>');
                                 }
                             },
                             error: function(xhr, status, error) {
@@ -358,7 +360,7 @@
 
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
-                                    $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd: Brak danych</p></div>');
                                 }
                             },
                             error: function(xhr, status, error) {
@@ -389,7 +391,7 @@
 
         </div>
         
-        <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom">
+        <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom py-1">
             <div id="announcements" class="px-2 py-2 mx-2 my-2">
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
             </div>
@@ -473,18 +475,18 @@
 
                             if (response.success && Array.isArray(response.data)) {
                                 if (response.data.length === 0) {
-                                    $('#announcements-container').html('<p>Brak ważnych ogłoszeń.</p>');
+                                    $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ważnych ogłoszeń</p></div>');
                                 } else {
                                     startAnnouncementRotation(response.data);
                                 }
                             } else {
                                 console.error("Brak danych lub błąd odpowiedzi:", response);
-                                $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
+                                $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd: Brak danych ogłoszeń</p></div>');
                             }
                         },
                         error: function() {
                             console.error("Błąd ładowania danych AJAX.");
-                            $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
+                            $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych ogłoszeń</p></div>');
                         }
                     });
                 }
