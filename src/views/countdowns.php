@@ -90,7 +90,7 @@ SessionHelper::remove('error');
         <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
                 <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
                 <p class="mb-6">Czy na pewno chcesz usunąć to odliczanie? Tej operacji nie można cofnąć.</p>
                 <div class="flex justify-end">
@@ -112,23 +112,23 @@ SessionHelper::remove('error');
         <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10">
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                 <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
                 <form method="POST" action="/panel/edit_countdown" id="editCountdownForm">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" id="edit_countdown_id" name="countdown_id">
 
                     <div class="mb-4">
-                        <label for="edit_title" class="block text-sm font-medium text-gray-700">Tytuł</label>
-                        <input type="text" id="edit_title" maxlength="50" name="title" class="w-full p-2 border rounded" required>
+                        <label for="edit_title" class="block text-sm font-medium text-gray-700 dark:text-white">Tytuł</label>
+                        <input type="text" id="edit_title" maxlength="50" name="title" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                         <span id="title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
                             0 / 50 znaków
                         </span>
                     </div>
 
                     <div class="mb-4">
-                        <label for="edit_count_to" class="block text-sm font-medium text-gray-700">Odliczaj do</label>
-                        <input type="datetime-local" id="edit_count_to" name="count_to" class="w-full p-2 border rounded" required>
+                        <label for="edit_count_to" class="block text-sm font-medium text-gray-700 dark:text-white">Odliczaj do</label>
+                        <input type="datetime-local" id="edit_count_to" name="count_to" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                     </div>
 
                     <div class="flex justify-end">
