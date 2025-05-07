@@ -84,7 +84,11 @@ class DisplayController extends Controller
 
 
                 foreach ($stopsIdS as $stopId) {
-                    $stopDepartures = $this->tramModel->getTimes($stopId);
+                    try {
+                        $stopDepartures = $this->tramModel->getTimes($stopId);
+                    } catch (Exception $e) {
+                        continue;
+                    }
 
                     if (isset($stopDepartures['success']['times']) && is_array($stopDepartures['success']['times'])) {
                         foreach ($stopDepartures['success']['times'] as $departure) {
