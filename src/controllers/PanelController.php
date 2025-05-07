@@ -2,6 +2,7 @@
 
 namespace src\controllers;
 
+use DateTime;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use src\core\CommonService;
@@ -451,12 +452,15 @@ class PanelController extends Controller
             $this->checkCsrf();
 
             $newCountdownTitle = trim($_POST['title']);
-            $newCountdownCountTo = $_POST['count_to'];
+            $newRawCountdownCountTo = $_POST['count_to'];
             $countdownId = $_POST['countdown_id'];
 
             $userId = SessionHelper::get('user_id');
 
             $countdown = $this->countdownModel->getCountdownById($countdownId);
+
+            $dt = DateTime::createFromFormat('Y-m-d\TH:i', $newRawCountdownCountTo);
+            $newCountdownCountTo = $dt->format('Y-m-d H:i:s');
 
             try {
                 $updates = [];
