@@ -115,76 +115,6 @@
                 setInterval(loadWeatherData, 900000)
                 loadWeatherData();
             </script>
-
-            <div id="countdown" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-
-            <script>
-                function loadCountdownData() {
-
-                    $.ajax({
-                        url: '/display/get_countdown',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {function: 'countdownData'},
-                        success: function (response) {
-                            try {
-                                response = typeof response === 'string' ? JSON.parse(response) : response;
-                            } catch (e) {
-                                console.error("Błąd parsowania JSON:", e);
-                            }
-
-                            if (response.is_active === false) {
-                                $('#countdown').remove();
-                                return;
-                            }
-
-                            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
-
-                                let item = response.data[0];
-                                let content = '';
-                                let timestamp = new Date(item.count_to).getTime();
-
-                                function countdown() {
-                                    let now = new Date().getTime();
-                                    let distance = timestamp - now;
-
-                                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                                    content = `<p>Do ${item.title} zostało `;
-                                    if (days > 0) {
-                                        content += `${days} dni `;
-                                    }
-                                    if (hours > 0) {
-                                        content += `${hours} godzin `;
-                                    }
-                                    if (minutes > 0) {
-                                        content += `${minutes} minut `;
-                                    }
-                                    content += `${seconds} sekund.</p>`;
-
-                                    $('#countdown').html(content);
-                                }
-
-                                setInterval(countdown, 1000);
-
-                            } else {
-                                console.error("Brak danych do wyświetlenia:", response);
-                                $('#countdown').html('<p>Błąd: Brak danych</p>');
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Błąd ładowania AJAX: ", error);
-                            $('#countdown').html('<p>Błąd ładowania danych odliczania.</p>');
-                        }
-                    });
-                }
-
-                setInterval(loadCountdownData, 60000);
-                loadCountdownData();
-            </script>
         </div>
     </div>
 
@@ -392,6 +322,75 @@
         </div>
         
         <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom py-1">
+            <div id="countdown" class="flex justify-center items-center bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold">Ładowanie...</div>
+
+            <script>
+                function loadCountdownData() {
+
+                    $.ajax({
+                        url: '/display/get_countdown',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {function: 'countdownData'},
+                        success: function (response) {
+                            try {
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                            }
+
+                            if (response.is_active === false) {
+                                $('#countdown').remove();
+                                return;
+                            }
+
+                            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+
+                                let item = response.data[0];
+                                let content = '';
+                                let timestamp = new Date(item.count_to).getTime();
+
+                                function countdown() {
+                                    let now = new Date().getTime();
+                                    let distance = timestamp - now;
+
+                                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                    content = `<p>Do ${item.title} zostało `;
+                                    if (days > 0) {
+                                        content += `${days} dni `;
+                                    }
+                                    if (hours > 0) {
+                                        content += `${hours} godzin `;
+                                    }
+                                    if (minutes > 0) {
+                                        content += `${minutes} minut `;
+                                    }
+                                    content += `${seconds} sekund.</p>`;
+
+                                    $('#countdown').html(content);
+                                }
+
+                                setInterval(countdown, 1000);
+
+                            } else {
+                                console.error("Brak danych do wyświetlenia:", response);
+                                $('#countdown').html('<p>Błąd: Brak danych</p>');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#countdown').html('<p>Błąd ładowania danych odliczania.</p>');
+                        }
+                    });
+                }
+
+                setInterval(loadCountdownData, 60000);
+                loadCountdownData();
+            </script>
             <div id="announcements" class="px-2 py-2 mx-2 my-2">
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
             </div>

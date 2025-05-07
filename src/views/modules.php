@@ -71,20 +71,20 @@ SessionHelper::remove('error');
         <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10">
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                 <h2 class="text-xl font-semibold mb-4">Edytuj godziny wyświetlania modułu</h2>
                 <form method="POST" action="/panel/edit_module" id="editModuleForm">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" id="edit_module_id" name="module_id">
 
                     <div class="mb-4">
-                        <label for="edit_start_time" class="block text-sm font-medium text-gray-700">Od</label>
-                        <input type="datetime" id="edit_start_time" name="start_time" class="w-full p-2 border rounded">
+                        <label for="edit_start_time" class="block text-sm font-medium text-gray-700 dark:text-white">Od</label>
+                        <input type="datetime" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                     </div>
 
                     <div class="mb-4">
-                        <label for="edit_end_time" class="block text-sm font-medium text-gray-700">Do</label>
-                        <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded">
+                        <label for="edit_end_time" class="block text-sm font-medium text-gray-700 dark:text-white">Do</label>
+                        <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                     </div>
 
                     <div class="flex justify-end">

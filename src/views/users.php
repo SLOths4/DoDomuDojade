@@ -99,7 +99,7 @@ SessionHelper::remove('error');
     <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
         <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
-        <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
+        <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
             <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
             <p class="mb-6">Czy na pewno chcesz usunąć tego użytkownika? Tej operacji nie można cofnąć.</p>
             <div class="flex justify-end">

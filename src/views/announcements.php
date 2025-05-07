@@ -137,7 +137,7 @@ SessionHelper::remove('error');
             <input type="hidden" id="edit_announcement_id" name="announcement_id">
 
             <div class="mb-4">
-                <label for="edit_title" class="block text-sm font-medium text-gray-700 ">Tytuł</label>
+                <label for="edit_title" class="block text-sm font-medium text-gray-700 dark:text-white">Tytuł</label>
                 <input type="text" id="edit_title" name="title" maxlength="50" class="w-full p-2 border rounded dark:bg-gray-950">
                 <span id="title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
                     0 / 50 znaków
@@ -145,7 +145,7 @@ SessionHelper::remove('error');
             </div>
 
             <div class="mb-4">
-                <label for="edit_text" class="block text-sm font-medium text-gray-700 ">Treść</label>
+                <label for="edit_text" class="block text-sm font-medium text-gray-700 dark:text-white">Treść</label>
                 <textarea id="edit_text" name="text" maxlength="500" class="w-full p-2 border rounded dark:bg-gray-950"></textarea>
                 <span id="text_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
                     0 / 500 znaków
@@ -153,7 +153,7 @@ SessionHelper::remove('error');
             </div>
 
             <div class="mb-4">
-                <label for="edit_valid_until" class="block text-sm font-medium text-gray-700 ">Ważne do</label>
+                <label for="edit_valid_until" class="block text-sm font-medium text-gray-700 dark:text-white ">Ważne do</label>
                 <input type="date" id="edit_valid_until" name="valid_until" class="w-full p-2 border rounded dark:bg-gray-950">
             </div>
 
