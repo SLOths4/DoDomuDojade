@@ -120,7 +120,10 @@ SessionHelper::remove('error');
 
                     <div class="mb-4">
                         <label for="edit_title" class="block text-sm font-medium text-gray-700">Tytuł</label>
-                        <input type="text" id="edit_title" name="title" class="w-full p-2 border rounded" required>
+                        <input type="text" id="edit_title" maxlength="50" name="title" class="w-full p-2 border rounded" required>
+                        <span id="title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
+                            0 / 50 znaków
+                        </span>
                     </div>
 
                     <div class="mb-4">
@@ -142,6 +145,9 @@ SessionHelper::remove('error');
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+                const titleCounter = document.getElementById("title_char_counter");
+                const titleInput = document.getElementById("edit_title");
+
                 const modals = {
                     confirmation: document.getElementById('confirmationModal'),
                     edition: document.getElementById('editionModal')
@@ -183,7 +189,27 @@ SessionHelper::remove('error');
                     forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
                     forms.edit.querySelector('#edit_count_to').value = btn.getAttribute('data-count-to');
 
+                    initCounter(titleInput, titleCounter);
+
                     toggleModal(modals.edition, true);
+                };
+
+                /**
+                 * Inicjalizacja licznika znaków
+                 * @param {HTMLElement} field - Pole tekstowe (np. title lub text)
+                 * @param {HTMLElement} counter - Licznik znaków (np. dla text czy title)
+                 */
+                const initCounter = (field, counter) => {
+                    const maxLength = field.getAttribute("maxlength");
+                    const updateCounter = () => {
+                        const currentLength = field.value.length || 0;
+                        counter.textContent = `${currentLength} / ${maxLength} znaków`;
+                    };
+
+                    updateCounter();
+
+                    field.removeEventListener("input", updateCounter);
+                    field.addEventListener("input", updateCounter);
                 };
 
                 addClickEventToButtons('.delete-btn', handleDeleteButtonClick);

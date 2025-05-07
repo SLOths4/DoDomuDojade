@@ -138,12 +138,18 @@ SessionHelper::remove('error');
 
             <div class="mb-4">
                 <label for="edit_title" class="block text-sm font-medium text-gray-700 ">Tytuł</label>
-                <input type="text" id="edit_title" name="title" class="w-full p-2 border rounded dark:bg-gray-950">
+                <input type="text" id="edit_title" name="title" maxlength="50" class="w-full p-2 border rounded dark:bg-gray-950">
+                <span id="title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
+                    0 / 50 znaków
+                </span>
             </div>
 
             <div class="mb-4">
                 <label for="edit_text" class="block text-sm font-medium text-gray-700 ">Treść</label>
-                <textarea id="edit_text" name="text" class="w-full p-2 border rounded dark:bg-gray-950"></textarea>
+                <textarea id="edit_text" name="text" maxlength="500" class="w-full p-2 border rounded dark:bg-gray-950"></textarea>
+                <span id="text_char_counter" class="text-sm text-gray-600 dark:text-gray-400">
+                    0 / 500 znaków
+                </span>
             </div>
 
             <div class="mb-4">
@@ -165,6 +171,11 @@ SessionHelper::remove('error');
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const textarea = document.getElementById("edit_text");
+        const titleInput = document.getElementById("edit_title");
+        const textCounter = document.getElementById("text_char_counter");
+        const titleCounter = document.getElementById("title_char_counter");
+
         const modals = {
             confirmation: document.getElementById('confirmationModal'),
             edition: document.getElementById('editionModal')
@@ -207,8 +218,31 @@ SessionHelper::remove('error');
             forms.edit.querySelector('#edit_text').value = btn.getAttribute('data-text');
             forms.edit.querySelector('#edit_valid_until').value = btn.getAttribute('data-valid-until');
 
+            initCounter(titleInput, titleCounter);
+            initCounter(textarea, textCounter);
+
             toggleModal(modals.edition, true);
         };
+
+        /**
+         * Inicjalizacja licznika znaków
+         * @param {HTMLElement} field - Pole tekstowe (np. title lub text)
+         * @param {HTMLElement} counter - Licznik znaków (np. dla text czy title)
+         */
+        const initCounter = (field, counter) => {
+            const maxLength = field.getAttribute("maxlength");
+            const updateCounter = () => {
+                const currentLength = field.value.length || 0;
+                counter.textContent = `${currentLength} / ${maxLength} znaków`;
+            };
+
+            updateCounter();
+
+            field.removeEventListener("input", updateCounter);
+            field.addEventListener("input", updateCounter);
+        };
+
+
 
         addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
         buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
@@ -217,6 +251,8 @@ SessionHelper::remove('error');
         addClickEventToButtons('.edit-btn', handleEditButtonClick);
         buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
         buttons.confirmEdit.addEventListener('click', () => forms.edit.submit());
+
+
     });
 </script>
 
