@@ -90,7 +90,7 @@ class UserModel extends Model
             return $user;
         } catch (Exception $e) {
             self::$logger->error('Error fetching user by username: ' . $e->getMessage());
-            throw $e;
+            throw new RuntimeException('Error fetching user by username' . $e);
         }
     }
 

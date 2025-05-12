@@ -61,23 +61,21 @@ class AnnouncementsModel extends Model {
 
             return $isValid;
         } catch (InvalidArgumentException $e) {
-            self::$logger->error("Invalid date format provided.". $e->getMessage());
             throw new InvalidArgumentException('Invalid date format');
         }
     }
 
     /**
-     * Fetches all entries from provided announcements table
+     * Fetches all entries from the provided announcements table
      * @return array
      * @throws Exception
      */
     public function getAnnouncements(): array {
         try {
             $query = "SELECT * FROM $this->TABLE_NAME";
-            self::$logger->info("Fetching all announcements.");
+
             return $this->executeStatement($query);
         } catch (PDOException $e) {
-            self::$logger->error("Error fetching announcements: " . $e->getMessage());
             throw new RuntimeException('Error fetching announcements');
         }
     }
@@ -92,16 +90,18 @@ class AnnouncementsModel extends Model {
             $date = date('Y-m-d');
             $query = "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date";
             $params = [':date' => [$date, PDO::PARAM_STR]];
-            self::$logger->info("Fetching valid announcements for date: $date.");
+
+            self::$logger->debug("Fetching valid announcements for date: $date.");
+
             $result = $this->executeStatement($query, $params);
             if (!$result) {
                 self::$logger->warning("No valid announcements found for date: $date");
                 return [];
             }
-            self::$logger->info("Valid announcements fetched successfully.", ['result' => $result]);
+
+            self::$logger->debug("Valid announcements fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
-            self::$logger->error("Error fetching valid announcements: " . $e->getMessage());
             throw new RuntimeException('Error fetching valid announcements');
         }
     }
@@ -149,13 +149,12 @@ class AnnouncementsModel extends Model {
 
             return true;
         } catch (PDOException $e) {
-            self::$logger->error("Error adding new announcement: " . $e->getMessage());
             throw new RuntimeException('Error adding new announcement');
         }
     }
 
     /**
-     * Updated chosen filed of an announcement with given value
+     * Updated chosen filed of an announcement with a given value
      * @param int $announcementId
      * @param string $field
      * @param string $newValue
@@ -187,7 +186,6 @@ class AnnouncementsModel extends Model {
             ]);
             return true;
         } catch (PDOException $e) {
-            self::$logger->error("Error updating announcement: " . $e->getMessage());
             throw new RuntimeException('Error updating announcement');
         }
     }
@@ -214,8 +212,7 @@ class AnnouncementsModel extends Model {
 
             return true;
         } catch (PDOException $e) {
-            self::$logger->error("Error deleting announcement: " . $e->getMessage());
-            throw new RuntimeException('Error deleting announcement');
+            throw new RuntimeException('Error deleting announcement'. $e);
         }
     }
 
@@ -242,8 +239,7 @@ class AnnouncementsModel extends Model {
             self::$logger->info("Announcement fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
-            self::$logger->error("Error fetching announcement by ID: " . $e->getMessage());
-            throw new RuntimeException('Error fetching data from the database');
+            throw new RuntimeException('Error fetching data from the database' . $e);
         }
     }
 
@@ -272,8 +268,7 @@ class AnnouncementsModel extends Model {
             self::$logger->info("Announcement fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            throw new RuntimeException('Error fetching data from the database');
+            throw new RuntimeException('Error fetching data from the database' . $e);
         }
     }
 }

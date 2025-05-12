@@ -22,16 +22,6 @@ class CountdownModel extends Model
         self::$logger->info('Countdowns table name in being used: ' . $this->TABLE_NAME);
     }
 
-    private function __checkDatabaseStructure(): void
-    {
-        try {
-
-        } catch (Exception $e) {
-            self::$logger->error("Error checking database structure: " . $e->getMessage());
-            throw new RuntimeException('Error checking database structure');
-        }
-    }
-
     /**
      * Fetches announcements by id
      * @param int $countdownId
@@ -102,8 +92,7 @@ class CountdownModel extends Model
             self::$logger->info('Pobrano wszystkie odliczania.', ['liczba_odliczań' => count($results)]);
             return $results;
         } catch (Exception $e) {
-            self::$logger->error('Wystąpił błąd w getCountdowns: ' . $e->getMessage());
-            return [];
+            throw new RuntimeException('Error fetching countdowns' . $e);
         }
     }
 
@@ -121,7 +110,7 @@ class CountdownModel extends Model
 
             $dateTime = DateTime::createFromFormat('Y-m-d\TH:i' , $countTo) ?: DateTime::createFromFormat('Y-m-d H:i:s', $countTo);
             if (!$dateTime) {
-                throw new InvalidArgumentException("Nieprawidłowy format daty count_to: $countTo");
+                throw new InvalidArgumentException("Incorrect data format: $countTo");
             }
             $formattedDate = $dateTime->format('Y-m-d H:i:s');
 
@@ -135,8 +124,7 @@ class CountdownModel extends Model
             self::$logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $formattedDate, 'userId' => $userId]);
             return true;
         } catch (Exception $e) {
-            self::$logger->error('Wystąpił błąd w addCountdown: ' . $e->getMessage());
-            return false;
+            throw new RuntimeException('Error adding countdown' . $e);
         }
     }
 
@@ -158,8 +146,7 @@ class CountdownModel extends Model
             self::$logger->info('Usunięto odliczanie.', ['id' => $id]);
             return true;
         } catch (Exception $e) {
-            self::$logger->error('Wystąpił błąd w removeCountdown: ' . $e->getMessage());
-            return false;
+            throw new RuntimeException('Error removing countdown' . $e);
         }
     }
 
@@ -196,8 +183,7 @@ class CountdownModel extends Model
             ]);
             return true;
         } catch (Exception $e) {
-            self::$logger->error("Error updating announcement: " . $e->getMessage());
-            throw new RuntimeException('Error updating announcement');
+            throw new RuntimeException('Error updating announcement' . $e);
         }
     }
 }

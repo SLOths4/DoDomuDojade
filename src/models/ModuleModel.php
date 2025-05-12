@@ -270,8 +270,7 @@ class ModuleModel extends Model
             ]);
             return true;
         } catch (Exception $e) {
-            self::$logger->error("Error updating module: " . $e->getMessage());
-            throw new RuntimeException('Error updating module');
+            throw new RuntimeException('Error updating module' . $e->getMessage());
         }
     }
 }
