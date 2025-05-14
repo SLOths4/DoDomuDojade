@@ -8,24 +8,6 @@ use src\core\SessionHelper;
 SessionHelper::start();
 $error = SessionHelper::get('error');
 SessionHelper::remove('error');
-
-
-//-----------mess------
-
-// Ustawianie stanu checkboxa na podstawie przesłania formularza
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['display-valid-announcements-only'])) {
-        // Zaznaczenie checkboxa (tylko ważne ogłoszenia)
-        $_SESSION['display_valid_announcements_only'] = true;
-    } else {
-        // Odznaczenie checkboxa (wszystkie ogłoszenia)
-        $_SESSION['display_valid_announcements_only'] = false;
-    }
-}
-
-// ------ mess -------
-
-
 ?>
 
 <!DOCTYPE html>
