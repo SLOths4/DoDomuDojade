@@ -3,6 +3,8 @@
 namespace src\controllers;
 
 use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
 use Exception;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
@@ -201,9 +203,11 @@ class DisplayController extends Controller
                 $currentCountdown = $this->countdownModel->getCurrentCountdown();
 
                 if (!empty($currentCountdown)) {
+                    $dt = new DateTime($currentCountdown['count_to'], new DateTimeZone('Europe/Warsaw') );
+
                     $response[] = [
                         'title' => htmlspecialchars($currentCountdown['title']),
-                        'count_to' => new DateTime($currentCountdown['count_to'])->format(DateTime::ATOM)
+                        'count_to' => $dt->getTimestamp()
                     ];
                     self::$logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
                     echo json_encode(['success' => true, 'data' => $response]);

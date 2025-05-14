@@ -249,7 +249,7 @@
                         </tr>
                     </thead>
                     <tbody>`;
-                                    if (startIndex == 0) {
+                                    if (startIndex === 0) {
                                         content += content0
                                     } else {
                                         content += content1
@@ -348,7 +348,7 @@
 
                                 let item = response.data[0];
                                 let content = '';
-                                let timestamp = new Date(item.count_to).getTime();
+                                let timestamp = new Date(item.count_to * 1000);
 
                                 function countdown() {
                                     let now = new Date().getTime();
