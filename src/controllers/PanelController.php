@@ -2,11 +2,13 @@
 
 namespace src\controllers;
 
+use DateTime;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use src\core\CommonService;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
+use src\models\CountdownModel;
 use src\models\ModuleModel;
 use src\models\UserModel;
 use src\core\SessionHelper;
@@ -20,6 +22,7 @@ class PanelController extends Controller
     private UserModel $userModel;
     private AnnouncementsModel $announcementsModel;
     private ModuleModel $moduleModel;
+    private CountdownModel $countdownModel;
 
     function __construct()
     {
@@ -28,6 +31,7 @@ class PanelController extends Controller
         $this->userModel = new UserModel();
         $this->announcementsModel = new AnnouncementsModel();
         $this->moduleModel = new ModuleModel();
+        $this->countdownModel = new CountdownModel();
     }
 
     private function setCsrf(): void
@@ -54,19 +58,116 @@ class PanelController extends Controller
             header("Location: /login");
             exit;
         }
-        $user = $this->userModel->getUserById($userId);
 
-        $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
-        $announcements = $showOnlyValid
-            ? $this->announcementsModel->getValidAnnouncements()
-            : $this->announcementsModel->getAnnouncements();
-        $users = $this->userModel->getUsers();
-        $modules = $this->moduleModel->getModules();
+        try {
+            $user = $this->userModel->getUserById($userId);
+
+            $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
+            $announcements = $showOnlyValid
+                ? $this->announcementsModel->getValidAnnouncements()
+                : $this->announcementsModel->getAnnouncements();
+            $users = $this->userModel->getUsers();
+            $modules = $this->moduleModel->getModules();
+        } catch (Exception $e) {
+            self::$logger->error("Błąd podczas ładowania strony głównej: " . $e->getMessage());
+
+            SessionHelper::set('error', 'Nie udało się załadować strony głównej.');
+
+            header("Location: /login");
+            exit;
+        }
 
         $this->render('panel', [
             'user' => $user,
             'announcements' => $announcements,
             'users' => $users,
+            'modules' => $modules
+        ]);
+    }
+
+    public function users(): void
+    {
+        $userId = SessionHelper::get('user_id');
+
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+
+        try {
+            $user = $this->userModel->getUserById($userId);
+            $users = $this->userModel->getUsers();
+        } catch (Exception $e) {
+            self::$logger->error("Błąd podczas ładowania strony users: " . $e->getMessage());
+
+            SessionHelper::set('error', 'Nie udało się załadować strony users.');
+
+            header("Location: /login");
+            exit;
+        }
+
+        $this->render('users', [
+            'user' => $user,
+            'users' => $users
+        ]);
+    }
+
+    public function countdowns(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+
+        try {
+            $user = $this->userModel->getUserById($userId);
+            $users = $this->userModel->getUsers();
+            $countdowns = $this->countdownModel->getCountdowns();
+        } catch (Exception $e) {
+            self::$logger->error("Błąd podczas ładowania strony odliczań: " . $e->getMessage());
+
+            SessionHelper::set('error', 'Nie udało się załadować strony odliczania.');
+
+            header("Location: /login");
+            exit;
+        }
+
+        $this->render('countdowns', [
+            'user' => $user,
+            'users' => $users,
+            'countdowns' => $countdowns
+        ]);
+    }
+
+    public function announcements(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $user = $this->userModel->getUserById($userId);
+        $users = $this->userModel->getUsers();
+        $announcements = $this->announcementsModel->getAnnouncements();
+        $this->render('announcements', [
+            'user' => $user,
+            'users' => $users,
+            'announcements' => $announcements
+        ]);
+    }
+
+    public function modules(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
+            header("Location: /login");
+            exit;
+        }
+        $user = $this->userModel->getUserById($userId);
+        $modules = $this->moduleModel->getModules();
+        $this->render('modules', [
+            'user' => $user,
             'modules' => $modules
         ]);
     }
@@ -120,15 +221,15 @@ class PanelController extends Controller
 
     public function deleteAnnouncement(): void
     {
-        self::$logger->info("TEST------------");
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            self::$logger->debug("delete_announcement request received");
-            $this->checkCsrf();
-
-            $announcementId = $_POST['announcement_id'];
-            $userId = SessionHelper::get('user_id');
-
             try {
+                self::$logger->debug("delete_announcement request received");
+                $this->checkCsrf();
+
+                $announcementId = $_POST['announcement_id'];
+                $userId = SessionHelper::get('user_id');
+
+
                 $result = $this->announcementsModel->deleteAnnouncement($announcementId, $userId);
 
                 if ($result) {
@@ -137,12 +238,12 @@ class PanelController extends Controller
                     self::$logger->error("Announcement could not be deleted");
                     SessionHelper::set('error', 'Failed to delete announcement');
                 }
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'An error occurred while deleting the announcement');
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
         }
@@ -151,15 +252,16 @@ class PanelController extends Controller
     public function addAnnouncement(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
-            self::$logger->debug("add_announcement request received");
-            $this->checkCsrf();
-
-            $title = isset($_POST['title']) ? trim($_POST['title']) : '';
-            $text = isset($_POST['text']) ? trim($_POST['text']) : '';
-            $validUntil = $_POST['valid_until'];
-            $userId = SessionHelper::get('user_id');
-
             try {
+                self::$logger->debug("add_announcement request received");
+                $this->checkCsrf();
+
+                $title = isset($_POST['title']) ? trim($_POST['title']) : '';
+                $text = isset($_POST['text']) ? trim($_POST['text']) : '';
+                $validUntil = $_POST['valid_until'];
+                $userId = SessionHelper::get('user_id');
+
+
                 $result = $this->announcementsModel->addAnnouncement($title, $text, $validUntil, $userId);
                 if ($result) {
                     self::$logger->info("Announcement added successfully");
@@ -167,39 +269,89 @@ class PanelController extends Controller
                     self::$logger->error("Announcement adding failed");
                     $_SESSION['error'] = 'Failed to add announcement';
                 }
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('Announcement adding failed', ['error' => $e->getMessage()]);
                 $_SESSION['error'] = 'Failed to add announcement';
-                header('Location: /panel');
+                header('Location: /panel/announcements');
                 exit;
             }
         }
     }
 
     public function editAnnouncement(): void {
-      // TODO
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                self::$logger->debug("edit_announcement request received");
+                $this->checkCsrf();
+
+                $newAnnouncementTitle = trim($_POST['title']);
+                $newAnnouncementText = trim($_POST['text']);
+                $newAnnouncementValidUntil = $_POST['valid_until'];
+
+                if (empty($newAnnouncementTitle) || empty($newAnnouncementText)) {
+                    SessionHelper::set('error', 'All fields must be filled.');
+                    header('Location: /panel/announcements');
+                    exit;
+                }
+
+                $userId = SessionHelper::get('user_id');
+
+                $announcementId = $_POST['announcement_id'];
+                $announcement = $this->announcementsModel->getAnnouncementById($announcementId);
+
+
+                $updates = [];
+
+                if ($newAnnouncementTitle !== $announcement[0]['title']) {
+                    $updates['title'] = $newAnnouncementTitle;
+                }
+                if ($newAnnouncementText !== $announcement[0]['text']) {
+                    $updates['text'] = $newAnnouncementText;
+                }
+                if ($newAnnouncementValidUntil !== $announcement[0]['valid_until']) {
+                    $updates['valid_until'] = $newAnnouncementValidUntil;
+                }
+
+                foreach ($updates as $field => $value) {
+                    $this->announcementsModel->updateAnnouncementField($announcementId, $field, $value, $userId);
+                    self::$logger->debug("Updated field: $field", ['announcement_id' => $announcementId]);
+                }
+
+                header('Location: /panel/announcements');
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Announcement update failed', [
+                    'announcement_id' => $announcementId,
+                    'error' => $e->getMessage()
+                ]);
+                SessionHelper::set('error', 'Announcement update failed');
+                header('Location: /panel/announcements');
+                exit;
+            }
+
+        }
     }
 
     public function addUser(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-            self::$logger->debug("add_user request received");
-            $this->checkCsrf();
-
-            if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
-                self::$logger->error("Username and password are required");
-                SessionHelper::set('error', 'Username and password are required!');
-                header('Location: /panel');
-                exit;
-            }
-
-
-            $username = trim($_POST['username']);
-            $password = trim($_POST['password']);
-
             try {
+                self::$logger->debug("add_user request received");
+                $this->checkCsrf();
+
+                if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
+                    self::$logger->error("Username and password are required");
+                    SessionHelper::set('error', 'Username and password are required!');
+                    header('Location: /panel/users');
+                    exit;
+                }
+
+                $username = trim($_POST['username']);
+                $password = trim($_POST['password']);
+
+
                 $result = $this->userModel->addUser($username, $password);
                 if ($result) {
                     self::$logger->info("User added successfully");
@@ -207,12 +359,12 @@ class PanelController extends Controller
                     self::$logger->error("User adding failed");
                     SessionHelper::set('error', 'Failed to add user');
                 }
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('User adding failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to add user');
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             }
         }
@@ -220,14 +372,14 @@ class PanelController extends Controller
 
     public function deleteUser(): void
     {
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_to_delete_id'])) {
-            self::$logger->debug("delete_user request received");
-            $this->checkCsrf();
-
-            $userToDelete = trim($_POST['user_to_delete_id']);
-
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
+                self::$logger->debug("delete_user request received");
+                $this->checkCsrf();
+
+                $userToDelete = trim($_POST['user_id']);
+
+
                 $result = $this->userModel->deleteUser($userToDelete);
                 if ($result) {
                     self::$logger->info("User deleted successfully");
@@ -235,19 +387,107 @@ class PanelController extends Controller
                     self::$logger->error("User deletion failed");
                     SessionHelper::set('error', 'Failed to delete user');
                 }
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
                 self::$logger->error('User deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to delete user');
-                header('Location: /panel');
+                header('Location: /panel/users');
                 exit;
             }
         }
     }
 
-    public function editUser(): void {
-        // TODO
+    public function addCountdown() : void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $this->checkCsrf();
+
+                $title = trim($_POST['title']);
+                $count_to = $_POST['count_to'];
+                $userId = SessionHelper::get('user_id');
+
+                if (empty($title) || empty($count_to)) {
+                    SessionHelper::set('error', 'All fields must be filled.');
+                }
+
+                $this->countdownModel->addCountdown($title, $count_to, $userId);
+                self::$logger->info("Countdown added successfully");
+                header('Location: /panel/countdowns');;
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
+        }
+    }
+
+    public function deleteCountdown(): void
+    {
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            $countdownId = $_POST['countdown_id'];
+
+            try {
+                $this->countdownModel->deleteCountdown($countdownId);
+                self::$logger->info("Countdown deleted successfully");
+                header('Location: /panel/countdowns');;
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown deletion failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to delete countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
+        }
+    }
+
+    public function editCountdown(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            $newCountdownTitle = trim($_POST['title']);
+            $newRawCountdownCountTo = $_POST['count_to'];
+            $countdownId = $_POST['countdown_id'];
+
+            $userId = SessionHelper::get('user_id');
+
+            $countdown = $this->countdownModel->getCountdownById($countdownId);
+
+            $dt = DateTime::createFromFormat('Y-m-d\TH:i', $newRawCountdownCountTo);
+            $newCountdownCountTo = $dt->format('Y-m-d H:i:s');
+
+            try {
+                $updates = [];
+
+                if ($newCountdownTitle !== $countdown[0]['title']) {
+                    $updates['title'] = $newCountdownTitle;
+                }
+
+                if ($newCountdownCountTo !== $countdown[0]['count_to']) {
+                    $updates['count_to'] = $newCountdownCountTo;
+                }
+
+                foreach ($updates as $field => $value) {
+                    $this->countdownModel->updateCountdownField($countdownId, $field, $value, $userId);
+                    self::$logger->debug("Updated field: $field", ['countdown_id' => $countdownId]);
+                }
+
+                self::$logger->info("Countdown updated successfully");
+                header('Location: /panel/countdowns');
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');;
+                header('Location: /panel/countdowns');
+                exit;
+            }
+        }
     }
 
     public function toggleModule(): void
@@ -271,6 +511,48 @@ class PanelController extends Controller
             }
             header("Location: /panel");
             exit;
+        }
+    }
+
+    public function editModule(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+
+            $newModuleStartTime = $_POST['start_time'];
+            $newModuleEndTime = $_POST['end_time'];
+            $moduleId = $_POST['module_id'];
+
+            $module = $this->moduleModel->getModuleById($moduleId);
+
+            if (empty($module)) {
+                throw new Exception("Module not found");
+            }
+
+            try {
+                $updates = [];
+
+                if ($newModuleStartTime !== $module['start_time']) {
+                    $updates['start_time'] = $newModuleStartTime;
+                }
+
+                if ($newModuleEndTime !== $module['end_time']) {
+                    $updates['end_time'] = $newModuleEndTime;
+                }
+
+                foreach ($updates as $field => $value) {
+                    $this->moduleModel->updateModuleField($moduleId, $field, $value);
+                    self::$logger->debug("Updated field: $field", ['module_id' => $moduleId]);
+                }
+
+                self::$logger->info("Module updated successfully");
+                header('Location: /panel/modules');
+                exit;
+            } catch (Exception $e) {
+                self::$logger->error('Module edit failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to edit module');;
+                header('Location: /panel/modules');
+                exit;
+            }
         }
     }
 }

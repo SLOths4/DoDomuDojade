@@ -2,6 +2,7 @@
 
 namespace src\controllers;
 
+use DateTime;
 use Exception;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
@@ -83,7 +84,11 @@ class DisplayController extends Controller
 
 
                 foreach ($stopsIdS as $stopId) {
-                    $stopDepartures = $this->tramModel->getTimes($stopId);
+                    try {
+                        $stopDepartures = $this->tramModel->getTimes($stopId);
+                    } catch (Exception $e) {
+                        continue;
+                    }
 
                     if (isset($stopDepartures['success']['times']) && is_array($stopDepartures['success']['times'])) {
                         foreach ($stopDepartures['success']['times'] as $departure) {
@@ -198,7 +203,7 @@ class DisplayController extends Controller
                 if (!empty($currentCountdown)) {
                     $response[] = [
                         'title' => htmlspecialchars($currentCountdown['title']),
-                        'count_to' => htmlspecialchars($currentCountdown['count_to'])
+                        'count_to' => new DateTime($currentCountdown['count_to'])->format(DateTime::ATOM)
                     ];
                     self::$logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
                     echo json_encode(['success' => true, 'data' => $response]);

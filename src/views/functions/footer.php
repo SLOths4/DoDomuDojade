@@ -1,9 +1,5 @@
-<div id="footer" class="flex items-center justify-center p-4">
-    <div class="flex flex-col">
-        <span>Developed with ☕</span>
-        <span>&#169; <?php echo date("Y")?> SLOths4</span>
-    </div>
-    <div>
-        <img alt="Społeczna Czwórka liceum logo" src="assets/resources/logo.png" class="h-12">
-    </div>
+<div id="footer" class="fixed flex-col flex w-full items-center justify-center bottom-0 p-4 rounded-t-lg bg-gray-100 dark:bg-gray-900 dark:text-white">
+    <span>Developed with ☕</span>
+    <span>&#169; <?= date("Y")?> SLOths4</span>
+    <p class="text-xs text-gray-500"><a href="mailto:sloths4@spolecznaczworka.pl?subject=Błąd w serwisie DoDomuDojadę">Zgłoś błąd</a></p>
 </div>

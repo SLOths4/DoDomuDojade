@@ -3,7 +3,6 @@
 namespace src\models;
 
 use Exception;
-use Monolog\Logger;
 use src\core\Model;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -30,43 +29,36 @@ class MetarModel extends Model
 
     /**
      * Pobiera dane METAR dla danego kodu ICAO.
-     *
      * @param string $airportIcaoCode
-     *
      * @return array
+     * @throws Exception
      */
     public function getMetar(string $airportIcaoCode): array
     {
         if (!$this->isValidIcaoCode($airportIcaoCode)) {
-            self::$logger->error("Invalid ICAO code provided.");
-            return [];
+            throw new Exception('Invalid ICAO code provided.');
         }
-
 
         try {
             $url = $this->metar_url . $airportIcaoCode;
             $xmlContent = $this->fetchData($url);
             return $this->extractMetarData($xmlContent);
         } catch (Exception $e) {
-            self::$logger->error('Error occurred while fetching METAR data: ' . $e->getMessage());
+            throw new Exception('Error occurred while fetching METAR data: ' . $e->getMessage());
         }
-
-        return [];
     }
 
     /**
      * Ekstrahuje dane METAR z ciągu XML i konwertuje je do tablicy.
-     *
      * @param string $xmlString Surowy ciąg XML pobrany z API
-     *
      * @return array Zmapowane dane METAR
+     * @throws Exception
      */
     private function extractMetarData(string $xmlString): array
     {
         $xml = simplexml_load_string($xmlString, "SimpleXMLElement", LIBXML_NOCDATA);
         if ($xml === false) {
-            self::$logger->error("Nie udało się sparsować danych XML");
-            return [];
+            throw new Exception('Error occurred while parsing XML data.');
         }
 
         $jsonEncodedData = json_encode($xml);
@@ -95,6 +87,7 @@ class MetarModel extends Model
      *
      * @param string $url
      * @return string
+     * @throws Exception
      */
     private function fetchData(string $url): string
     {
@@ -107,10 +100,8 @@ class MetarModel extends Model
         ServerExceptionInterface |
         TransportExceptionInterface $e
         ) {
-            self::$logger->error("An error occurred while fetching data from $url: " . $e->getMessage());
+            throw new Exception("An error occurred while fetching data from $url: " . $e->getMessage());
         }
-
-        return '';
     }
 
 }

@@ -8,7 +8,7 @@ use RuntimeException;
 use src\core\Model;
 
 /**
- * Class used for operations on table storing users in provided database
+ * Class used for operations on table-storing users in a provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class UserModel extends Model
@@ -23,12 +23,23 @@ class UserModel extends Model
 
     /**
      * @return array Array of users in the database
+     * @throws Exception
      */
     public function getUsers(): array {
         try {
-            $query = "SELECT * FROM $this->TABLE_NAME";
+            $query = "SELECT * FROM $this->TABLE_NAME ORDER BY id ASC";
             self::$logger->info("Fetching all users.");
-            return $this->executeStatement($query);
+
+            $users = $this->executeStatement($query);
+
+            $sortedUsers = [];
+            foreach ($users as $user) {
+                $sortedUsers[$user['id']] = $user;
+            }
+
+            ksort($sortedUsers);
+
+            return $sortedUsers;
         } catch (Exception $e) {
             self::$logger->error("Error fetching users: " . $e->getMessage());
             throw new RuntimeException('Error fetching users');
@@ -38,6 +49,7 @@ class UserModel extends Model
     /**
      * @param int $userId User id
      * @return array User entry from the database
+     * @throws Exception
      */
     public function getUserById(int $userId): array {
         try {
@@ -48,7 +60,7 @@ class UserModel extends Model
             return $result[0];
         } catch (Exception $e) {
             self::$logger->error("Error fetching user with ID: $userId: " . $e->getMessage());
-            throw new RuntimeException('Error fetching user with ID: $userId');
+            throw new RuntimeException("Error fetching user with ID: $userId");
         }
     }
 
@@ -78,14 +90,14 @@ class UserModel extends Model
             return $user;
         } catch (Exception $e) {
             self::$logger->error('Error fetching user by username: ' . $e->getMessage());
-            throw $e;
+            throw new RuntimeException('Error fetching user by username' . $e);
         }
     }
 
     /**
      * @param string $username
      * @param string $password
-     * @return bool Success
+     * @return bool
      */
     public function addUser(string $username, string $password): bool {
         try {
@@ -109,7 +121,7 @@ class UserModel extends Model
      * @param int $userId
      * @param string $username
      * @param string $password
-     * @return bool Success
+     * @return bool
      * @throws Exception
      */
     public function updateUser(int $userId, string $username, string $password): bool {
@@ -131,7 +143,7 @@ class UserModel extends Model
 
     /**
      * @param int $userId
-     * @return bool Success
+     * @return bool
      * @throws Exception
      */
     public function deleteUser(int $userId): bool {

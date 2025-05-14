@@ -49,7 +49,7 @@ class Model extends CommonService{
      * @return array
      * @throws Exception
      */
-    private function validateParam($param, $key): array {
+    private function validateParam(mixed $param, mixed $key): array {
         if (!is_array($param)) {
             self::$logger->error("Invalid parameter structure: expected an array.", [
                 'key' => $key,
@@ -59,7 +59,6 @@ class Model extends CommonService{
         }
 
         if (count($param) !== 2) {
-            // Jeśli drugi element nie istnieje, oznacza to brak typu parametru
             if (!array_key_exists(1, $param)) {
                 self::$logger->error("Parameter type is missing.", [
                     'key' => $key,
@@ -88,7 +87,6 @@ class Model extends CommonService{
      */
     public function bindParams(PDOStatement $stmt, array $params): void {
         foreach ($params as $key => $param) {
-            // Walidacja struktury parametru
             [$value, $type] = $this->validateParam($param, $key);
 
             self::$logger->debug("Binding parameter:", [

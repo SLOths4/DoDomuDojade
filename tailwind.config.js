@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/views/*.php"],
+  safelist: ['bg-primary-200', 'hover:bg-primary-400', 'text-primary-200'],
   theme: {
     extend: {
       boxShadow: {

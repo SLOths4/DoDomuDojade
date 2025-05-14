@@ -115,74 +115,16 @@
                 setInterval(loadWeatherData, 900000)
                 loadWeatherData();
             </script>
-
-            <div id="countdown" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-
-            <script>
-                function loadCountdownData() {
-
-                    $.ajax({
-                        url: '/display/get_countdown',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: { function: 'countdownData' },
-                        success: function(response) {
-                            try {
-                                response = typeof response === 'string' ? JSON.parse(response) : response;
-                            } catch (e) {
-                                console.error("Błąd parsowania JSON:", e);
-                            }
-
-                            if (response.is_active===false) {
-                                $('#countdown').remove();
-                                return;
-                            }
-
-                            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
-
-                                let item = response.data[0];
-                                let content = '';
-                                let timestamp = (item.count_to);
-                                function countdown() {
-                                    let now = new Date().getTime();
-                                    let distance = timestamp - now;
-
-                                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                    let hours = Math.floor(distance / (1000 * 60 * 60));
-                                    let minutes = Math.floor(distance / 1000 / 60);
-                                    let seconds = Math.floor(distance / 1000);
-
-                                    content = `<p>Do ${item.title} zostało ${seconds} sekund.</p>`;
-
-                                    $('#countdown').html(content);
-                                }
-                                setInterval(countdown,1000);
-
-                            } else {
-                                console.error("Brak danych do wyświetlenia:", response);
-                                $('#countdown').html('<p>Błąd: Brak danych</p>');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Błąd ładowania AJAX: ", error);
-                            $('#countdown').html('<p>Błąd ładowania danych kalendarza.</p>');
-                        }
-                    });
-                }
-
-                setInterval(loadCountdownData, 60000);
-                loadCountdownData();
-            </script>
         </div>
     </div>
 
 
     <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
-        <div id="left" class="bg-white rounded-2xl h-full shadow-custom">
+        <div id="left" class="bg-white rounded-2xl h-full shadow-custom py-1">
 
             <div id="tram" class="bg-white rounded-2xl h-full">
 
-                <div id="tram-container" class="py-1 pr-2 h-full">Ładowanie danych...</div>
+                <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
 
                 <script>
                     let firstload = true;
@@ -261,7 +203,9 @@
 
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
-                                    $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                                    let element = document.getElementById("tram-container");
+                                    element.classList.add("m-2", "p-2", "text-[20px]");
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd:Brak danych</p></div>');
                                 }
                             },
                             error: function(xhr, status, error) {
@@ -346,7 +290,7 @@
 
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
-                                    $('#tram-container').html('<p>Błąd: Brak danych</p>');
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd: Brak danych</p></div>');
                                 }
                             },
                             error: function(xhr, status, error) {
@@ -377,7 +321,76 @@
 
         </div>
         
-        <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom">
+        <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom py-1">
+            <div id="countdown" class="flex justify-center items-center bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold">Ładowanie...</div>
+
+            <script>
+                function loadCountdownData() {
+
+                    $.ajax({
+                        url: '/display/get_countdown',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {function: 'countdownData'},
+                        success: function (response) {
+                            try {
+                                response = typeof response === 'string' ? JSON.parse(response) : response;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                            }
+
+                            if (response.is_active === false) {
+                                $('#countdown').remove();
+                                return;
+                            }
+
+                            if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+
+                                let item = response.data[0];
+                                let content = '';
+                                let timestamp = new Date(item.count_to).getTime();
+
+                                function countdown() {
+                                    let now = new Date().getTime();
+                                    let distance = timestamp - now;
+
+                                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                    content = `<p>Do ${item.title} zostało `;
+                                    if (days > 0) {
+                                        content += `${days} dni `;
+                                    }
+                                    if (hours > 0) {
+                                        content += `${hours} godzin `;
+                                    }
+                                    if (minutes > 0) {
+                                        content += `${minutes} minut `;
+                                    }
+                                    content += `${seconds} sekund.</p>`;
+
+                                    $('#countdown').html(content);
+                                }
+
+                                setInterval(countdown, 1000);
+
+                            } else {
+                                console.error("Brak danych do wyświetlenia:", response);
+                                $('#countdown').html('<p>Błąd: Brak danych</p>');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Błąd ładowania AJAX: ", error);
+                            $('#countdown').html('<p>Błąd ładowania danych odliczania.</p>');
+                        }
+                    });
+                }
+
+                setInterval(loadCountdownData, 60000);
+                loadCountdownData();
+            </script>
             <div id="announcements" class="px-2 py-2 mx-2 my-2">
                 <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
             </div>
@@ -461,18 +474,18 @@
 
                             if (response.success && Array.isArray(response.data)) {
                                 if (response.data.length === 0) {
-                                    $('#announcements-container').html('<div class="p-2 bg-yellow-50 border border-yellow-500 text-center text-yellow-500 rounded-lg shadow-lg"><i class="fa-solid fa-circle-info"></i> Brak ważnych ogłoszeń.</div>');
+                                    $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ważnych ogłoszeń</p></div>');
                                 } else {
                                     startAnnouncementRotation(response.data);
                                 }
                             } else {
                                 console.error("Brak danych lub błąd odpowiedzi:", response);
-                                $('#announcements-container').html('<p>Błąd: Brak danych ogłoszeń.</p>');
+                                $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd: Brak danych ogłoszeń</p></div>');
                             }
                         },
                         error: function() {
                             console.error("Błąd ładowania danych AJAX.");
-                            $('#announcements-container').html('<p>Błąd ładowania danych ogłoszeń.</p>');
+                            $('#announcements-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych ogłoszeń</p></div>');
                         }
                     });
                 }
