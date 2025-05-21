@@ -85,14 +85,29 @@
 
                             if (response.success && response.data) {
                                 let data = response.data;
+                                let colors = '';
+
+                                if (data.temperature <= -10) {
+                                    colors = '#AECBFA';
+                                } else if (data.temperature <= 0 && data.temperature > -10) {
+                                    colors = '#A0F0ED';
+                                } else if (data.temperature > 0 && data.temperature <= 5) {
+                                    colors = '#000000';
+                                } else if (data.temperature > 5 && data.temperature <= 15) {
+                                    colors = '#FFF9A6';
+                                } else if (data.temperature > 15 && data.temperature <= 25) {
+                                    colors = '#FFD1A4';
+                                } else if (data.temperature > 25) {
+                                    colors = '#FFB3B3';
+                                }
                                 let content = `
-                                    <p><i class="fa-solid fa-temperature-three-quarters" style="color: #4A73AF"></i> ${data.temperature}°C</p>
+                                    <p><i class="fa-solid fa-temperature-three-quarters" style="color: ${colors}"></i> ${data.temperature}°C</p>
                                 `;
                                 let content1 = `
                                     <p><i class="fa-solid fa-gauge"  style="color: #4A73AF"></i> ${data.pressure} hPa</p>
                                 `;
                                 let content2 = `
-                                    <p><i class="fas fa-air-freshener" style="color: #4A73AF"></i> ${data.airlyIndex}</p>
+                                    <p><i class="fas fa-air-freshener" style="color: ${data.airlyColour}"></i> ${data.airlyAdvice}</p>
                                 `;
                                 $('#temperature').html(content);
                                 $('#pressure').html(content1);

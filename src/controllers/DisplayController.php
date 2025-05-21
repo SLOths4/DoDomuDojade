@@ -306,8 +306,11 @@ class DisplayController extends Controller
                     'data' => [
                         'temperature' => htmlspecialchars($weatherServiceResponse['imgw_temperature'] ?? 'Brak danych'),
                         'pressure' => htmlspecialchars($weatherServiceResponse['imgw_pressure'] ?? 'Brak danych'),
-                        'airlyIndex' => $weatherServiceResponse['airly_index_value'] !== null
-                            ? htmlspecialchars($weatherServiceResponse['airly_index_value'])
+                        'airlyAdvice' => $weatherServiceResponse['airly_index_advice'] !== null
+                            ? htmlspecialchars($weatherServiceResponse['airly_index_advice'])
+                            : 'Brak danych',
+                        'airlyColour' => $weatherServiceResponse['airly_index_colour'] !== null
+                            ? htmlspecialchars($weatherServiceResponse['airly_index_colour'])
                             : 'Brak danych'
                     ]
                 ]);

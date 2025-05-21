@@ -108,6 +108,7 @@ class WeatherModel extends Model
             'Accept'       => 'application/json',
             'Content-Type' => 'application/json',
             'apikey'       => $this->airlyApiKey,
+            'Accept-Language' => 'pl',
         ];
 
         try {
@@ -178,6 +179,8 @@ class WeatherModel extends Model
             'airly_fromDateTime'     => $airlyData['fromDateTime'] ?? null,
             'airly_tillDateTime'     => $airlyData['tillDateTime'] ?? null,
             'airly_index_value'      => $airlyData['airly_index_value'] ?? null,
+            'airly_index_advice'     => $airlyData['airly_index_advice'] ?? null,
+            'airly_index_colour'     => $airlyData['airly_index_colour'] ?? null,
         ];
     }
 }
