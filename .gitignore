@@ -52,3 +52,6 @@ calendar_data/
 
 # Ignore any database-related files
 *.sqlite
+
+phpunit.xml
+tests
