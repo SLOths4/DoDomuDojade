@@ -410,7 +410,7 @@
 
                     function displayAnnouncements(announcementsChunk) {
                         const html = announcementsChunk.map(announcement => `
-                            <div class="announcement bg-beige rounded-2xl px-2 py-2 shadow-custom mb-4">
+                            <div class="announcement bg-beige rounded-2xl px-2 py-2 shadow-custom mb-4 w-full overflow-x-hidden break-words whitespace-normal">
                                 <h3>${announcement.title}</h3>
                                 <p><i class="fa-solid fa-user" style="color: #4A73AF"></i> ${announcement.author}</p>
                                 <p>${announcement.text}</p>

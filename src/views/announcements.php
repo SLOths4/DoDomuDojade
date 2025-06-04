@@ -20,7 +20,7 @@ SessionHelper::remove('error');
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap" rel="stylesheet">
-    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
@@ -42,12 +42,14 @@ SessionHelper::remove('error');
 <form method="POST" action="/panel/add_announcement" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
     <div class="mb-2">
         <label>
-            <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+            <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
+            <span id="add_title_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 50 znaków</span>
         </label>
     </div>
     <div class="mb-2">
         <label>
-            <input type="text" name="text" placeholder="Tekst" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+            <input type="text" id="add_text" name="text" placeholder="Tekst" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="500" required>
+            <span id="add_text_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 500 znaków</span>
         </label>
     </div>
     <div class="mb-2">
@@ -62,7 +64,7 @@ SessionHelper::remove('error');
 </form>
 
 <?php if (!empty($announcements)): ?>
-    <table id="announcementsTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+    <table id="announcementsTable" class="w-full table-fixed bg-white border dark:bg-gray-900 dark:text-white">
         <thead class="bg-gray-200 dark:bg-gray-700">
         <tr>
             <th class="px-4 py-2 border">Tytuł</th>
@@ -76,12 +78,12 @@ SessionHelper::remove('error');
         <tbody>
         <?php foreach ($announcements as $announcement): ?>
             <tr>
-                <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
-                <td class="px-4 py-2 border"><?= htmlspecialchars($users[$announcement['user_id']]['username'] ?? "Nieznany użytkownik") ?><br>
+                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
+                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($users[$announcement['user_id']]['username'] ?? "Nieznany użytkownik") ?><br>
                 </td>
-                <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
-                <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
-                <td class="px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
+                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
+                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
+                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
                 <td class="px-4 py-2 border space-x-2">
                     <button type="button"
                             class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
@@ -175,6 +177,10 @@ SessionHelper::remove('error');
         const titleInput = document.getElementById("edit_title");
         const textCounter = document.getElementById("text_char_counter");
         const titleCounter = document.getElementById("title_char_counter");
+        const addTitleInput = document.getElementById("add_title");
+        const addTextInput = document.getElementById("add_text");
+        const addTitleCounter = document.getElementById("add_title_counter");
+        const addTextCounter = document.getElementById("add_text_counter");
 
         const modals = {
             confirmation: document.getElementById('confirmationModal'),
@@ -224,25 +230,43 @@ SessionHelper::remove('error');
             toggleModal(modals.edition, true);
         };
 
-        /**
-         * Inicjalizacja licznika znaków
-         * @param {HTMLElement} field - Pole tekstowe (np. title lub text)
-         * @param {HTMLElement} counter - Licznik znaków (np. dla text czy title)
-         */
-        const initCounter = (field, counter) => {
+        const updateCounterFactory = (field, counter) => () => {
             const maxLength = field.getAttribute("maxlength");
-            const updateCounter = () => {
-                const currentLength = field.value.length || 0;
-                counter.textContent = `${currentLength} / ${maxLength} znaków`;
-            };
-
-            updateCounter();
-
-            field.removeEventListener("input", updateCounter);
-            field.addEventListener("input", updateCounter);
+            const currentLength = field.value.length || 0;
+            counter.textContent = `${currentLength} / ${maxLength} znaków`;
         };
 
+        const enforceMaxLength = (field) => {
+            const maxLength = field.maxLength;
+            if (field.value.length > maxLength) {
+                field.value = field.value.slice(0, maxLength);
+            }
+        };
 
+        const initCounter = (field, counter) => {
+            const updateCounter = updateCounterFactory(field, counter);
+
+            // Usuwamy poprzedni nasłuchiwacz (jeśli był)
+            field.removeEventListener("input", updateCounter);
+
+            // Dodajemy nowy
+            field.addEventListener("input", () => {
+                enforceMaxLength(field);   // zabezpieczenie
+                updateCounter();           // aktualizacja licznika
+            });
+
+            // Inicjalizacja przy załadowaniu
+            enforceMaxLength(field);
+            updateCounter();
+        };
+
+        if (addTitleInput && addTitleCounter) {
+            initCounter(addTitleInput, addTitleCounter);
+        }
+
+        if (addTextInput && addTextCounter) {
+            initCounter(addTextInput, addTextCounter);
+        }
 
         addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
         buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
