@@ -181,6 +181,7 @@ class WeatherModel extends Model
             'airly_index_value'      => $airlyData['airly_index_value'] ?? null,
             'airly_index_advice'     => $airlyData['airly_index_advice'] ?? null,
             'airly_index_colour'     => $airlyData['airly_index_colour'] ?? null,
+            'airly_index_description' => $airlyData['airly_index_description'] ?? null,
         ];
     }
 }
