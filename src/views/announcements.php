@@ -83,7 +83,7 @@ SessionHelper::remove('error');
                 </td>
                 <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
                 <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
-                <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
+                <td class="text-[14px] break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
                 <td class="px-4 py-2 border space-x-2">
                     <button type="button"
                             class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
