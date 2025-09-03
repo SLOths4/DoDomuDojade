@@ -23,7 +23,7 @@ class CommonService
         if (self::$logger === null) {
             try {
                 self::$logger = new Logger('app');
-                $handler = new RotatingFileHandler(__DIR__ . '/../logs/app.log', 7, Level::Debug);
+                $handler = new RotatingFileHandler(__DIR__ . '/../../logs/app.log', 7, Level::Debug);
                 self::$logger->pushHandler($handler);
             } catch (Exception $e) {
                 error_log("An error occurred when initializing logger: " . $e->getMessage());

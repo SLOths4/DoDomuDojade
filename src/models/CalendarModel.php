@@ -14,6 +14,9 @@ class CalendarModel extends Model
 {
     private string $icalUrl;
 
+    /**
+     * @throws Exception
+     */
     public function __construct() {
         $this->icalUrl = self::getEnvVariable('CALENDAR_URL');
     }
@@ -202,7 +205,7 @@ class CalendarModel extends Model
     }
 
     /**
-     * Checking if the event is happening in 7 days function
+     * Checking if the event is happening in 7-days function
      * @param DateTime $eventDate
      * @param DateTime $currentDate
      * @param int $daysUntilEvent

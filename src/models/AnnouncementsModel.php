@@ -251,7 +251,6 @@ class AnnouncementsModel extends Model {
      */
     public function getAnnouncementByTitle(string $announcementTitle): array {
         try {
-            // query structure
             $query = "SELECT * FROM $this->TABLE_NAME WHERE title LIKE :announcementTitle";
             $pattern = '%' . $announcementTitle . '%';
             $params = [

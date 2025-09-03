@@ -239,8 +239,6 @@ SessionHelper::remove('error');
                         field.addEventListener("input", updateCounter);
                     };
 
-
-
                     addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                     buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
                     buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
@@ -248,7 +246,6 @@ SessionHelper::remove('error');
                     addClickEventToButtons('.edit-btn', handleEditButtonClick);
                     buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
                     buttons.confirmEdit.addEventListener('click', () => forms.edit.submit());
-
 
                 });
             </script>
