@@ -34,7 +34,8 @@ SessionHelper::remove('error');
             <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
                 <div class="mb-2">
                     <label>
-                        <input type="text" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                        <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
+                        <span id="add_title_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 50 znaków</span>
                     </label>
                 </div>
                 <div class="mb-2">
@@ -145,6 +146,8 @@ SessionHelper::remove('error');
                 document.addEventListener('DOMContentLoaded', () => {
                     const titleCounter = document.getElementById("title_char_counter");
                     const titleInput = document.getElementById("edit_title");
+                    const addTitleInput = document.getElementById("add_title");
+                    const addTitleCounter = document.getElementById("add_title_counter");
 
                     const modals = {
                         confirmation: document.getElementById('confirmationModal'),
@@ -197,18 +200,39 @@ SessionHelper::remove('error');
                      * @param {HTMLElement} field - Pole tekstowe (np. title lub text)
                      * @param {HTMLElement} counter - Licznik znaków (np. dla text czy title)
                      */
-                    const initCounter = (field, counter) => {
+                    const updateCounterFactory = (field, counter) => () => {
                         const maxLength = field.getAttribute("maxlength");
-                        const updateCounter = () => {
-                            const currentLength = field.value.length || 0;
-                            counter.textContent = `${currentLength} / ${maxLength} znaków`;
-                        };
-
-                        updateCounter();
-
-                        field.removeEventListener("input", updateCounter);
-                        field.addEventListener("input", updateCounter);
+                        const currentLength = field.value.length || 0;
+                        counter.textContent = `${currentLength} / ${maxLength} znaków`;
                     };
+
+                    const enforceMaxLength = (field) => {
+                        const maxLength = field.maxLength;
+                        if (field.value.length > maxLength) {
+                            field.value = field.value.slice(0, maxLength);
+                        }
+                    };
+
+                    const initCounter = (field, counter) => {
+                        const updateCounter = updateCounterFactory(field, counter);
+
+                        // Usuwamy poprzedni nasłuchiwacz (jeśli był)
+                        field.removeEventListener("input", updateCounter);
+
+                        // Dodajemy nowy
+                        field.addEventListener("input", () => {
+                            enforceMaxLength(field);   // zabezpieczenie
+                            updateCounter();           // aktualizacja licznika
+                        });
+
+                        // Inicjalizacja przy załadowaniu
+                        enforceMaxLength(field);
+                        updateCounter();
+                    };
+
+                    if (addTitleInput && addTitleCounter) {
+                        initCounter(addTitleInput, addTitleCounter);
+                    }
 
                     addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                     buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));

@@ -309,6 +309,9 @@ class DisplayController extends Controller
                         'airlyAdvice' => $weatherServiceResponse['airly_index_advice'] !== null
                             ? htmlspecialchars($weatherServiceResponse['airly_index_advice'])
                             : 'Brak danych',
+                        'airlyDescription' => $weatherServiceResponse['airly_index_description'] !== null
+                            ? htmlspecialchars($weatherServiceResponse['airly_index_description'])
+                            : 'Brak danych',
                         'airlyColour' => $weatherServiceResponse['airly_index_colour'] !== null
                             ? htmlspecialchars($weatherServiceResponse['airly_index_colour'])
                             : 'Brak danych'

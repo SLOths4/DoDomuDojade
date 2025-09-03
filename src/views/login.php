@@ -16,6 +16,7 @@ SessionHelper::remove('error');
     <head>
         <title>DoDomuDojade | Login</title>
         <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="flex flex-col min-h-screen text-center dark:bg-gray-800 dark:text-white">
