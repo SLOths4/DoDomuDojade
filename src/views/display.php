@@ -173,7 +173,7 @@
                             <tr>
                                 <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
                                 <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd</th>
+                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -184,15 +184,15 @@
                                                 <td class="text-center"> ${firstTram.line}</td>
                                                 <td class="text-center"> ${firstTram.direction}</td>`;
                                             if (firstTram.minutes === 0) {
-                                                content += `<td class="text-center">odjeżdża</td>`;
+                                                content += `<td class="text-center"><1</td>`;
                                             } else if (firstTram.minutes === 1) {
-                                                content += `<td class="text-center"> ${firstTram.minutes} minuta</td>`;
+                                                content += `<td class="text-center"> ${firstTram.minutes}</td>`;
                                             } else if (firstTram.minutes < 60) {
-                                                content += `<td class="text-center"> ${firstTram.minutes} minut</td>`;
+                                                content += `<td class="text-center"> ${firstTram.minutes}</td>`;
                                             } else {
                                                 let hours = Math.floor(firstTram.minutes / 60);
                                                 let minutes = firstTram.minutes % 60;
-                                                content += `<td class="text-center"> ${hours}h ${minutes} minut</td>`;
+                                                content += `<td class="text-center"> ${hours}h ${minutes}</td>`;
                                             }
                                             content += `</tr>`;
                                         }
@@ -223,7 +223,7 @@
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Błąd ładowania AJAX: ", error);
-                                    $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych tramwajowych.</p></div>');
                                 }
                             });
                         }
@@ -258,7 +258,7 @@
                             <tr>
                                 <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
                                 <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd</th>
+                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -275,15 +275,15 @@
                                                     <td class="text-center w-4/6">${tram.direction}</td>`;
 
                                             if (tram.minutes === 0) {
-                                                content += `<td class="text-center w-1/6">odjeżdża</td>`;
+                                                content += `<td class="text-center w-1/6"><1</td>`;
                                             } else if (tram.minutes === 1) {
-                                                content += `<td class="text-center"> ${tram.minutes} minuta</td>`;
+                                                content += `<td class="text-center"> ${tram.minutes}</td>`;
                                             } else if (tram.minutes < 60) {
-                                                content += `<td class="text-center w-1/6">${tram.minutes} minut</td>`;
+                                                content += `<td class="text-center w-1/6">${tram.minutes}</td>`;
                                             } else {
                                                 let hours = Math.floor(tram.minutes / 60);
                                                 let minutes = tram.minutes % 60;
-                                                content += `<td class="text-center w-1/6">${hours}h ${minutes} minut</td>`;
+                                                content += `<td class="text-center w-1/6">${hours}h ${minutes}</td>`;
                                             }
                                             content += `</tr>`;
                                         }
@@ -306,7 +306,7 @@
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Błąd ładowania AJAX: ", error);
-                                    $('#tram-container').html('<p>Błąd ładowania danych tramwajowych.</p>');
+                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych tramwajowych.</p></div>');
                                 }
                             });
                         }
