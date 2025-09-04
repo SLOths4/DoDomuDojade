@@ -388,12 +388,12 @@
 
                                 } else {
                                     console.error("Brak danych do wyświetlenia:", response);
-                                    $('#countdown').html('<p>Błąd: Brak danych</p>');
+                                    $('#countdown').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium p-2 ">Brak aktualnego odliczania</p></div>');
                                 }
                             },
                             error: function (xhr, status, error) {
                                 console.error("Błąd ładowania AJAX: ", error);
-                                $('#countdown').html('<p>Błąd ładowania danych odliczania.</p>');
+                                $('#countdown').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych odliczania</p></div>');
                             }
                         });
                     }
@@ -401,6 +401,7 @@
                     setInterval(loadCountdownData, 60000);
                     loadCountdownData();
                 </script>
+
                 <div id="announcements" class="px-2 py-2 mx-2 my-2">
                     <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
                 </div>
