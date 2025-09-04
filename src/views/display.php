@@ -180,7 +180,7 @@
                                         if (response.data.length > 0) {
                                             let firstTram = response.data[0];
                                             content += `
-                                                <tr id="first" class="text-[28px]">
+                                                <tr id="first" class="text-[25px]">
                                                 <td class="text-center"> ${firstTram.line}</td>
                                                 <td class="text-center"> ${firstTram.direction}</td>`;
                                             if (firstTram.minutes === 0) {
@@ -270,7 +270,7 @@
                                         for (let index = startIndex; index < response.data.length && index < 16; index++) {
                                             let tram = response.data[index];
                                             content += `
-                                                    <tr class="text-[28px]">
+                                                    <tr class="text-[25px]">
                                                     <td class="text-center w-1/6">${tram.line}</td>
                                                     <td class="text-center w-4/6">${tram.direction}</td>`;
 
