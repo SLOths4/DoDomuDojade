@@ -68,6 +68,8 @@ class DisplayController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             self::$logger->debug('Rozpoczęto pobieranie danych tramwajowych.');
             header('Content-Type: application/json');
+            header('Cache-Control: no-cache, must-revalidate');
+
             try {
                 if (!$this->isModuleVisible('tram')) {
                     self::$logger->debug("Moduł tram nie jest aktywny.");

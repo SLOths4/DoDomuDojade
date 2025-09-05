@@ -494,18 +494,19 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
-            $moduleName = $_POST['module_name'] ?? '';
+
+            $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
             $enable = isset($_POST['enable']) ? filter_var($_POST['enable'], FILTER_VALIDATE_BOOLEAN) : null;
 
-            if ($moduleName === '' || $enable === null) {
+            if ($moduleId <= 0 || $enable === null) {
                 header("Location: /panel");
                 exit;
             }
 
             try {
-                $this->moduleModel->toggleModule($moduleName, $enable);
+                $this->moduleModel->toggleModule($moduleId, $enable);
                 $action = $enable ? 'włączony' : 'wyłączony';
-                self::$logger->info("Moduł $moduleName został $action");
+                self::$logger->info("Moduł $moduleId został $action");
             } catch (Exception $e) {
                 self::$logger->error("Błąd przy " . ($enable ? 'włączaniu' : 'wyłączaniu') . " modułu", ['error' => $e->getMessage()]);
             }
@@ -514,13 +515,17 @@ class PanelController extends Controller
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function editModule(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
 
-            $newModuleStartTime = $_POST['start_time'];
-            $newModuleEndTime = $_POST['end_time'];
-            $moduleId = $_POST['module_id'];
+            $newModuleStartTime = $_POST['start_time'] ?? '';
+            $newModuleEndTime = $_POST['end_time'] ?? '';
+            $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
+            $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
 
             $module = $this->moduleModel->getModuleById($moduleId);
 
@@ -531,12 +536,16 @@ class PanelController extends Controller
             try {
                 $updates = [];
 
-                if ($newModuleStartTime !== $module['start_time']) {
+                if ($newModuleStartTime !== '' && $newModuleStartTime !== $module['start_time']) {
                     $updates['start_time'] = $newModuleStartTime;
                 }
 
-                if ($newModuleEndTime !== $module['end_time']) {
+                if ($newModuleEndTime !== '' && $newModuleEndTime !== $module['end_time']) {
                     $updates['end_time'] = $newModuleEndTime;
+                }
+
+                if ((int)$newModuleIsActive !== (int)$module['is_active']) {
+                    $this->moduleModel->toggleModule($moduleId, (bool)$newModuleIsActive);
                 }
 
                 foreach ($updates as $field => $value) {

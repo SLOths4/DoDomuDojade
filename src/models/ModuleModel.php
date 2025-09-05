@@ -210,28 +210,28 @@ class ModuleModel extends Model
 
     /**
      * Changes module status.
-     * @param string $moduleName
+     * @param int $moduleId
      * @param bool $status
      * @return void
      * @throws Exception
      */
-    public function toggleModule(string $moduleName, bool $status): void
+    public function toggleModule(int $moduleId, bool $status): void
     {
-        $query = "UPDATE $this->TABLE_NAME SET is_active = :status WHERE module_name = :module_name";
+        $query = "UPDATE $this->TABLE_NAME SET is_active = :status WHERE id = :module_id";
 
         self::$logger->debug('Changing module status', [
-            'module_name' => $moduleName,
+            'module_id' => $moduleId,
             'module_status' => $status,
         ]);
 
         try {
             $this->executeStatement($query, [
                 'status' => [$status ? 1 : 0, PDO::PARAM_INT],
-                'module_name' => [$moduleName, PDO::PARAM_STR],
+                'module_id' => [$moduleId, PDO::PARAM_STR],
             ]);
 
             self::$logger->info('Module status changed successfully.', [
-                'module_name' => $moduleName,
+                'module_id' => $moduleId,
                 'status' => $status,
             ]);
         } catch (Exception $e) {

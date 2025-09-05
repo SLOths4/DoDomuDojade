@@ -77,11 +77,15 @@
                                 }
 
                                 if (response.is_active===false) {
-                                    $('#temperature').remove();
-                                    $('#pressure').remove();
-                                    $('#airly').remove();
+                                    $('#temperature').addClass('hidden');
+                                    $('#pressure').addClass('hidden');
+                                    $('#airly').addClass('hidden');
                                     return;
                                 }
+
+                                $('#temperature').removeClass('hidden');
+                                $('#pressure').removeClass('hidden');
+                                $('#airly').removeClass('hidden');
 
                                 if (response.success && response.data) {
                                     let data = response.data;
@@ -141,192 +145,166 @@
                     <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
 
                     <script>
-                        let firstload = true;
+                        let firstLoad = true;
+                        let appendedOnce = false;
+                        const MAX_ROWS = 16;
+                        const ENDPOINT = '/display/get_departures';
 
-                        function loadTramData0() {
-                            if (!firstload) return;
-                            $.ajax({
-                                url: '/display/get_departures',
-                                type: 'POST',
-                                dataType: 'json',
-                                data: { function: 'tramData' },
-                                success: function(response) {
-                                    console.debug("Rozpoczęto ładowanie danych tramwajowych")
-                                    try {
-                                        response = typeof response === 'string' ? JSON.parse(response) : response;
-                                        console.debug("String został sparsowany na JSON")
-                                    } catch (e) {
-                                        console.error("Błąd parsowania JSON:", e);
-                                    }
-
-                                    if (response.is_active===false) {
-                                        $('#tram').remove();
-                                        return;
-                                    }
-
-                                    if (response.success && Array.isArray(response.data)) {
-
-
-                                        let content = `
-                    <table class="table-fixed w-full">
-                        <thead>
-                            <tr>
-                                <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-                                <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-                                        if (response.data.length > 0) {
-                                            let firstTram = response.data[0];
-                                            content += `
-                                                <tr id="first" class="text-[25px]">
-                                                <td class="text-center"> ${firstTram.line}</td>
-                                                <td class="text-center"> ${firstTram.direction}</td>`;
-                                            if (firstTram.minutes === 0) {
-                                                content += `<td class="text-center"><1</td>`;
-                                            } else if (firstTram.minutes === 1) {
-                                                content += `<td class="text-center"> ${firstTram.minutes}</td>`;
-                                            } else if (firstTram.minutes < 60) {
-                                                content += `<td class="text-center"> ${firstTram.minutes}</td>`;
-                                            } else {
-                                                let hours = Math.floor(firstTram.minutes / 60);
-                                                let minutes = firstTram.minutes % 60;
-                                                content += `<td class="text-center"> ${hours}h ${minutes}</td>`;
-                                            }
-                                            content += `</tr>`;
-                                        }
-                                        content += `
-                                                </tbody>
-                                            </table>`;
-                                        $('#tram-container').html(content);
-
-                                        let firstContainerJs = document.getElementById('first');
-                                        if (firstContainerJs) {
-                                            let firstStyle = window.getComputedStyle(firstContainerJs);
-                                            let firstheight = firstStyle.getPropertyValue('height');
-                                            firstheight = removeSuffix(firstheight, "px");
-                                            Number(firstheight);
-                                            console.log(firstheight);
-                                        } else {
-                                            console.warn("Element with ID 'first' not found.");
-                                        }
-
-                                        firstload = false;
-
-                                    } else {
-                                        console.error("Brak danych do wyświetlenia:", response);
-                                        let element = document.getElementById("tram-container");
-                                        element.classList.add("m-2", "p-2", "text-[20px]");
-                                        $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd:Brak danych</p></div>');
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Błąd ładowania AJAX: ", error);
-                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych tramwajowych.</p></div>');
-                                }
-                            });
+                        function formatMinutes(min) {
+                            if (min === 0) return '&lt;1';
+                            if (min < 60) return String(min);
+                            const hours = Math.floor(min / 60);
+                            const minutes = min % 60;
+                            return `${hours}h ${minutes}`;
                         }
-                        let loadTramDataFromZero = false;
+
+                        function buildHeader() {
+                            return `
+    <table class="table-fixed w-full">
+      <thead>
+        <tr>
+          <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
+          <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
+          <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+                        }
+
+                        function buildRow(tram, isFirst = false) {
+                            const minutesCell = formatMinutes(tram.minutes);
+                            const rowClass = isFirst ? 'text-[25px]' : 'text-[25px]';
+                            const idAttr = isFirst ? ' id="first"' : '';
+                            return `
+      <tr${idAttr} class="${rowClass}">
+        <td class="text-center w-1/6">${tram.line}</td>
+        <td class="text-center w-4/6">${tram.direction}</td>
+        <td class="text-center w-1/6">${minutesCell}</td>
+      </tr>
+    `;
+                        }
+
+                        function safeParseResponse(resp) {
+                            try {
+                                return (typeof resp === 'string') ? JSON.parse(resp) : resp;
+                            } catch (e) {
+                                console.error("Błąd parsowania JSON:", e);
+                                return null;
+                            }
+                        }
+
+                        function measureFirstHeight() {
+                            const firstEl = document.getElementById('first');
+                            if (!firstEl) {
+                                console.warn("Element with ID 'first' not found.");
+                                return null;
+                            }
+                            const style = window.getComputedStyle(firstEl);
+                            const heightStr = style.getPropertyValue('height') || '';
+                            const numeric = parseFloat(heightStr.replace('px', '')) || null;
+                            console.log('Wysokość elementu #first:', numeric);
+                            return numeric;
+                        }
+
+                        function showError(messageShort) {
+                            $('#tram-container').html(
+                                `<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+            <p class="text-yellow-500 text-sm font-medium">${messageShort}</p>
+         </div>`
+                            );
+                        }
+
                         function loadTramData() {
                             $.ajax({
-                                url: '/display/get_departures',
+                                url: ENDPOINT,
                                 type: 'POST',
                                 dataType: 'json',
                                 data: { function: 'tramData' },
-                                success: function(response) {
+                                success: function(raw) {
                                     console.debug("Ładowanie danych tramwajowych");
-
-                                    try {
-                                        response = typeof response === 'string' ? JSON.parse(response) : response;
-                                    } catch (e) {
-                                        console.error("Błąd parsowania JSON:", e);
+                                    const response = safeParseResponse(raw);
+                                    if (!response) {
+                                        showError('Błąd: Nieprawidłowa odpowiedź JSON.');
+                                        return;
                                     }
 
                                     if (response.is_active === false) {
-                                        $('#tram').remove();
+                                        $('#tram').addClass('hidden');
                                         return;
                                     }
 
-                                    if (response.success && Array.isArray(response.data)) {
-                                        let startIndex = loadTramDataFromZero ? 0 : 1;
-                                        let content = '';
-                                        let content1 = `<table class="table-fixed w-full"><tbody>`;
-                                        let content0 = `
-                    <table class="table-fixed w-full">
-                        <thead>
-                            <tr>
-                                <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-                                <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-                                <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-                                        if (startIndex === 0) {
-                                            content += content0
-                                        } else {
-                                            content += content1
-                                        }
-                                        for (let index = startIndex; index < response.data.length && index < 16; index++) {
-                                            let tram = response.data[index];
-                                            content += `
-                                                    <tr class="text-[25px]">
-                                                    <td class="text-center w-1/6">${tram.line}</td>
-                                                    <td class="text-center w-4/6">${tram.direction}</td>`;
+                                    $('#tram').removeClass('hidden');
 
-                                            if (tram.minutes === 0) {
-                                                content += `<td class="text-center w-1/6"><1</td>`;
-                                            } else if (tram.minutes === 1) {
-                                                content += `<td class="text-center"> ${tram.minutes}</td>`;
-                                            } else if (tram.minutes < 60) {
-                                                content += `<td class="text-center w-1/6">${tram.minutes}</td>`;
-                                            } else {
-                                                let hours = Math.floor(tram.minutes / 60);
-                                                let minutes = tram.minutes % 60;
-                                                content += `<td class="text-center w-1/6">${hours}h ${minutes}</td>`;
-                                            }
-                                            content += `</tr>`;
-                                        }
-                                        content += `</tbody></table>`;
-
-                                        if (startIndex === 1) {
-                                            $('#tram-container').append(content);
-                                        } else {
-                                            $('#tram-container').html(content);
-                                        }
-
-                                        if (!loadTramDataFromZero) {
-                                            loadTramDataFromZero = true;
-                                        }
-
-                                    } else {
+                                    if (!(response.success && Array.isArray(response.data))) {
                                         console.error("Brak danych do wyświetlenia:", response);
-                                        $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd: Brak danych</p></div>');
+                                        showError('Błąd: Brak danych');
+                                        return;
                                     }
+
+                                    const data = response.data;
+                                    if (data.length === 0) {
+                                        showError('Błąd: Brak kursów.');
+                                        return;
+                                    }
+
+                                    // --- Pierwsze wywołanie: wstawiamy tylko pierwszy, wyróżniony wiersz
+                                    if (firstLoad) {
+                                        console.debug("Pierwsze ładowanie - pokazuję tylko pierwszy kurs");
+                                        let html = buildHeader();
+                                        html += buildRow(data[0], true);
+                                        html += `</tbody></table>`;
+                                        $('#tram-container').html(html);
+
+                                        // mierzymy wysokość wyróżnionego elementu
+                                        measureFirstHeight();
+
+                                        firstLoad = false;
+                                        // appendedOnce pozostaje false — kolejna aktualizacja dopisze resztę
+                                        return;
+                                    }
+
+                                    // --- Drugie wywołanie po pierwszym: dopisujemy pozostałe wiersze (jeśli jeszcze nie dopisano)
+                                    if (!appendedOnce) {
+                                        console.debug("Drugie ładowanie - dopisuję kolejne kursy");
+                                        const maxIndex = Math.min(data.length, MAX_ROWS);
+                                        if ($('#tram-container table tbody').length) {
+                                            let rows = '';
+                                            for (let i = 1; i < maxIndex; i++) {
+                                                rows += buildRow(data[i], false);
+                                            }
+                                            $('#tram-container table tbody').append(rows);
+                                        } else {
+                                            let html = buildHeader();
+                                            for (let i = 0; i < maxIndex; i++) html += buildRow(data[i], i === 0);
+                                            html += `</tbody></table>`;
+                                            $('#tram-container').html(html);
+                                        }
+                                        appendedOnce = true;
+                                        return;
+                                    }
+
+                                    console.debug("Kolejne ładowanie - pełne odświeżenie listy");
+                                    let maxIndex = Math.min(data.length, MAX_ROWS);
+                                    let html = buildHeader();
+                                    for (let i = 0; i < maxIndex; i++) {
+                                        html += buildRow(data[i], i === 0);
+                                    }
+                                    html += `</tbody></table>`;
+                                    $('#tram-container').html(html);
+
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Błąd ładowania AJAX: ", error);
-                                    $('#tram-container').html('<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Błąd ładowania danych tramwajowych.</p></div>');
+                                    showError('Błąd ładowania danych tramwajowych.');
                                 }
                             });
                         }
 
-                        let tramContainerJs = document.getElementById('left');
-                        let tramStyle = window.getComputedStyle(tramContainerJs);
-                        let height = tramStyle.getPropertyValue('height');
-                        function removeSuffix(str, suffix) {
-                            if (str.endsWith(suffix)) {
-                                return str.slice(0, -suffix.length);
-                            }
-                            return str;
-                        }
-                        height = removeSuffix(height, "px");
-                        Number(height);
-                        console.log(height);
-
                         setInterval(loadTramData, 50000);
-                        loadTramData0();
                         loadTramData();
+
                     </script>
                 </div>
             </div>
@@ -350,9 +328,11 @@
                                 }
 
                                 if (response.is_active === false) {
-                                    $('#countdown').remove();
+                                    $('#countdown').addClass('hidden');
                                     return;
                                 }
+
+                                $('#countdown').removeClass('hidden');
 
                                 if (response.success && Array.isArray(response.data) && response.data.length > 0) {
 
@@ -480,9 +460,11 @@
                                 }
 
                                 if (response.is_active === false) {
-                                    $('#announcements').remove();
+                                    $('#announcements').addClass('hidden');
                                     return;
                                 }
+
+                                $('#announcements').removeClass('hidden');
 
                                 if (response.success && Array.isArray(response.data)) {
                                     if (response.data.length === 0) {

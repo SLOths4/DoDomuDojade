@@ -54,7 +54,9 @@ SessionHelper::remove('error');
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
                                         data-module-id="<?= htmlspecialchars($module['id']) ?>"
                                         data-start-time="<?= htmlspecialchars($module['start_time']) ?>"
-                                        data-end-time="<?= htmlspecialchars($module['end_time']) ?>">
+                                        data-end-time="<?= htmlspecialchars($module['end_time']) ?>"
+                                        data-is-active="<?= htmlspecialchars((string)(int)$module['is_active']) ?>"
+                                >
                                     Edytuj
                                 </button>
                             </td>
@@ -83,6 +85,11 @@ SessionHelper::remove('error');
                         <div class="mb-4">
                             <label for="edit_end_time" class="block text-sm font-medium text-gray-700 dark:text-white">Do</label>
                             <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit_is_active" class="block text-sm font-medium text-gray-700 dark:text-white">Aktywny</label>
+                            <input type="checkbox" id="edit_is_active" name="is_active" class="p-2 border rounded dark:bg-gray-950 dark:text-white">
                         </div>
 
                         <div class="flex justify-end">
@@ -123,10 +130,12 @@ SessionHelper::remove('error');
                         const moduleId = btn.getAttribute('data-module-id');
                         const startTime = btn.getAttribute('data-start-time');
                         const endTime = btn.getAttribute('data-end-time');
+                        const isActive = btn.getAttribute('data-is-active') === '1';
 
                         forms.edit.querySelector('#edit_module_id').value = moduleId;
                         forms.edit.querySelector('#edit_start_time').value = startTime;
                         forms.edit.querySelector('#edit_end_time').value = endTime;
+                        forms.edit.querySelector('#edit_is_active').checked = isActive;
 
                         toggleModal(modals.edition, true);
                     };
