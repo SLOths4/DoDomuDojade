@@ -145,9 +145,7 @@
                     <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
 
                     <script>
-                        let firstLoad = true;
-                        let appendedOnce = false;
-                        const MAX_ROWS = 16;
+                        const MAX_ROWS = 25;
                         const ENDPOINT = '/display/get_departures';
 
                         function formatMinutes(min) {
@@ -172,12 +170,11 @@
     `;
                         }
 
-                        function buildRow(tram, isFirst = false) {
+                        function buildRow(tram) {
                             const minutesCell = formatMinutes(tram.minutes);
-                            const rowClass = isFirst ? 'text-[25px]' : 'text-[25px]';
-                            const idAttr = isFirst ? ' id="first"' : '';
+                            const rowClass = 'text-[25px]';
                             return `
-      <tr${idAttr} class="${rowClass}">
+      <tr class="${rowClass}">
         <td class="text-center w-1/6">${tram.line}</td>
         <td class="text-center w-4/6">${tram.direction}</td>
         <td class="text-center w-1/6">${minutesCell}</td>
@@ -192,19 +189,6 @@
                                 console.error("Błąd parsowania JSON:", e);
                                 return null;
                             }
-                        }
-
-                        function measureFirstHeight() {
-                            const firstEl = document.getElementById('first');
-                            if (!firstEl) {
-                                console.warn("Element with ID 'first' not found.");
-                                return null;
-                            }
-                            const style = window.getComputedStyle(firstEl);
-                            const heightStr = style.getPropertyValue('height') || '';
-                            const numeric = parseFloat(heightStr.replace('px', '')) || null;
-                            console.log('Wysokość elementu #first:', numeric);
-                            return numeric;
                         }
 
                         function showError(messageShort) {
@@ -223,7 +207,6 @@
                                 dataType: 'json',
                                 data: { function: 'tramData' },
                                 success: function(raw) {
-                                    console.debug("Ładowanie danych tramwajowych");
                                     const response = safeParseResponse(raw);
                                     if (!response) {
                                         showError('Błąd: Nieprawidłowa odpowiedź JSON.');
@@ -249,51 +232,14 @@
                                         return;
                                     }
 
-                                    // --- Pierwsze wywołanie: wstawiamy tylko pierwszy, wyróżniony wiersz
-                                    if (firstLoad) {
-                                        console.debug("Pierwsze ładowanie - pokazuję tylko pierwszy kurs");
-                                        let html = buildHeader();
-                                        html += buildRow(data[0], true);
-                                        html += `</tbody></table>`;
-                                        $('#tram-container').html(html);
-
-                                        // mierzymy wysokość wyróżnionego elementu
-                                        measureFirstHeight();
-
-                                        firstLoad = false;
-                                        // appendedOnce pozostaje false — kolejna aktualizacja dopisze resztę
-                                        return;
-                                    }
-
-                                    // --- Drugie wywołanie po pierwszym: dopisujemy pozostałe wiersze (jeśli jeszcze nie dopisano)
-                                    if (!appendedOnce) {
-                                        console.debug("Drugie ładowanie - dopisuję kolejne kursy");
-                                        const maxIndex = Math.min(data.length, MAX_ROWS);
-                                        if ($('#tram-container table tbody').length) {
-                                            let rows = '';
-                                            for (let i = 1; i < maxIndex; i++) {
-                                                rows += buildRow(data[i], false);
-                                            }
-                                            $('#tram-container table tbody').append(rows);
-                                        } else {
-                                            let html = buildHeader();
-                                            for (let i = 0; i < maxIndex; i++) html += buildRow(data[i], i === 0);
-                                            html += `</tbody></table>`;
-                                            $('#tram-container').html(html);
-                                        }
-                                        appendedOnce = true;
-                                        return;
-                                    }
-
-                                    console.debug("Kolejne ładowanie - pełne odświeżenie listy");
+                                    // Pełne renderowanie wszystkich dostępnych kursów (do MAX_ROWS) przy każdym odświeżeniu
                                     let maxIndex = Math.min(data.length, MAX_ROWS);
                                     let html = buildHeader();
                                     for (let i = 0; i < maxIndex; i++) {
-                                        html += buildRow(data[i], i === 0);
+                                        html += buildRow(data[i]);
                                     }
                                     html += `</tbody></table>`;
                                     $('#tram-container').html(html);
-
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("Błąd ładowania AJAX: ", error);
@@ -392,15 +338,17 @@
                     function displayAnnouncements(announcementsChunk) {
                         const html = announcementsChunk.map(announcement => `
                             <div class="announcement bg-beige rounded-2xl px-2 py-2 shadow-custom mb-4 w-full overflow-x-hidden break-words whitespace-normal">
-                            <span class="flex items-baseline">
+                            <span class="flex items-baseline font-bold">
                                 <h3>${announcement.title}</h3>
                             </span>
-                                <p>${announcement.text}</p>
-                                <p>
+                                <p class="text-[18px]">${announcement.text}</p>
+                                <p class="text-[15px]">
                                   <small>
                                     <i class="fa-solid fa-calendar" style="color: #4A73AF"></i> <strong>Utworzono:</strong> ${announcement.date}
-                                  </small> –
-                                  <small><strong>Ważne do:</strong> ${announcement.validUntil}</small>
+                                  </small>
+                                  <small>
+                                        <strong>Ważne do:</strong> ${announcement.validUntil}
+                                    </small>
                                   <i class="fa-solid fa-user pl-2" style="color: #4A73AF"></i> ${announcement.author}
                                 </p>
                             </div>
