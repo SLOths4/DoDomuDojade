@@ -55,7 +55,7 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    private function makeApiRequest(string $method, array $params): array {
+    protected function makeApiRequest(string $method, array $params): array {
         try {
             $response = $this->httpClient->request(
                 'POST',
@@ -185,6 +185,21 @@ class TramModel extends Model
             return $this->makeApiRequest('getRoutes', ['line' => $lineNumber]);
         } catch (Exception $e) {
             self::$logger->error('getRoutes failed', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
+            throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
+        }
+    }
+
+    /**
+     * Get messages for a specific bollard.
+     * @param string $bolardSymbol
+     * @return array
+     * @throws Exception
+     */
+    public function getMessageForBollard(string $bolardSymbol): array {
+        try {
+            return $this->makeApiRequest('findMessagesForBollard', ['symbol' => $bolardSymbol]);
+        } catch (Exception $e) {
+            self::$logger->error('findMessagesForBollard failed', ['bolardSymbol' => $bolardSymbol, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));
         }
     }
