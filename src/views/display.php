@@ -13,7 +13,7 @@
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="bg-school1">
-        <div class="flex mx-1 my-2">
+        <div id="header" class="flex mx-1 my-2">
             <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
                 <div class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
                 <div id="date" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
@@ -139,120 +139,146 @@
 
         <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1">
             <div id="left" class="bg-white rounded-2xl h-full shadow-custom py-1">
-
-                <div id="tram" class="bg-white rounded-2xl h-full">
-
-                    <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
-
+                <div id="tram" class="bg-white rounded-2xl h-[calc(100vh-4px-var(--header-height))]"> <!-- Tram container height: fills the viewport minus any reserved space (e.g., header/footer) -->
                     <script>
-                        const MAX_ROWS = 25;
-                        const ENDPOINT = '/display/get_departures';
-
-                        function formatMinutes(min) {
-                            if (min === 0) return '&lt;1';
-                            if (min < 60) return String(min);
-                            const hours = Math.floor(min / 60);
-                            const minutes = min % 60;
-                            return `${hours}h ${minutes}`;
-                        }
-
-                        function buildHeader() {
-                            return `
-    <table class="table-fixed w-full">
-      <thead>
-        <tr>
-          <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-          <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-          <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
-        </tr>
-      </thead>
-      <tbody>
-    `;
-                        }
-
-                        function buildRow(tram) {
-                            const minutesCell = formatMinutes(tram.minutes);
-                            const rowClass = 'text-[25px]';
-                            return `
-      <tr class="${rowClass}">
-        <td class="text-center w-1/6">${tram.line}</td>
-        <td class="text-center w-4/6">${tram.direction}</td>
-        <td class="text-center w-1/6">${minutesCell}</td>
-      </tr>
-    `;
-                        }
-
-                        function safeParseResponse(resp) {
-                            try {
-                                return (typeof resp === 'string') ? JSON.parse(resp) : resp;
-                            } catch (e) {
-                                console.error("Błąd parsowania JSON:", e);
-                                return null;
-                            }
-                        }
-
-                        function showError(messageShort) {
-                            $('#tram-container').html(
-                                `<div class="bg-amber-100 border border-yellow-500 rounded-lg flex items-center space-x-2">
-            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-            <p class="text-yellow-500 text-sm font-medium">${messageShort}</p>
-         </div>`
-                            );
-                        }
-
-                        function loadTramData() {
-                            $.ajax({
-                                url: ENDPOINT,
-                                type: 'POST',
-                                dataType: 'json',
-                                data: { function: 'tramData' },
-                                success: function(raw) {
-                                    const response = safeParseResponse(raw);
-                                    if (!response) {
-                                        showError('Błąd: Nieprawidłowa odpowiedź JSON.');
-                                        return;
-                                    }
-
-                                    if (response.is_active === false) {
-                                        $('#tram').addClass('hidden');
-                                        return;
-                                    }
-
-                                    $('#tram').removeClass('hidden');
-
-                                    if (!(response.success && Array.isArray(response.data))) {
-                                        console.error("Brak danych do wyświetlenia:", response);
-                                        showError('Błąd: Brak danych');
-                                        return;
-                                    }
-
-                                    const data = response.data;
-                                    if (data.length === 0) {
-                                        showError('Błąd: Brak kursów.');
-                                        return;
-                                    }
-
-                                    // Pełne renderowanie wszystkich dostępnych kursów (do MAX_ROWS) przy każdym odświeżeniu
-                                    let maxIndex = Math.min(data.length, MAX_ROWS);
-                                    let html = buildHeader();
-                                    for (let i = 0; i < maxIndex; i++) {
-                                        html += buildRow(data[i]);
-                                    }
-                                    html += `</tbody></table>`;
-                                    $('#tram-container').html(html);
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Błąd ładowania AJAX: ", error);
-                                    showError('Błąd ładowania danych tramwajowych.');
-                                }
-                            });
-                        }
-
-                        setInterval(loadTramData, 50000);
-                        loadTramData();
-
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const header = document.getElementById('header');
+                            if (!header) return;
+                            const setHeader = () => {
+                                const h = Math.round(header.getBoundingClientRect().height) + 'px';
+                                document.documentElement.style.setProperty('--header-height', h);
+                            };
+                            setHeader();
+                            window.addEventListener('resize', setHeader);
+                            if (window.ResizeObserver) new ResizeObserver(setHeader).observe(header);
+                        });
                     </script>
+                    <!-- Scroll container: clips content to rounded corners -->
+                    <div id="tram-container" class="relative overflow-hidden rounded-2xl h-full w-full">
+
+                        <!-- Inner wrapper ensures table respects rounded corners -->
+                        <div class="overflow-hidden rounded-2xl h-full w-full"> <!-- Scroll area height: fills available container height -->
+                            <table id="tram-table" class="table-fixed w-full border-separate" style="border-spacing:0;">
+                                <thead class="sticky top-0 bg-white z-10">
+                                <tr>
+                                    <th class="w-1/6 px-2 text-center">
+                                        <i class="fa-solid fa-train-tram text-school2"></i> Linia
+                                    </th>
+                                    <th class="w-4/6 px-2 text-center">
+                                        <i class="fa-solid fa-location-dot text-school2"></i> Kierunek
+                                    </th>
+                                    <th class="w-1/6 px-2 text-center">
+                                        <i class="fa-solid fa-clock text-school2"></i> Odjazd (min)
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
+                <script>
+                    const MAX_ROWS = 19;
+                    const ENDPOINT = '/display/get_departures';
+                    const ROW_CLASS = 'text-[24px]';
+                    let tramBuffer = [];   // Moving queue of tram rows
+                    let scrollPos = 0;
+                    const scrollSpeed = 0.5; // Pixels per frame
+
+                    function formatMinutes(min) {
+                        if (min === 0) return '<1';
+                        if (min < 60) return String(min);
+                        const hours = Math.floor(min / 60);
+                        const minutes = min % 60;
+                        return `${hours}h ${minutes}`;
+                    }
+
+                    function buildTramArray(tram) {
+                        return {
+                            line: tram.line,
+                            direction: tram.direction,
+                            minutes: formatMinutes(tram.minutes)
+                        };
+                    }
+
+                    // Calculate required buffer duplication to fill scroll container
+                    function calculateBufferLength(containerHeight, rowHeight, rowsCount) {
+                        const visibleRows = Math.ceil(containerHeight / rowHeight);
+                        const minIterations = Math.ceil((visibleRows * 3) / rowsCount); // 3x visible rows for smooth merging
+                        return Math.max(minIterations, 2);
+                    }
+
+                    // Merge new AJAX data into the moving buffer
+                    function mergeNewData(newRows) {
+                        const containerHeight = document.getElementById('tram-container').clientHeight;
+                        const rowHeight = 40; // approximate row height in px
+                        const iterations = calculateBufferLength(containerHeight, rowHeight, newRows.length);
+
+                        const newBuffer = [];
+                        for (let i = 0; i < iterations; i++) newBuffer.push(...newRows);
+
+                        const tbody = document.querySelector('#tram-table tbody');
+                        if (!tbody || tramBuffer.length === 0) {
+                            tramBuffer = newBuffer;
+                        } else {
+                            const scrolledRows = Math.floor(scrollPos / rowHeight);
+                            tramBuffer.splice(0, scrolledRows, ...newBuffer.slice(0, scrolledRows));
+                            if (tramBuffer.length < newBuffer.length) tramBuffer.push(...newBuffer.slice(tramBuffer.length));
+                        }
+
+                        // Render current buffer
+                        tbody.innerHTML = '';
+                        tramBuffer.forEach(tram => {
+                            const tr = document.createElement('tr');
+                            tr.className = ROW_CLASS;
+                            tr.innerHTML = `
+                              <td class="w-1/6 text-center">${tram.line}</td>
+                              <td class="w-4/6 text-center">${tram.direction}</td>
+                              <td class="w-1/6 text-center">${tram.minutes}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+
+                    // Animate the scroll continuously
+                    function animateScroll() {
+                        const tbody = document.querySelector('#tram-table tbody');
+                        if (!tbody) return;
+
+                        scrollPos += scrollSpeed;
+                        const resetPos = tbody.scrollHeight / 2; // Loop at half the buffer height for seamless scrolling
+                        if (scrollPos >= resetPos) scrollPos -= resetPos;
+
+                        tbody.style.transform = `translateY(-${scrollPos}px)`;
+                        requestAnimationFrame(animateScroll);
+                    }
+
+                    // AJAX fetch for tram data
+                    function loadTramData() {
+                        $.ajax({
+                            url: ENDPOINT,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { function: 'tramData' },
+                            success: function(raw) {
+                                const response = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+                                if (!response || !response.success || !Array.isArray(response.data)) return;
+
+                                const data = response.data.slice(0, MAX_ROWS).map(buildTramArray);
+                                mergeNewData(data);
+                            },
+                            error: function() {
+                                console.error('Błąd ładowania danych tramwajowych.');
+                            }
+                        });
+                    }
+
+                    // Initialize table and scroll
+                    animateScroll();
+                    loadTramData();
+                    setInterval(loadTramData, 50000); // Refresh every 50 seconds
+                </script>
             </div>
 
             <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom py-1">

@@ -23,5 +23,8 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
+    "tailwindcss-animate": "^1.0.7"
   }
 }
