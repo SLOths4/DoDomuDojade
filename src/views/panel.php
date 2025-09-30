@@ -14,6 +14,7 @@ SessionHelper::remove('error');
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Panel | DoDomuDojadę</title>
         <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +22,7 @@ SessionHelper::remove('error');
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="//unpkg.com/alpinejs" defer></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="bg-gray-100 flex flex-col min-h-screen dark:bg-gray-800 dark:text-white">
