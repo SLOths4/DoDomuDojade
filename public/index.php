@@ -2,6 +2,12 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$root = dirname(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable($root);
+$dotenv->safeLoad();
+
+$container = require __DIR__ . '/../src/bootstrap/container.php';
+
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 use src\controllers\ErrorController;
@@ -60,23 +66,24 @@ $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        new ErrorController()->notFound();
+        $container->get(ErrorController::class)->notFound();
         break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        new ErrorController()->methodNotAllowed();
+        $container->get(ErrorController::class)->methodNotAllowed();
         break;
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
 
         if (is_array($handler)) {
-            $controller = new $handler[0]();
+            $controller = $container->get($handler[0]);
+            // Zachowujemy dotychczasowy kontrakt: przekazujemy $vars jako 1 argument tablicowy
             call_user_func([$controller, $handler[1]], $vars);
         } else {
             call_user_func($handler, $vars);
         }
         break;
     default:
-        new ErrorController()->internalServerError();
+        $container->get(ErrorController::class)->internalServerError();
         break;
 }

@@ -2,9 +2,10 @@
 namespace src\models;
 
 use Exception;
+use PDO;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use src\core\Model;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -14,30 +15,39 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class WeatherModel extends Model
 {
-    private  HttpClientInterface $httpClient;
-    private string $imgwWeatherUrl;
-    private string $airQualityUrl;
-    private string $airlyApiKey;
-    private string $airlyLocationId;
-    private string $airlyUrl;
-
-
-    public function __construct() {
-        $this->httpClient = HttpClient::create();
-
-        $this->imgwWeatherUrl = $this->getEnvVariable('IMGW_WEATHER_URL') ?? self::$logger->error("IMGW endpoint is missing.") && throw new RuntimeException('IMGW endpoint is missing.');
-        $this->airlyUrl = $this->getEnvVariable('AIRLY_ENDPOINT') ?? self::$logger->error("Airly endpoint is missing.") && throw new RuntimeException('Airly endpoint is missing.');
-        $this->airlyApiKey = $this->getEnvVariable('AIRLY_API_KEY') ?? self::$logger->error('Airly API key is missing.') && throw new RuntimeException('Airly API key is missing.');
-        $this->airlyLocationId = ltrim($this->getEnvVariable('AIRLY_LOCATION_ID'), '/') ?? self::$logger->error('Airly location ID is missing.') && throw new RuntimeException('Airly location ID is missing.');
-        $this->airQualityUrl = $this->airlyUrl . $this->airlyLocationId;
+    public function __construct(
+        PDO $pdo,
+        LoggerInterface $logger,
+        private readonly HttpClientInterface $httpClient,
+        private readonly string $imgwWeatherUrl,
+        private readonly string $airlyUrl,
+        private readonly string $airlyApiKey,
+        private readonly string $airlyLocationId,
+    ) {
+        parent::__construct($pdo, $logger);
+        if ($this->imgwWeatherUrl === '') {
+            $this->logger->error('IMGW endpoint is missing.');
+            throw new RuntimeException('IMGW endpoint is missing.');
+        }
+        if ($this->airlyUrl === '') {
+            $this->logger->error('Airly endpoint is missing.');
+            throw new RuntimeException('Airly endpoint is missing.');
+        }
+        if ($this->airlyApiKey === '') {
+            $this->logger->error('Airly API key is missing.');
+            throw new RuntimeException('Airly API key is missing.');
+        }
+        if ($this->airlyLocationId === '') {
+            $this->logger->error('Airly location ID is missing.');
+            throw new RuntimeException('Airly location ID is missing.');
+        }
     }
 
     /**
-     * Wykonuje zapytanie HTTP do podanego URL z opcjonalnymi nagłówkami.
+     * Makes HTTP request to the specified URL.
      *
      * @param string $url
      * @param array $headers
-     *
      * @return array
      * @throws Exception
      */
@@ -55,20 +65,19 @@ class WeatherModel extends Model
         TransportExceptionInterface |
         DecodingExceptionInterface $e
         ) {
-            self::$logger->error("Error while fetching data from ". $url . " " .  $e->getMessage());
+            $this->logger->error("Error while fetching data from ". $url . " " .  $e->getMessage());
             throw new Exception("Error while fetching data from ". $url . " " .  $e->getMessage());
         } catch (Exception $e) {
-            self::$logger->error("Unexpected error occurred while fetching data from " . $url . " " .  $e->getMessage());
+            $this->logger->error("Unexpected error occurred while fetching data from " . $url . " " .  $e->getMessage());
             throw new Exception("Unexpected error occurred while fetching data from " . $url . " " .  $e->getMessage());
         }
     }
 
     /**
-     * Ekstrahuje i mapuje dane jakości powietrza z surowej odpowiedzi API.
+     * Maps the raw data from the API to a more usable format.
      *
-     * @param array $data Surowe dane zwrócone przez API
-     *
-     * @return array Zmapowane dane jakości powietrza
+     * @param array $data Raw data from the API.
+     * @return array Mapped data.
      */
     private function extractAirlyData(array $data): array
     {
@@ -95,14 +104,14 @@ class WeatherModel extends Model
     }
 
     /**
-     * Pobiera dane jakości powietrza z API Airly i mapuje je przy pomocy extractAirQualityData().
+     * Fetches data from Airly API and extracts relevant information.
      *
      * @return array
      * @throws Exception
      */
     private function getAirlyData(): array
     {
-        self::$logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airQualityUrl]);
+        $this->logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airlyUrl]);
 
         $headers = [
             'Accept'       => 'application/json',
@@ -112,15 +121,15 @@ class WeatherModel extends Model
         ];
 
         try {
-            $data = $this->fetchData($this->airQualityUrl, $headers);
-            self::$logger->info("Pomyślnie pobrano dane z API Airly");
+            $data = $this->fetchData($this->airlyUrl, $headers);
+            $this->logger->info("Pomyślnie pobrano dane z API Airly");
         } catch (RuntimeException $e) {
-            self::$logger->warning("Nie udało się pobrać danych z API Airly: " . $e->getMessage());
+            $this->logger->warning("Nie udało się pobrać danych z API Airly: " . $e->getMessage());
             return $this->extractAirlyData([]);
         }
 
         if (empty($data)) {
-            self::$logger->error("Dane z Airly są puste. Możliwa awaria API.");
+            $this->logger->error("Dane z Airly są puste. Możliwa awaria API.");
             throw new Exception("API Airly returned empty data. Possible API failure.");
         }
 
@@ -128,15 +137,14 @@ class WeatherModel extends Model
     }
 
     /**
-     * Pobiera dane pogodowe z API IMGW.
+     * Fetches data from IMGW API and extracts relevant information.
      *
      * @return array
-     *
      * @throws RuntimeException
      */
     private function getImgwWeatherData(): array
     {
-        self::$logger->debug("Rozpoczęto pobieranie danych z API IMGW");
+        $this->logger->debug("Rozpoczęto pobieranie danych z API IMGW");
 
         $headers = [
             'Accept' => 'application/json',
@@ -145,9 +153,9 @@ class WeatherModel extends Model
 
         try {
             $data = $this->fetchData($this->imgwWeatherUrl, $headers);
-            self::$logger->debug("Pomyślnie pobrano dane z API IMGW");
+            $this->logger->debug("Pomyślnie pobrano dane z API IMGW");
         } catch (Exception $e) {
-            self::$logger->error("Błąd podczas pobierania danych z API IMGW: " . $e->getMessage());
+            $this->logger->error("Błąd podczas pobierania danych z API IMGW: " . $e->getMessage());
             throw new RuntimeException("Error while fetching IMGW weather data: " . $e->getMessage());
         }
 
@@ -155,10 +163,9 @@ class WeatherModel extends Model
     }
 
     /**
-     * Łączy dane pogodowe z IMGW oraz dane jakości powietrza z Airly.
+     * Merges data from IMGW and Airly APIs and returns a single array.
      *
      * @return array
-     *
      * @throws Exception
      */
     public function getWeather(): array

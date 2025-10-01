@@ -1,9 +1,12 @@
 <?php
+
 namespace src\models;
 
 use DateMalformedStringException;
 use DateTime;
 use Exception;
+use PDO;
+use Psr\Log\LoggerInterface;
 use src\core\Model;
 
 /**
@@ -12,13 +15,13 @@ use src\core\Model;
  */
 class CalendarModel extends Model
 {
-    private string $icalUrl;
-
-    /**
-     * @throws Exception
-     */
-    public function __construct() {
-        $this->icalUrl = self::getEnvVariable('CALENDAR_URL');
+    public function __construct(
+        PDO $pdo,
+        LoggerInterface $logger,
+        private readonly string $icalURL,
+    )
+    {
+        parent::__construct($pdo, $logger);
     }
 
     /**
@@ -29,28 +32,29 @@ class CalendarModel extends Model
     public function get_events(): array
     {
         // Fetch the iCal data
-        $icalData = @file_get_contents($this->icalUrl);
+        $icalData = @file_get_contents($this->icalURL);
 
         if ($icalData === false) {
             $error = error_get_last();
-            self::$logger->error("Error fetching iCal data: " . $error['message']);
+            $this->logger->error("Error fetching iCal data: " . $error['message']);
             throw new Exception("Error fetching iCal data: " . $error['message']);
         } else {
-            self::$logger->debug("Successfully fetched the iCal data");
+            $this->logger->debug("Successfully fetched the iCal data");
         }
-      
+
         if (!str_contains($icalData, 'BEGIN:VEVENT')) {
-            self::$logger->debug("No events found in the iCal data.");
+            $this->logger->debug("No events found in the iCal data.");
             return [];
         } else {
-            self::$logger->debug("Found events in the iCal data.");
+            $this->logger->debug("Found events in the iCal data.");
         }
 
         return $this->parse_ical_data($icalData);
     }
 
     /**
-     * iCal events extracting function
+     * iCal events extracting function.
+     *
      * @param string $icalData
      * @return array
      * @throws Exception
@@ -58,26 +62,26 @@ class CalendarModel extends Model
     private function parse_ical_data(string $icalData): array
     {
         $events = [];
-        if(preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches)) {
-            self::$logger->debug("Found " . count($matches[1]) . " events in the iCal data.");
+        if (preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalData, $matches)) {
+            $this->logger->debug("Found " . count($matches[1]) . " events in the iCal data.");
         } else {
-            self::$logger->debug("Could not parse the iCal data.");
+            $this->logger->debug("Could not parse the iCal data.");
         }
         $currentDate = new DateTime();
-    
+
         foreach ($matches[1] as $eventData) {
             $this->process_event($eventData, $events, $currentDate);
         }
         usort($events, function ($a, $b) {
             $dateA = DateTime::createFromFormat('H.i - d.m.Y', $a['start']);
             $dateB = DateTime::createFromFormat('H.i - d.m.Y', $b['start']);
-            
+
             return $dateA <=> $dateB;
         });
         if (!empty($events)) {
-            self::$logger->debug("Found final events in the iCal data.");
+            $this->logger->debug("Found final events in the iCal data.");
         } else {
-            self::$logger->debug("There were no final events the iCal data.");
+            $this->logger->debug("There were no final events the iCal data.");
         }
         return $events;
     }
@@ -94,19 +98,19 @@ class CalendarModel extends Model
     {
         $event = $this->extract_event_data($eventData);
         $this->format_event_dates($event);
-    
+
         try {
             $eventDate = DateTime::createFromFormat("Ymd\THis", substr($event['end1'], 0, 15));
             if (!$eventDate) throw new Exception("Invalid date format: {$event['end1']}");
-    
+
             $daysUntilEvent = $this->calculate_days_until_event($eventDate, $currentDate);
             if ($this->should_include_event($eventDate, $currentDate, $daysUntilEvent)) {
-                self::$logger->debug("Added an event to the iCal data.");
+                $this->logger->debug("Added an event to the iCal data.");
                 $events[] = $event;
             } else {
-                self::$logger->debug("Could not add the event to the iCal data.");
+                $this->logger->debug("Could not add the event to the iCal data.");
             }
-    
+
             if (!empty($event['rrule'])) {
                 $startDate = DateTime::createFromFormat('H.i - d.m.Y', ($event['start']));
                 $endDate = DateTime::createFromFormat('H.i - d.m.Y', ($event['end']));
@@ -115,7 +119,7 @@ class CalendarModel extends Model
                 }
             }
         } catch (Exception $e) {
-            self::$logger->error("Date parsing failed: " . $e->getMessage());
+            $this->logger->error("Date parsing failed: " . $e->getMessage());
         }
     }
 
@@ -132,28 +136,28 @@ class CalendarModel extends Model
         preg_match('/DTEND(.*)/', $eventData, $end);
         preg_match('/DESCRIPTION:(.*)/', $eventData, $description);
         preg_match('/RRULE:(.*)/', $eventData, $rrule);
-    
+
         $event['summary'] = $summary[1] ?? '';
         $event['start'] = $start[1] ?? '';
         $event['end'] = $end[1] ?? '';
         $event['end1'] = $end[1] ?? '';  // Duplicate end time
         $event['description'] = $description[1] ?? '';
         $event['rrule'] = $rrule[1] ?? '';
-    
+
         preg_match('/:(.*)/', $event['start'], $event['start']);
         preg_match('/:(.*)/', $event['end'], $event['end']);
         preg_match('/:(.*)/', $event['end1'], $event['end1']);
-    
+
         $event['start'] = $event['start'][1] ?? '';
         $event['end'] = $event['end'][1] ?? '';
         $event['end1'] = $event['end1'][1] ?? '';
 
         if (!empty($event)) {
-            self::$logger->debug("Event has contents");
+            $this->logger->debug("Event has contents");
         } else {
-            self::$logger->debug("Event has no contents");
+            $this->logger->debug("Event has no contents");
         }
-    
+
         return $event;
     }
 
@@ -170,7 +174,7 @@ class CalendarModel extends Model
             $event['end'] .= "Z";
             $event['end1'] .= "Z";
         }
-    
+
         $startYear = substr($event['start'], 0, 4);
         $endYear = substr($event['end'], 0, 4);
         $startMonth = substr($event['start'], 4, 2);
@@ -181,12 +185,12 @@ class CalendarModel extends Model
         $endHour = substr($event['end'], 9, 2);
         $startMinutes = substr($event['start'], 11, 2);
         $endMinutes = substr($event['end'], 11, 2);
-    
+
         if (!$timezone) {
             $startHour = (intval($startHour) + 1) % 24;
             $endHour = (intval($endHour) + 1) % 24;
         }
-    
+
         $event['start'] = sprintf("%02d.%s - %s.%s.%s", $startHour, $startMinutes, $startDay, $startMonth, $startYear);
         $event['end'] = sprintf("%02d.%s - %s.%s.%s", $endHour, $endMinutes, $endDay, $endMonth, $endYear);
     }
@@ -200,7 +204,7 @@ class CalendarModel extends Model
     private function calculate_days_until_event(DateTime $eventDate, DateTime $currentDate): int
     {
         $interval = $currentDate->diff($eventDate);
-        self::$logger->debug("Event is within " . $interval->days . "days from now");
+        $this->logger->debug("Event is within " . $interval->days . "days from now");
         return $interval->days;
     }
 
@@ -214,9 +218,9 @@ class CalendarModel extends Model
     private function should_include_event(DateTime $eventDate, DateTime $currentDate, int $daysUntilEvent): bool
     {
         if ($eventDate > $currentDate && $daysUntilEvent <= 7) {
-            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is valid.");
+            $this->logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent . "is valid.");
         } else {
-            self::$logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent .  "is not valid.");
+            $this->logger->debug("Event" . $eventDate->format('Y-m-d H:i:s') . " " . $currentDate->format('Y-m-d H:i:s') . " " . $daysUntilEvent . "is not valid.");
         }
         return $eventDate > $currentDate && $daysUntilEvent <= 7;
     }
