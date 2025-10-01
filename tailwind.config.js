@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/views/*.php"],
-  safelist: ['bg-primary-200', 'hover:bg-primary-400', 'text-primary-200'],
+  content: [
+    "./src/views/*.php",
+    "./src/views/functions/*.php",
+  ],
+  safelist: ['hover:text-beige','hover:bg-beige','bg-beige','bg-primary-100','bg-primary-200', 'bg-primary-300', 'bg-primary-400', 'hover:bg-primary-100', 'hover:bg-primary-200', 'hover:bg-primary-300', 'hover:bg-primary-400', 'text-primary-100', 'text-primary-200', 'text-primary-300', 'text-primary-400'],
   theme: {
     extend: {
       boxShadow: {

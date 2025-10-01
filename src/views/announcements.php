@@ -28,7 +28,7 @@ SessionHelper::remove('error');
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="flex flex-col min-h-screen dark:bg-gray-800 dark:text-white">
+    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
             <?php if (SessionHelper::has('error')): ?>
@@ -37,7 +37,7 @@ SessionHelper::remove('error');
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/panel/add_announcement" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
+            <form method="POST" action="/panel/add_announcement" class="mb-3 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
                 <div class="mb-2">
                     <label>
                         <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
@@ -56,14 +56,15 @@ SessionHelper::remove('error');
                     </label>
                 </div>
                 <div class="flex items-center justify-between">
-                    <input type="submit" name="add_announcement" value="Dodaj" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400">
+                    <input type="submit" name="add_announcement" value="Dodaj" class="!bg-primary-200 dark:text-white px-4 py-2 rounded hover:!bg-primary-400">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
                 </div>
             </form>
 
             <?php if (!empty($announcements)): ?>
-                <table id="announcementsTable" class="w-full table-fixed bg-white border dark:bg-gray-900 dark:text-white">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
+            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                <table id="announcementsTable" class="w-full table-fixed border-collapse">
+                    <thead class="bg-gray-200 dark:bg-gray-700 rounded-2xl">
                     <tr>
                         <th class="px-4 py-2 border">Tytuł</th>
                         <th class="px-4 py-2 border">Autor</th>
@@ -101,6 +102,7 @@ SessionHelper::remove('error');
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
             <?php else: ?>
                 <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p></div>
             <?php endif; ?>

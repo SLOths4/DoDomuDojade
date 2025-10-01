@@ -25,13 +25,13 @@ SessionHelper::remove('error');
         <script src="//unpkg.com/alpinejs" defer></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="bg-gray-100 flex flex-col min-h-screen dark:bg-gray-800 dark:text-white">
+    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
-            <div class="flex flex-col justify-center items-center rounded-lg bg-gray-100 dark:bg-gray-900 dark:text-white space-y-4 p-4">
+            <div class="flex flex-col justify-center items-center shadow-custom rounded-2xl mx-1 bg-white dark:bg-gray-900 dark:text-white space-y-4 p-4">
                 <h1 class="justify-center text-2xl">Witaj, <?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?>!</h1>
-                <p>Panel to miejsce do zarządzania całym serwisem do DoDomuDojadę. W zakładkach powyzej znajdziesz odpowiednie ustawienia.</p>
-                <button onclick="window.open('/display', '_blank');" class="flex items-center gap-2 px-4 py-2 !bg-primary-200 text-white rounded-md hover:!bg-primary-400"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
+                <p>Panel to miejsce do zarządzania całym serwisem do DoDomuDojadę. W zakładkach powyżej znajdziesz odpowiednie ustawienia.</p>
+                <button onclick="window.open('/display', '_blank');" class="flex items-center gap-2 px-4 py-2 !bg-primary-200 dark:text-white rounded-md hover:!bg-primary-400"><i class="fa-solid fa-display"></i> Wyświetlaj informacje</button>
             </div>
         </main>
         <?php include('functions/footer.php'); ?>

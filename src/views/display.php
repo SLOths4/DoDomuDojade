@@ -12,7 +12,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="bg-school1">
+    <body class="bg-primary-200">
         <div class="flex mx-1 my-2">
             <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
                 <div class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
@@ -328,7 +328,7 @@
                     loadCountdownData();
                 </script>
 
-                <div id="announcements" class="px-2 py-2 mx-2 my-2">
+                <div id="announcements" class="py-2 mx-2 my-2">
                     <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
                 </div>
 

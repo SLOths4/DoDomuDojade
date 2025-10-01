@@ -29,10 +29,10 @@ SessionHelper::remove('error');
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="flex flex-col min-h-screen dark:bg-gray-800 dark:text-white">
+    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
-            <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded shadow">
+            <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
                 <div class="mb-2">
                     <label>
                         <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
@@ -50,7 +50,8 @@ SessionHelper::remove('error');
             </form>
 
             <?php if (!empty($countdowns)): ?>
-                <table id="countdownsTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                <table id="countdownsTable" class="w-full table-fixed border-collapse">
                     <thead class="bg-gray-200 dark:bg-gray-700">
                     <tr>
                         <th class="px-4 py-2 border">Nazwa wydarzenia</th>
@@ -83,6 +84,7 @@ SessionHelper::remove('error');
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
             <?php else: ?>
                 <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p></div>
     <?php endif; ?>

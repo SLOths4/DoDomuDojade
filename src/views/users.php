@@ -29,7 +29,7 @@ SessionHelper::remove('error');
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
         <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="flex flex-col min-h-screen dark:bg-gray-800 dark:text-white">
+    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
             <?php if (!empty($error)): ?>
@@ -47,7 +47,7 @@ SessionHelper::remove('error');
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded shadow dark:bg-gray-900 dark:text-white">
+            <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded-2xl shadow-custom mx-1 dark:bg-gray-900 dark:text-white">
                 <div class="mb-2">
                     <label>
                         <input type="text" name="username" placeholder="Nazwa użytkownika" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
@@ -65,7 +65,8 @@ SessionHelper::remove('error');
             </form>
 
             <?php if (!empty($users)): ?>
-                <table id="usersTable" class="min-w-full bg-white border dark:bg-gray-900 dark:text-white">
+            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                <table id="usersTable" class="w-full table-fixed border-collapse">
                     <thead class="bg-gray-200 dark:bg-gray-700">
                     <tr>
                         <th class="px-4 py-2 border">Id</th>
@@ -89,6 +90,7 @@ SessionHelper::remove('error');
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
             <?php else: ?>
                 <p>Brak ogłoszeń do wyświetlenia.</p>
             <?php endif; ?>
