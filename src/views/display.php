@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>DoDomuDojadę</title>
         <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
     </head>
     <body class="bg-primary-200">
         <div class="flex mx-1 my-2">
-            <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
+            <div class="max-sm:hidden flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
                 <div class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
                 <div id="date" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
                     <script>
@@ -54,10 +54,10 @@
                 </div>
             </div>
 
-            <div class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom overflow-hidden justify-around items-center">
-                <div id="temperature" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-                <div id="pressure" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
-                <div id="airly" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">Ładowanie...</div>
+            <div class="flex flex-auto bg-white h-20 rounded-2xl md:ml-1 shadow-custom overflow-hidden justify-around items-center">
+                <div id="temperature" class="flex h-full justify-center items-center px-2 font-mono text-sm md:max-lg:text-lg lg:text-2xl font-extrabold">Ładowanie...</div>
+                <div id="pressure" class="flex h-full justify-center items-center px-2 font-mono text-sm md:max-lg:text-lg lg:text-2xl font-extrabold">Ładowanie...</div>
+                <div id="airly" class="flex h-full justify-center items-center px-2 font-mono text-sm md:max-lg:text-lg lg:text-2xl font-extrabold">Ładowanie...</div>
                 <script>
                     function loadWeatherData() {
                         $.ajax({
@@ -142,7 +142,7 @@
 
                 <div id="tram" class="bg-white rounded-2xl h-full">
 
-                    <div id="tram-container" class="h-full"><p class="text-[20px] m-2 p-2">Ładowanie danych...</p></div>
+                    <div id="tram-container" class="h-full"><p class="m-2 p-2">Ładowanie danych...</p></div>
 
                     <script>
                         const MAX_ROWS = 25;
@@ -161,9 +161,9 @@
     <table class="table-fixed w-full">
       <thead>
         <tr>
-          <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-          <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-          <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
+          <th class="w-1/6 text-xs md:max-lg:text-base lg:text-xl"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i><a class="max-sm:hidden"> Linia</a</th>
+          <th class="w-4/6 text-xs md:max-lg:text-base lg:text-xl"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i><a class="max-sm:hidden"> Kierunek</a></th>
+          <th class="w-1/6 text-xs md:max-lg:text-base lg:text-xl"><i class="fa-solid fa-clock" style="color: #4A73AF"></i><a class="max-sm:hidden"> Odjazd <br> (w minutach)</a><a class="md:hidden">(min)</a></th>
         </tr>
       </thead>
       <tbody>
@@ -256,7 +256,7 @@
             </div>
 
             <div id="middle" class="bg-white rounded-2xl h-[800px] ml-2 shadow-custom py-1">
-                <div id="countdown" class="flex justify-center items-center bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold">Ładowanie...</div>
+                <div id="countdown" class="flex justify-center items-center bg-beige rounded-2xl m-2 p-2 shadow-custom text-xs md:max-lg:text-base lg:text-xl font-bold">Ładowanie...</div>
 
                 <script>
                     function loadCountdownData() {
@@ -329,7 +329,7 @@
                 </script>
 
                 <div id="announcements" class="py-2 mx-2 my-2">
-                    <div id="announcements-container" class="text-[20px]">Ładowanie danych...</div>
+                    <div id="announcements-container" class="text-xs md:max-lg:text-base lg:text-xl">Ładowanie danych...</div>
                 </div>
 
                 <script>
@@ -341,15 +341,17 @@
                             <span class="flex items-baseline font-bold">
                                 <h3>${announcement.title}</h3>
                             </span>
-                                <p class="text-[18px]">${announcement.text}</p>
-                                <p class="text-[15px]">
+                                <p>${announcement.text}</p>
+                                <p class="text-xs md:max-lg:text-sm lg:text-base">
                                   <small>
-                                    <i class="fa-solid fa-calendar" style="color: #4A73AF"></i> <strong>Utworzono:</strong> ${announcement.date}
+                                        <i class="fa-solid fa-calendar" style="color: #4A73AF"></i> <strong>Utworzono:</strong> ${announcement.date}
                                   </small>
                                   <small>
                                         <strong>Ważne do:</strong> ${announcement.validUntil}
-                                    </small>
-                                  <i class="fa-solid fa-user pl-2" style="color: #4A73AF"></i> ${announcement.author}
+                                  </small>
+                                  <small>
+                                        <i class="fa-solid fa-user pl-1" style="color: #4A73AF"></i> ${announcement.author}
+                                  </small>
                                 </p>
                             </div>
                         `).join('');
