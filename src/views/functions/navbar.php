@@ -12,40 +12,43 @@
     </div>
 </div>
 
-<div id="navbar" class="sticky top-0 right-0 left-0 flex z-10 bg-gray-800 items-center">
+<div id="navbar" class="my-2 mx-1 p-2 sticky top-0 right-0 left-0 flex z-10 bg-white dark:bg-gray-800 items-center rounded-2xl">
     <a href="/panel"><img class="m-2" src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40" ></a>
-    <a class="max-sm:hidden sm:max-md:hidden" href="/panel"><p class="font-extrabold text-white pl-1 pr-2">DoDomuDojadę</p></a>
+    <a class="max-sm:hidden sm:max-md:hidden" href="/panel"><p class="font-extrabold dark:text-white pl-1 pr-2">DoDomuDojadę</p></a>
     <ul class="flex m-0 p-0 z-10 list-none">
         <li>
             <a href="javascript:void(0)" onclick="openMenu()"
-               class="max-lg:block lg:hidden text-center px-4 py-3 bg-gray-800 hover:bg-gray-900 text-white duration-300">
+               class="max-lg:block lg:hidden text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-white duration-300 rounded-2xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Menu" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 6h18M3 12h18M3 18h18" />
                 </svg>
             </a>
         </li>
         <li>
-            <a href="/panel" class="nav-link block max-sm:hidden sm:max-lg:hidden text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Panel</a>
+            <a href="/panel" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Panel</a>
         </li>
         <li>
-            <a href="/panel/announcements" class="nav-link block max-sm:hidden sm:max-lg:hidden text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Ogłoszenia</a>
+            <a href="/panel/announcements" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Ogłoszenia</a>
         </li>
         <li>
-            <a href="/panel/countdowns" class="nav-link block max-sm:hidden sm:max-lg:hidden  text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Odliczania</a>
+            <a href="/panel/countdowns" class="nav-link block max-sm:hidden sm:max-lg:hidden  dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Odliczania</a>
         </li>
         <li>
-            <a href="/panel/users" class="nav-link block max-sm:hidden sm:max-lg:hidden text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Użytkownicy</a>
+            <a href="/panel/users" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Użytkownicy</a>
         </li>
         <li>
-            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden text-white text-center px-4 py-3 bg-gray-800 hover:bg-gray-900">Moduły</a>
+            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden darl:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
         </li>
     </ul>
     <script>
         const currentPage = window.location.pathname;
 
         document.querySelectorAll('.nav-link').forEach(link => {
-            if (link.getAttribute('href') === currentPage) {
+            if (link.getAttribute('href') === currentPage && window.matchMedia("(prefers-color-scheme: dark)").matches) {
                 link.classList.remove('bg-gray-800', 'hover:bg-gray-900');
+                link.classList.add('hover:bg-primary-400', 'bg-primary-200');
+            } else if (link.getAttribute('href') === currentPage && window.matchMedia("(prefers-color-scheme: light)").matches) {
+                link.classList.remove('bg-white', 'hover:bg-beige');
                 link.classList.add('hover:bg-primary-400', 'bg-primary-200');
             }
         });
@@ -92,13 +95,13 @@
             Alpine.data("dropdown", dropdown)
         })
     </script>
-    <div id="profile" class="absolute right-0 z-10 max-w-md origin-top-right bg-gray-800 flex items-center rounded-bl-lg">
-        <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2"><i class="fa-solid fa-circle-user fa-2xl" style="color: #8ABAE2;"></i></div>
+    <div id="profile" class="absolute right-0 z-10 max-w-md origin-top-right bg-white dark:bg-gray-800 flex items-center rounded-2xl mr-2">
+        <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2"><i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i></div>
         <div x-data="dropdown">
             <div class="mx-2 pr-2">
-                <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 text-primary-200 hover:text-primary-400" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?></button>
+                <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?></button>
             </div>
-            <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-2 w-full rounded-lg bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+            <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-3" role="none">
                     <button class="bg-primary-200 mx-2 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
                 </div>
