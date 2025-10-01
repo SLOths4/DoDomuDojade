@@ -7,25 +7,29 @@ use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use PDO;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use src\core\Model;
 
 class CountdownModel extends Model
 {
-    private string $TABLE_NAME;
-    private array $ALLOWED_FIELDS;
-
-    public function __construct()
+    public function __construct(
+        PDO $pdo,
+        LoggerInterface $logger,
+        private readonly string $TABLE_NAME,
+        private readonly array $ALLOWED_FIELDS,
+    )
     {
-        $this->TABLE_NAME = self::getConfigVariable('COUNTDOWN_TABLE_NAME') ?: 'countdowns';
-        $this->ALLOWED_FIELDS = self::getConfigVariable("ALLOWED_FIELDS") ?? ['title', 'count_to'];
-        self::$logger->info('Countdowns table name in being used: ' . $this->TABLE_NAME);
+        parent::__construct($pdo, $logger);
+        $this->logger->info('Countdowns table name in being used: ' . $this->TABLE_NAME);
     }
 
     /**
-     * Fetches announcements by id
+     * Fetches announcements by id.
+     *
      * @param int $countdownId
      * @return array
+     * @throws Exception
      */
     public function getCountdownById(int $countdownId): array {
         try {
@@ -37,59 +41,63 @@ class CountdownModel extends Model
             $result = $this->executeStatement($query, $params);
 
             if (!$result) {
-                self::$logger->warning("No countdown found with ID: $countdownId");
+                $this->logger->warning("No countdown found with ID: $countdownId");
                 return [];
             }
 
-            self::$logger->info("Countdown fetched successfully.", ['result' => $result]);
+            $this->logger->info("Countdown fetched successfully.", ['result' => $result]);
             return $result;
         } catch (Exception $e) {
-            self::$logger->error("Error fetching countdown by ID: " . $e->getMessage());
+            $this->logger->error("Error fetching countdown by ID: " . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * Fetches countdown which is currently in operation
+     * Fetches countdown which is currently in operation.
+     *
      * @return array
+     * @throws Exception
      */
     public function getCurrentCountdown(): array
     {
         try {
             $currentTime = date('Y-m-d H:i:s');
-            self::$logger->info('Rozpoczęcie pobierania obecnego odliczania.', ['current_time' => $currentTime]);
+            $this->logger->info('Rozpoczęcie pobierania obecnego odliczania.', ['current_time' => $currentTime]);
 
-            $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to > :current_time ORDER BY count_to ASC LIMIT 1";
+            $query = "SELECT * FROM $this->TABLE_NAME WHERE count_to > :current_time ORDER BY count_to LIMIT 1";
 
             $result  = $this->executeStatement($query, [
                 ":current_time" => [$currentTime, PDO::PARAM_STR]
             ]);
 
             if ($result) {
-                self::$logger->info('Znaleziono obecne odliczanie.', ['wynik' => $result]);
+                $this->logger->info('Znaleziono obecne odliczanie.', ['wynik' => $result]);
             } else {
-                self::$logger->info('Nie znaleziono odliczania spełniającego kryteria.');
+                $this->logger->info('Nie znaleziono odliczania spełniającego kryteria.');
             }
 
             return $result[0] ?? [];
         } catch (Exception $e) {
-            self::$logger->error('Wystąpił błąd w getCurrentCountdown: ' . $e->getMessage());
+            $this->logger->error('Wystąpił błąd w getCurrentCountdown: ' . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * Fetches all countdowns
+     * Fetches all countdowns.
+     *
      * @return array
+     * @throws Exception
      */
     public function getCountdowns(): array
     {
         try {
-            self::$logger->info('Rozpoczęcie pobierania wszystkich odliczań.');
+            $this->logger->info('Rozpoczęcie pobierania wszystkich odliczań.');
 
             $results = $this->executeStatement("SELECT * FROM $this->TABLE_NAME");
 
-            self::$logger->info('Pobrano wszystkie odliczania.', ['liczba_odliczań' => count($results)]);
+            $this->logger->info('Pobrano wszystkie odliczania.', ['liczba_odliczań' => count($results)]);
             return $results;
         } catch (Exception $e) {
             throw new RuntimeException('Error fetching countdowns' . $e);
@@ -97,16 +105,18 @@ class CountdownModel extends Model
     }
 
     /**
-     * Adds a countdown with given parameters
+     * Adds a countdown with given parameters.
+     *
      * @param string $title
      * @param string $countTo
      * @param int $userId
      * @return bool
+     * @throws Exception
      */
     public function addCountdown(string $title, string $countTo, int $userId): bool
     {
         try {
-            self::$logger->info('Rozpoczęcie dodawania nowego odliczania.', ['title' => $title, 'count_to' => $countTo, 'userId' => $userId]);
+            $this->logger->info('Rozpoczęcie dodawania nowego odliczania.', ['title' => $title, 'count_to' => $countTo, 'userId' => $userId]);
 
             $dateTime = DateTime::createFromFormat('Y-m-d\TH:i' , $countTo) ?: DateTime::createFromFormat('Y-m-d H:i:s', $countTo);
             if (!$dateTime) {
@@ -121,7 +131,7 @@ class CountdownModel extends Model
                 ":user_id" => [$userId, PDO::PARAM_INT],
             ]);
 
-            self::$logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $formattedDate, 'userId' => $userId]);
+            $this->logger->info('Dodano nowe odliczanie.', ['title' => $title, 'count_to' => $formattedDate, 'userId' => $userId]);
             return true;
         } catch (Exception $e) {
             throw new RuntimeException('Error adding countdown' . $e);
@@ -129,21 +139,23 @@ class CountdownModel extends Model
     }
 
     /**
-     * Deletes countdown
+     * Deletes specified countdown
+     *
      * @param int $id
      * @return bool
+     * @throws Exception
      */
     public function deleteCountdown(int $id): bool
     {
         try {
-            self::$logger->info('Rozpoczęcie usuwania odliczania.', ['id' => $id]);
+            $this->logger->info('Rozpoczęcie usuwania odliczania.', ['id' => $id]);
 
             $query = "DELETE FROM $this->TABLE_NAME WHERE id = :id";
             $this->executeStatement($query, [
                 ":id" => [$id, PDO::PARAM_INT]
             ]);
 
-            self::$logger->info('Usunięto odliczanie.', ['id' => $id]);
+            $this->logger->info('Usunięto odliczanie.', ['id' => $id]);
             return true;
         } catch (Exception $e) {
             throw new RuntimeException('Error removing countdown' . $e);
@@ -151,7 +163,8 @@ class CountdownModel extends Model
     }
 
     /**
-     * Updated chosen filed of a countdown with a given value
+     * Updated chosen filed of a countdown with a given value.
+     *
      * @param int $countdownId
      * @param string $field
      * @param string $newValue
@@ -161,7 +174,7 @@ class CountdownModel extends Model
      */
     public function updateCountdownField(int $countdownId, string $field, string $newValue, int $userId): bool {
         if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
-            self::$logger->warning("Invalid field attempted for update.", [
+            $this->logger->warning("Invalid field attempted for update.", [
                 'field' => $field
             ]);
             throw new InvalidArgumentException("Invalid field to update: $field");
@@ -175,7 +188,7 @@ class CountdownModel extends Model
             ];
 
             $this->executeStatement($query, $params);
-            self::$logger->info("Countdown updated.", [
+            $this->logger->info("Countdown updated.", [
                 'countdownId' => $countdownId,
                 'field' => $field,
                 'newValue' => $newValue,

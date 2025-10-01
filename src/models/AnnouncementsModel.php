@@ -7,7 +7,9 @@ use Exception;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
+
 use src\core\Model;
 
 /**
@@ -15,23 +17,23 @@ use src\core\Model;
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class AnnouncementsModel extends Model {
-    private string $TABLE_NAME;
-    private string $DATE_FORMAT;
-    private int $MAX_TITLE_LENGTH;
-    private int $MAX_TEXT_LENGTH;
-    private array $ALLOWED_FIELDS;
 
-    public function __construct() {
-        $this->TABLE_NAME = self::getConfigVariable("ANNOUNCEMENTS_TABLE_NAME") ?? 'announcements';
-        $this->DATE_FORMAT = self::getConfigVariable("DATE_FORMAT") ?? 'Y-m-d';
-        $this->MAX_TITLE_LENGTH = self::getConfigVariable("MAX_TITLE_LENGTH") ?? 255;
-        $this->MAX_TEXT_LENGTH = self::getConfigVariable("MAX_TEXT_LENGTH") ?? 65535;
-        $this->ALLOWED_FIELDS = self::getConfigVariable("ALLOWED_FIELDS") ?? ['title', 'text', 'date','valid_until', 'user_id'];
-
-        self::$logger->debug("Announcements table name being used: $this->TABLE_NAME");
+    public function __construct(
+        PDO $pdo,
+        LoggerInterface $logger,
+        private readonly string $TABLE_NAME,
+        private readonly string $DATE_FORMAT,
+        private readonly int $MAX_TITLE_LENGTH,
+        private readonly int $MAX_TEXT_LENGTH,
+        private readonly array $ALLOWED_FIELDS,
+    ) {
+        parent::__construct($pdo, $logger);
+        $this->logger->debug("Announcements table name being used: $this->TABLE_NAME");
     }
 
     /**
+     * Validates input
+     *
      * @param string $input
      * @param int $maxLength
      * @return void
@@ -46,6 +48,8 @@ class AnnouncementsModel extends Model {
     }
 
     /**
+     * Validates date format
+     *
      * @param string $date
      * @return bool
      */
@@ -54,7 +58,7 @@ class AnnouncementsModel extends Model {
             $d = DateTime::createFromFormat($this->DATE_FORMAT, $date);
             $isValid = $d && $d->format($this->DATE_FORMAT) === $date;
 
-            self::$logger->debug("Date format validation", [
+            $this->logger->debug("Date format validation", [
                 'date' => $date,
                 'isValid' => $isValid
             ]);
@@ -66,7 +70,8 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Fetches all entries from the provided announcements table
+     * Fetches all entries from the provided announcements table.
+     *
      * @return array
      * @throws Exception
      */
@@ -91,15 +96,15 @@ class AnnouncementsModel extends Model {
             $query = "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date";
             $params = [':date' => [$date, PDO::PARAM_STR]];
 
-            self::$logger->debug("Fetching valid announcements for date: $date.");
+            $this->logger->debug("Fetching valid announcements for date: $date.");
 
             $result = $this->executeStatement($query, $params);
             if (!$result) {
-                self::$logger->warning("No valid announcements found for date: $date");
+                $this->logger->warning("No valid announcements found for date: $date");
                 return [];
             }
 
-            self::$logger->debug("Valid announcements fetched successfully.", ['result' => $result]);
+            $this->logger->debug("Valid announcements fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
             throw new RuntimeException('Error fetching valid announcements');
@@ -116,7 +121,7 @@ class AnnouncementsModel extends Model {
      * @throws Exception
      */
     public function addAnnouncement(string $title, string $text, string $validUntil, int $userId): bool {
-        self::$logger->debug("Received values:", [
+        $this->logger->debug("Received values:", [
             'title' => $title,
             'text' => $text,
             'validUntil' => $validUntil,
@@ -127,7 +132,7 @@ class AnnouncementsModel extends Model {
             $this->validateInput($title, $this->MAX_TITLE_LENGTH);
             $this->validateInput($text, $this->MAX_TEXT_LENGTH);
             if (!$this->validateDate($validUntil)) {
-                self::$logger->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
+                $this->logger->error("Invalid date format provided for validUntil.", ['validUntil' => $validUntil]);
                 throw new InvalidArgumentException('Invalid date format');
             }
 
@@ -142,7 +147,7 @@ class AnnouncementsModel extends Model {
             ];
 
             $this->executeStatement($query, $params);
-            self::$logger->info("Added new announcement.", [
+            $this->logger->info("Added new announcement.", [
                 'title' => $title,
                 'userId' => $userId
             ]);
@@ -164,7 +169,7 @@ class AnnouncementsModel extends Model {
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
         if (!in_array($field, $this->ALLOWED_FIELDS, true)) {
-            self::$logger->warning("Invalid field attempted for update.", [
+            $this->logger->warning("Invalid field attempted for update.", [
                 'field' => $field
             ]);
             throw new InvalidArgumentException("Invalid field to update: $field");
@@ -178,7 +183,7 @@ class AnnouncementsModel extends Model {
             ];
 
             $this->executeStatement($query, $params);
-            self::$logger->info("Announcement updated.", [
+            $this->logger->info("Announcement updated.", [
                 'announcementId' => $announcementId,
                 'field' => $field,
                 'newValue' => $newValue,
@@ -205,7 +210,7 @@ class AnnouncementsModel extends Model {
             ];
 
             $this->executeStatement($query, $params);
-            self::$logger->info("Announcement deleted.", [
+            $this->logger->info("Announcement deleted.", [
                 'announcementId' => $announcementId,
                 'userId' => $userId
             ]);
@@ -232,11 +237,11 @@ class AnnouncementsModel extends Model {
             $result = $this->executeStatement($query, $params);
 
             if (!$result) {
-                self::$logger->error("No announcement found with ID: $announcementId");
+                $this->logger->error("No announcement found with ID: $announcementId");
                 return [];
             }
 
-            self::$logger->info("Announcement fetched successfully.", ['result' => $result]);
+            $this->logger->info("Announcement fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
             throw new RuntimeException('Error fetching data from the database' . $e);
@@ -260,11 +265,11 @@ class AnnouncementsModel extends Model {
             $result = $this->executeStatement($query, $params);
 
             if (!$result) {
-                self::$logger->warning("No announcement found with title: $announcementTitle");
+                $this->logger->warning("No announcement found with title: $announcementTitle");
                 return [];
             }
 
-            self::$logger->info("Announcement fetched successfully.", ['result' => $result]);
+            $this->logger->info("Announcement fetched successfully.", ['result' => $result]);
             return $result;
         } catch (PDOException $e) {
             throw new RuntimeException('Error fetching data from the database' . $e);

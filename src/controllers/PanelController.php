@@ -5,7 +5,8 @@ namespace src\controllers;
 use DateTime;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
-use src\core\CommonService;
+use Psr\Log\LoggerInterface;
+use Random\RandomException;
 use src\core\Controller;
 use src\models\AnnouncementsModel;
 use src\models\CountdownModel;
@@ -19,21 +20,20 @@ use src\core\SessionHelper;
  */
 class PanelController extends Controller
 {
-    private UserModel $userModel;
-    private AnnouncementsModel $announcementsModel;
-    private ModuleModel $moduleModel;
-    private CountdownModel $countdownModel;
-
-    function __construct()
+    function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ModuleModel $moduleModel,
+        private readonly AnnouncementsModel $announcementsModel,
+        private readonly UserModel $userModel,
+        private readonly CountdownModel $countdownModel,
+    )
     {
         SessionHelper::start();
-        CommonService::initLogger();
-        $this->userModel = new UserModel();
-        $this->announcementsModel = new AnnouncementsModel();
-        $this->moduleModel = new ModuleModel();
-        $this->countdownModel = new CountdownModel();
     }
 
+    /**
+     * @throws RandomException
+     */
     private function setCsrf(): void
     {
         if (!SessionHelper::has('csrf_token') || empty(SessionHelper::get('csrf_token'))) {
@@ -44,7 +44,7 @@ class PanelController extends Controller
     private function checkCsrf(): void
     {
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== SessionHelper::get('csrf_token')) {
-            self::$logger->error("Nieprawidłowy token CSRF.");
+            $this->logger->error("Nieprawidłowy token CSRF.");
             SessionHelper::set('error', 'Nieprawidłowy token CSRF.');
             header("Location: /login");
             exit;
@@ -69,7 +69,7 @@ class PanelController extends Controller
             $users = $this->userModel->getUsers();
             $modules = $this->moduleModel->getModules();
         } catch (Exception $e) {
-            self::$logger->error("Błąd podczas ładowania strony głównej: " . $e->getMessage());
+            $this->logger->error("Błąd podczas ładowania strony głównej: " . $e->getMessage());
 
             SessionHelper::set('error', 'Nie udało się załadować strony głównej.');
 
@@ -98,7 +98,7 @@ class PanelController extends Controller
             $user = $this->userModel->getUserById($userId);
             $users = $this->userModel->getUsers();
         } catch (Exception $e) {
-            self::$logger->error("Błąd podczas ładowania strony users: " . $e->getMessage());
+            $this->logger->error("Błąd podczas ładowania strony users: " . $e->getMessage());
 
             SessionHelper::set('error', 'Nie udało się załadować strony users.');
 
@@ -125,7 +125,7 @@ class PanelController extends Controller
             $users = $this->userModel->getUsers();
             $countdowns = $this->countdownModel->getCountdowns();
         } catch (Exception $e) {
-            self::$logger->error("Błąd podczas ładowania strony odliczań: " . $e->getMessage());
+            $this->logger->error("Błąd podczas ładowania strony odliczań: " . $e->getMessage());
 
             SessionHelper::set('error', 'Nie udało się załadować strony odliczania.');
 
@@ -188,14 +188,14 @@ class PanelController extends Controller
     #[NoReturn] public function authenticate(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            self::$logger->debug("Rozpoczęto weryfikację użytkownika.");
+            $this->logger->debug("Rozpoczęto weryfikację użytkownika.");
             $this->checkCsrf();
 
             $username = trim($_POST['username']) ?? '';
             $password = trim($_POST['password']) ?? '';
 
             if (empty($password) or empty($username)) {
-                self::$logger->error("Password or username cannot be null!");
+                $this->logger->error("Password or username cannot be null!");
                 SessionHelper::set("error", "Password or username cannot be null!");
                 header("Location: /login");
             }
@@ -203,18 +203,18 @@ class PanelController extends Controller
             $user = $this->userModel->getUserByUsername($username);
 
             if ($user && password_verify($password, $user[0]['password'])) {
-                self::$logger->info("Prawidłowe hasło dla podanej nazwy użytkownika!");
+                $this->logger->info("Prawidłowe hasło dla podanej nazwy użytkownika!");
                 $this->setCsrf();
                 SessionHelper::set('user_id', $user[0]['id']);
                 header("Location: /panel");
             } else {
-                self::$logger->error("Nieprawidłowe hasło dla podanej nazwy użytkownika!");
+                $this->logger->error("Nieprawidłowe hasło dla podanej nazwy użytkownika!");
                 SessionHelper::set('error', 'Incorrect username or password!');
                 header("Location: /login");
             }
             exit;
         }
-        self::$logger->error("Nieprawidłowa metoda HTTP!");
+        $this->logger->error("Nieprawidłowa metoda HTTP!");
         header("Location: /login");
         exit;
     }
@@ -223,7 +223,7 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                self::$logger->debug("delete_announcement request received");
+                $this->logger->debug("delete_announcement request received");
                 $this->checkCsrf();
 
                 $announcementId = $_POST['announcement_id'];
@@ -233,15 +233,15 @@ class PanelController extends Controller
                 $result = $this->announcementsModel->deleteAnnouncement($announcementId, $userId);
 
                 if ($result) {
-                    self::$logger->info("Announcement deleted");
+                    $this->logger->info("Announcement deleted");
                 } else {
-                    self::$logger->error("Announcement could not be deleted");
+                    $this->logger->error("Announcement could not be deleted");
                     SessionHelper::set('error', 'Failed to delete announcement');
                 }
                 header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
+                $this->logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'An error occurred while deleting the announcement');
                 header('Location: /panel/announcements');
                 exit;
@@ -253,7 +253,7 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
             try {
-                self::$logger->debug("add_announcement request received");
+                $this->logger->debug("add_announcement request received");
                 $this->checkCsrf();
 
                 $title = isset($_POST['title']) ? trim($_POST['title']) : '';
@@ -264,15 +264,15 @@ class PanelController extends Controller
 
                 $result = $this->announcementsModel->addAnnouncement($title, $text, $validUntil, $userId);
                 if ($result) {
-                    self::$logger->info("Announcement added successfully");
+                    $this->logger->info("Announcement added successfully");
                 } else {
-                    self::$logger->error("Announcement adding failed");
+                    $this->logger->error("Announcement adding failed");
                     $_SESSION['error'] = 'Failed to add announcement';
                 }
                 header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Announcement adding failed', ['error' => $e->getMessage()]);
+                $this->logger->error('Announcement adding failed', ['error' => $e->getMessage()]);
                 $_SESSION['error'] = 'Failed to add announcement';
                 header('Location: /panel/announcements');
                 exit;
@@ -283,7 +283,7 @@ class PanelController extends Controller
     public function editAnnouncement(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                self::$logger->debug("edit_announcement request received");
+                $this->logger->debug("edit_announcement request received");
                 $this->checkCsrf();
 
                 $newAnnouncementTitle = trim($_POST['title']);
@@ -316,13 +316,13 @@ class PanelController extends Controller
 
                 foreach ($updates as $field => $value) {
                     $this->announcementsModel->updateAnnouncementField($announcementId, $field, $value, $userId);
-                    self::$logger->debug("Updated field: $field", ['announcement_id' => $announcementId]);
+                    $this->logger->debug("Updated field: $field", ['announcement_id' => $announcementId]);
                 }
 
                 header('Location: /panel/announcements');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Announcement update failed', [
+                $this->logger->error('Announcement update failed', [
                     'announcement_id' => $announcementId,
                     'error' => $e->getMessage()
                 ]);
@@ -338,11 +338,11 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
             try {
-                self::$logger->debug("add_user request received");
+                $this->logger->debug("add_user request received");
                 $this->checkCsrf();
 
                 if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
-                    self::$logger->error("Username and password are required");
+                    $this->logger->error("Username and password are required");
                     SessionHelper::set('error', 'Username and password are required!');
                     header('Location: /panel/users');
                     exit;
@@ -354,15 +354,15 @@ class PanelController extends Controller
 
                 $result = $this->userModel->addUser($username, $password);
                 if ($result) {
-                    self::$logger->info("User added successfully");
+                    $this->logger->info("User added successfully");
                 } else {
-                    self::$logger->error("User adding failed");
+                    $this->logger->error("User adding failed");
                     SessionHelper::set('error', 'Failed to add user');
                 }
                 header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('User adding failed', ['error' => $e->getMessage()]);
+                $this->logger->error('User adding failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to add user');
                 header('Location: /panel/users');
                 exit;
@@ -374,7 +374,7 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                self::$logger->debug("delete_user request received");
+                $this->logger->debug("delete_user request received");
                 $this->checkCsrf();
 
                 $userToDelete = trim($_POST['user_id']);
@@ -382,15 +382,15 @@ class PanelController extends Controller
 
                 $result = $this->userModel->deleteUser($userToDelete);
                 if ($result) {
-                    self::$logger->info("User deleted successfully");
+                    $this->logger->info("User deleted successfully");
                 } else {
-                    self::$logger->error("User deletion failed");
+                    $this->logger->error("User deletion failed");
                     SessionHelper::set('error', 'Failed to delete user');
                 }
                 header('Location: /panel/users');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('User deletion failed', ['error' => $e->getMessage()]);
+                $this->logger->error('User deletion failed', ['error' => $e->getMessage()]);
                 SessionHelper::set('error', 'Failed to delete user');
                 header('Location: /panel/users');
                 exit;
@@ -413,12 +413,12 @@ class PanelController extends Controller
                 }
 
                 $this->countdownModel->addCountdown($title, $count_to, $userId);
-                self::$logger->info("Countdown added successfully");
-                header('Location: /panel/countdowns');;
+                $this->logger->info("Countdown added successfully");
+                header('Location: /panel/countdowns');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Failed to add countdown');;
+                $this->logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');
                 header('Location: /panel/countdowns');
                 exit;
             }
@@ -435,12 +435,12 @@ class PanelController extends Controller
 
             try {
                 $this->countdownModel->deleteCountdown($countdownId);
-                self::$logger->info("Countdown deleted successfully");
-                header('Location: /panel/countdowns');;
+                $this->logger->info("Countdown deleted successfully");
+                header('Location: /panel/countdowns');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Countdown deletion failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Failed to delete countdown');;
+                $this->logger->error('Countdown deletion failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to delete countdown');
                 header('Location: /panel/countdowns');
                 exit;
             }
@@ -475,15 +475,15 @@ class PanelController extends Controller
 
                 foreach ($updates as $field => $value) {
                     $this->countdownModel->updateCountdownField($countdownId, $field, $value, $userId);
-                    self::$logger->debug("Updated field: $field", ['countdown_id' => $countdownId]);
+                    $this->logger->debug("Updated field: $field", ['countdown_id' => $countdownId]);
                 }
 
-                self::$logger->info("Countdown updated successfully");
+                $this->logger->info("Countdown updated successfully");
                 header('Location: /panel/countdowns');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Failed to add countdown');;
+                $this->logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to add countdown');
                 header('Location: /panel/countdowns');
                 exit;
             }
@@ -506,9 +506,9 @@ class PanelController extends Controller
             try {
                 $this->moduleModel->toggleModule($moduleId, $enable);
                 $action = $enable ? 'włączony' : 'wyłączony';
-                self::$logger->info("Moduł $moduleId został $action");
+                $this->logger->info("Moduł $moduleId został $action");
             } catch (Exception $e) {
-                self::$logger->error("Błąd przy " . ($enable ? 'włączaniu' : 'wyłączaniu') . " modułu", ['error' => $e->getMessage()]);
+                $this->logger->error("Błąd przy " . ($enable ? 'włączaniu' : 'wyłączaniu') . " modułu", ['error' => $e->getMessage()]);
             }
             header("Location: /panel");
             exit;
@@ -550,15 +550,15 @@ class PanelController extends Controller
 
                 foreach ($updates as $field => $value) {
                     $this->moduleModel->updateModuleField($moduleId, $field, $value);
-                    self::$logger->debug("Updated field: $field", ['module_id' => $moduleId]);
+                    $this->logger->debug("Updated field: $field", ['module_id' => $moduleId]);
                 }
 
-                self::$logger->info("Module updated successfully");
+                $this->logger->info("Module updated successfully");
                 header('Location: /panel/modules');
                 exit;
             } catch (Exception $e) {
-                self::$logger->error('Module edit failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Failed to edit module');;
+                $this->logger->error('Module edit failed', ['error' => $e->getMessage()]);
+                SessionHelper::set('error', 'Failed to edit module');
                 header('Location: /panel/modules');
                 exit;
             }

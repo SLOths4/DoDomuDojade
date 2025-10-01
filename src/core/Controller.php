@@ -2,8 +2,7 @@
 
 namespace src\core;
 
-class Controller extends CommonService {
-
+class Controller{
     protected function render($view, $data = []): void
     {
         extract($data);
@@ -14,5 +13,4 @@ class Controller extends CommonService {
             echo "Plik widoku nie został znaleziony: $file";
         }
     }
-
 }
