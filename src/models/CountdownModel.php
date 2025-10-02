@@ -2,14 +2,14 @@
 
 namespace src\models;
 
+use src\core\Model;
+
 use DateTime;
-use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use PDO;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use src\core\Model;
 
 class CountdownModel extends Model
 {
@@ -55,7 +55,6 @@ class CountdownModel extends Model
 
     /**
      * Fetches countdown which is currently in operation.
-     *
      * @return array
      * @throws Exception
      */
@@ -86,7 +85,6 @@ class CountdownModel extends Model
 
     /**
      * Fetches all countdowns.
-     *
      * @return array
      * @throws Exception
      */
@@ -106,7 +104,6 @@ class CountdownModel extends Model
 
     /**
      * Adds a countdown with given parameters.
-     *
      * @param string $title
      * @param string $countTo
      * @param int $userId
@@ -140,7 +137,6 @@ class CountdownModel extends Model
 
     /**
      * Deletes specified countdown
-     *
      * @param int $id
      * @return bool
      * @throws Exception

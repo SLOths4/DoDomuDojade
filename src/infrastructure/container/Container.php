@@ -35,7 +35,6 @@ final class Container
             return $this->instances[$id] = ($this->factories[$id])($this);
         }
 
-        // Autowire klasę po typach, jeśli nie ma fabryki
         if (class_exists($id)) {
             return $this->instances[$id] = $this->autowire($id);
         }

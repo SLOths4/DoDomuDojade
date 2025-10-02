@@ -2,9 +2,6 @@
 
 namespace src\controllers;
 
-use DateTime;
-use DateTimeZone;
-use Exception;
 use src\core\Controller;
 use src\core\SessionHelper;
 use src\models\AnnouncementsModel;
@@ -14,6 +11,10 @@ use src\models\ModuleModel;
 use src\models\TramModel;
 use src\models\UserModel;
 use src\models\WeatherModel;
+
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 class DisplayController extends Controller
@@ -33,6 +34,20 @@ class DisplayController extends Controller
         SessionHelper::start();
     }
 
+    /**
+     * @throws Exception
+     */
+    private function isModuleVisible(string $module): bool
+    {
+        $isModuleVisible = $this->moduleModel->isModuleVisible($module);
+        if ($isModuleVisible) {
+            $this->logger->info("$module is active.");
+            return true;
+        }
+        $this->logger->info("$module is active");
+        return false;
+    }
+
     public function index(): void
     {
         $this->render('display');
@@ -42,6 +57,7 @@ class DisplayController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
+
             try {
                 echo json_encode(['success' => true, 'is_active' => true, 'data' => trim(shell_exec('git describe --tags --abbrev=0'))]);
                 exit;
@@ -55,11 +71,12 @@ class DisplayController extends Controller
     public function getDepartures (): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->logger->debug('Rozpoczęto pobieranie danych tramwajowych.');
             header('Content-Type: application/json');
             header('Cache-Control: no-cache, must-revalidate');
 
             try {
+                $this->logger->debug('Rozpoczęto pobieranie danych tramwajowych.');
+
                 if (!$this->isModuleVisible('tram')) {
                     $this->logger->debug("Moduł tram nie jest aktywny.");
                     echo json_encode(
@@ -74,7 +91,6 @@ class DisplayController extends Controller
 
                 $stopsIdS = $this->StopIDs;
                 $departures = [];
-
 
                 foreach ($stopsIdS as $stopId) {
                     try {
@@ -121,11 +137,13 @@ class DisplayController extends Controller
     public function getAnnouncements() : void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->logger->debug('Rozpoczęto pobieranie ogłoszeń.');
             header('Content-Type: application/json');
+
             try {
+                $this->logger->debug('Rozpoczęto pobieranie ogłoszeń.');
+
                 if (!$this->isModuleVisible('announcement')) {
-                    $this->logger->debug("Moduł announcement nie jest aktywny.");
+                    $this->logger->debug("Announcements module is not active.");
                     echo json_encode(
                         [
                             'success' => true,
@@ -135,7 +153,6 @@ class DisplayController extends Controller
                     );
                     exit;
                 }
-
 
                 $announcements = $this->announcementsModel->getValidAnnouncements();
                 $this->logger->debug('Pobrano listę ogłoszeń z bazy danych.');
@@ -176,6 +193,7 @@ class DisplayController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
+
             try {
                 $this->logger->debug('Rozpoczęto pobieranie danych odliczania.');
 
@@ -219,6 +237,7 @@ class DisplayController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
+
             try {
                 $this->logger->debug('Rozpoczęto pobieranie wydarzeń.');
 
@@ -265,6 +284,7 @@ class DisplayController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
+
             try {
                 $this->logger->debug('Rozpoczęto przetwarzanie danych pogodowych.');
 
@@ -318,19 +338,5 @@ class DisplayController extends Controller
                 exit;
             }
         }
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function isModuleVisible(string $module): bool
-    {
-        $isModuleVisible = $this->moduleModel->isModuleVisible($module);
-        if ($isModuleVisible) {
-            $this->logger->info("Moduł $module jest aktywny.");
-            return true;
-        }
-        $this->logger->info("Moduł $module jest nieaktywny.");
-        return false;
     }
 }

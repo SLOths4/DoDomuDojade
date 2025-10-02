@@ -13,7 +13,7 @@ use RuntimeException;
 use src\core\Model;
 
 /**
- * Class used for operations on table storing announcements in a provided database
+ * Class used for operations on table storing announcements in the provided database
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class AnnouncementsModel extends Model {
@@ -71,7 +71,6 @@ class AnnouncementsModel extends Model {
 
     /**
      * Fetches all entries from the provided announcements table.
-     *
      * @return array
      * @throws Exception
      */

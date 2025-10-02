@@ -39,11 +39,11 @@ class TramModel extends Model
     ) {
         parent::__construct($pdo, $logger);
         if ($this->httpClient === null) {
-            $this->logger->error('HTTP client is missing.');;
+            $this->logger->error('HTTP client is missing.');
             throw new RuntimeException('HTTP client is missing.');
         }
         if ($this->ztmUrl === '') {
-            $this->logger->error('ZTM url is missing.');;
+            $this->logger->error('ZTM url is missing.');
             throw new RuntimeException('ZTM url is missing.');
         }
     }

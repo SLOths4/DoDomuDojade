@@ -21,6 +21,7 @@ use src\core\SessionHelper;
 class PanelController extends Controller
 {
     function __construct(
+        private readonly ErrorController $errorController,
         private readonly LoggerInterface $logger,
         private readonly ModuleModel $moduleModel,
         private readonly AnnouncementsModel $announcementsModel,
@@ -43,9 +44,23 @@ class PanelController extends Controller
 
     private function checkCsrf(): void
     {
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== SessionHelper::get('csrf_token')) {
-            $this->logger->error("Nieprawidłowy token CSRF.");
-            SessionHelper::set('error', 'Nieprawidłowy token CSRF.');
+        try {
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== SessionHelper::get('csrf_token')) {
+                $this->logger->error("Nieprawidłowy token CSRF.");
+                SessionHelper::set('error', 'Nieprawidłowy token CSRF.');
+                header("Location: /login");
+                exit;
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Csrf error occurred: ". $e->getMessage());
+            $this->errorController->internalServerError();
+        }
+    }
+
+    private function checkUser(): void
+    {
+        $userId = SessionHelper::get('user_id');
+        if (!$userId) {
             header("Location: /login");
             exit;
         }
@@ -53,13 +68,10 @@ class PanelController extends Controller
 
     public function index(): void
     {
-        $userId = SessionHelper::get('user_id');
-        if (!$userId) {
-            header("Location: /login");
-            exit;
-        }
-
         try {
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
             $user = $this->userModel->getUserById($userId);
 
             $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
@@ -87,14 +99,11 @@ class PanelController extends Controller
 
     public function users(): void
     {
-        $userId = SessionHelper::get('user_id');
-
-        if (!$userId) {
-            header("Location: /login");
-            exit;
-        }
-
         try {
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
+
             $user = $this->userModel->getUserById($userId);
             $users = $this->userModel->getUsers();
         } catch (Exception $e) {
@@ -114,13 +123,11 @@ class PanelController extends Controller
 
     public function countdowns(): void
     {
-        $userId = SessionHelper::get('user_id');
-        if (!$userId) {
-            header("Location: /login");
-            exit;
-        }
-
         try {
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
+
             $user = $this->userModel->getUserById($userId);
             $users = $this->userModel->getUsers();
             $countdowns = $this->countdownModel->getCountdowns();
@@ -142,34 +149,43 @@ class PanelController extends Controller
 
     public function announcements(): void
     {
-        $userId = SessionHelper::get('user_id');
-        if (!$userId) {
-            header("Location: /login");
-            exit;
+        try {
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
+
+            $user = $this->userModel->getUserById($userId);
+            $users = $this->userModel->getUsers();
+            $announcements = $this->announcementsModel->getAnnouncements();
+
+            $this->render('announcements', [
+                'user' => $user,
+                'users' => $users,
+                'announcements' => $announcements
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error("An error occurred: ".$e->getMessage());
+            $this->errorController->internalServerError();
         }
-        $user = $this->userModel->getUserById($userId);
-        $users = $this->userModel->getUsers();
-        $announcements = $this->announcementsModel->getAnnouncements();
-        $this->render('announcements', [
-            'user' => $user,
-            'users' => $users,
-            'announcements' => $announcements
-        ]);
     }
 
     public function modules(): void
     {
-        $userId = SessionHelper::get('user_id');
-        if (!$userId) {
-            header("Location: /login");
-            exit;
+        try {
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
+
+            $user = $this->userModel->getUserById($userId);
+            $modules = $this->moduleModel->getModules();
+            $this->render('modules', [
+                'user' => $user,
+                'modules' => $modules
+            ]);
+        } catch (Exception $e) {
+            $this->logger->error("An error occurred: ".$e->getMessage());
+            $this->errorController->internalServerError();
         }
-        $user = $this->userModel->getUserById($userId);
-        $modules = $this->moduleModel->getModules();
-        $this->render('modules', [
-            'user' => $user,
-            'modules' => $modules
-        ]);
     }
 
     #[NoReturn] public function logout(): void
@@ -181,38 +197,48 @@ class PanelController extends Controller
 
     public function login(): void
     {
-        $this->setCsrf();
-        $this->render('login');
+        try {
+            $this->setCsrf();
+            $this->render('login');
+        } catch (Exception $e) {
+            $this->logger->error("An error occurred: ".$e->getMessage());
+            $this->errorController->internalServerError();
+        }
     }
 
     #[NoReturn] public function authenticate(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $this->logger->debug("Rozpoczęto weryfikację użytkownika.");
-            $this->checkCsrf();
+            try {
+                $this->logger->debug("Rozpoczęto weryfikację użytkownika.");
+                $this->checkCsrf();
 
-            $username = trim($_POST['username']) ?? '';
-            $password = trim($_POST['password']) ?? '';
+                $username = trim($_POST['username']) ?? '';
+                $password = trim($_POST['password']) ?? '';
 
-            if (empty($password) or empty($username)) {
-                $this->logger->error("Password or username cannot be null!");
-                SessionHelper::set("error", "Password or username cannot be null!");
-                header("Location: /login");
+                if (empty($password) or empty($username)) {
+                    $this->logger->error("Password or username cannot be null!");
+                    SessionHelper::set("error", "Pola nazwy użytkownika i hasła muszą być wypełnione!");
+                    header("Location: /login");
+                }
+
+                $user = $this->userModel->getUserByUsername($username);
+
+                if ($user && password_verify($password, $user[0]['password'])) {
+                    $this->logger->debug("Correct password for given username.");
+                    $this->setCsrf();
+                    SessionHelper::set('user_id', $user[0]['id']);
+                    header("Location: /panel");
+                } else {
+                    $this->logger->debug("Incorrect password for given username!");
+                    SessionHelper::set('error', 'Nieprawidłowa nazwa użytkownika lub hasło!');
+                    header("Location: /login");
+                }
+                exit;
+            } catch (Exception $e) {
+                $this->logger->error("An error occurred: ".$e->getMessage());
+                $this->errorController->internalServerError();
             }
-
-            $user = $this->userModel->getUserByUsername($username);
-
-            if ($user && password_verify($password, $user[0]['password'])) {
-                $this->logger->info("Prawidłowe hasło dla podanej nazwy użytkownika!");
-                $this->setCsrf();
-                SessionHelper::set('user_id', $user[0]['id']);
-                header("Location: /panel");
-            } else {
-                $this->logger->error("Nieprawidłowe hasło dla podanej nazwy użytkownika!");
-                SessionHelper::set('error', 'Incorrect username or password!');
-                header("Location: /login");
-            }
-            exit;
         }
         $this->logger->error("Nieprawidłowa metoda HTTP!");
         header("Location: /login");
@@ -222,13 +248,15 @@ class PanelController extends Controller
     public function deleteAnnouncement(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $this->checkUser();
+
+            $announcementId = $_POST['announcement_id'];
+
             try {
                 $this->logger->debug("delete_announcement request received");
-                $this->checkCsrf();
 
-                $announcementId = $_POST['announcement_id'];
                 $userId = SessionHelper::get('user_id');
-
 
                 $result = $this->announcementsModel->deleteAnnouncement($announcementId, $userId);
 
@@ -242,7 +270,7 @@ class PanelController extends Controller
                 exit;
             } catch (Exception $e) {
                 $this->logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'An error occurred while deleting the announcement');
+                SessionHelper::set('error', 'Wystąpił błąd w trakcie usuwania ogłoszenia.');
                 header('Location: /panel/announcements');
                 exit;
             }
@@ -251,16 +279,18 @@ class PanelController extends Controller
 
     public function addAnnouncement(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_announcement'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $this->checkUser();
+
+            $title = isset($_POST['title']) ? trim($_POST['title']) : '';
+            $text = isset($_POST['text']) ? trim($_POST['text']) : '';
+            $validUntil = $_POST['valid_until'];
+
             try {
                 $this->logger->debug("add_announcement request received");
-                $this->checkCsrf();
 
-                $title = isset($_POST['title']) ? trim($_POST['title']) : '';
-                $text = isset($_POST['text']) ? trim($_POST['text']) : '';
-                $validUntil = $_POST['valid_until'];
                 $userId = SessionHelper::get('user_id');
-
 
                 $result = $this->announcementsModel->addAnnouncement($title, $text, $validUntil, $userId);
                 if ($result) {
@@ -282,13 +312,16 @@ class PanelController extends Controller
 
     public function editAnnouncement(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $this->checkUser();
+
+            $announcementId = $_POST['announcement_id'];
+            $newAnnouncementTitle = trim($_POST['title']);
+            $newAnnouncementText = trim($_POST['text']);
+            $newAnnouncementValidUntil = $_POST['valid_until'];
+
             try {
                 $this->logger->debug("edit_announcement request received");
-                $this->checkCsrf();
-
-                $newAnnouncementTitle = trim($_POST['title']);
-                $newAnnouncementText = trim($_POST['text']);
-                $newAnnouncementValidUntil = $_POST['valid_until'];
 
                 if (empty($newAnnouncementTitle) || empty($newAnnouncementText)) {
                     SessionHelper::set('error', 'All fields must be filled.');
@@ -298,9 +331,7 @@ class PanelController extends Controller
 
                 $userId = SessionHelper::get('user_id');
 
-                $announcementId = $_POST['announcement_id'];
                 $announcement = $this->announcementsModel->getAnnouncementById($announcementId);
-
 
                 $updates = [];
 
@@ -337,9 +368,11 @@ class PanelController extends Controller
     public function addUser(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
+            $this->checkCsrf();
+            $this->checkUser();
+
             try {
                 $this->logger->debug("add_user request received");
-                $this->checkCsrf();
 
                 if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
                     $this->logger->error("Username and password are required");
@@ -350,7 +383,6 @@ class PanelController extends Controller
 
                 $username = trim($_POST['username']);
                 $password = trim($_POST['password']);
-
 
                 $result = $this->userModel->addUser($username, $password);
                 if ($result) {
@@ -373,12 +405,17 @@ class PanelController extends Controller
     public function deleteUser(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $this->checkUser();
+
+            $userId = SessionHelper::get('user_id');
+            $userToDelete = trim($_POST['user_id']);
             try {
-                $this->logger->debug("delete_user request received");
-                $this->checkCsrf();
-
-                $userToDelete = trim($_POST['user_id']);
-
+                if ($userId == $userToDelete) {
+                    SessionHelper::set('error', 'Użytkownik nie może usunąć sam siebie!');
+                    header('Location: /panel/users');
+                    exit;
+                }
 
                 $result = $this->userModel->deleteUser($userToDelete);
                 if ($result) {
@@ -401,11 +438,13 @@ class PanelController extends Controller
     public function addCountdown() : void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
-                $this->checkCsrf();
+            $this->checkCsrf();
+            $this->checkUser();
 
-                $title = trim($_POST['title']);
-                $count_to = $_POST['count_to'];
+            $title = trim($_POST['title']);
+            $count_to = $_POST['count_to'];
+
+            try {
                 $userId = SessionHelper::get('user_id');
 
                 if (empty($title) || empty($count_to)) {
@@ -427,9 +466,9 @@ class PanelController extends Controller
 
     public function deleteCountdown(): void
     {
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
+            $this->checkUser();
 
             $countdownId = $_POST['countdown_id'];
 
@@ -450,6 +489,7 @@ class PanelController extends Controller
     public function editCountdown(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
+            $this->checkUser();
 
             $newCountdownTitle = trim($_POST['title']);
             $newRawCountdownCountTo = $_POST['count_to'];
@@ -457,12 +497,12 @@ class PanelController extends Controller
 
             $userId = SessionHelper::get('user_id');
 
-            $countdown = $this->countdownModel->getCountdownById($countdownId);
-
-            $dt = DateTime::createFromFormat('Y-m-d\TH:i', $newRawCountdownCountTo);
-            $newCountdownCountTo = $dt->format('Y-m-d H:i:s');
-
             try {
+                $countdown = $this->countdownModel->getCountdownById($countdownId);
+
+                $dt = DateTime::createFromFormat('Y-m-d\TH:i', $newRawCountdownCountTo);
+                $newCountdownCountTo = $dt->format('Y-m-d H:i:s');
+
                 $updates = [];
 
                 if ($newCountdownTitle !== $countdown[0]['title']) {
@@ -494,16 +534,18 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
+            $this->checkUser();
 
             $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
             $enable = isset($_POST['enable']) ? filter_var($_POST['enable'], FILTER_VALIDATE_BOOLEAN) : null;
 
-            if ($moduleId <= 0 || $enable === null) {
-                header("Location: /panel");
-                exit;
-            }
-
             try {
+
+                if ($moduleId <= 0 || $enable === null) {
+                    header("Location: /panel");
+                    exit;
+                }
+
                 $this->moduleModel->toggleModule($moduleId, $enable);
                 $action = $enable ? 'włączony' : 'wyłączony';
                 $this->logger->info("Moduł $moduleId został $action");
@@ -515,25 +557,25 @@ class PanelController extends Controller
         }
     }
 
-    /**
-     * @throws Exception
-     */
     public function editModule(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
+            $this->checkUser();
 
             $newModuleStartTime = $_POST['start_time'] ?? '';
             $newModuleEndTime = $_POST['end_time'] ?? '';
             $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
             $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
 
-            $module = $this->moduleModel->getModuleById($moduleId);
-
-            if (empty($module)) {
-                throw new Exception("Module not found");
-            }
-
             try {
+
+
+                $module = $this->moduleModel->getModuleById($moduleId);
+
+                if (empty($module)) {
+                    throw new Exception("Module not found");
+                }
+
                 $updates = [];
 
                 if ($newModuleStartTime !== '' && $newModuleStartTime !== $module['start_time']) {
@@ -544,7 +586,7 @@ class PanelController extends Controller
                     $updates['end_time'] = $newModuleEndTime;
                 }
 
-                if ((int)$newModuleIsActive !== (int)$module['is_active']) {
+                if ($newModuleIsActive !== (int)$module['is_active']) {
                     $this->moduleModel->toggleModule($moduleId, (bool)$newModuleIsActive);
                 }
 
