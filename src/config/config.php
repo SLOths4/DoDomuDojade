@@ -92,7 +92,6 @@ final readonly class config
 
     private static function env(string $key, mixed $default = null): mixed
     {
-        // kolejno: getenv -> $_ENV -> $_SERVER -> apache_getenv (jeśli dostępne)
         $value = getenv($key);
         if ($value === false) {
             $value = $_ENV[$key] ?? ($_SERVER[$key] ?? (function_exists('apache_getenv') ? apache_getenv($key) : null));
@@ -106,7 +105,6 @@ final readonly class config
             $value = trim($value);
         }
 
-        // traktuj pusty string jak brak wartości i zwróć default
         if ($value === '') {
             return $default;
         }

@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
+
 namespace src\infrastructure\factories;
+
+use src\config\config;
 
 use PDO;
 use Exception;
-use src\config\config;
 
 class PDOFactory
 {
     /**
-     * Tworzy i zwraca instancję PDO
-     *
+     * Creates PDO instance
      * @return PDO
      * @throws Exception
      */

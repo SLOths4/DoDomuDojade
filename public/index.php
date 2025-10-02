@@ -8,6 +8,30 @@ $dotenv->safeLoad();
 
 $container = require __DIR__ . '/../src/bootstrap/container.php';
 
+try {
+    registerErrorHandling($container);
+} catch (Throwable $e) {
+    // Ostatni fallback, gdyby sama rejestracja poleciała
+    ini_set('display_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
+    ini_set('display_startup_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
+    error_reporting(E_ALL);
+
+    set_exception_handler(static function (Throwable $ex) {
+        http_response_code(500);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo getenv('APP_ENV') === 'dev' ? ('Unhandled exception: ' . $ex->getMessage()) : 'Internal Server Error';
+    });
+
+    register_shutdown_function(static function () {
+        $error = error_get_last();
+        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+            http_response_code(500);
+            header('Content-Type: text/plain; charset=utf-8');
+            echo getenv('APP_ENV') === 'dev' ? 'Fatal error (shutdown)' : 'Internal Server Error';
+        }
+    });
+}
+
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 use src\controllers\ErrorController;

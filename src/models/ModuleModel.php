@@ -22,11 +22,11 @@ class ModuleModel extends Model
     {
         parent::__construct($pdo, $logger);
         if ($this->TABLE_NAME === '') {
-            $this->logger->error('Module table name is missing.');;
+            $this->logger->error('Module table name is missing.');
             throw new RuntimeException('Module table name is missing.');
         }
         if ($this->ALLOWED_FIELDS === []) {
-            $this->logger->error('Allowed fields are missing.');;
+            $this->logger->error('Allowed fields are missing.');
             throw new RuntimeException('Allowed fields are missing.w');
         }
         $this->logger->info('Modules table being used: ' . $this->TABLE_NAME);

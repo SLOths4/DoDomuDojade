@@ -6,7 +6,6 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use RuntimeException;
-use src\config\config;
 use Psr\Log\LoggerInterface;
 
 class Model{
@@ -19,11 +18,10 @@ class Model{
     }
 
     /**
-     * Waliduje strukturę pojedynczego parametru.
+     * Validates parameter
      *
      * @param mixed $param
      * @param mixed $key
-     *
      * @return array
      * @throws Exception
      */
@@ -59,7 +57,6 @@ class Model{
      *
      * @param PDOStatement $stmt
      * @param array $params
-     *
      * @return void
      * @throws Exception
      */
@@ -89,9 +86,10 @@ class Model{
     }
 
     /**
+     * Executes given PDO statement
+     *
      * @param string $query
      * @param array $params
-     *
      * @return array
      * @throws Exception
      */
@@ -133,5 +131,4 @@ class Model{
             throw new RuntimeException('Database operation failed');
         }
     }
-
 }

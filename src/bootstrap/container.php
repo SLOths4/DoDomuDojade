@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use src\controllers\DisplayController;
+use src\controllers\ErrorController;
 use src\infrastructure\container\Container;
 use src\infrastructure\factories\LoggerFactory;
 use src\config\config;
@@ -33,6 +34,9 @@ $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 
 // Config
 $container->set(config::class, fn() => config::fromEnv());
+
+// ErrorController
+$container->set(ErrorController::class, fn() => new ErrorController());
 
 
 //DisplayController

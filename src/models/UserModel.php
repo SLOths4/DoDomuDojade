@@ -30,13 +30,12 @@ class UserModel extends Model
 
     /**
      * Fetches all users from the database.
-     *
      * @return array Array of users in the database
      * @throws Exception
      */
     public function getUsers(): array {
         try {
-            $query = "SELECT * FROM $this->TABLE_NAME ORDER BY id ASC";
+            $query = "SELECT * FROM $this->TABLE_NAME ORDER BY id";
             $this->logger->info("Fetching all users.");
 
             $users = $this->executeStatement($query);
@@ -56,7 +55,8 @@ class UserModel extends Model
     }
 
     /**
-     * @param int $userId User id
+     * Fetches user by provided ID.
+     * @param int $userId
      * @return array User entry from the database
      * @throws Exception
      */
@@ -75,7 +75,6 @@ class UserModel extends Model
 
     /**
      * Fetches user by username.
-     *
      * @param string $username
      * @return array User entry from the database
      * @throws Exception
@@ -107,10 +106,9 @@ class UserModel extends Model
 
     /**
      * Adds a new user to the database.
-     *
      * @param string $username
      * @param string $password
-     * @return bool
+     * @return bool returns success
      * @throws Exception
      */
     public function addUser(string $username, string $password): bool {
@@ -133,11 +131,10 @@ class UserModel extends Model
 
     /**
      * Updates a user in the database.
-     *
      * @param int $userId
      * @param string $username
      * @param string $password
-     * @return bool
+     * @return bool returns success
      * @throws Exception
      */
     public function updateUser(int $userId, string $username, string $password): bool {
@@ -159,9 +156,8 @@ class UserModel extends Model
 
     /**
      * Deletes a user from the database.
-     *
      * @param int $userId
-     * @return bool
+     * @return bool returns success
      * @throws Exception
      */
     public function deleteUser(int $userId): bool {
