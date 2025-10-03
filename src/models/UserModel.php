@@ -197,7 +197,7 @@ class UserModel extends Model
     /**
      * Deletes a user from the database.
      * @param int $userId
-     * @return bool returns success
+     * @return bool return success
      * @throws Exception
      */
     public function deleteUser(int $userId): bool {

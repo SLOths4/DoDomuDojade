@@ -26,7 +26,6 @@ class CountdownModel extends Model
 
     /**
      * Fetches announcements by id.
-     *
      * @param int $countdownId
      * @return array
      * @throws Exception
@@ -136,9 +135,9 @@ class CountdownModel extends Model
     }
 
     /**
-     * Deletes specified countdown
+     * Deletes specified countdown.
      * @param int $id
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function deleteCountdown(int $id): bool
@@ -160,12 +159,11 @@ class CountdownModel extends Model
 
     /**
      * Updated chosen filed of a countdown with a given value.
-     *
      * @param int $countdownId
      * @param string $field
      * @param string $newValue
      * @param int $userId
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function updateCountdownField(int $countdownId, string $field, string $newValue, int $userId): bool {

@@ -33,7 +33,6 @@ class AnnouncementsModel extends Model {
 
     /**
      * Validates input
-     *
      * @param string $input
      * @param int $maxLength
      * @return void
@@ -49,7 +48,6 @@ class AnnouncementsModel extends Model {
 
     /**
      * Validates date format
-     *
      * @param string $date
      * @return bool
      */
@@ -85,7 +83,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Fetches all valid announcements
+     * Fetches all valid announcements.
      * @return array
      * @throws Exception
      */
@@ -111,12 +109,12 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Adds a new announcement
+     * Adds a new announcement.
      * @param string $title
      * @param string $text
      * @param string $validUntil
      * @param int $userId
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function addAnnouncement(string $title, string $text, string $validUntil, int $userId): bool {
@@ -158,12 +156,12 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Updated chosen filed of an announcement with a given value
+     * Updated chosen filed of an announcement with a given value.
      * @param int $announcementId
      * @param string $field
      * @param string $newValue
      * @param int $userId
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function updateAnnouncementField(int $announcementId, string $field, string $newValue, int $userId): bool {
@@ -198,7 +196,7 @@ class AnnouncementsModel extends Model {
      * Deletes selected announcement
      * @param int $announcementId
      * @param int $userId
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function deleteAnnouncement(int $announcementId, int $userId): bool {
@@ -221,7 +219,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Fetches announcements by id
+     * Fetches announcements by id.
      * @param int $announcementId
      * @return array
      * @throws Exception
@@ -248,7 +246,7 @@ class AnnouncementsModel extends Model {
     }
 
     /**
-     * Fetches announcements by provided title from a database
+     * Fetches announcements by provided title from a database.
      * @param string $announcementTitle
      * @return array
      * @throws Exception
