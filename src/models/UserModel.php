@@ -29,6 +29,23 @@ class UserModel extends Model
     }
 
     /**
+     * Checks if a username already exists in the database.
+     * @param string $username
+     * @return bool
+     */
+    public function userExists(string $username): bool {
+        try {
+            $query = "SELECT COUNT(*) AS cnt FROM $this->TABLE_NAME WHERE username = :username";
+            $params = [':username' => [$username, PDO::PARAM_STR]];
+            $result = $this->executeStatement($query, $params);
+            return !empty($result) && (int)$result[0]['cnt'] > 0;
+        } catch (Exception $e) {
+            $this->logger->error("Error checking if user exists: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Fetches all users from the database.
      * @return array Array of users in the database
      * @throws Exception
@@ -108,21 +125,44 @@ class UserModel extends Model
      * Adds a new user to the database.
      * @param string $username
      * @param string $password
-     * @return bool returns success
+     * @return bool return success
      * @throws Exception
      */
     public function addUser(string $username, string $password): bool {
         try {
+            $username = strtolower($username);
+
+            if (strlen($username) > 50 || strlen($password) > 255) {
+                $this->logger->error("Username or password too long: $username");
+                throw new RuntimeException('Username or password too long');
+            }
+
+            if (!preg_match('/^[a-z0-9_-]{3,20}$/', $username)) {
+                $this->logger->error("Invalid username format: $username");
+                throw new RuntimeException('Invalid username format');
+            }
+
+            if ($this->userExists($username)) {
+                $this->logger->error("Username already exists: $username");
+                throw new RuntimeException('Username already exists');
+            }
+
             $query = "INSERT INTO $this->TABLE_NAME (username, password, created_at) VALUES (:username, :password, :created_at)";
             $password = password_hash($password, PASSWORD_DEFAULT);
             $params = [
                 ':username' => [$username, PDO::PARAM_STR],
                 ':password' => [$password, PDO::PARAM_STR],
-                ':created_at' => [date('Y-m-d'), PDO::PARAM_STR],
+                ':created_at' => [date('Y-m-d H:i:s'), PDO::PARAM_STR],
             ];
-            $this->executeStatement($query, $params);
-            $this->logger->info("Added new user.");
-            return true;
+            $result = $this->executeStatement($query, $params);
+
+            if ($result) {
+                $this->logger->info("Added new user: $username");
+                return true;
+            } else {
+                $this->logger->error("Failed to add user: $username");
+                return false;
+            }
         } catch (Exception $e) {
             $this->logger->error("Error adding new user: " . $e->getMessage());
             throw new RuntimeException('Error adding new user');
@@ -134,7 +174,7 @@ class UserModel extends Model
      * @param int $userId
      * @param string $username
      * @param string $password
-     * @return bool returns success
+     * @return bool return success
      * @throws Exception
      */
     public function updateUser(int $userId, string $username, string $password): bool {
