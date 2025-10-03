@@ -37,14 +37,15 @@
             <a href="/panel/users" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Użytkownicy</a>
         </li>
         <li>
-            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden darl:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
+            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
         </li>
     </ul>
-    <script>
+    <script type="module">
         import Alpine from 'alpinejs'
         window.Alpine = Alpine
         Alpine.start();
-
+    </script>
+    <script>
         const currentPage = window.location.pathname;
 
         document.querySelectorAll('.nav-link').forEach(link => {
@@ -100,7 +101,7 @@
     </script>
     <div id="profile" class="absolute right-0 z-10 max-w-md origin-top-right bg-white dark:bg-gray-800 flex items-center rounded-2xl mr-2">
         <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2"><i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i></div>
-        <div x-data="dropdown">
+        <div x-data="dropdown()">
             <div class="mx-2 pr-2">
                 <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?></button>
             </div>
