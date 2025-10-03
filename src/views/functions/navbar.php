@@ -19,7 +19,7 @@
         <li>
             <a href="javascript:void(0)" onclick="openMenu()"
                class="max-lg:block lg:hidden text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-white duration-300 rounded-2xl">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Menu" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Menu" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 6h18M3 12h18M3 18h18" />
                 </svg>
             </a>
@@ -41,6 +41,10 @@
         </li>
     </ul>
     <script>
+        import Alpine from 'alpinejs'
+        window.Alpine = Alpine
+        Alpine.start();
+
         const currentPage = window.location.pathname;
 
         document.querySelectorAll('.nav-link').forEach(link => {
@@ -53,9 +57,8 @@
             }
         });
 
-        var menu = document.getElementById("menu");
+        const menu = document.getElementById("menu");
 
-        // this function is used to open the menu
         function openMenu() {
             menu.classList.remove("opacity-0", "pointer-events-none");
             menu.classList.add("opacity-95");
@@ -91,7 +94,7 @@
             }
         })
 
-        window.addEventListener("DOMContentLoaded", (event) => {
+        window.addEventListener("DOMContentLoaded", () => {
             Alpine.data("dropdown", dropdown)
         })
     </script>

@@ -95,16 +95,20 @@ class Model{
      */
     public function executeStatement(string $query, array $params = []): array {
         try {
+            $this->logger->debug("Preparing SQL query:", ['query' => $query]);
             $stmt = $this->pdo->prepare($query);
-
-            $this->logger->debug("Executing query:", ['query' => $query]);
+            $this->logger->debug("SQL query prepared successfully.");
 
             if (!empty($params)) {
+                $this->logger->debug("Binding parameters to query:", ['parameters' => $params]);
                 $this->bindParams($stmt, $params);
             }
 
             $start = microtime(true);
+
+            $this->logger->debug("Executing query:", ['query' => $query]);
             $stmt->execute();
+
             $executionTime = round((microtime(true) - $start) * 1000, 2);
 
             $this->logger->info("SQL query executed successfully.", [

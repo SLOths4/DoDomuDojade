@@ -1,4 +1,10 @@
 <?php
+$uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$allowedExtensions = ['css', 'js', 'png', 'jpg', 'ico'];
+$ext = pathinfo($uri, PATHINFO_EXTENSION);
+if ($uri !== '/' && file_exists(__DIR__ . $uri) && in_array($ext, $allowedExtensions)) {
+    return false;
+}
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -11,7 +17,6 @@ $container = require __DIR__ . '/../src/bootstrap/container.php';
 try {
     registerErrorHandling($container);
 } catch (Throwable $e) {
-    // Ostatni fallback, gdyby sama rejestracja poleciała
     ini_set('display_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     ini_set('display_startup_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     error_reporting(E_ALL);
@@ -101,7 +106,6 @@ switch ($routeInfo[0]) {
 
         if (is_array($handler)) {
             $controller = $container->get($handler[0]);
-            // Zachowujemy dotychczasowy kontrakt: przekazujemy $vars jako 1 argument tablicowy
             call_user_func([$controller, $handler[1]], $vars);
         } else {
             call_user_func($handler, $vars);

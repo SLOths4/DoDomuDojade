@@ -52,6 +52,7 @@ calendar_data/
 
 # Ignore any database-related files
 *.sqlite
+*.db
 
 phpunit.xml
 tests

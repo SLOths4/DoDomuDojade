@@ -22,12 +22,11 @@ SessionHelper::remove('error');
         <link rel="stylesheet" href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" />
         <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
         <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
         <script src="//unpkg.com/alpinejs" defer></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
-        <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
+        <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>

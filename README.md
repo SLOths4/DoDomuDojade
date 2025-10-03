@@ -77,7 +77,7 @@ npx tailwindcss -c tailwind.config.js -i ./resources/css/app.css -o ./public/ass
 4) Uruchom backend lokalnie (przykłady):
 ```shell script
 # PHP built-in server (w razie katalogu public/)
-php -S localhost:8000 -t public
+php -S localhost:8080 -t public/ public/router.php
 ```
 
 ## Konfiguracja środowiska
@@ -111,6 +111,54 @@ ZTM_URL=https://www.peka.poznan.pl/vm/method.vm
     - Włącz buforowanie opcache, ustaw APP_DEBUG=false i odpowiedni poziom logów (np. warning).
     - Konfiguruj PHP-FPM i workerów zgodnie z obciążeniem.
     - Upewnij się, że katalog logs/ ma prawa do zapisu.
+
+## Konfiguracja serwera
+
+### Nginx
+
+```text
+server {
+    listen 80;  # Port, na którym nasłuchuje serwer
+    server_name localhost;  # Domena lub IP; dla produkcji zmień na twojadomena.pl
+
+    root /ścieżka/do/projektu/public;  # Absolutna ścieżka do folderu public
+
+    index index.php index.html;  # Domyślne pliki indeksowe
+
+    # Logi – opcjonalne, ale przydatne do debugowania
+    access_log /var/log/nginx/twoja-apka.access.log;
+    error_log /var/log/nginx/twoja-apka.error.log;
+
+    # Obsługa statycznych plików i routing do index.php
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;  # Próbuj serwować plik statyczny, jeśli nie – przekieruj do index.php
+    }
+
+    # Obsługa plików PHP przez PHP-FPM
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;  # Włącz standardowe parametry FastCGI (zależne od instalacji Nginx)
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;  # Soket PHP-FPM; dostosuj do swojej wersji PHP
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  # Przekazuj ścieżkę skryptu
+        include fastcgi_params;  # Dodatkowe parametry FastCGI
+    }
+
+    # Blokuj dostęp do wrażliwych plików (np. .env, .git)
+    location ~ /\. {
+        deny all;  # Odmów dostępu do plików zaczynających się na kropkę
+    }
+
+    # Opcjonalnie: Cache dla statycznych plików (CSS, JS, obrazy)
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;  # Cache na 30 dni
+        access_log off;  # Wyłącz logowanie dla statyki
+    }
+
+    # Opcjonalnie: Przekierowanie HTTP na HTTPS (jeśli używasz SSL)
+    # if ($scheme != "https") {
+    #     return 301 https://$host$request_uri;
+    # }
+}
+```
 
 ## Logowanie i diagnostyka
 - Monolog zapisuje logi zgodnie z LOG_PATH i LOG_LEVEL.
