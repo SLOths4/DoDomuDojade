@@ -16,7 +16,7 @@
 <div class="flex mx-1 my-2">
     <div class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom overflow-hidden justify-around items-center">
         <div class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold"><img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></div>
-        <div id="date" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
+        <div id="date" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-sm md:max-lg:text-lg lg:text-2xl font-extrabold">
             <script>
                 function updateDate() {
                     const dateElement = document.getElementById('date');
@@ -34,7 +34,7 @@
                 updateDate();
             </script>
         </div>
-        <div id="time" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-xl font-extrabold">
+        <div id="time" class="flex h-full justify-center items-center pl-2 pr-2 font-mono text-sm md:max-lg:text-lg lg:text-2xl font-extrabold">
             <script>
                 function updateClock() {
                     const timeElement = document.getElementById('time');
@@ -161,9 +161,9 @@
     <table class="table-fixed w-full">
       <thead>
         <tr>
-          <th class="w-1/6"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
-          <th class="w-4/6"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
-          <th class="w-1/6"><i class="fa-solid fa-clock" style="color: #4A73AF"></i> Odjazd <br> (w minutach)</th>
+          <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-train-tram" style="color: #4A73AF"></i> Linia</th>
+          <th class="w-4/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-location-dot" style="color: #4A73AF"></i> Kierunek</th>
+          <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-clock" style="color: #4A73AF"></i><a class="max-sm:hidden"> Odjazd (min)</a></th>
         </tr>
       </thead>
       <tbody>
@@ -172,7 +172,7 @@
 
                 function buildRow(tram) {
                     const minutesCell = formatMinutes(tram.minutes);
-                    const rowClass = 'text-[25px]';
+                    const rowClass = 'text-[25px] text-xs md:max-lg:text-base lg:text-lg';
                     return `
       <tr class="${rowClass}">
         <td class="text-center w-1/6">${tram.line}</td>
