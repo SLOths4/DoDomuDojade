@@ -172,7 +172,7 @@
 
                 function buildRow(tram) {
                     const minutesCell = formatMinutes(tram.minutes);
-                    const rowClass = 'text-[25px] text-xs md:max-lg:text-base lg:text-lg';
+                    const rowClass = 'text-xs md:max-lg:text-base lg:text-lg';
                     return `
       <tr class="${rowClass}">
         <td class="text-center w-1/6">${tram.line}</td>
