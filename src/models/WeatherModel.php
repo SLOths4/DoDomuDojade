@@ -45,7 +45,6 @@ class WeatherModel extends Model
 
     /**
      * Makes HTTP request to the specified URL.
-     *
      * @param string $url
      * @param array $headers
      * @return array
@@ -75,7 +74,6 @@ class WeatherModel extends Model
 
     /**
      * Maps the raw data from the API to a more usable format.
-     *
      * @param array $data Raw data from the API.
      * @return array Mapped data.
      */
@@ -105,7 +103,6 @@ class WeatherModel extends Model
 
     /**
      * Fetches data from Airly API and extracts relevant information.
-     *
      * @return array
      * @throws Exception
      */
@@ -138,7 +135,6 @@ class WeatherModel extends Model
 
     /**
      * Fetches data from IMGW API and extracts relevant information.
-     *
      * @return array
      * @throws RuntimeException
      */
@@ -164,7 +160,6 @@ class WeatherModel extends Model
 
     /**
      * Merges data from IMGW and Airly APIs and returns a single array.
-     *
      * @return array
      * @throws Exception
      */

@@ -34,9 +34,8 @@ class ModuleModel extends Model
 
     /**
      * Checks if a module is visible based on current time and status.
-     *
      * @param string $moduleName
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function isModuleVisible(string $moduleName): bool
@@ -75,9 +74,8 @@ class ModuleModel extends Model
 
     /**
      * Checks if a module is active.
-     *
      * @param string $moduleName
-     * @return bool
+     * @return bool return success
      * @throws Exception
      */
     public function isModuleActive(string $moduleName): bool
@@ -111,8 +109,7 @@ class ModuleModel extends Model
 
     /**
      * Fetches all modules.
-     *
-     * @return array
+     * @return array return success
      * @throws Exception
      */
     public function getModules(): array
@@ -137,7 +134,6 @@ class ModuleModel extends Model
 
     /**
      * Fetches module details by id.
-     *
      * @param int $moduleId
      * @return array
      * @throws Exception
@@ -170,7 +166,6 @@ class ModuleModel extends Model
 
     /**
      * Fetches module details by name.
-     *
      * @param string $moduleName
      * @return array
      * @throws Exception
@@ -203,7 +198,6 @@ class ModuleModel extends Model
 
     /**
      * Fetches all available modules.
-     *
      * @return array
      * @throws Exception
      */
@@ -227,7 +221,6 @@ class ModuleModel extends Model
 
     /**
      * Changes module status.
-     *
      * @param int $moduleId
      * @param bool $status
      * @return void
@@ -259,7 +252,6 @@ class ModuleModel extends Model
 
     /**
      * Updated chosen filed of an announcement with a given value.
-     *
      * @param int $moduleId
      * @param string $field
      * @param string $newValue

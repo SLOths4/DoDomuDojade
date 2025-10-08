@@ -35,10 +35,10 @@ class UserModel extends Model
      */
     public function userExists(string $username): bool {
         try {
-            $query = "SELECT COUNT(*) FROM $this->TABLE_NAME WHERE username = :username";
+            $query = "SELECT COUNT(*) AS cnt FROM $this->TABLE_NAME WHERE username = :username";
             $params = [':username' => [$username, PDO::PARAM_STR]];
             $result = $this->executeStatement($query, $params);
-            return !empty($result) && $result[0]['count'] > 0;
+            return !empty($result) && (int)$result[0]['cnt'] > 0;
         } catch (Exception $e) {
             $this->logger->error("Error checking if user exists: " . $e->getMessage());
             return false;
@@ -197,7 +197,7 @@ class UserModel extends Model
     /**
      * Deletes a user from the database.
      * @param int $userId
-     * @return bool returns success
+     * @return bool return success
      * @throws Exception
      */
     public function deleteUser(int $userId): bool {

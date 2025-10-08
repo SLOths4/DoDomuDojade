@@ -18,8 +18,7 @@ class Model{
     }
 
     /**
-     * Validates parameter
-     *
+     * Validates parameter.
      * @param mixed $param
      * @param mixed $key
      * @return array
@@ -54,7 +53,6 @@ class Model{
 
     /**
      * Binds parameters to a PDOStatement with validation and factories.
-     *
      * @param PDOStatement $stmt
      * @param array $params
      * @return void
@@ -86,8 +84,7 @@ class Model{
     }
 
     /**
-     * Executes given PDO statement
-     *
+     * Executes given PDO statement.
      * @param string $query
      * @param array $params
      * @return array
