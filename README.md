@@ -81,6 +81,11 @@ Uwaga: Wszystkie źródła są publiczne, ale wymagają kluczy API dla niektóry
    npm ci
    ```
 
+4) Uruchom backend lokalnie (przykłady):
+```shell script
+# PHP built-in server (w razie katalogu public/)
+php -S localhost:8080 -t public/ public/router.php
+```
 3. Skonfiguruj zmienne środowiskowe:
    ```
    cp .env.example .env
@@ -167,6 +172,54 @@ Projekt używa PHPUnit do testów jednostkowych i integracyjnych.
   }
   ```
 - **Najlepsze praktyki**: Pokryj testami modele (np. zapytania PDO), kontrolery (routing) i serwisy (logika API). Celuj w >80% coverage. Używaj mocks dla zewnętrznych API (np. z symfony/http-client).
+
+## Konfiguracja serwera
+
+### Nginx
+
+```text
+server {
+    listen 80;  # Port, na którym nasłuchuje serwer
+    server_name localhost;  # Domena lub IP; dla produkcji zmień na twojadomena.pl
+
+    root /ścieżka/do/projektu/public;  # Absolutna ścieżka do folderu public
+
+    index index.php index.html;  # Domyślne pliki indeksowe
+
+    # Logi – opcjonalne, ale przydatne do debugowania
+    access_log /var/log/nginx/twoja-apka.access.log;
+    error_log /var/log/nginx/twoja-apka.error.log;
+
+    # Obsługa statycznych plików i routing do index.php
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;  # Próbuj serwować plik statyczny, jeśli nie – przekieruj do index.php
+    }
+
+    # Obsługa plików PHP przez PHP-FPM
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;  # Włącz standardowe parametry FastCGI (zależne od instalacji Nginx)
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;  # Soket PHP-FPM; dostosuj do swojej wersji PHP
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  # Przekazuj ścieżkę skryptu
+        include fastcgi_params;  # Dodatkowe parametry FastCGI
+    }
+
+    # Blokuj dostęp do wrażliwych plików (np. .env, .git)
+    location ~ /\. {
+        deny all;  # Odmów dostępu do plików zaczynających się na kropkę
+    }
+
+    # Opcjonalnie: Cache dla statycznych plików (CSS, JS, obrazy)
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;  # Cache na 30 dni
+        access_log off;  # Wyłącz logowanie dla statyki
+    }
+
+    # Opcjonalnie: Przekierowanie HTTP na HTTPS (jeśli używasz SSL)
+    # if ($scheme != "https") {
+    #     return 301 https://$host$request_uri;
+    # }
+}
+```
 
 ## Logowanie i diagnostyka
 

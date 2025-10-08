@@ -98,7 +98,7 @@ class UserModel extends Model
      */
     function getUserByUsername(string $username): array
     {
-        $this->logger->info("Fetching user with username: $username.");
+        $this->logger->debug("Fetching user with username: $username.");
 
         $query = "SELECT * FROM users WHERE username = :username";
         $params = [
