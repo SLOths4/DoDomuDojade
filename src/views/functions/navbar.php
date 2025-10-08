@@ -107,7 +107,7 @@
             </div>
             <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-3" role="none">
-                    <button class="bg-primary-200 mx-2 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
+                    <button class="bg-primary-200 mx-2 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900 dark:text-white" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
                 </div>
             </div>
         </div>

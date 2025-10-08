@@ -21,7 +21,7 @@
   "homepage": "https://github.com/SLOths4/DoDomuDojade#readme",
   "devDependencies": {
     "autoprefixer": "^10.4.20",
-    "tailwindcss": "^4.1"
+    "tailwindcss": "^4.1.14"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.14",
