@@ -1,5 +1,7 @@
 <?php
-namespace src\models;
+
+namespace src\service;
+
 
 use Exception;
 use PDO;
@@ -13,17 +15,18 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class WeatherModel extends Model
-{
+// TODO zmienić na readonly
+class WeatherService extends Model {
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
+        PDO                                  $pdo,
+        LoggerInterface                      $logger,
         private readonly HttpClientInterface $httpClient,
-        private readonly string $imgwWeatherUrl,
-        private readonly string $airlyUrl,
-        private readonly string $airlyApiKey,
-        private readonly string $airlyLocationId,
-    ) {
+        private readonly string              $imgwWeatherUrl,
+        private readonly string              $airlyUrl,
+        private readonly string              $airlyApiKey,
+        private readonly string              $airlyLocationId,
+    )
+    {
         parent::__construct($pdo, $logger);
         if ($this->imgwWeatherUrl === '') {
             $this->logger->error('IMGW endpoint is missing.');
@@ -58,17 +61,17 @@ class WeatherModel extends Model
             ]);
             return $response->toArray();
         } catch (
-        ClientExceptionInterface |
-        RedirectionExceptionInterface |
-        ServerExceptionInterface |
-        TransportExceptionInterface |
+        ClientExceptionInterface|
+        RedirectionExceptionInterface|
+        ServerExceptionInterface|
+        TransportExceptionInterface|
         DecodingExceptionInterface $e
         ) {
-            $this->logger->error("Error while fetching data from ". $url . " " .  $e->getMessage());
-            throw new Exception("Error while fetching data from ". $url . " " .  $e->getMessage());
+            $this->logger->error("Error while fetching data from " . $url . " " . $e->getMessage());
+            throw new Exception("Error while fetching data from " . $url . " " . $e->getMessage());
         } catch (Exception $e) {
-            $this->logger->error("Unexpected error occurred while fetching data from " . $url . " " .  $e->getMessage());
-            throw new Exception("Unexpected error occurred while fetching data from " . $url . " " .  $e->getMessage());
+            $this->logger->error("Unexpected error occurred while fetching data from " . $url . " " . $e->getMessage());
+            throw new Exception("Unexpected error occurred while fetching data from " . $url . " " . $e->getMessage());
         }
     }
 
@@ -80,24 +83,24 @@ class WeatherModel extends Model
     private function extractAirlyData(array $data): array
     {
         $current = $data['current'] ?? [];
-        $values  = $current['values'] ?? [];
-        $index   = $current['indexes'][0] ?? [];
+        $values = $current['values'] ?? [];
+        $index = $current['indexes'][0] ?? [];
 
         return [
-            'fromDateTime'            => $current['fromDateTime'] ?? null,
-            'tillDateTime'            => $current['tillDateTime'] ?? null,
-            'pm_1_value'              => $values[0]['value'] ?? null,
-            'pm_25_value'             => $values[1]['value'] ?? null,
-            'pm_10_value'             => $values[3]['value'] ?? null,
-            'pressure_value'          => $values[4]['value'] ?? null,
-            'humidity_value'          => $values[5]['value'] ?? null,
-            'temperature_value'       => $values[6]['value'] ?? null,
-            'airly_index_value'       => $index['value'] ?? null,
-            'airly_index_level'       => $index['level'] ?? null,
-            'airly_index_colour'      => $index['color'] ?? null,
-            'airly_index_name'        => $index['name'] ?? null,
+            'fromDateTime' => $current['fromDateTime'] ?? null,
+            'tillDateTime' => $current['tillDateTime'] ?? null,
+            'pm_1_value' => $values[0]['value'] ?? null,
+            'pm_25_value' => $values[1]['value'] ?? null,
+            'pm_10_value' => $values[3]['value'] ?? null,
+            'pressure_value' => $values[4]['value'] ?? null,
+            'humidity_value' => $values[5]['value'] ?? null,
+            'temperature_value' => $values[6]['value'] ?? null,
+            'airly_index_value' => $index['value'] ?? null,
+            'airly_index_level' => $index['level'] ?? null,
+            'airly_index_colour' => $index['color'] ?? null,
+            'airly_index_name' => $index['name'] ?? null,
             'airly_index_description' => $index['description'] ?? null,
-            'airly_index_advice'      => $index['advice'] ?? null,
+            'airly_index_advice' => $index['advice'] ?? null,
         ];
     }
 
@@ -111,9 +114,9 @@ class WeatherModel extends Model
         $this->logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airlyUrl]);
 
         $headers = [
-            'Accept'       => 'application/json',
+            'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            'apikey'       => $this->airlyApiKey,
+            'apikey' => $this->airlyApiKey,
             'Accept-Language' => 'pl',
         ];
 
@@ -169,20 +172,20 @@ class WeatherModel extends Model
         $airlyData = $this->getAirlyData();
 
         return [
-            'imgw_station'           => $imgwData['stacja'] ?? null,
-            'imgw_fromDate'          => $imgwData['data_pomiaru'] ?? null,
-            'imgw_fromHour'          => $imgwData['godzina_pomiaru'] ?? null,
-            'imgw_temperature'       => $imgwData['temperatura'] ?? null,
-            'imgw_wind_speed'        => $imgwData['predkosc_wiatru'] ?? null,
-            'imgw_wind_direction'    => $imgwData['kierunek_wiatru'] ?? null,
-            'imgw_humidity'          => $imgwData['wilgotnosc_wzgledna'] ?? null,
+            'imgw_station' => $imgwData['stacja'] ?? null,
+            'imgw_fromDate' => $imgwData['data_pomiaru'] ?? null,
+            'imgw_fromHour' => $imgwData['godzina_pomiaru'] ?? null,
+            'imgw_temperature' => $imgwData['temperatura'] ?? null,
+            'imgw_wind_speed' => $imgwData['predkosc_wiatru'] ?? null,
+            'imgw_wind_direction' => $imgwData['kierunek_wiatru'] ?? null,
+            'imgw_humidity' => $imgwData['wilgotnosc_wzgledna'] ?? null,
             'imgw_precipitation_sum' => $imgwData['suma_opadu'] ?? null,
-            'imgw_pressure'          => $imgwData['cisnienie'] ?? null,
-            'airly_fromDateTime'     => $airlyData['fromDateTime'] ?? null,
-            'airly_tillDateTime'     => $airlyData['tillDateTime'] ?? null,
-            'airly_index_value'      => $airlyData['airly_index_value'] ?? null,
-            'airly_index_advice'     => $airlyData['airly_index_advice'] ?? null,
-            'airly_index_colour'     => $airlyData['airly_index_colour'] ?? null,
+            'imgw_pressure' => $imgwData['cisnienie'] ?? null,
+            'airly_fromDateTime' => $airlyData['fromDateTime'] ?? null,
+            'airly_tillDateTime' => $airlyData['tillDateTime'] ?? null,
+            'airly_index_value' => $airlyData['airly_index_value'] ?? null,
+            'airly_index_advice' => $airlyData['airly_index_advice'] ?? null,
+            'airly_index_colour' => $airlyData['airly_index_colour'] ?? null,
             'airly_index_description' => $airlyData['airly_index_description'] ?? null,
         ];
     }

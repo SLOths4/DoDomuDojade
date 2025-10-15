@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require  __DIR__ . '/../src/bootstrap/error_handling.php';
 
 $root = dirname(__DIR__);
 $dotenv = Dotenv\Dotenv::createImmutable($root);
@@ -11,7 +12,7 @@ $container = require __DIR__ . '/../src/bootstrap/container.php';
 try {
     registerErrorHandling($container);
 } catch (Throwable $e) {
-    // Ostatni fallback, gdyby sama rejestracja poleciała
+    echo 'Error registering error handling: ' . $e->getMessage();
     ini_set('display_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     ini_set('display_startup_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     error_reporting(E_ALL);
@@ -101,7 +102,6 @@ switch ($routeInfo[0]) {
 
         if (is_array($handler)) {
             $controller = $container->get($handler[0]);
-            // Zachowujemy dotychczasowy kontrakt: przekazujemy $vars jako 1 argument tablicowy
             call_user_func([$controller, $handler[1]], $vars);
         } else {
             call_user_func($handler, $vars);

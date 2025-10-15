@@ -4,7 +4,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');

@@ -1,6 +1,6 @@
 <?php
 
-namespace src\core;
+namespace src\infrastructure\helpers;
 
 class SessionHelper {
 

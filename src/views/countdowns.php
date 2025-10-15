@@ -3,7 +3,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -27,7 +27,7 @@ SessionHelper::remove('error');
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
         <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
+        <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>

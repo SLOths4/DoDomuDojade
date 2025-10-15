@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="/assets/styles/dist/output.css" rel="stylesheet" type="text/css">
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
 </head>
 <body class="bg-primary-200">
 <div class="flex mx-1 my-2">
