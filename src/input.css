@@ -1,0 +1,22 @@
+@import "tailwindcss" source("./views") source("./views/functions");
+
+@theme {
+    --color-beige: #F9FAFB;
+    --color-school1: #8ABAE2;
+    --color-school2: #4A73AF;
+
+    --color-primary: #4A73AF;        /* bg-primary */
+    --color-primary-100: #8FADC9;
+    --color-primary-200: #8ABAE2;
+    --color-primary-300: #5490BA;
+    --color-primary-400: #4A73AF;
+
+    --color-secondary-100: #FBC13B;
+    --color-secondary-200: #FDAC32;
+}
+
+@layer utilities {
+    .shadow-custom {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+}

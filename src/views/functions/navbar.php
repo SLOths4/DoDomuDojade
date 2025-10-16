@@ -19,7 +19,7 @@
         <li>
             <a href="javascript:void(0)" onclick="openMenu()"
                class="max-lg:block lg:hidden text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-white duration-300 rounded-2xl">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Menu" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Menu" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 6h18M3 12h18M3 18h18" />
                 </svg>
             </a>
@@ -37,9 +37,14 @@
             <a href="/panel/users" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Użytkownicy</a>
         </li>
         <li>
-            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden darl:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
+            <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
         </li>
     </ul>
+    <script type="module">
+        import Alpine from 'alpinejs'
+        window.Alpine = Alpine
+        Alpine.start();
+    </script>
     <script>
         const currentPage = window.location.pathname;
 
@@ -53,9 +58,8 @@
             }
         });
 
-        var menu = document.getElementById("menu");
+        const menu = document.getElementById("menu");
 
-        // this function is used to open the menu
         function openMenu() {
             menu.classList.remove("opacity-0", "pointer-events-none");
             menu.classList.add("opacity-95");
@@ -91,19 +95,19 @@
             }
         })
 
-        window.addEventListener("DOMContentLoaded", (event) => {
+        window.addEventListener("DOMContentLoaded", () => {
             Alpine.data("dropdown", dropdown)
         })
     </script>
     <div id="profile" class="absolute right-0 z-10 max-w-md origin-top-right bg-white dark:bg-gray-800 flex items-center rounded-2xl mr-2">
         <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2"><i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i></div>
-        <div x-data="dropdown">
+        <div x-data="dropdown()">
             <div class="mx-2 pr-2">
                 <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?></button>
             </div>
             <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-3" role="none">
-                    <button class="bg-primary-200 mx-2 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
+                    <button class="bg-primary-200 mx-2 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900 dark:text-white" onclick="location.href = '/logout';"><i class="fa-solid fa-right-from-bracket"></i> Wyloguj się</button>
                 </div>
             </div>
         </div>

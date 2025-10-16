@@ -240,11 +240,10 @@ class PanelController extends Controller
             } catch (Exception $e) {
                 $this->logger->error("An error occurred: ".$e->getMessage());
                 $this->errorController->internalServerError();
+                header("Location: /login");
+                exit;
             }
         }
-        $this->logger->error("Nieprawidłowa metoda HTTP!");
-        header("Location: /login");
-        exit;
     }
 
     public function deleteAnnouncement(): void
