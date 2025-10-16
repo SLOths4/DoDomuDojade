@@ -77,24 +77,24 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($announcements as $announcement): ?>
                         <tr>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($users[$announcement['user_id']]['username'] ?? "Nieznany użytkownik") ?><br>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->title) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($usernames[$announcement->userId] ?? "Nieznany użytkownik") ?><br>
                             </td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->date) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->validUntil) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->text) ?></td>
                             <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement['id']) ?>">
+                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>">
                                     Usuń
                                 </button>
                                 <button type="button"
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement['id']) ?>"
-                                        data-title="<?= htmlspecialchars($announcement['title']) ?>"
-                                        data-text="<?= htmlspecialchars($announcement['text']) ?>"
-                                        data-valid-until="<?= htmlspecialchars($announcement['valid_until']) ?>">
+                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>"
+                                        data-title="<?= htmlspecialchars($announcement->title) ?>"
+                                        data-text="<?= htmlspecialchars($announcement->text) ?>"
+                                        data-valid-until="<?= htmlspecialchars($announcement->validUntil) ?>">
                                     Edytuj
                                 </button>
                             </td>

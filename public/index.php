@@ -1,4 +1,10 @@
 <?php
+$uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$allowedExtensions = ['css', 'js', 'png', 'jpg', 'ico'];
+$ext = pathinfo($uri, PATHINFO_EXTENSION);
+if ($uri !== '/' && file_exists(__DIR__ . $uri) && in_array($ext, $allowedExtensions)) {
+    return false;
+}
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require  __DIR__ . '/../src/bootstrap/error_handling.php';

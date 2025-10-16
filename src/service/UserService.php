@@ -5,20 +5,17 @@ namespace src\service;
 use DateTimeImmutable;
 use Exception;
 use src\entities\User;
-use src\infrastructure\utils\SchemaChecker;
+use src\infrastructure\helpers\SessionHelper;
 use src\repository\UserRepository;
 
 readonly class UserService {
     private array $ALLOWED_FIELDS;
     public function __construct(
         private UserRepository $repo,
-        private SchemaChecker $schemaChecker,
         private int            $MAX_USERNAME_LENGTH,
         private int            $MIN_PASSWORD_LENGTH,
     ) {
-        //$this->schemaChecker->ensureSchema(User::class);
-
-        //$this->ALLOWED_FIELDS = $this->schemaChecker->getAllowedFields(User::class);
+        $this->ALLOWED_FIELDS = $this->repo->getAllowedFields();
     }
 
     /**
@@ -30,10 +27,17 @@ readonly class UserService {
     public function create(array $data): bool
     {
         $this->validate($data);
+        if ($this->getByExactUsername($data['username'])) {
+            throw new Exception("User already exists");
+        }
+
+        $username = trim($data['username']);
+        $passwordHash = password_hash($data['passwordHash'], PASSWORD_DEFAULT);
+
         $u = new User(
             null,
-            trim($data['username']),
-            $data['passwordHash'],
+            $username,
+            $passwordHash,
             new DateTimeImmutable()
         );
         return $this->repo->add($u);
@@ -61,6 +65,10 @@ readonly class UserService {
      * @throws Exception
      */
     public function delete(int $id): bool {
+        $userId = SessionHelper::get('user')->id;
+        if ($userId === $id) {
+            throw new Exception("User can't delete themselves.");
+        }
         return $this->repo->delete($id);
     }
 

@@ -77,8 +77,8 @@ class CountdownRepository extends Model
         return $this->executeStatement(
                 "INSERT INTO {$this->TABLE_NAME} (title, count_to, user_id) VALUES (:title, :count_to, :user_id)",
                 [
-                    ':title' => [$countdown->name, PDO::PARAM_STR],
-                    ':count_to' => [$countdown->date->format('Y-m-d H:i:s'), PDO::PARAM_STR],
+                    ':title' => [$countdown->title, PDO::PARAM_STR],
+                    ':count_to' => [$countdown->countTo->format('Y-m-d H:i:s'), PDO::PARAM_STR],
                     ':user_id' => [$countdown->userId, PDO::PARAM_INT],
                 ]
             ) != false;
@@ -95,8 +95,8 @@ class CountdownRepository extends Model
                 "UPDATE {$this->TABLE_NAME} SET title = :title, count_to = :count_to WHERE id = :id",
                 [
                     ':id' => [$countdown->id, PDO::PARAM_INT],
-                    ':title' => [$countdown->name, PDO::PARAM_STR],
-                    ':count_to' => [$countdown->date->format('Y-m-d H:i:s'), PDO::PARAM_STR],
+                    ':title' => [$countdown->title, PDO::PARAM_STR],
+                    ':count_to' => [$countdown->countTo->format('Y-m-d H:i:s'), PDO::PARAM_STR],
                 ]
             ) != false;
     }

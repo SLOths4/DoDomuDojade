@@ -6,11 +6,15 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use src\core\Model;
 use src\entities\User;
 
 class UserRepository extends Model
 {
+    /**
+     * @throws Exception
+     */
     public function __construct(
         PDO $pdo,
         LoggerInterface $logger,
@@ -18,6 +22,56 @@ class UserRepository extends Model
         private readonly string $DATE_FORMAT,
     ) {
         parent::__construct($pdo, $logger);
+        $this->checkSchema();
+    }
+
+    /**
+     * Funkcja sprawdzająca schemat na podstawie właściwości encji User.
+     * Konwertuje property names z camelCase na snake_case.
+     * Używa PRAGMA table_info dla SQLite.
+     * @throws Exception
+     */
+    private function checkSchema(): void
+    {
+        $reflection = new ReflectionClass(User::class);
+        $properties = $reflection->getProperties();
+
+        $expectedColumns = [];
+        foreach ($properties as $prop) {
+            $name = $prop->getName();
+            $column = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
+            $expectedColumns[] = $column;
+        }
+
+        $stmt = $this->executeStatement("PRAGMA table_info($this->TABLE_NAME)");
+        $actualColumns = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $actualColumns[] = $row['name'];
+        }
+
+        $missing = array_diff($expectedColumns, $actualColumns);
+        if (!empty($missing)) {
+            throw new Exception("Missing columns in table '$this->TABLE_NAME': " . implode(', ', $missing));
+        }
+    }
+
+    /**
+     * Zwraca dozwolone pola do update'u na podstawie encji (wszystkie poza id i createdAt).
+     * @return array
+     */
+    public function getAllowedFields(): array
+    {
+        $reflection = new ReflectionClass(User::class);
+        $properties = $reflection->getProperties();
+
+        $fields = [];
+        foreach ($properties as $prop) {
+            $name = $prop->getName();
+            if ($name !== 'id' && $name !== 'createdAt') {
+                $fields[] = $name;
+            }
+        }
+        return $fields;
     }
 
     /**

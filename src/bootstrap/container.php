@@ -9,8 +9,6 @@ use src\controllers\PanelController;
 use src\infrastructure\container\Container;
 use src\infrastructure\factories\LoggerFactory;
 use src\infrastructure\factories\PDOFactory;
-use src\infrastructure\utils\PDOSchemaAdapter;
-use src\infrastructure\utils\SchemaChecker;
 use src\repository\AnnouncementRepository;
 use src\repository\CountdownRepository;
 use src\repository\ModuleRepository;
@@ -42,10 +40,6 @@ $container->set(config::class, fn() => config::fromEnv());
 
 // ErrorController
 $container->set(ErrorController::class, fn() => new ErrorController());
-
-$container->set(PDOSchemaAdapter::class, fn() => new PDOSchemaAdapter($container->get(PDO::class), 'sqlite'));
-
-$container->set(SchemaChecker::class, fn() => new SchemaChecker($container->get(PDOSchemaAdapter::class), 'users'));
 
 //DisplayController
 $container->set(DisplayController::class, function (Container $c) {
@@ -111,7 +105,6 @@ $container->set(UserService::class, function (Container $c): UserService {
     $cfg = $c->get(config::class);
     return new UserService(
         $c->get(UserRepository::class),
-        $c->get(SchemaChecker::class),
         $cfg->maxUsernameLength(),
         $cfg->minPasswordLength(),
     );

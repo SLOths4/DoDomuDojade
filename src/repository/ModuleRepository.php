@@ -45,8 +45,7 @@ class ModuleRepository extends Model
     {
         $query = "SELECT * FROM $this->TABLE_NAME WHERE id = :id LIMIT 1";
         $params = ['id' => [$id, PDO::PARAM_INT]];
-        $rows = $this->executeStatement($query, $params);
-        $row = $rows[0];
+        $row = $this->executeStatement($query, $params);
         return new Module(
             $row['id'],
             $row['module_name'],
