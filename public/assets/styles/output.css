@@ -336,6 +336,9 @@
   .ml-1 {
     margin-left: calc(var(--spacing) * 1);
   }
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
+  }
   .block {
     display: block;
   }
@@ -362,6 +365,12 @@
   }
   .max-h-min {
     max-height: min-content;
+  }
+  .min-h-fit {
+    min-height: fit-content;
+  }
+  .min-h-lvh {
+    min-height: 100lvh;
   }
   .min-h-screen {
     min-height: 100vh;
@@ -423,6 +432,9 @@
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   }
+  .resize {
+    resize: both;
+  }
   .list-none {
     list-style-type: none;
   }
@@ -434,6 +446,9 @@
   }
   .flex-col {
     flex-direction: column;
+  }
+  .items-baseline {
+    align-items: baseline;
   }
   .items-center {
     align-items: center;
@@ -479,6 +494,9 @@
   }
   .overflow-x-auto {
     overflow-x: auto;
+  }
+  .overflow-x-hidden {
+    overflow-x: hidden;
   }
   .overflow-y-auto {
     overflow-y: auto;
@@ -672,6 +690,12 @@
   .text-xs {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .text-\[15px\] {
+    font-size: 15px;
+  }
+  .text-\[18px\] {
+    font-size: 18px;
   }
   .text-\[20px\] {
     font-size: 20px;
@@ -932,6 +956,22 @@
       line-height: var(--tw-leading, var(--text-4xl--line-height));
     }
   }
+  .md\:max-lg\:text-base {
+    @media (width >= 48rem) {
+      @media (width < 64rem) {
+        font-size: var(--text-base);
+        line-height: var(--tw-leading, var(--text-base--line-height));
+      }
+    }
+  }
+  .md\:max-lg\:text-lg {
+    @media (width >= 48rem) {
+      @media (width < 64rem) {
+        font-size: var(--text-lg);
+        line-height: var(--tw-leading, var(--text-lg--line-height));
+      }
+    }
+  }
   .lg\:hidden {
     @media (width >= 64rem) {
       display: none;
@@ -947,10 +987,22 @@
       padding-block: calc(var(--spacing) * 16);
     }
   }
+  .lg\:text-2xl {
+    @media (width >= 64rem) {
+      font-size: var(--text-2xl);
+      line-height: var(--tw-leading, var(--text-2xl--line-height));
+    }
+  }
   .lg\:text-9xl {
     @media (width >= 64rem) {
       font-size: var(--text-9xl);
       line-height: var(--tw-leading, var(--text-9xl--line-height));
+    }
+  }
+  .lg\:text-lg {
+    @media (width >= 64rem) {
+      font-size: var(--text-lg);
+      line-height: var(--tw-leading, var(--text-lg--line-height));
     }
   }
   .dark\:border-gray-600 {

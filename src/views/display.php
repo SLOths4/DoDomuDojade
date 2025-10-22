@@ -11,10 +11,10 @@
     <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-primary-200 font-lato text-gray-800">
+<body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
 <!-- 🔹 GÓRNY PANEL: Data / Czas / Pogoda -->
-<div class="flex mx-1 my-2">
+<div x-ref="header" class="flex mx-1 my-2">
     <!-- DATA I CZAS -->
     <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom justify-around items-center">
         <img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
@@ -59,10 +59,10 @@
 </div>
 
 <!-- 🔹 GŁÓWNY GRID: Tramwaje | Odliczanie + Ogłoszenia -->
-<div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2">
+<div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2" :style="`height: ${gridHeight}px;`">
 
     <!-- LEWA KOLUMNA: Tramwaje -->
-    <div x-data="tramDepartures()" x-init="load()" class="bg-white rounded-2xl h-full shadow-custom py-2 px-1">
+    <div x-data="tramDepartures()" x-init="load()" class="bg-white rounded-2xl shadow-custom py-2 px-1">
         <template x-if="loading">
             <p class="text-white text-center">Ładowanie danych...</p>
         </template>
@@ -94,7 +94,7 @@
     </div>
 
     <!-- ŚRODKOWA KOLUMNA: Odliczanie + Ogłoszenia -->
-    <div class="bg-white rounded-2xl h-[800px] shadow-custom py-2 px-2 flex flex-col">
+    <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col">
 
         <!-- ODLICZANIE -->
         <div x-data="countdown()" x-init="load()">
@@ -166,6 +166,26 @@
 
 <!-- 🔹 KOMPONENTY ALPINE -->
 <script>
+    function layout() {
+        return {
+            gridHeight: 0,
+            init() {
+                this.calcGridHeight();
+                window.addEventListener('resize', () => this.calcGridHeight());
+                // Delay calculation after fonts and styles settle
+                requestAnimationFrame(() => this.calcGridHeight());
+            },
+            calcGridHeight() {
+                const headerRect = this.$refs.header?.getBoundingClientRect() || { height: 0, top: 0, bottom: 0 };
+                const marginTop = parseFloat(getComputedStyle(this.$refs.header).marginTop) || 0;
+                const marginBottom = parseFloat(getComputedStyle(this.$refs.header).marginBottom) || 0;
+                const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
+
+                this.gridHeight = window.innerHeight - totalHeaderHeight - 1; // 8px fudge factor/padding adjustment
+            }
+        }
+    }
+
     function clock() {
         return {
             date: '',
