@@ -31,10 +31,10 @@
     <!-- POGODA -->
     <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom justify-around items-center font-mono text-xl font-extrabold">
         <template x-if="loading">
-            <p class="text-white">Ładowanie...</p>
+            <p class="text-center">Ładowanie...</p>
         </template>
         <template x-if="error">
-            <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+            <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg items-center space-x-2 flex flex-grow w-full">
                 <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                 <p class="text-red-500 text-sm font-medium" x-text="error"></p>
             </div>
@@ -67,7 +67,7 @@
             <p class="text-white text-center">Ładowanie danych...</p>
         </template>
         <template x-if="error">
-            <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+            <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                 <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                 <p class="text-red-500 text-sm font-medium" x-text="error"></p>
             </div>
@@ -97,60 +97,67 @@
     <div class="bg-white rounded-2xl h-[800px] shadow-custom py-2 px-2 flex flex-col">
 
         <!-- ODLICZANIE -->
-        <div x-data="countdown()" x-init="load()" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
-            <template x-if="loading">
-                <p class="text-white">Ładowanie...</p>
-            </template>
+        <div x-data="countdown()" x-init="load()">
+            <!-- Parent div, hidden when error or info -->
+            <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+                <template x-if="loading">
+                    <p class="text-center">Ładowanie...</p>
+                </template>
+                <template x-if="!loading && data">
+                    <p x-text="message"></p>
+                </template>
+            </div>
+
+            <!-- Error template, outside parent -->
             <template x-if="error">
-                <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+                <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                     <p class="text-red-500 text-sm font-medium" x-text="error"></p>
                 </div>
             </template>
-            <template x-if="!loading && !error && !data">
-                <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+
+            <!-- Info template, outside parent -->
+            <template x-if="info">
+                <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
                     <p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p>
                 </div>
             </template>
-            <template x-if="!loading && !error && data">
-                <p x-text="message"></p>
-            </template>
         </div>
 
-        <!-- OGŁOSZENIA -->
-        <div x-data="announcements()" x-init="load()" class="flex-1 overflow-y-auto py-2">
-            <template x-if="loading">
-                <p class="text-white text-center">Ładowanie...</p>
-            </template>
+        <div x-data="announcements()" x-init="load()">
+            <div class="flex-1 overflow-y-auto py-2">
+                <template x-if="loading">
+                    <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
+                </template>
+                <template x-if="!loading && announcements" x-for="(group, index) in grouped" :key="index">
+                    <div x-show="current === index" x-transition>
+                        <template x-for="a in group" :key="a.id">
+                            <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
+                                <h3 class="font-bold text-lg" x-text="a.title"></h3>
+                                <p class="text-lg" x-text="a.text"></p>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    <i class="fa-solid fa-calendar text-primary-400"></i>
+                                    <strong>Utworzono:</strong> <span x-text="a.date"></span>,
+                                    <strong>Ważne do:</strong> <span x-text="a.validUntil"></span>
+                                    <i class="fa-solid fa-user pl-2 text-primary-400"></i>
+                                    <span x-text="a.author"></span>
+                                </p>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
             <template x-if="error">
-                <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+                <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                     <p class="text-red-500 text-sm font-medium" x-text="error"></p>
                 </div>
             </template>
-            <template x-if="!loading && !error && !announcements.length">
-                <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+            <template x-if="info">
+                <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
                     <p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p>
-                </div>
-            </template>
-
-            <template x-for="(group, index) in grouped" :key="index">
-                <div x-show="current === index" x-transition>
-                    <template x-for="a in group" :key="a.id">
-                        <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
-                            <h3 class="font-bold text-lg" x-text="a.title"></h3>
-                            <p class="text-lg" x-text="a.text"></p>
-                            <p class="text-sm text-gray-600 mt-1">
-                                <i class="fa-solid fa-calendar text-primary-400"></i>
-                                <strong>Utworzono:</strong> <span x-text="a.date"></span>,
-                                <strong>Ważne do:</strong> <span x-text="a.validUntil"></span>
-                                <i class="fa-solid fa-user pl-2 text-primary-400"></i>
-                                <span x-text="a.author"></span>
-                            </p>
-                        </div>
-                    </template>
                 </div>
             </template>
         </div>
@@ -196,20 +203,23 @@
                         this.loading = false;
                         return;
                     }
-                    this.data = json.data;
-                    const t = json.data.temperature;
-                    this.tempColor = t <= -10 ? '#AECBFA' :
-                        t <= 0 ? '#A0F0ED' :
-                            t <= 5 ? '#000000' :
-                                t <= 15 ? '#FFF9A6' :
-                                    t <= 25 ? '#FFD1A4' : '#FFB3B3';
+                    // Data diffing to prevent flashing
+                    if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                        this.data = json.data;
+                        const t = json.data.temperature;
+                        this.tempColor = t <= -10 ? '#AECBFA' :
+                            t <= 0 ? '#A0F0ED' :
+                                t <= 5 ? '#000000' :
+                                    t <= 15 ? '#FFF9A6' :
+                                        t <= 25 ? '#FFD1A4' : '#FFB3B3';
+                    }
                     this.loading = false;
                 } catch (e) {
                     this.error = 'Błąd ładowania pogody';
                     this.loading = false;
                     console.error(e);
                 }
-                setTimeout(() => this.load(), 900000);
+                setTimeout(() => this.load(), 1000);
             }
         }
     }
@@ -229,10 +239,14 @@
                         body: JSON.stringify({ function: 'tramData' })
                     });
                     const json = await res.json();
-                    if (json.success && Array.isArray(json.data))
-                        this.data = json.data.slice(0, 25);
-                    else
+                    if (json.success && Array.isArray(json.data)) {
+                        const newData = json.data.slice(0, 25);
+                        if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
+                            this.data = newData;
+                        }
+                    } else {
                         this.error = 'Błąd ładowania odjazdów';
+                    }
                     this.loading = false;
                 } catch (e) {
                     this.error = 'Błąd ładowania odjazdów';
@@ -256,10 +270,9 @@
             message: '',
             error: null,
             loading: true,
+            info: null,
             intervalId: null,
             async load() {
-                this.loading = true;
-                this.error = null;
                 try {
                     const res = await fetch('/display/get_countdown', {
                         method: 'POST',
@@ -268,24 +281,37 @@
                     });
                     const json = await res.json();
                     if (json.success && json.data?.length) {
-                        this.data = json.data[0];
-                        this.update();
+                        if (this.error || this.info) {
+                            this.error = null;
+                            this.info = null;
+                        }
+                        this.loading = true;
+                        if (JSON.stringify(this.data) === JSON.stringify(json.data[0])) {
+                            this.loading = false;
+                        }
+                        if (JSON.stringify(this.data) !== JSON.stringify(json.data[0])) {
+                            this.data = json.data[0];
+                            this.loading = false;
+                            this.update();
+                            if (this.intervalId) clearInterval(this.intervalId);
+                            this.intervalId = setInterval(() => this.update(), 1000);
+                        }
+                    } else if (!json.data?.length) {
+                        this.loading = true;
+                        this.info = 'Brak danych odliczania';
                         if (this.intervalId) clearInterval(this.intervalId);
-                        this.intervalId = setInterval(() => this.update(), 1000);
-                    } else if(!json.data?.length) {
-                        this.error = 'Brak danych odliczania';
-                        if (this.intervalId) clearInterval(this.intervalId);
-                    } else if(!json.success) {
+                    } else if (!json.success) {
+                        this.loading = true;
                         this.error = 'Błąd ładowania odliczania';
                         if (this.intervalId) clearInterval(this.intervalId);
                     }
-                    this.loading = false;
                 } catch (e) {
                     this.error = 'Błąd ładowania odliczania';
                     if (this.intervalId) clearInterval(this.intervalId);
                     this.loading = false;
                     console.error('Fetch error:', e);
                 }
+                setTimeout(() => this.load(), 300000);
             },
             update() {
                 if (!this.data) return;
@@ -308,7 +334,6 @@
         }
     }
 
-
     function announcements() {
         return {
             announcements: [],
@@ -316,9 +341,9 @@
             current: 0,
             error: null,
             loading: true,
+            info: null,
+            rotateIntervalId: null,
             async load() {
-                this.loading = true;
-                this.error = null;
                 try {
                     const res = await fetch('/display/get_announcements', {
                         method: 'POST',
@@ -327,31 +352,51 @@
                     });
                     const json = await res.json();
                     if (json.success && json.data?.length) {
-                        this.announcements = json.data;
-                        this.grouped = this.chunk(json.data, 4);
-                        this.rotate();
+                        if (this.error || this.info) {
+                            this.error = null;
+                            this.info = null;
+                        }
+                        this.loading = true;
+                        if (JSON.stringify(this.announcements) === JSON.stringify(json.data)) {
+                            this.loading = false;
+                        }
+                        if (JSON.stringify(this.announcements) !== JSON.stringify(json.data)) {
+                            this.announcements = json.data;
+                            this.loading = false;
+                            this.grouped = this.chunk(json.data, 4);
+                            if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                            this.rotate();
+                        }
+                    } else if (!json.data?.length) {
+                        this.loading = true;
+                        this.info = 'Brak danych ogłoszeń';
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                     } else if (!json.success) {
+                        this.loading = true;
                         this.error = 'Błąd ładowania ogłoszeń';
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                     }
-                    this.loading = false;
                 } catch (e) {
                     this.error = 'Błąd ładowania ogłoszeń';
                     this.loading = false;
+                    if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                     console.error(e);
                 }
-                setTimeout(() => this.load(), 60000);
+                setTimeout(() => this.load(), 4000);
             },
             chunk(arr, size) {
                 return Array.from({ length: Math.ceil(arr.length / size) },
                     (_, i) => arr.slice(i * size, i * size + size));
             },
             rotate() {
-                setInterval(() => {
+                this.rotateIntervalId = setInterval(() => {
                     this.current = (this.current + 1) % this.grouped.length;
                 }, 8000);
             }
+
         }
     }
+
 </script>
 
 </body>
