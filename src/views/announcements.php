@@ -102,7 +102,7 @@ SessionHelper::remove('error');
                 </table>
             </div>
             <?php else: ?>
-                <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p></div>
+                <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2"> <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i><p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p></div>
             <?php endif; ?>
 
             <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
