@@ -16,7 +16,7 @@
 <!-- 🔹 GÓRNY PANEL: Data / Czas / Pogoda -->
 <div x-ref="header" class="flex mx-1 my-2">
     <!-- DATA I CZAS -->
-    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-1 shadow-custom justify-around items-center">
+    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-2 shadow-custom justify-around items-center max-sm:hidden">
         <img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
         <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
             <i class="fa-solid fa-calendar text-primary-400"></i>
@@ -29,7 +29,7 @@
     </div>
 
     <!-- POGODA -->
-    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-2xl ml-1 shadow-custom justify-around items-center font-mono text-xl font-extrabold">
+    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
         <template x-if="loading">
             <p class="text-center">Ładowanie...</p>
         </template>
@@ -40,7 +40,7 @@
             </div>
         </template>
         <template x-if="!loading && !error && data">
-            <div class="flex w-full justify-around">
+            <div class="flex w-full justify-around text-xl">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${tempColor}`"></i>
                     <span x-text="`${data.temperature}°C`"></span>
@@ -76,14 +76,14 @@
         <table x-show="!loading && !error && data.length" class="table-fixed w-full">
             <thead>
             <tr class="font-bold text-primary-400 text-lg">
-                <th class="w-1/6"><i class="fa-solid fa-train-tram"></i> Linia</th>
-                <th class="w-4/6"><i class="fa-solid fa-location-dot"></i> Kierunek</th>
-                <th class="w-1/6"><i class="fa-solid fa-clock"></i> Odjazd</th>
+                <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-train-tram"></i> Linia</th>
+                <th class="w-4/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-location-dot"></i> Kierunek</th>
+                <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-clock"></i> Odjazd</th>
             </tr>
             </thead>
             <tbody>
             <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
-                <tr class="text-center border-t border-gray-200 text-base">
+                <tr class="text-center border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
                     <td x-text="tram.line"></td>
                     <td x-text="tram.direction"></td>
                     <td x-html="formatMinutes(tram.minutes)"></td>

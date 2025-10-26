@@ -336,9 +336,6 @@
   .ml-1 {
     margin-left: calc(var(--spacing) * 1);
   }
-  .ml-2 {
-    margin-left: calc(var(--spacing) * 2);
-  }
   .block {
     display: block;
   }
@@ -357,20 +354,8 @@
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
-  .h-\[800px\] {
-    height: 800px;
-  }
-  .h-full {
-    height: 100%;
-  }
   .max-h-min {
     max-height: min-content;
-  }
-  .min-h-fit {
-    min-height: fit-content;
-  }
-  .min-h-lvh {
-    min-height: 100lvh;
   }
   .min-h-screen {
     min-height: 100vh;
@@ -447,9 +432,6 @@
   .flex-col {
     flex-direction: column;
   }
-  .items-baseline {
-    align-items: baseline;
-  }
   .items-center {
     align-items: center;
   }
@@ -494,9 +476,6 @@
   }
   .overflow-x-auto {
     overflow-x: auto;
-  }
-  .overflow-x-hidden {
-    overflow-x: hidden;
   }
   .overflow-y-auto {
     overflow-y: auto;
@@ -690,12 +669,6 @@
   .text-xs {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
-  }
-  .text-\[15px\] {
-    font-size: 15px;
-  }
-  .text-\[18px\] {
-    font-size: 18px;
   }
   .text-\[20px\] {
     font-size: 20px;
