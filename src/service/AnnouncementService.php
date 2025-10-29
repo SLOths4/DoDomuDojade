@@ -36,19 +36,34 @@ readonly class AnnouncementService {
         return $this->repo->add($a);
     }
 
-    /**
-     * Updates existing announcement
-     * @param int $id
-     * @param array $data
-     * @return bool
-     * @throws Exception
-     */
-    public function update(int $id, array $data): bool {
+    public function update(int $id, array $data): bool 
+    {
         $this->validate($data);
-        $a = $this->repo->findById($id);
-        foreach ($this->ALLOWED_FIELDS as $f)
-            if (isset($data[$f])) $a->$f = trim($data[$f]);
-        return $this->repo->update($a);
+        
+        $existing = $this->repo->findById($id);
+
+        if ($existing === null) {
+            throw new Exception("Announcement with ID {$id} not found");
+        }
+        
+        $updatedData = [
+            'title' => isset($data['title']) ? trim($data['title']) : $existing->title,
+            'text' => isset($data['text']) ? trim($data['text']) : $existing->text,
+            'valid_until' => isset($data['valid_until']) 
+                ? new DateTimeImmutable($data['valid_until'])
+                : $existing->validUntil,
+        ];
+        
+        $updated = new Announcement(
+            $existing->id,
+            $updatedData['title'],
+            $updatedData['text'],
+            $existing->date,
+            $updatedData['valid_until'],
+            $existing->userId
+        );
+        
+        return $this->repo->update($updated);
     }
 
     /**

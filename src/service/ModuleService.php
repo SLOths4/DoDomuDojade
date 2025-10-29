@@ -12,6 +12,7 @@ readonly class ModuleService
     public function __construct(
         private ModuleRepository $repo,
         private array $ALLOWED_FIELDS,
+        private string $DATE_FORMAT = 'H:i:s',
     ) {}
 
     /**
@@ -25,8 +26,8 @@ readonly class ModuleService
             null,
             trim($data['moduleName']),
             (bool) $data['isActive'],
-            new DateTimeImmutable($data['startTime']),
-            new DateTimeImmutable($data['endTime'])
+            DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['startTime']),
+            DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['endTime'])
         );
         return $this->repo->add($module);
     }
@@ -45,8 +46,8 @@ readonly class ModuleService
         foreach ($this->ALLOWED_FIELDS as $field) {
             if (isset($data[$field])) {
                 $value = $data[$field];
-                if (in_array($field, ['start_t  ime', 'end_time'])) {
-                    $module->$field = new DateTimeImmutable($value);
+                if (in_array($field, ['start_time', 'end_time'])) {
+                    $module->$field = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $value);
                 } elseif ($field === 'is_active') {
                     $module->$field = (bool)$value;
                 } else {
@@ -81,10 +82,10 @@ readonly class ModuleService
         if (empty($data['start_time']) || empty($data['end_time'])) {
             throw new Exception('Module start and end time are required');
         }
-        $start = DateTimeImmutable::createFromFormat('H:i:s', $data['start_time']);
-        $end = DateTimeImmutable::createFromFormat('H:i:s', $data['end_time']);
+        $start = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['start_time']);
+        $end = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['end_time']);
         if (!$start || !$end) {
-            throw new Exception('Invalid time format, expected H:i:s');
+            throw new Exception("Invalid time format, expected {$this->DATE_FORMAT}");
         }
         if ($end <= $start) {
             throw new Exception('End time must be greater than start time');
@@ -160,5 +161,4 @@ readonly class ModuleService
 
         return $this->repo->update($toggledModule);
     }
-
 }

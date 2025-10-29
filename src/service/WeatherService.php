@@ -113,6 +113,8 @@ class WeatherService extends Model {
     {
         $this->logger->info("Rozpoczęto pobieranie danych z API Airly", ['url' => $this->airlyUrl]);
 
+        $url = $this->airlyUrl . '?locationId=' . urlencode($this->airlyLocationId);
+
         $headers = [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
@@ -121,7 +123,7 @@ class WeatherService extends Model {
         ];
 
         try {
-            $data = $this->fetchData($this->airlyUrl, $headers);
+            $data = $this->fetchData($url, $headers);
             $this->logger->info("Pomyślnie pobrano dane z API Airly");
         } catch (RuntimeException $e) {
             $this->logger->warning("Nie udało się pobrać danych z API Airly: " . $e->getMessage());

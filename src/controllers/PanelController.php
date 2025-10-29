@@ -14,6 +14,7 @@ use src\service\AnnouncementService;
 use src\service\CountdownService;
 use src\service\ModuleService;
 use src\service\UserService;
+use DateTimeImmutable;
 
 /**
  * Panel controller
@@ -144,20 +145,33 @@ class PanelController extends Controller
                 $usernames[$u->id] = $u->username;
             }
 
+            $formattedCountdowns = [];
+            foreach ($countdowns as $countdown) {
+                $formattedCountdowns[] = (object) [
+                    'id' => $countdown->id,
+                    'title' => $countdown->title,
+                    'userId' => $countdown->userId,
+                    'countTo' => $countdown->countTo instanceof \DateTimeImmutable 
+                        ? $countdown->countTo->format('Y-m-d') 
+                        : $countdown->countTo,
+                ];
+            }
+
             $this->render('countdowns', [
                 'user' => $user,
                 'usernames' => $usernames,
-                'countdowns' => $countdowns
+                'countdowns' => $formattedCountdowns
             ]);
         } catch (Exception $e) {
             $this->logger->error("Error while loading countdowns: " . $e->getMessage());
 
-            SessionHelper::set('error', 'Nie udało się załadować strony odliczania.');
+            SessionHelper::set('error', 'Nie udało się załadować stronę odliczania.');
 
             header("Location: /login");
             exit;
         }
     }
+
 
     public function announcements(): void
     {
@@ -171,10 +185,25 @@ class PanelController extends Controller
                 $usernames[$u->id] = $u->username;
             }
 
+            foreach ($announcements as $announcement) {
+                $formattedAnnouncements[] = (object) [
+                    'id' => $announcement->id,
+                    'title' => $announcement->title,
+                    'text' => $announcement->text,
+                    'userId' => $announcement->userId,
+                    'date' => $announcement->date instanceof \DateTimeImmutable 
+                        ? $announcement->date->format('Y-m-d') 
+                        : $announcement->date,
+                    'validUntil' => $announcement->validUntil instanceof \DateTimeImmutable 
+                        ? $announcement->validUntil->format('Y-m-d') 
+                        : $announcement->validUntil
+                ];
+            }
+
             $this->render('announcements', [
                 'user' => $user,
                 'usernames' => $usernames,
-                'announcements' => $announcements
+                'announcements' => $formattedAnnouncements
             ]);
         } catch (Exception $e) {
             $this->logger->error("An error occurred: ".$e->getMessage());
@@ -222,8 +251,8 @@ class PanelController extends Controller
                 $this->logger->debug("User verification request received.");
                 $this->checkCsrf();
 
-                $username = trim($_POST['username'] ?? '');
-                $password = trim($_POST['password'] ?? '');
+                $username = trim($_POST['username']);
+                $password = trim($_POST['password']);
 
                 if (empty($password) || empty($username)) {
                     $this->logger->error("Password or username cannot be null!");
@@ -384,22 +413,22 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
+            $username = trim($_POST['username']);
+            $password = trim($_POST['password']);
+
             try {
                 $this->logger->debug("add_user request received");
 
-                if (!isset($_POST['username']) || !isset($_POST['password']) || empty(trim($_POST['username'])) || empty(trim($_POST['password']))) {
+                if (!isset($username) || !isset($password)) {
                     $this->logger->error("Username and password are required");
                     SessionHelper::set('error', 'Username and password are required!');
                     header('Location: /panel/users');
                     exit;
                 }
 
-                $username = trim($_POST['username']);
-                $password = trim($_POST['password']);
-
                 $data = [
-                    $username,
-                    $password
+                    'username' => $username,
+                    'password' => $password
                 ];
 
                 $result = $this->userService->create($data);
@@ -441,7 +470,7 @@ class PanelController extends Controller
                     exit;
                 }
 
-                $result = $this->userService->delete($userToDelete);
+                $result = $this->userService->delete($userId, $userToDelete);
                 if ($result) {
                     $this->logger->info("User deleted successfully");
                 } else {
@@ -471,6 +500,11 @@ class PanelController extends Controller
             try {
                 $userId = SessionHelper::get('user_id');
 
+                $this->logger->debug("add_countdown request received", [
+                    'user_id' => $userId,
+                    'title' => $title
+                ]);
+
                 if (empty($title) || empty($count_to)) {
                     SessionHelper::set('error', 'All fields must be filled.');
                     header('Location: /panel/countdowns');
@@ -478,8 +512,8 @@ class PanelController extends Controller
                 }
 
                 $data = [
-                    $title,
-                    $count_to
+                    'title' => $title,
+                    'count_to' => $count_to
                 ];
 
                 $this->countdownService->create($data, $userId);
@@ -517,14 +551,15 @@ class PanelController extends Controller
         }
     }
 
-    public function editCountdown(): void {
+    public function editCountdown(): void 
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
             $newCountdownTitle = trim($_POST['title']);
             $newRawCountdownCountTo = $_POST['count_to'];
-            $countdownId = $_POST['countdown_id'];
+            $countdownId = (int)$_POST['countdown_id'];
 
             try {
                 $countdown = $this->countdownService->getById($countdownId);
@@ -597,35 +632,38 @@ class PanelController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
-
+    
             $newModuleStartTime = $_POST['start_time'] ?? '';
             $newModuleEndTime = $_POST['end_time'] ?? '';
             $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
             $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
-
+    
             try {
                 $module = $this->moduleService->getById($moduleId);
-
+    
                 if (empty($module)) {
                     throw new Exception("Module not found");
                 }
-
+    
                 $updates = [];
-
-                if ($newModuleStartTime !== '' && $newModuleStartTime !== $module->startTime) {
+    
+                // Formatuj daty do porównania
+                if ($newModuleStartTime !== '' && $newModuleStartTime !== $module->startTime->format('H:i:s')) {
                     $updates['start_time'] = $newModuleStartTime;
                 }
-
-                if ($newModuleEndTime !== '' && $newModuleEndTime !== $module->endTime) {
+    
+                if ($newModuleEndTime !== '' && $newModuleEndTime !== $module->endTime->format('H:i:s')) {
                     $updates['end_time'] = $newModuleEndTime;
                 }
-
+    
                 if ($newModuleIsActive !== (int)$module->isActive) {
                     $this->moduleService->toggle($moduleId);
                 }
-
-                $this->moduleService->update($moduleId, $updates);
-
+    
+                if (!empty($updates)) {
+                    $this->moduleService->update($moduleId, $updates);
+                }
+    
                 $this->logger->debug("Module updated successfully");
                 header('Location: /panel/modules');
                 exit;
@@ -637,4 +675,5 @@ class PanelController extends Controller
             }
         }
     }
+    
 }

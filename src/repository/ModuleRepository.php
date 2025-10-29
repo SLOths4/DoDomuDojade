@@ -15,8 +15,48 @@ class ModuleRepository extends Model
         PDO $pdo,
         LoggerInterface $logger,
         private readonly string $TABLE_NAME,
+        private readonly string $DATE_FORMAT,
     ) {
         parent::__construct($pdo, $logger);
+    }
+
+    /**
+     * Konwertuje dane z bazy do DateTimeImmutable z obsługą błędów
+     */
+    private function parseDateTime(?string $dateString): DateTimeImmutable
+    {
+        if (empty($dateString)) {
+            throw new Exception("Date string cannot be empty");
+        }
+
+        // Najpierw spróbuj z ustawionym formatem
+        $date = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $dateString);
+        if ($date !== false) {
+            return $date;
+        }
+
+        // Fallback: spróbuj standardowych formatów
+        $formats = ['Y-m-d H:i:s', 'H:i:s', 'Y-m-d', 'c', 'U'];
+        
+        foreach ($formats as $format) {
+            $date = DateTimeImmutable::createFromFormat($format, $dateString);
+            if ($date !== false) {
+                $this->logger->debug("Successfully parsed date with format: $format", ['value' => $dateString]);
+                return $date;
+            }
+        }
+
+        // Ostatni fallback: spróbuj konstruktora (może być ISO 8601)
+        try {
+            return new DateTimeImmutable($dateString);
+        } catch (Exception $e) {
+            $this->logger->error("Unable to parse date string", [
+                'value' => $dateString,
+                'expected_format' => $this->DATE_FORMAT,
+                'error' => $e->getMessage()
+            ]);
+            throw new Exception("Invalid date format: '$dateString'");
+        }
     }
 
     /**
@@ -30,8 +70,8 @@ class ModuleRepository extends Model
         $params = [
             'module_name' => [$module->moduleName, PDO::PARAM_STR],
             'is_active' => [$module->isActive ? 1 : 0, PDO::PARAM_INT],
-            'start_time' => [$module->startTime->format('H:i:s'), PDO::PARAM_STR],
-            'end_time' => [$module->endTime->format('H:i:s'), PDO::PARAM_STR],
+            'start_time' => [$module->startTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
+            'end_time' => [$module->endTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
         ];
         $this->executeStatement($query, $params);
         return true;
@@ -45,13 +85,19 @@ class ModuleRepository extends Model
     {
         $query = "SELECT * FROM $this->TABLE_NAME WHERE id = :id LIMIT 1";
         $params = ['id' => [$id, PDO::PARAM_INT]];
-        $row = $this->executeStatement($query, $params);
+        $stmt = $this->executeStatement($query, $params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            return null;
+        }
+
         return new Module(
             $row['id'],
             $row['module_name'],
             (bool) $row['is_active'],
-            new DateTimeImmutable($row['start_time']),
-            new DateTimeImmutable($row['end_time'])
+            $this->parseDateTime($row['start_time']),
+            $this->parseDateTime($row['end_time'])
         );
     }
 
@@ -63,7 +109,7 @@ class ModuleRepository extends Model
      */
     public function update(Module $module): bool
     {
-        $this->logger->debug("Updating module", ["module" => $module]);
+        $this->logger->debug("Updating module", ["module_id" => $module->id]);
 
         $query = "
         UPDATE $this->TABLE_NAME 
@@ -80,8 +126,8 @@ class ModuleRepository extends Model
             ':id' => [$module->id, PDO::PARAM_INT],
             ':module_name' => [$module->moduleName, PDO::PARAM_STR],
             ':is_active' => [$module->isActive ? 1 : 0, PDO::PARAM_INT],
-            ':start_time' => [$module->startTime->format('H:i:s'), PDO::PARAM_STR],
-            ':end_time' => [$module->endTime->format('H:i:s'), PDO::PARAM_STR],
+            ':start_time' => [$module->startTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
+            ':end_time' => [$module->endTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
         ]);
 
         $success = $stmt->execute();
@@ -110,17 +156,29 @@ class ModuleRepository extends Model
     public function findAll(): array
     {
         $query = "SELECT * FROM $this->TABLE_NAME";
-        $rows = $this->executeStatement($query);
+        $stmt = $this->executeStatement($query);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         $modules = [];
+        
         foreach ($rows as $row) {
-            $modules[] = new Module(
-                $row['id'],
-                $row['module_name'],
-                (bool)$row['is_active'],
-                new DateTimeImmutable($row['start_time']),
-                new DateTimeImmutable($row['end_time'])
-            );
+            try {
+                $modules[] = new Module(
+                    $row['id'],
+                    $row['module_name'],
+                    (bool)$row['is_active'],
+                    $this->parseDateTime($row['start_time']),
+                    $this->parseDateTime($row['end_time'])
+                );
+            } catch (Exception $e) {
+                $this->logger->error("Failed to parse module record", [
+                    'module_id' => $row['id'] ?? 'unknown',
+                    'error' => $e->getMessage()
+                ]);
+                throw $e;
+            }
         }
+        
         return $modules;
     }
 
@@ -131,17 +189,29 @@ class ModuleRepository extends Model
     public function findActive(): array
     {
         $query = "SELECT * FROM $this->TABLE_NAME WHERE is_active = 1";
-        $rows = $this->executeStatement($query);
+        $stmt = $this->executeStatement($query);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         $modules = [];
+        
         foreach ($rows as $row) {
-            $modules[] = new Module(
-                $row['id'],
-                $row['module_name'],
-                (bool)$row['is_active'],
-                new DateTimeImmutable($row['start_time']),
-                new DateTimeImmutable($row['end_time'])
-            );
+            try {
+                $modules[] = new Module(
+                    $row['id'],
+                    $row['module_name'],
+                    (bool)$row['is_active'],
+                    $this->parseDateTime($row['start_time']),
+                    $this->parseDateTime($row['end_time'])
+                );
+            } catch (Exception $e) {
+                $this->logger->error("Failed to parse active module record", [
+                    'module_id' => $row['id'] ?? 'unknown',
+                    'error' => $e->getMessage()
+                ]);
+                throw $e;
+            }
         }
+        
         return $modules;
     }
 
@@ -151,18 +221,21 @@ class ModuleRepository extends Model
     public function findByName(string $moduleName): ?Module
     {
         $query = "SELECT * FROM {$this->TABLE_NAME} WHERE module_name = :module_name LIMIT 1";
-        $rows = $this->executeStatement($query, [
+        $stmt = $this->executeStatement($query, [
             ':module_name' => [$moduleName, \PDO::PARAM_STR]
         ]);
-        $row = $rows[0];
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            return null;
+        }
 
         return new Module(
             $row['id'],
             $row['module_name'],
             (bool)$row['is_active'],
-            new DateTimeImmutable($row['start_time']),
-            new DateTimeImmutable($row['end_time']),
+            $this->parseDateTime($row['start_time']),
+            $this->parseDateTime($row['end_time']),
         );
     }
-
 }

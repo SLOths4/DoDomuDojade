@@ -26,13 +26,13 @@ readonly class UserService {
      */
     public function create(array $data): bool
     {
-        $this->validate($data);
+        $this->validateNewUser($data);
         if ($this->getByExactUsername($data['username'])) {
             throw new Exception("User already exists");
         }
 
         $username = trim($data['username']);
-        $passwordHash = password_hash($data['passwordHash'], PASSWORD_DEFAULT);
+        $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
 
         $u = new User(
             null,
@@ -64,9 +64,12 @@ readonly class UserService {
      * @return bool
      * @throws Exception
      */
-    public function delete(int $id): bool {
-        $userId = SessionHelper::get('user')->id;
-        if ($userId === $id) {
+    public function delete(int $activeUserId, int $id): bool {
+        $userId = $this->repo->findById($id); 
+        if (!$userId) {
+            throw new Exception("Invalid user ID.");
+        }
+        if ($activeUserId === $id) {
             throw new Exception("User can't delete themselves.");
         }
         return $this->repo->delete($id);
@@ -118,10 +121,10 @@ readonly class UserService {
      * @return bool
      * @throws Exception
      */
-    public function changePassword(int $id, string $newHash): bool {
-        if (strlen($newHash) < $this->MIN_PASSWORD_LENGTH)
+    public function changePassword(int $id, string $newPassword): bool {
+        if (strlen($newPassword) < $this->MIN_PASSWORD_LENGTH)
             throw new Exception("Password too short");
-        return $this->repo->updatePassword($id, $newHash);
+        return $this->repo->updatePassword($id, $newPassword);
     }
 
     /**
@@ -130,10 +133,12 @@ readonly class UserService {
      * @return void
      * @throws Exception
      */
-    private function validate(array $d): void {
-        if (strlen($d['username'] ?? '') > $this->MAX_USERNAME_LENGTH)
+    private function validateNewUser(array $d): void {
+        if (!isset($d['username']) || !isset($d['password']))
+            throw new Exception('Missing required fields');
+        if (strlen($d['username']) > $this->MAX_USERNAME_LENGTH)
             throw new Exception('Username too long');
-        if (strlen($d['password_hash'] ?? '') < $this->MIN_PASSWORD_LENGTH)
+        if (strlen($d['password']) < $this->MIN_PASSWORD_LENGTH)
             throw new Exception('Password hash too short');
     }
 

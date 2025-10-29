@@ -27,7 +27,7 @@ class AnnouncementRepository extends Model
      * @return Announcement
      * @throws Exception
      */
-    private function mapRow(PDOStatement $r): Announcement
+    private function mapRow(array $r): Announcement
     {
         return new Announcement(
             (int)$r['id'],
@@ -48,7 +48,7 @@ class AnnouncementRepository extends Model
     {
         $stmt = $this->executeStatement("SELECT * FROM $this->TABLE_NAME");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($r) => $this->mapRow($r), $rows);
+        return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
     /**
@@ -63,7 +63,7 @@ class AnnouncementRepository extends Model
             [':date' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]
         );
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($r) => $this->mapRow($r), $rows);
+        return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
     /**
@@ -79,7 +79,7 @@ class AnnouncementRepository extends Model
             [':title' => ["%$title%", PDO::PARAM_STR]]
         );
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($r) => $this->mapRow($r), $rows);
+        return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
     /**
@@ -90,10 +90,14 @@ class AnnouncementRepository extends Model
      */
     public function findById(int $id): Announcement
     {
-        $rows = $this->executeStatement(
+        $stmt = $this->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($rows)) {
+            throw new Exception("Announcement with ID $id not found");
+        }
         return $this->mapRow($rows[0]);
     }
 

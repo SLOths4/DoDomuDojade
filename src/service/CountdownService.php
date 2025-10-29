@@ -13,10 +13,11 @@ readonly class CountdownService
         private CountdownRepository $repo,
         private int $MAX_TITLE_LENGTH,
         private array $ALLOWED_FIELDS,
+        private string $DATE_FORMAT
     ) {}
 
     /**
-     * Creates new countdown after validation.
+     * Creates a new countdown after validation.
      * @param array $data
      * @param int $userId
      * @return bool
@@ -45,21 +46,28 @@ readonly class CountdownService
     public function update(int $id, array $data): bool
     {
         $this->validate($data);
-        $countdown = $this->repo->findById($id);
-        if (!$countdown) {
-            throw new Exception("Countdown with ID $id not found");
+        
+        $existing = $this->repo->findById($id);
+        
+        if ($existing === null) {
+            throw new Exception("Countdown with ID {$id} not found");
         }
-        foreach ($this->ALLOWED_FIELDS as $field) {
-            if (isset($data[$field])) {
-                $value = $data[$field];
-                if ($field === 'count_to') {
-                    $countdown->$field = new DateTimeImmutable($value);
-                } else {
-                    $countdown->$field = trim($value);
-                }
-            }
-        }
-        return $this->repo->update($countdown);
+        
+        $updatedData = [
+            'title' => isset($data['title']) ? trim($data['title']) : $existing->title,
+            'count_to' => isset($data['count_to']) 
+                ? new DateTimeImmutable($data['count_to'])
+                : $existing->countTo,
+        ];
+        
+        $updated = new Countdown(
+            $existing->id,
+            $updatedData['title'],
+            $updatedData['count_to'],
+            $existing->userId
+        );
+        
+        return $this->repo->update($updated);
     }
 
     /**
@@ -81,18 +89,14 @@ readonly class CountdownService
      */
     private function validate(array $data): void
     {
-        if (strlen($data['title'] ?? '') > $this->MAX_TITLE_LENGTH) {
-            throw new Exception('Title too long');
-        }
         if (empty($data['title'])) {
             throw new Exception('Missing title');
         }
+        if (strlen($data['title']) > $this->MAX_TITLE_LENGTH) {
+            throw new Exception('Title too long');
+        }
         if (empty($data['count_to'])) {
             throw new Exception('Missing countdown date');
-        }
-        $dt = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['count_to']);
-        if (!$dt) {
-            throw new Exception('Invalid countdown date format');
         }
     }
 

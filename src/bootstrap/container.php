@@ -57,6 +57,7 @@ $container->set(DisplayController::class, function (Container $c) {
     );
 });
 
+// PanelController
 $container->set(PanelController::class, function (Container $c) {
 
     return new PanelController(
@@ -69,6 +70,8 @@ $container->set(PanelController::class, function (Container $c) {
     );
 });
 
+// ANNOUNCEMENTS
+// AnnouncementsRepository
 $container->set(AnnouncementRepository::class, function (Container $c): AnnouncementRepository {
     $cfg = $c->get(config::class);
     return new AnnouncementRepository(
@@ -78,7 +81,6 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
         $cfg->announcementsDateFormat(),
     );
 });
-
 // AnnouncementsModel
 $container->set(AnnouncementService::class, function (Container $c): AnnouncementService {
     $cfg = $c->get(config::class);
@@ -90,6 +92,7 @@ $container->set(AnnouncementService::class, function (Container $c): Announcemen
     );
 });
 
+// USERS
 // UserModel
 $container->set(UserRepository::class, function (Container $c): UserRepository {
     $cfg = $c->get(config::class);
@@ -100,7 +103,7 @@ $container->set(UserRepository::class, function (Container $c): UserRepository {
         $cfg->userDateFormat(),
     );
 });
-
+// UserService
 $container->set(UserService::class, function (Container $c): UserService {
     $cfg = $c->get(config::class);
     return new UserService(
@@ -110,15 +113,18 @@ $container->set(UserService::class, function (Container $c): UserService {
     );
 });
 
+// MODULES
+// ModuleRepository
 $container->set(ModuleRepository::class, function (Container $c): ModuleRepository {
     $cfg = $c->get(config::class);
     return new ModuleRepository(
         $c->get(PDO::class),
         $c->get(LoggerInterface::class),
         $cfg->moduleTableName(),
+        $cfg->modulesDateFormat(),
     );
 });
-
+// ModuleService
 $container->set(ModuleService::class, function (Container $c): ModuleService {
     $cfg = $c->get(config::class);
     return new ModuleService(
@@ -127,31 +133,52 @@ $container->set(ModuleService::class, function (Container $c): ModuleService {
     );
 });
 
+// TRAMS
+// TramService
 $container->set(TramService::class, function (Container $c): TramService {
     $cfg = $c->get(config::class);
     return new TramService(
         $c->get(PDO::class),
         $c->get(LoggerInterface::class),
         $c->get(HttpClientInterface::class),
-        $cfg->ztmUrl(),
+        $cfg->tramUrl(),
     );
 });
 
+// COUNTDOWNS
+// CountdownRepository
 $container->set(CountdownRepository::class, function (Container $c): CountdownRepository {
     $cfg = $c->get(config::class);
     return new CountdownRepository(
         $c->get(PDO::class),
         $c->get(LoggerInterface::class),
         $cfg->countdownsTableName(),
+        $cfg->countdownsDateFormat(),
     );
 });
-
+// CountdownService
 $container->set(CountdownService::class, function (Container $c): CountdownService {
     $cfg = $c->get(config::class);
     return new CountdownService(
         $c->get(CountdownRepository::class),
         $cfg->countdownsMaxTitleLength(),
         $cfg->countdownsTableColumns(),
+        $cfg->countdownsDateFormat(),
+    );
+});
+
+// WEATHER
+// WeatherService
+$container->set(WeatherService::class, function (Container $c): WeatherService {
+    $cfg = $c->get(config::class);
+    return new WeatherService(
+        $c->get(PDO::class),
+        $c->get(LoggerInterface::class),
+        $c->get(HttpClientInterface::class),
+        $cfg->imgwWeatherUrl(),
+        $cfg->airlyEndpoint(),
+        $cfg->airlyApiKey(),
+        $cfg->airlyLocationId(),
     );
 });
 

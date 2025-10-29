@@ -2,18 +2,11 @@
 
 namespace src\controllers;
 
-use DateTime;
 use DateTimeZone;
 use Exception;
 use Psr\Log\LoggerInterface;
 use src\core\Controller;
 use src\infrastructure\helpers\SessionHelper;
-use src\models\CalendarModel;
-use src\models\CountdownModel;
-use src\models\ModuleModel;
-use src\models\TramModel;
-use src\models\UserModel;
-use src\models\WeatherModel;
 use src\service\AnnouncementService;
 use src\service\CountdownService;
 use src\service\ModuleService;
@@ -130,7 +123,7 @@ class DisplayController extends Controller
             try {
                 $this->logger->debug('Rozpoczęto pobieranie ogłoszeń.');
 
-                if (!$this->isModuleVisible('announcement')) {
+                if (!$this->isModuleVisible('announcements')) {
                     $this->logger->debug("Announcements module is not active.");
                     echo json_encode(
                         [
@@ -148,15 +141,15 @@ class DisplayController extends Controller
                 $response = [];
 
                 foreach ($announcements as $announcement) {
-                    $user = $this->userService->getUserById($announcement['user_id']);
-                    $author = $user['username'] ?? 'Nieznany użytkownik';
+                    $user = $this->userService->getById($announcement->userId);
+                    $author = $user->username ?? 'Nieznany użytkownik';
 
                     $response[] = [
-                        'title' => htmlspecialchars($announcement['title']),
+                        'title' => htmlspecialchars($announcement->title),
                         'author' => $author,
-                        'date' => htmlspecialchars($announcement['date']),
-                        'validUntil' => htmlspecialchars($announcement['valid_until']),
-                        'text' => htmlspecialchars($announcement['text']),
+                        'date' => htmlspecialchars($announcement->date->format('Y-m-d')),
+                        'validUntil' => htmlspecialchars($announcement->validUntil->format('Y-m-d')),
+                        'text' => htmlspecialchars($announcement->text),
                     ];
                 }
 
@@ -197,13 +190,13 @@ class DisplayController extends Controller
                     exit;
                 }
 
-                $currentCountdown = $this->countdownService->getCurrentCountdown();
+                $currentCountdown = $this->countdownService->getCurrent();
 
                 if (!empty($currentCountdown)) {
-                    $dt = new DateTime($currentCountdown['count_to'], new DateTimeZone('Europe/Warsaw') );
+                    $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
 
                     $response[] = [
-                        'title' => htmlspecialchars($currentCountdown['title']),
+                        'title' => htmlspecialchars($currentCountdown->title),
                         'count_to' => $dt->getTimestamp()
                     ];
                     $this->logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
