@@ -76,17 +76,18 @@
         <table x-show="!loading && !error && data.length" class="table-fixed w-full">
             <thead>
             <tr class="font-bold text-primary-400 text-lg">
-                <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-train-tram"></i> Linia</th>
-                <th class="w-4/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-location-dot"></i> Kierunek</th>
-                <th class="w-1/6 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-clock"></i> Odjazd</th>
+                <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-train-tram"></i> Linia</th>
+                <th class="w-4/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-location-dot"></i> Kierunek</th>
+                <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-clock"></i> Odjazd</th>
             </tr>
             </thead>
             <tbody>
             <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
-                <tr class="text-center border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
-                    <td x-text="tram.line"></td>
-                    <td x-text="tram.direction"></td>
-                    <td x-html="formatMinutes(tram.minutes)"></td>
+                <tr class="text-center text-xs md:max-lg:text-base lg:text-lg">
+                    <td class="py-2 border-t border-gray-200"><div x-text="tram.line" :class="[(count[tram.line] || 'bg-gray-200'), tram.line < 20 ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full' : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border']"
+                        class='font-bold inline-flex items-center justify-center'></div></td>
+                    <td class="py-2 border-t border-gray-200" x-text="tram.direction"></td>
+                    <td class="py-2 border-t border-gray-200" x-html="formatMinutes(tram.minutes)"></td>
                 </tr>
             </template>
             </tbody>
@@ -130,22 +131,24 @@
                 <template x-if="loading">
                     <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
                 </template>
-                <template x-if="!loading && announcements" x-for="(group, index) in grouped" :key="index">
-                    <div x-show="current === index" x-transition>
-                        <template x-for="a in group" :key="a.id">
-                            <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
-                                <h3 class="font-bold text-lg" x-text="a.title"></h3>
-                                <p class="text-lg" x-text="a.text"></p>
-                                <p class="text-sm text-gray-600 mt-1">
-                                    <i class="fa-solid fa-calendar text-primary-400"></i>
-                                    <strong>Utworzono:</strong> <span x-text="a.date"></span>,
-                                    <strong>Ważne do:</strong> <span x-text="a.validUntil"></span>
-                                    <i class="fa-solid fa-user pl-2 text-primary-400"></i>
-                                    <span x-text="a.author"></span>
-                                </p>
-                            </div>
-                        </template>
-                    </div>
+                <template x-if="!loading && announcements">
+                    <template x-for="(group, index) in grouped" :key="index">
+                        <div x-show="current === index" x-transition>
+                            <template x-for="a in group" :key="a.id">
+                                <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
+                                    <h3 class="font-bold text-lg" x-text="a.title"></h3>
+                                    <p class="text-lg" x-text="a.text"></p>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        <i class="fa-solid fa-calendar text-primary-400"></i>
+                                        <strong>Utworzono:</strong> <span x-text="a.date"></span>,
+                                        <strong>Ważne do:</strong> <span x-text="a.validUntil"></span>
+                                        <i class="fa-solid fa-user pl-2 text-primary-400"></i>
+                                        <span x-text="a.author"></span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
                 </template>
             </div>
             <template x-if="error">
@@ -181,7 +184,7 @@
                 const marginBottom = parseFloat(getComputedStyle(this.$refs.header).marginBottom) || 0;
                 const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
 
-                this.gridHeight = window.innerHeight - totalHeaderHeight - 1; // 8px fudge factor/padding adjustment
+                this.gridHeight = window.innerHeight - totalHeaderHeight; // 8px fudge factor/padding adjustment
             }
         }
     }
@@ -249,6 +252,31 @@
             data: [],
             error: null,
             loading: true,
+            count: {
+                '1': 'bg-pink-700', // pink-700
+                '2': 'bg-2', // gut
+                '3': 'bg-green-500', // green-500
+                '4': 'bg-yellow-500', // yellow-500
+                '5': 'bg-purple-700', // purple-700
+                '6': 'bg-6', // gut
+                '7': 'bg-teal-500', // teal-500
+                '8': 'bg-violet-500', // violet-500
+                '9': 'bg-9', // gut
+                '10': 'bg-slate-500', // slate-500
+                '11': 'bg-purple-400', // purple-400
+                '12': 'bg-12', // gut
+                '13': 'bg-amber-500', // amber-500
+                '14': 'bg-green-400', // green-400
+                '15': 'bg-blue-400', // blue-400
+                '16': 'bg-red-400', // red-400
+                '17': 'bg-red-400', // pink-400
+                '18': 'bg-18', // gut
+                '19': 'bg-19',
+                '174': 'bg-white',
+                '176': 'bg-white',
+                '190': 'bg-white',
+                '603': 'bg-white',
+            },
             async load() {
                 this.loading = true;
                 this.error = null;
@@ -260,7 +288,7 @@
                     });
                     const json = await res.json();
                     if (json.success && Array.isArray(json.data)) {
-                        const newData = json.data.slice(0, 25);
+                        const newData = json.data.slice(0, 14);
                         if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
                             this.data = newData;
                         }

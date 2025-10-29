@@ -13,6 +13,12 @@
 
     --color-secondary-100: #FBC13B;
     --color-secondary-200: #FDAC32;
+    --color-2: #72C4E7;
+    --color-6: #32A044;
+    --color-9: #E95529;
+    --color-12: #CDACCF;
+    --color-18: #FDD70A;
+    --color-19: #42B6AE;
 }
 
 @layer utilities {
