@@ -639,9 +639,6 @@
   .bg-white {
     background-color: var(--color-white);
   }
-  .bg-yellow-500 {
-    background-color: var(--color-yellow-500);
-  }
   .p-0 {
     padding: calc(var(--spacing) * 0);
   }

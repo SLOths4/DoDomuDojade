@@ -62,39 +62,57 @@
 <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2" :style="`height: ${gridHeight}px;`">
 
     <!-- LEWA KOLUMNA: Tramwaje -->
-    <div x-data="tramDepartures()" x-init="load()" class="bg-white rounded-2xl shadow-custom py-2 px-1">
+    <div x-data="tramDepartures()" x-init="init()" class="bg-white rounded-2xl shadow-custom py-2 px-1 overflow-hidden">
         <template x-if="loading">
-            <p class="text-white text-center">Ładowanie danych...</p>
+            <p class="text-center">Ładowanie danych...</p>
         </template>
+
         <template x-if="error">
             <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
+                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
                 <p class="text-red-500 text-sm font-medium" x-text="error"></p>
             </div>
         </template>
 
-        <table x-show="!loading && !error && data.length" class="table-fixed w-full">
-            <thead>
-            <tr class="font-bold text-primary-400 text-lg">
-                <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-train-tram"></i> Linia</th>
-                <th class="w-4/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-location-dot"></i> Kierunek</th>
-                <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg"><i class="fa-solid fa-clock"></i> Odjazd</th>
-            </tr>
-            </thead>
-            <tbody>
-            <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
-                <tr class="text-center text-xs md:max-lg:text-base lg:text-lg">
-                    <td class="py-2 border-t border-gray-200"><div x-text="tram.line" :class="[(count[tram.line] || 'bg-gray-200'), tram.line < 20 ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full' : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border']"
-                        class='font-bold inline-flex items-center justify-center'></div></td>
-                    <td class="py-2 border-t border-gray-200" x-text="tram.direction"></td>
-                    <td class="py-2 border-t border-gray-200" x-html="formatMinutes(tram.minutes)"></td>
+        <div x-show="!loading && !error && data.length">
+            <table class="table-fixed w-full">
+                <thead>
+                <tr class="font-bold text-primary-400 text-lg">
+                    <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
+                        <i class="fa-solid fa-train-tram"></i> Linia
+                    </th>
+                    <th class="w-4/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
+                        <i class="fa-solid fa-location-dot"></i> Kierunek
+                    </th>
+                    <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
+                        <i class="fa-solid fa-clock"></i> Odjazd
+                    </th>
                 </tr>
-            </template>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
+                    <tr class="text-center text-xs md:max-lg:text-base lg:text-lg">
+                        <td class="py-2 border-t border-gray-200">
+                            <div
+                                    x-text="tram.line"
+                                    :class="[
+                  (count[tram.line] || 'bg-white'),
+                  tram.line < 20
+                    ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
+                    : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
+                ]"
+                                    class="font-bold inline-flex items-center justify-center"
+                            ></div>
+                        </td>
+                        <td class="py-2 border-t border-gray-200" x-text="tram.direction"></td>
+                        <td class="py-2 border-t border-gray-200" x-html="formatMinutes(tram.minutes)"></td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- ŚRODKOWA KOLUMNA: Odliczanie + Ogłoszenia -->
     <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col">
 
         <!-- ODLICZANIE -->
@@ -253,32 +271,27 @@
             error: null,
             loading: true,
             count: {
-                '1': 'bg-pink-700', // pink-700
-                '2': 'bg-2', // gut
-                '3': 'bg-green-500', // green-500
-                '4': 'bg-yellow-500', // yellow-500
-                '5': 'bg-purple-700', // purple-700
-                '6': 'bg-6', // gut
-                '7': 'bg-teal-500', // teal-500
-                '8': 'bg-violet-500', // violet-500
-                '9': 'bg-9', // gut
-                '10': 'bg-slate-500', // slate-500
-                '11': 'bg-purple-400', // purple-400
-                '12': 'bg-12', // gut
-                '13': 'bg-amber-500', // amber-500
-                '14': 'bg-green-400', // green-400
-                '15': 'bg-blue-400', // blue-400
-                '16': 'bg-red-400', // red-400
-                '17': 'bg-red-400', // pink-400
-                '18': 'bg-18', // gut
+                '1': 'bg-pink-700',
+                '2': 'bg-2',
+                '3': 'bg-green-500',
+                '5': 'bg-purple-700',
+                '6': 'bg-6',
+                '7': 'bg-teal-500',
+                '8': 'bg-violet-500',
+                '9': 'bg-9',
+                '10': 'bg-slate-500',
+                '11': 'bg-purple-400',
+                '12': 'bg-12',
+                '13': 'bg-amber-500',
+                '14': 'bg-green-400',
+                '15': 'bg-blue-400',
+                '16': 'bg-red-400',
+                '17': 'bg-red-400',
+                '18': 'bg-18',
                 '19': 'bg-19',
-                '174': 'bg-white',
-                '176': 'bg-white',
-                '190': 'bg-white',
-                '603': 'bg-white',
             },
-            async load() {
-                this.loading = true;
+
+            async fetchDepartures() {
                 this.error = null;
                 try {
                     const res = await fetch('/display/get_departures', {
@@ -286,30 +299,37 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ function: 'tramData' })
                     });
+
                     const json = await res.json();
+
                     if (json.success && Array.isArray(json.data)) {
-                        const newData = json.data.slice(0, 14);
+                        const newData = json.data.slice(0, 11);
                         if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
                             this.data = newData;
                         }
                     } else {
                         this.error = 'Błąd ładowania odjazdów';
                     }
-                    this.loading = false;
                 } catch (e) {
-                    this.error = 'Błąd ładowania odjazdów';
-                    this.loading = false;
                     console.error(e);
+                    this.error = 'Błąd ładowania odjazdów';
+                } finally {
+                    this.loading = false;
                 }
-                setTimeout(() => this.load(), 50000);
             },
+
             formatMinutes(min) {
                 if (min === 0) return '<1';
                 if (min < 60) return `${min}`;
                 const h = Math.floor(min / 60), m = min % 60;
                 return `${h}h ${m}`;
+            },
+
+            async init() {
+                await this.fetchDepartures();
+                setInterval(() => this.fetchDepartures(), 60000);
             }
-        }
+        };
     }
 
     function countdown() {
