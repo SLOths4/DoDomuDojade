@@ -2,33 +2,29 @@
 
 namespace src\controllers;
 
-use src\core\Controller;
-use src\core\SessionHelper;
-use src\models\AnnouncementsModel;
-use src\models\CalendarModel;
-use src\models\CountdownModel;
-use src\models\ModuleModel;
-use src\models\TramModel;
-use src\models\UserModel;
-use src\models\WeatherModel;
-
-use DateTime;
 use DateTimeZone;
 use Exception;
 use Psr\Log\LoggerInterface;
+use src\core\Controller;
+use src\infrastructure\helpers\SessionHelper;
+use src\service\AnnouncementService;
+use src\service\CountdownService;
+use src\service\ModuleService;
+use src\service\TramService;
+use src\service\UserService;
+use src\service\WeatherService;
 
 class DisplayController extends Controller
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly WeatherModel $weatherModel,
-        private readonly ModuleModel $moduleModel,
-        private readonly TramModel $tramModel,
-        private readonly AnnouncementsModel $announcementsModel,
-        private readonly UserModel $userModel,
-        private readonly CountdownModel $countdownModel,
-        private readonly CalendarModel $calendarModel,
-        private readonly array $StopIDs,
+        private readonly LoggerInterface     $logger,
+        private readonly WeatherService      $weatherService,
+        private readonly ModuleService       $moduleService,
+        private readonly TramService         $tramService,
+        private readonly AnnouncementService $announcementsService,
+        private readonly UserService         $userService,
+        private readonly CountdownService    $countdownService,
+        private readonly array               $StopIDs,
     )
     {
         SessionHelper::start();
@@ -39,7 +35,7 @@ class DisplayController extends Controller
      */
     private function isModuleVisible(string $module): bool
     {
-        $isModuleVisible = $this->moduleModel->isModuleVisible($module);
+        $isModuleVisible = $this->moduleService->isVisible($module);
         if ($isModuleVisible) {
             $this->logger->info("$module is active.");
             return true;
@@ -51,21 +47,6 @@ class DisplayController extends Controller
     public function index(): void
     {
         $this->render('display');
-    }
-
-    public function getVersion(): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Content-Type: application/json');
-
-            try {
-                echo json_encode(['success' => true, 'is_active' => true, 'data' => trim(shell_exec('git describe --tags --abbrev=0'))]);
-                exit;
-            } catch (Exception $e) {
-                $this->logger->error('Unable to fetch version', ['error' => $e->getMessage()]);
-                exit;
-            }
-        }
     }
 
     public function getDepartures (): void
@@ -94,7 +75,7 @@ class DisplayController extends Controller
 
                 foreach ($stopsIdS as $stopId) {
                     try {
-                        $stopDepartures = $this->tramModel->getTimes($stopId);
+                        $stopDepartures = $this->tramService->getTimes($stopId);
                     } catch (Exception $e) {
                         continue;
                     }
@@ -142,7 +123,7 @@ class DisplayController extends Controller
             try {
                 $this->logger->debug('Rozpoczęto pobieranie ogłoszeń.');
 
-                if (!$this->isModuleVisible('announcement')) {
+                if (!$this->isModuleVisible('announcements')) {
                     $this->logger->debug("Announcements module is not active.");
                     echo json_encode(
                         [
@@ -154,21 +135,21 @@ class DisplayController extends Controller
                     exit;
                 }
 
-                $announcements = $this->announcementsModel->getValidAnnouncements();
+                $announcements = $this->announcementsService->getValid();
                 $this->logger->debug('Pobrano listę ogłoszeń z bazy danych.');
 
                 $response = [];
 
                 foreach ($announcements as $announcement) {
-                    $user = $this->userModel->getUserById($announcement['user_id']);
-                    $author = $user['username'] ?? 'Nieznany użytkownik';
+                    $user = $this->userService->getById($announcement->userId);
+                    $author = $user->username ?? 'Nieznany użytkownik';
 
                     $response[] = [
-                        'title' => htmlspecialchars($announcement['title']),
+                        'title' => htmlspecialchars($announcement->title),
                         'author' => $author,
-                        'date' => htmlspecialchars($announcement['date']),
-                        'validUntil' => htmlspecialchars($announcement['valid_until']),
-                        'text' => htmlspecialchars($announcement['text']),
+                        'date' => htmlspecialchars($announcement->date->format('Y-m-d')),
+                        'validUntil' => htmlspecialchars($announcement->validUntil->format('Y-m-d')),
+                        'text' => htmlspecialchars($announcement->text),
                     ];
                 }
 
@@ -209,13 +190,13 @@ class DisplayController extends Controller
                     exit;
                 }
 
-                $currentCountdown = $this->countdownModel->getCurrentCountdown();
+                $currentCountdown = $this->countdownService->getCurrent();
 
                 if (!empty($currentCountdown)) {
-                    $dt = new DateTime($currentCountdown['count_to'], new DateTimeZone('Europe/Warsaw') );
+                    $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
 
                     $response[] = [
-                        'title' => htmlspecialchars($currentCountdown['title']),
+                        'title' => htmlspecialchars($currentCountdown->title),
                         'count_to' => $dt->getTimestamp()
                     ];
                     $this->logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
@@ -228,53 +209,6 @@ class DisplayController extends Controller
             } catch (Exception $e) {
                 $this->logger->error('Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage()]);
-                exit;
-            }
-        }
-    }
-
-    public function getEvents() : void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Content-Type: application/json');
-
-            try {
-                $this->logger->debug('Rozpoczęto pobieranie wydarzeń.');
-
-                if (!$this->isModuleVisible('calendar')) {
-                    $this->logger->debug("Moduł calendar nie jest aktywny.");
-                    echo json_encode(
-                        [
-                            'success' => true,
-                            'is_active' => false,
-                            'data' => null
-                        ]
-                    );
-                    exit;
-                }
-
-                $calendarServiceResponse = $this->calendarModel->get_events();
-
-                if (!empty($calendarServiceResponse)) {
-                    $response = [];
-                    foreach ($calendarServiceResponse as $event) {
-                        $response[] = [
-                            'summary' => htmlspecialchars($event['summary'] ?? ''),
-                            'start' => htmlspecialchars($event['start']),
-                            'end' => htmlspecialchars($event['end']),
-                            'description' => htmlspecialchars($event['description'] ?? ''),
-                        ];
-                    }
-                    $this->logger->debug('Pomyślnie pobrano dane wydarzenia.');
-                    echo json_encode(['success' => true, 'data' => $response]);
-                } else {
-                    $this->logger->warning('Brak dostępnych danych o wydarzeniach.');
-                    echo json_encode(['success' => false, 'message' => 'Brak danych o wydarzeniach.']);
-                }
-                exit;
-            } catch (Exception $e) {
-                $this->logger->error('Błąd podczas przetwarzania wydarzeń: ' . $e->getMessage());
-                echo json_encode(['success' => false, 'message' => 'Błąd w trakcie przetwarzania wydarzeń: ' . $e->getMessage()]);
                 exit;
             }
         }
@@ -300,7 +234,7 @@ class DisplayController extends Controller
                     exit;
                 }
 
-                $weatherServiceResponse = $this->weatherModel->getWeather();
+                $weatherServiceResponse = $this->weatherService->getWeather();
 
                 if (empty($weatherServiceResponse)) {
                     $this->logger->warning('Brak danych pogodowych.');

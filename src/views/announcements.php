@@ -3,7 +3,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -19,14 +19,16 @@ SessionHelper::remove('error');
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.css" />
         <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
         <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
         <script src="//unpkg.com/alpinejs" defer></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
         <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     </head>
-    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400">
+    <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
             <?php if (SessionHelper::has('error')): ?>
@@ -38,19 +40,19 @@ SessionHelper::remove('error');
             <form method="POST" action="/panel/add_announcement" class="mb-3 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
                 <div class="mb-2">
                     <label>
-                        <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950" maxlength="50" required>
+                        <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
                         <span id="add_title_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 50 znaków</span>
                     </label>
                 </div>
                 <div class="mb-2">
                     <label>
-                        <input type="text" id="add_text" name="text" placeholder="Tekst" class="w-full p-2 border rounded dark:bg-gray-950" maxlength="500" required>
+                        <input type="text" id="add_text" name="text" placeholder="Tekst" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="500" required>
                         <span id="add_text_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 500 znaków</span>
                     </label>
                 </div>
                 <div class="mb-2">
                     <label>
-                        <input type="date" name="valid_until" placeholder="Ważne do" class="w-full p-2 border rounded text-gray-600 dark:text-gray-400 dark:bg-gray-950" required>
+                        <input type="date" name="valid_until" placeholder="Ważne do" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                     </label>
                 </div>
                 <div class="flex items-center justify-between">
@@ -62,7 +64,7 @@ SessionHelper::remove('error');
             <?php if (!empty($announcements)): ?>
             <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
                 <table id="announcementsTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
+                    <thead class="bg-gray-200 dark:bg-gray-700 rounded-2xl">
                     <tr>
                         <th class="px-4 py-2 border">Tytuł</th>
                         <th class="px-4 py-2 border">Autor</th>
@@ -75,24 +77,24 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($announcements as $announcement): ?>
                         <tr>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['title']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($users[$announcement['user_id']]['username'] ?? "Nieznany użytkownik") ?><br>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->title) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($usernames[$announcement->userId] ?? "Nieznany użytkownik") ?><br>
                             </td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['date']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['valid_until']) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement['text']) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->date) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->validUntil) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->text) ?></td>
                             <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement['id']) ?>">
+                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>">
                                     Usuń
                                 </button>
                                 <button type="button"
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement['id']) ?>"
-                                        data-title="<?= htmlspecialchars($announcement['title']) ?>"
-                                        data-text="<?= htmlspecialchars($announcement['text']) ?>"
-                                        data-valid-until="<?= htmlspecialchars($announcement['valid_until']) ?>">
+                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>"
+                                        data-title="<?= htmlspecialchars($announcement->title) ?>"
+                                        data-text="<?= htmlspecialchars($announcement->text) ?>"
+                                        data-valid-until="<?= htmlspecialchars($announcement->validUntil) ?>">
                                     Edytuj
                                 </button>
                             </td>

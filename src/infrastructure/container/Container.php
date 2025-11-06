@@ -39,7 +39,7 @@ final class Container
             return $this->instances[$id] = $this->autowire($id);
         }
 
-        throw new RuntimeException("Service not found: {$id}");
+        throw new RuntimeException("Service not found: $id");
     }
 
     /**
@@ -71,7 +71,7 @@ final class Container
         if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
             $name = $param->getName();
             $class = $param->getDeclaringClass()?->getName() ?? 'unknown';
-            throw new RuntimeException("Cannot autowire scalar parameter \${$name} of {$class}. Provide a factory (Container::set) or wrap it in a Config service.");
+            throw new RuntimeException("Cannot autowire scalar parameter \$$name of $class. Provide a factory (Container::set) or wrap it in a Config service.");
         }
         $id = $type->getName();
         return $this->get($id);

@@ -2,6 +2,7 @@
 namespace src\core;
 
 use Exception;
+use InvalidArgumentException;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -18,111 +19,93 @@ class Model{
     }
 
     /**
-     * Validates parameter.
+     * Validates and normalizes a parameter pair.
      * @param mixed $param
-     * @param mixed $key
-     * @return array
-     * @throws Exception
+     * @param string|int $key
+     * @return array{0: mixed, 1: int}
+     * @throws InvalidArgumentException
      */
-    private function validateParam(mixed $param, mixed $key): array {
-        if (!is_array($param)) {
-            $this->logger->error("Invalid parameter structure: expected an array.", [
-                'key' => $key,
-                'param' => $param
-            ]);
-            throw new Exception("Invalid parameter structure: parameter is not an array");
+    private function validateParam(mixed $param, string|int $key): array
+    {
+        if (!is_array($param) || count($param) < 1) {
+            $this->logger->error("Invalid parameter format", ['key' => $key, 'param' => $param]);
+            throw new InvalidArgumentException("Parameter [$key] must be an array [value, type]");
         }
 
-        if (count($param) !== 2) {
-            if (!array_key_exists(1, $param)) {
-                $this->logger->error("Parameter type is missing.", [
-                    'key' => $key,
-                    'param' => $param
-                ]);
-                throw new Exception("Parameter type is missing");
-            }
-            $this->logger->error("Invalid parameter structure: expected exactly 2 elements.", [
-                'key' => $key,
-                'param' => $param
+        $value = $param[0] ?? null;
+        $type = $param[1] ?? PDO::PARAM_STR;
+
+        if (!is_int($type)) {
+            $this->logger->warning("Parameter type is not an int, defaulting to PDO::PARAM_STR", [
+                'key' => $key, 'type' => $type
             ]);
-            throw new Exception("Invalid parameter structure");
+            $type = PDO::PARAM_STR;
         }
 
-        return $param;
+        return [$value, $type];
     }
 
     /**
-     * Binds parameters to a PDOStatement with validation and factories.
+     * Binds parameters safely to a PDOStatement with validation and logging.
      * @param PDOStatement $stmt
-     * @param array $params
+     * @param array<string, array{0: mixed, 1?: int}> $params
      * @return void
      * @throws Exception
      */
-    public function bindParams(PDOStatement $stmt, array $params): void {
+    public function bindParams(PDOStatement $stmt, array $params): void
+    {
         foreach ($params as $key => $param) {
             [$value, $type] = $this->validateParam($param, $key);
 
-            $this->logger->debug("Binding parameter:", [
-                'key'   => $key,
-                'value' => $value,
-                'type'  => $type
-            ]);
-
             try {
-                $stmt->bindValue($key, $value, $type ?? PDO::PARAM_STR);
-            } catch (PDOException $e) {
-                $this->logger->error("Failed to bind parameter to statement.", [
-                    'key'   => $key,
+                $stmt->bindValue($key, $value, $type);
+                $this->logger->debug("Bound parameter", [
+                    'key' => $key,
                     'value' => $value,
-                    'type'  => $type,
-                    'error' => $e->getMessage(),
+                    'type' => $type
                 ]);
-                throw new Exception("Failed to bind parameter to statement.", 0, $e);
+            } catch (PDOException $e) {
+                $this->logger->error("Failed to bind parameter", [
+                    'key' => $key,
+                    'value' => $value,
+                    'type' => $type,
+                    'error' => $e->getMessage()
+                ]);
+                throw new Exception("Failed to bind parameter [$key]", 0, $e);
             }
         }
-        $this->logger->debug("All parameters successfully bound.", ['parameters' => $params]);
+
+        $this->logger->debug("All parameters successfully bound", ['parameters' => $params]);
     }
 
     /**
      * Executes given PDO statement.
      * @param string $query
      * @param array $params
-     * @return array
-     * @throws Exception
+     * @return PDOStatement
+     * @throws RuntimeException|Exception
      */
-    public function executeStatement(string $query, array $params = []): array {
+    public function executeStatement(string $query, array $params = []): PDOStatement
+    {
         try {
-            $this->logger->debug("Preparing SQL query:", ['query' => $query]);
             $stmt = $this->pdo->prepare($query);
-            $this->logger->debug("SQL query prepared successfully.");
+            $this->logger->debug("Executing query", ['query' => $query]);
 
             if (!empty($params)) {
-                $this->logger->debug("Binding parameters to query:", ['parameters' => $params]);
                 $this->bindParams($stmt, $params);
             }
 
             $start = microtime(true);
-
-            $this->logger->debug("Executing query:", ['query' => $query]);
             $stmt->execute();
-
             $executionTime = round((microtime(true) - $start) * 1000, 2);
 
-            $this->logger->info("SQL query executed successfully.", [
+            $this->logger->debug("SQL query executed successfully", [
                 'query' => $query,
                 'execution_time_ms' => $executionTime,
                 'parameters' => $params
             ]);
 
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($results)) {
-                $this->logger->warning("SQL query executed but returned no results.", [
-                    'query' => $query
-                ]);
-            }
-
-            return $results;
+            return $stmt;
 
         } catch (PDOException $e) {
             $this->logger->error("SQL query execution failed: " . $e->getMessage(), [
@@ -132,4 +115,5 @@ class Model{
             throw new RuntimeException('Database operation failed');
         }
     }
+
 }

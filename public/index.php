@@ -7,6 +7,7 @@ if ($uri !== '/' && file_exists(__DIR__ . $uri) && in_array($ext, $allowedExtens
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require  __DIR__ . '/../src/bootstrap/error_handling.php';
 
 $root = dirname(__DIR__);
 $dotenv = Dotenv\Dotenv::createImmutable($root);
@@ -17,6 +18,7 @@ $container = require __DIR__ . '/../src/bootstrap/container.php';
 try {
     registerErrorHandling($container);
 } catch (Throwable $e) {
+    echo 'Error registering error handling: ' . $e->getMessage();
     ini_set('display_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     ini_set('display_startup_errors', getenv('APP_ENV') === 'dev' ? '1' : '0');
     error_reporting(E_ALL);
