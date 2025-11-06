@@ -1,40 +1,32 @@
 <?php
-// Enable error reporting for debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Set timezone to CEST (Europe/Paris)
-date_default_timezone_set('Europe/Paris');
+date_default_timezone_set('Europe/Warsaw');
 
-// Prompt user for the database path
 $databasePath = trim(readline('Enter the full path to the database (e.g., /path/to/database.db): '));
 
-// Validate the database path
 if (empty($databasePath)) {
     die("Error: Database path cannot be empty.\n");
 }
 
-// Ensure the directory is writable if the database doesn't exist
 $directory = dirname($databasePath);
 if (!is_dir($directory) && !mkdir($directory, 0777, true)) {
     die("Error: Cannot create directory '$directory'. Check permissions.\n");
 }
 
-// Connect to SQLite3 database (creates the database if it doesn't exist)
 try {
     $db = new SQLite3($databasePath);
     echo "Connected to database: $databasePath\n";
-    $db->exec('PRAGMA foreign_keys = ON;'); // Enable foreign key support
+    $db->exec('PRAGMA foreign_keys = ON;');
 } catch (Exception $e) {
     die("Failed to connect to database '$databasePath': " . $e->getMessage() . "\n");
 }
 
-// Check if the database is new (no tables exist)
 $result = $db->query("SELECT name FROM sqlite_master WHERE type='table'");
 $isNewDatabase = !$result->fetchArray();
 
-// Create tables
 $createTables = <<<SQL
 CREATE TABLE IF NOT EXISTS modules (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,7 +39,7 @@ CREATE TABLE IF NOT EXISTS modules (
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     created_at DATE NOT NULL
 );
 
@@ -89,10 +81,10 @@ if ($isNewDatabase) {
     $insertModule = $db->prepare('INSERT INTO modules (module_name, is_active, start_time, end_time) VALUES (:module_name, :is_active, :start_time, :end_time)');
 
     foreach ($defaultModules as $module) {
-        $insertModule->bindValue(':module_name', $module['name'], SQLITE3_TEXT);
+        $insertModule->bindValue(':module_name', $module['name']);
         $insertModule->bindValue(':is_active', $module['is_active'], SQLITE3_INTEGER);
-        $insertModule->bindValue(':start_time', $module['start_time'], SQLITE3_TEXT);
-        $insertModule->bindValue(':end_time', $module['end_time'], SQLITE3_TEXT);
+        $insertModule->bindValue(':start_time', $module['start_time']);
+        $insertModule->bindValue(':end_time', $module['end_time']);
 
         try {
             $insertModule->execute();
@@ -101,11 +93,10 @@ if ($isNewDatabase) {
             $db->close();
             die("Failed to insert module '{$module['name']}': " . $e->getMessage() . "\n");
         }
-        $insertModule->reset(); // Reset bindings for the next iteration
+        $insertModule->reset();
     }
 }
 
-// Get username and password
 $username = trim(readline('Enter username: '));
 if (empty($username)) {
     $db->close();
@@ -118,17 +109,15 @@ if (empty($password)) {
     die("Error: Password cannot be empty.\n");
 }
 
-// Hash the password
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-// Get the current timestamp for created_at
 $createdAt = date('Y-m-d H:i:s');
 
 // Insert user
-$insertUser = $db->prepare('INSERT INTO users (username, password, created_at) VALUES (:username, :password, :created_at)');
-$insertUser->bindValue(':username', $username, SQLITE3_TEXT);
-$insertUser->bindValue(':password', $hashedPassword, SQLITE3_TEXT);
-$insertUser->bindValue(':created_at', $createdAt, SQLITE3_TEXT);
+$insertUser = $db->prepare('INSERT INTO users (username, password_hash, created_at) VALUES (:username, :password_hash, :created_at)');
+$insertUser->bindValue(':username', $username);
+$insertUser->bindValue(':password_hash', $hashedPassword);
+$insertUser->bindValue(':created_at', $createdAt);
 
 try {
     $insertUser->execute();
@@ -138,15 +127,14 @@ try {
     die("Failed to insert user '$username': " . $e->getMessage() . "\n");
 }
 
-// Verify the insertion
-$verifyUser = $db->prepare('SELECT id, username, password, created_at FROM users WHERE username = :username');
-$verifyUser->bindValue(':username', $username, SQLITE3_TEXT);
+$verifyUser = $db->prepare('SELECT id, username, password_hash, created_at FROM users WHERE username = :username');
+$verifyUser->bindValue(':username', $username);
 $result = $verifyUser->execute();
 
 if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
     echo "User ID: " . $row['id'] . "\n";
     echo "Username: " . $row['username'] . "\n";
-    echo "Password (hashed): " . $row['password'] . "\n";
+    echo "Password (hashed): " . $row['password_hash'] . "\n";
     echo "Created At: " . $row['created_at'] . "\n";
 } else {
     echo "Warning: Could not retrieve user '$username' for verification.\n";

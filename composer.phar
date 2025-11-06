@@ -1,0 +1,500 @@
+.
+├── logs
+├── node_modules
+│   ├── @alloc
+│   ├── @isaacs
+│   │   └── fs-minipass
+│   │       └── dist
+│   │           ├── commonjs
+│   │           └── esm
+│   ├── @jridgewell
+│   │   ├── gen-mapping
+│   │   │   └── dist
+│   │   │       └── types
+│   │   ├── remapping
+│   │   │   ├── dist
+│   │   │   ├── src
+│   │   │   └── types
+│   │   ├── resolve-uri
+│   │   │   └── dist
+│   │   │       └── types
+│   │   ├── set-array
+│   │   │   └── dist
+│   │   │       └── types
+│   │   ├── sourcemap-codec
+│   │   │   ├── dist
+│   │   │   ├── src
+│   │   │   └── types
+│   │   └── trace-mapping
+│   │       └── dist
+│   │           └── types
+│   ├── @nodelib
+│   ├── @parcel
+│   │   ├── watcher
+│   │   │   ├── scripts
+│   │   │   └── src
+│   │   │       ├── kqueue
+│   │   │       ├── linux
+│   │   │       ├── macos
+│   │   │       ├── shared
+│   │   │       ├── unix
+│   │   │       ├── wasm
+│   │   │       ├── watchman
+│   │   │       └── windows
+│   │   └── watcher-darwin-x64
+│   ├── @pkgjs
+│   ├── @tailwindcss
+│   │   ├── cli
+│   │   │   ├── dist
+│   │   │   └── node_modules
+│   │   ├── node
+│   │   │   ├── dist
+│   │   │   └── node_modules
+│   │   │       └── jiti
+│   │   │           ├── dist
+│   │   │           └── lib
+│   │   ├── oxide
+│   │   │   ├── node_modules
+│   │   │   │   └── detect-libc
+│   │   │   │       └── lib
+│   │   │   └── scripts
+│   │   └── oxide-darwin-x64
+│   ├── autoprefixer
+│   │   ├── bin
+│   │   ├── data
+│   │   └── lib
+│   │       └── hacks
+│   ├── braces
+│   │   └── lib
+│   ├── browserslist
+│   ├── caniuse-lite
+│   │   ├── data
+│   │   │   ├── features
+│   │   │   └── regions
+│   │   └── dist
+│   │       ├── lib
+│   │       └── unpacker
+│   ├── chownr
+│   │   └── dist
+│   │       ├── commonjs
+│   │       └── esm
+│   ├── detect-libc
+│   │   ├── bin
+│   │   └── lib
+│   ├── electron-to-chromium
+│   ├── enhanced-resolve
+│   │   └── lib
+│   │       └── util
+│   ├── escalade
+│   │   ├── dist
+│   │   └── sync
+│   ├── fill-range
+│   ├── fraction.js
+│   ├── graceful-fs
+│   ├── is-extglob
+│   ├── is-glob
+│   ├── is-number
+│   ├── lightningcss
+│   │   ├── node
+│   │   └── node_modules
+│   │       └── detect-libc
+│   │           └── lib
+│   ├── lightningcss-darwin-x64
+│   ├── magic-string
+│   │   └── dist
+│   ├── micromatch
+│   ├── minipass
+│   │   └── dist
+│   │       ├── commonjs
+│   │       └── esm
+│   ├── minizlib
+│   │   └── dist
+│   │       ├── commonjs
+│   │       └── esm
+│   ├── mri
+│   │   └── lib
+│   ├── nanoid
+│   │   ├── async
+│   │   ├── bin
+│   │   ├── non-secure
+│   │   └── url-alphabet
+│   ├── node-addon-api
+│   │   └── tools
+│   ├── node-releases
+│   │   └── data
+│   │       ├── processed
+│   │       └── release-schedule
+│   ├── normalize-range
+│   ├── picocolors
+│   ├── picomatch
+│   │   └── lib
+│   ├── postcss
+│   │   └── lib
+│   ├── postcss-value-parser
+│   │   └── lib
+│   ├── source-map-js
+│   │   └── lib
+│   ├── tailwindcss
+│   │   └── dist
+│   ├── tapable
+│   │   └── lib
+│   ├── tar
+│   │   └── dist
+│   │       ├── commonjs
+│   │       └── esm
+│   ├── to-regex-range
+│   ├── update-browserslist-db
+│   └── yallist
+│       └── dist
+│           ├── commonjs
+│           └── esm
+├── public
+│   └── assets
+│       ├── resources
+│       └── styles
+├── scripts
+├── src
+│   ├── bootstrap
+│   ├── config
+│   ├── controllers
+│   ├── core
+│   ├── infrastructure
+│   │   ├── container
+│   │   └── factories
+│   ├── models
+│   └── views
+│       └── functions
+└── vendor
+    ├── bin
+    ├── composer
+    ├── graham-campbell
+    │   └── result-type
+    │       └── src
+    ├── monolog
+    │   └── monolog
+    │       └── src
+    │           └── Monolog
+    │               ├── Attribute
+    │               ├── Formatter
+    │               ├── Handler
+    │               │   ├── Curl
+    │               │   ├── FingersCrossed
+    │               │   ├── Slack
+    │               │   └── SyslogUdp
+    │               ├── Processor
+    │               └── Test
+    ├── myclabs
+    │   └── deep-copy
+    │       └── src
+    │           └── DeepCopy
+    │               ├── Exception
+    │               ├── Filter
+    │               │   └── Doctrine
+    │               ├── Matcher
+    │               │   └── Doctrine
+    │               ├── Reflection
+    │               ├── TypeFilter
+    │               │   ├── Date
+    │               │   └── Spl
+    │               └── TypeMatcher
+    ├── nikic
+    │   ├── fast-route
+    │   │   ├── src
+    │   │   │   ├── DataGenerator
+    │   │   │   ├── Dispatcher
+    │   │   │   └── RouteParser
+    │   │   └── test
+    │   │       ├── Dispatcher
+    │   │       ├── HackTypechecker
+    │   │       │   └── fixtures
+    │   │       └── RouteParser
+    │   └── php-parser
+    │       ├── bin
+    │       └── lib
+    │           └── PhpParser
+    │               ├── Builder
+    │               ├── Comment
+    │               ├── ErrorHandler
+    │               ├── Internal
+    │               ├── Lexer
+    │               │   └── TokenEmulator
+    │               ├── Node
+    │               │   ├── Expr
+    │               │   │   ├── AssignOp
+    │               │   │   ├── BinaryOp
+    │               │   │   └── Cast
+    │               │   ├── Name
+    │               │   ├── Scalar
+    │               │   │   └── MagicConst
+    │               │   └── Stmt
+    │               │       └── TraitUseAdaptation
+    │               ├── NodeVisitor
+    │               ├── Parser
+    │               └── PrettyPrinter
+    ├── phar-io
+    │   ├── manifest
+    │   │   ├── src
+    │   │   │   ├── exceptions
+    │   │   │   ├── values
+    │   │   │   └── xml
+    │   │   └── tools
+    │   │       └── php-cs-fixer.d
+    │   └── version
+    │       └── src
+    │           ├── constraints
+    │           └── exceptions
+    ├── phpmailer
+    │   └── phpmailer
+    │       ├── language
+    │       └── src
+    ├── phpoption
+    │   └── phpoption
+    │       └── src
+    │           └── PhpOption
+    ├── phpunit
+    │   ├── php-code-coverage
+    │   │   └── src
+    │   │       ├── Data
+    │   │       ├── Driver
+    │   │       ├── Exception
+    │   │       ├── Node
+    │   │       ├── Report
+    │   │       │   ├── Html
+    │   │       │   │   └── Renderer
+    │   │       │   │       └── Template
+    │   │       │   │           ├── css
+    │   │       │   │           ├── icons
+    │   │       │   │           └── js
+    │   │       │   └── Xml
+    │   │       ├── StaticAnalysis
+    │   │       │   ├── Value
+    │   │       │   └── Visitor
+    │   │       ├── Target
+    │   │       ├── TestSize
+    │   │       ├── TestStatus
+    │   │       └── Util
+    │   ├── php-file-iterator
+    │   │   └── src
+    │   ├── php-invoker
+    │   │   └── src
+    │   │       └── exceptions
+    │   ├── php-text-template
+    │   │   └── src
+    │   │       └── exceptions
+    │   ├── php-timer
+    │   │   └── src
+    │   │       └── exceptions
+    │   └── phpunit
+    │       ├── schema
+    │       └── src
+    │           ├── Event
+    │           │   ├── Dispatcher
+    │           │   ├── Emitter
+    │           │   ├── Events
+    │           │   │   ├── Application
+    │           │   │   ├── Test
+    │           │   │   │   ├── HookMethod
+    │           │   │   │   ├── Issue
+    │           │   │   │   ├── Lifecycle
+    │           │   │   │   ├── Outcome
+    │           │   │   │   └── TestDouble
+    │           │   │   ├── TestRunner
+    │           │   │   └── TestSuite
+    │           │   ├── Exception
+    │           │   └── Value
+    │           │       ├── Runtime
+    │           │       ├── Telemetry
+    │           │       ├── Test
+    │           │       │   ├── Issue
+    │           │       │   └── TestData
+    │           │       └── TestSuite
+    │           ├── Framework
+    │           │   ├── Assert
+    │           │   ├── Attributes
+    │           │   ├── Constraint
+    │           │   │   ├── Boolean
+    │           │   │   ├── Cardinality
+    │           │   │   ├── Equality
+    │           │   │   ├── Exception
+    │           │   │   ├── Filesystem
+    │           │   │   ├── Math
+    │           │   │   ├── Object
+    │           │   │   ├── Operator
+    │           │   │   ├── String
+    │           │   │   ├── Traversable
+    │           │   │   └── Type
+    │           │   ├── Exception
+    │           │   │   ├── Incomplete
+    │           │   │   ├── ObjectEquals
+    │           │   │   └── Skipped
+    │           │   ├── MockObject
+    │           │   │   ├── Exception
+    │           │   │   ├── Generator
+    │           │   │   │   ├── Exception
+    │           │   │   │   └── templates
+    │           │   │   └── Runtime
+    │           │   │       ├── Api
+    │           │   │       ├── Interface
+    │           │   │       ├── PropertyHook
+    │           │   │       ├── Rule
+    │           │   │       └── Stub
+    │           │   ├── TestRunner
+    │           │   │   └── templates
+    │           │   ├── TestSize
+    │           │   └── TestStatus
+    │           ├── Logging
+    │           │   ├── JUnit
+    │           │   │   └── Subscriber
+    │           │   ├── OpenTestReporting
+    │           │   │   ├── Exception
+    │           │   │   ├── Subscriber
+    │           │   │   └── schema
+    │           │   ├── TeamCity
+    │           │   │   └── Subscriber
+    │           │   └── TestDox
+    │           │       └── TestResult
+    │           │           └── Subscriber
+    │           ├── Metadata
+    │           │   ├── Api
+    │           │   ├── Exception
+    │           │   ├── Parser
+    │           │   └── Version
+    │           ├── Runner
+    │           │   ├── Baseline
+    │           │   │   ├── Exception
+    │           │   │   └── Subscriber
+    │           │   ├── DeprecationCollector
+    │           │   │   └── Subscriber
+    │           │   ├── Exception
+    │           │   ├── Extension
+    │           │   ├── Filter
+    │           │   ├── GarbageCollection
+    │           │   │   └── Subscriber
+    │           │   ├── HookMethod
+    │           │   ├── Phpt
+    │           │   │   ├── Exception
+    │           │   │   └── templates
+    │           │   ├── ResultCache
+    │           │   │   └── Subscriber
+    │           │   └── TestResult
+    │           │       └── Subscriber
+    │           ├── TextUI
+    │           │   ├── Command
+    │           │   │   └── Commands
+    │           │   ├── Configuration
+    │           │   │   ├── Cli
+    │           │   │   ├── Exception
+    │           │   │   ├── Value
+    │           │   │   └── Xml
+    │           │   │       ├── CodeCoverage
+    │           │   │       │   └── Report
+    │           │   │       ├── Logging
+    │           │   │       │   └── TestDox
+    │           │   │       ├── Migration
+    │           │   │       │   └── Migrations
+    │           │   │       ├── SchemaDetector
+    │           │   │       └── Validator
+    │           │   ├── Exception
+    │           │   └── Output
+    │           │       ├── Default
+    │           │       │   └── ProgressPrinter
+    │           │       │       └── Subscriber
+    │           │       ├── Printer
+    │           │       └── TestDox
+    │           └── Util
+    │               ├── Exception
+    │               ├── Http
+    │               ├── PHP
+    │               └── Xml
+    ├── psr
+    │   ├── container
+    │   │   └── src
+    │   └── log
+    │       └── src
+    ├── sebastian
+    │   ├── cli-parser
+    │   │   └── src
+    │   │       └── exceptions
+    │   ├── comparator
+    │   │   └── src
+    │   │       └── exceptions
+    │   ├── complexity
+    │   │   └── src
+    │   │       ├── Complexity
+    │   │       ├── Exception
+    │   │       └── Visitor
+    │   ├── diff
+    │   │   └── src
+    │   │       ├── Exception
+    │   │       └── Output
+    │   ├── environment
+    │   │   └── src
+    │   ├── exporter
+    │   │   └── src
+    │   ├── global-state
+    │   │   └── src
+    │   │       └── exceptions
+    │   ├── lines-of-code
+    │   │   └── src
+    │   │       └── Exception
+    │   ├── object-enumerator
+    │   │   └── src
+    │   ├── object-reflector
+    │   │   └── src
+    │   ├── recursion-context
+    │   │   └── src
+    │   ├── type
+    │   │   └── src
+    │   │       ├── exception
+    │   │       └── type
+    │   └── version
+    │       └── src
+    ├── staabm
+    │   └── side-effects-detector
+    │       └── lib
+    ├── symfony
+    │   ├── deprecation-contracts
+    │   ├── http-client
+    │   │   ├── Chunk
+    │   │   ├── DataCollector
+    │   │   ├── DependencyInjection
+    │   │   ├── Exception
+    │   │   ├── Internal
+    │   │   ├── Messenger
+    │   │   ├── Response
+    │   │   ├── Retry
+    │   │   └── Test
+    │   ├── http-client-contracts
+    │   │   ├── Exception
+    │   │   └── Test
+    │   │       └── Fixtures
+    │   │           └── web
+    │   ├── polyfill-ctype
+    │   ├── polyfill-mbstring
+    │   │   └── Resources
+    │   │       └── unidata
+    │   ├── polyfill-php80
+    │   │   └── Resources
+    │   │       └── stubs
+    │   ├── polyfill-php83
+    │   │   └── Resources
+    │   │       └── stubs
+    │   └── service-contracts
+    │       ├── Attribute
+    │       └── Test
+    ├── theseer
+    │   └── tokenizer
+    │       └── src
+    └── vlucas
+        └── phpdotenv
+            └── src
+                ├── Exception
+                ├── Loader
+                ├── Parser
+                ├── Repository
+                │   └── Adapter
+                ├── Store
+                │   └── File
+                └── Util
+
+498 directories

@@ -103,7 +103,7 @@
         <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2"><i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i></div>
         <div x-data="dropdown()">
             <div class="mx-2 pr-2">
-                <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user['username']) ? htmlspecialchars($user['username']) : 'Gościu' ?></button>
+                <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true"><?= isset($user) ? htmlspecialchars($user->username) : 'Gościu' ?></button>
             </div>
             <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-3" role="none">
