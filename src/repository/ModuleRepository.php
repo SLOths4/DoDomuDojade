@@ -21,45 +21,6 @@ class ModuleRepository extends Model
     }
 
     /**
-     * Konwertuje dane z bazy do DateTimeImmutable z obsługą błędów
-     */
-    private function parseDateTime(?string $dateString): DateTimeImmutable
-    {
-        if (empty($dateString)) {
-            throw new Exception("Date string cannot be empty");
-        }
-
-        // Najpierw spróbuj z ustawionym formatem
-        $date = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $dateString);
-        if ($date !== false) {
-            return $date;
-        }
-
-        // Fallback: spróbuj standardowych formatów
-        $formats = ['Y-m-d H:i:s', 'H:i:s', 'Y-m-d', 'c', 'U'];
-        
-        foreach ($formats as $format) {
-            $date = DateTimeImmutable::createFromFormat($format, $dateString);
-            if ($date !== false) {
-                $this->logger->debug("Successfully parsed date with format: $format", ['value' => $dateString]);
-                return $date;
-            }
-        }
-
-        // Ostatni fallback: spróbuj konstruktora (może być ISO 8601)
-        try {
-            return new DateTimeImmutable($dateString);
-        } catch (Exception $e) {
-            $this->logger->error("Unable to parse date string", [
-                'value' => $dateString,
-                'expected_format' => $this->DATE_FORMAT,
-                'error' => $e->getMessage()
-            ]);
-            throw new Exception("Invalid date format: '$dateString'");
-        }
-    }
-
-    /**
      * Adds a new module
      * @throws Exception
      */
@@ -92,12 +53,15 @@ class ModuleRepository extends Model
             return null;
         }
 
+        $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']);
+        $endTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']);
+
         return new Module(
             $row['id'],
             $row['module_name'],
             (bool) $row['is_active'],
-            $this->parseDateTime($row['start_time']),
-            $this->parseDateTime($row['end_time'])
+            $startTime,
+            $endTime
         );
     }
 
@@ -112,13 +76,13 @@ class ModuleRepository extends Model
         $this->logger->debug("Updating module", ["module_id" => $module->id]);
 
         $query = "
-        UPDATE $this->TABLE_NAME 
-        SET module_name = :module_name,
-            is_active = :is_active,
-            start_time = :start_time,
-            end_time = :end_time
-        WHERE id = :id
-    ";
+            UPDATE $this->TABLE_NAME 
+            SET module_name = :module_name,
+                is_active = :is_active,
+                start_time = :start_time,
+                end_time = :end_time
+            WHERE id = :id
+        ";
 
         $stmt = $this->pdo->prepare($query);
 
@@ -163,12 +127,15 @@ class ModuleRepository extends Model
         
         foreach ($rows as $row) {
             try {
+                $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']);
+                $endTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']);
+
                 $modules[] = new Module(
                     $row['id'],
                     $row['module_name'],
                     (bool)$row['is_active'],
-                    $this->parseDateTime($row['start_time']),
-                    $this->parseDateTime($row['end_time'])
+                    $startTime,
+                    $endTime
                 );
             } catch (Exception $e) {
                 $this->logger->error("Failed to parse module record", [
@@ -196,12 +163,15 @@ class ModuleRepository extends Model
         
         foreach ($rows as $row) {
             try {
+                $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']);
+                $endTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']);
+
                 $modules[] = new Module(
                     $row['id'],
                     $row['module_name'],
                     (bool)$row['is_active'],
-                    $this->parseDateTime($row['start_time']),
-                    $this->parseDateTime($row['end_time'])
+                    $startTime,
+                    $endTime
                 );
             } catch (Exception $e) {
                 $this->logger->error("Failed to parse active module record", [
@@ -222,7 +192,7 @@ class ModuleRepository extends Model
     {
         $query = "SELECT * FROM {$this->TABLE_NAME} WHERE module_name = :module_name LIMIT 1";
         $stmt = $this->executeStatement($query, [
-            ':module_name' => [$moduleName, \PDO::PARAM_STR]
+            ':module_name' => [$moduleName, PDO::PARAM_STR]
         ]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -230,12 +200,15 @@ class ModuleRepository extends Model
             return null;
         }
 
+        $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']);
+        $endTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']);
+
         return new Module(
             $row['id'],
             $row['module_name'],
             (bool)$row['is_active'],
-            $this->parseDateTime($row['start_time']),
-            $this->parseDateTime($row['end_time']),
+            $startTime,
+            $endTime,
         );
     }
 }

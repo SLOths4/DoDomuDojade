@@ -45,15 +45,15 @@ SessionHelper::remove('error');
                         <?php foreach ($modules as $module): ?>
                             <tr>
                                 <td class="px-4 py-2 border"><?= htmlspecialchars($module->moduleName) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->startTime->format('H:i:s')) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->endTime->format('H:i:s')) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->startTime->format('H:i')) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->endTime->format('H:i')) ?></td>
                                 <td class="px-4 py-2 border"><?= $module->isActive ? "Włączony" : "Wyłączony" ?></td>
                                 <td class="px-4 py-2 border space-x-2">
                                     <button type="button"
                                             class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
                                             data-module-id="<?= htmlspecialchars((string)$module->id) ?>"
-                                            data-start-time="<?= htmlspecialchars($module->startTime->format('H:i:s')) ?>"
-                                            data-end-time="<?= htmlspecialchars($module->endTime->format('H:i:s')) ?>"
+                                            data-start-time="<?= htmlspecialchars($module->startTime->format('H:i')) ?>"
+                                            data-end-time="<?= htmlspecialchars($module->endTime->format('H:i')) ?>"
                                             data-is-active="<?= $module->isActive ? '1' : '0' ?>"
                                     >
                                         Edytuj
@@ -79,12 +79,12 @@ SessionHelper::remove('error');
 
                         <div class="mb-4">
                             <label for="edit_start_time" class="block text-sm font-medium text-gray-700 dark:text-white">Od</label>
-                            <input type="datetime" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
+                            <input type="time" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                         </div>
 
                         <div class="mb-4">
                             <label for="edit_end_time" class="block text-sm font-medium text-gray-700 dark:text-white">Do</label>
-                            <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
+                            <input type="time" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                         </div>
 
                         <div class="mb-4">

@@ -11,25 +11,20 @@ readonly class ModuleService
 {
     public function __construct(
         private ModuleRepository $repo,
-        private array $ALLOWED_FIELDS,
-        private string $DATE_FORMAT = 'H:i:s',
+        private string $DATE_FORMAT,
     ) {}
 
     /**
-     * Creates a new module
+     * Checks if a module exists by id
+     * @param int $id
      * @throws Exception
      */
-    public function create(array $data): bool
+    private function moduleExists(int $id): void
     {
-        $this->validate($data);
-        $module = new Module(
-            null,
-            trim($data['moduleName']),
-            (bool) $data['isActive'],
-            DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['startTime']),
-            DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['endTime'])
-        );
-        return $this->repo->add($module);
+        $module = $this->repo->findById($id);
+        if ($module === null) {
+            throw new Exception("Module with id: $id does not exist");
+        }
     }
 
     /**
@@ -39,23 +34,27 @@ readonly class ModuleService
     public function update(int $id, array $data): bool
     {
         $this->validate($data);
-        $module = $this->repo->findById($id);
-        if ($module === null) {
-            throw new Exception("Module not found with id: $id");
-        }
-        foreach ($this->ALLOWED_FIELDS as $field) {
-            if (isset($data[$field])) {
-                $value = $data[$field];
-                if (in_array($field, ['start_time', 'end_time'])) {
-                    $module->$field = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $value);
-                } elseif ($field === 'is_active') {
-                    $module->$field = (bool)$value;
-                } else {
-                    $module->$field = trim($value);
-                }
-            }
-        }
-        return $this->repo->update($module);
+        $this->moduleExists($id);
+
+        $Module = $this->repo->findById($id);
+
+        $startTime = isset($data['start_time']) 
+            ? DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['start_time'])
+            : $Module->startTime;
+            
+        $endTime = isset($data['end_time'])
+            ? DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['end_time'])
+            : $Module->endTime;
+
+        $updatedModule = new Module(
+            $id,
+            $Module->moduleName,
+            isset($data['is_active']) ? (bool)$data['is_active'] : $Module->isActive,
+            $startTime,
+            $endTime
+        );
+
+        return $this->repo->update($updatedModule);
     }
 
     /**
@@ -64,6 +63,7 @@ readonly class ModuleService
      */
     public function delete(int $id): bool
     {
+        $this->moduleExists($id);
         return $this->repo->delete($id);
     }
 
@@ -82,11 +82,10 @@ readonly class ModuleService
         if (empty($data['start_time']) || empty($data['end_time'])) {
             throw new Exception('Module start and end time are required');
         }
+        
         $start = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['start_time']);
         $end = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $data['end_time']);
-        if (!$start || !$end) {
-            throw new Exception("Invalid time format, expected {$this->DATE_FORMAT}");
-        }
+        
         if ($end <= $start) {
             throw new Exception('End time must be greater than start time');
         }
@@ -99,15 +98,6 @@ readonly class ModuleService
     public function getAll(): array
     {
         return $this->repo->findAll();
-    }
-
-    /**
-     * Gets all active modules
-     * @throws Exception
-     */
-    public function getActive(): array
-    {
-        return $this->repo->findActive();
     }
 
     /**
@@ -129,12 +119,15 @@ readonly class ModuleService
     {
         $now = new DateTimeImmutable();
         $module = $this->repo->findByName($moduleName);
+        
         if ($module === null) {
             throw new Exception("Module not found with name: $moduleName");
         }
+        
         if (!$module->isActive) {
             return false;
         }
+        
         return ($module->startTime <= $now && $module->endTime >= $now);
     }
 
@@ -146,10 +139,8 @@ readonly class ModuleService
      */
     public function toggle(int $id): bool
     {
+        $this->moduleExists($id);
         $module = $this->repo->findById($id);
-        if ($module === null) {
-            throw new Exception("Module not found with id: $id");
-        }
 
         $toggledModule = new Module(
             $module->id,

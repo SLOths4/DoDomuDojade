@@ -15,6 +15,7 @@ use src\service\CountdownService;
 use src\service\ModuleService;
 use src\service\UserService;
 use DateTimeImmutable;
+use Throwable;
 
 /**
  * Panel controller
@@ -600,28 +601,23 @@ class PanelController extends Controller
         }
     }
 
-
     public function toggleModule(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
-            $enable = isset($_POST['enable']) ? filter_var($_POST['enable'], FILTER_VALIDATE_BOOLEAN) : null;
+            $moduleId = $_POST['module_id'];
+            $enable = $_POST['is_active'];
 
             try {
-
-                if ($moduleId <= 0 || $enable === null) {
+                if (!isset($moduleId) || !isset($enable)) {
                     header("Location: /panel");
                     exit;
                 }
-
                 $this->moduleService->toggle($moduleId);
-                $action = $enable ? 'włączony' : 'wyłączony';
-                $this->logger->debug("Moduł $moduleId został $action");
             } catch (Exception $e) {
-                $this->logger->error("Błąd przy " . ($enable ? 'włączaniu' : 'wyłączaniu') . " modułu", ['error' => $e->getMessage()]);
+                $this->logger->error("Error while toggling module", ['error' => $e->getMessage()]);
             }
             header("Location: /panel");
             exit;
@@ -632,44 +628,75 @@ class PanelController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
-    
-            $newModuleStartTime = $_POST['start_time'] ?? '';
-            $newModuleEndTime = $_POST['end_time'] ?? '';
-            $moduleId = isset($_POST['module_id']) ? (int)$_POST['module_id'] : 0;
+
+            $moduleId = (int)($_POST['module_id'] ?? 0);
+            $newModuleStartTime = trim($_POST['start_time'] ?? '');
+            $newModuleEndTime = trim($_POST['end_time'] ?? '');
             $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
-    
+
             try {
                 $module = $this->moduleService->getById($moduleId);
-    
+
                 if (empty($module)) {
                     throw new Exception("Module not found");
                 }
-    
-                $updates = [];
-    
-                // Formatuj daty do porównania
-                if ($newModuleStartTime !== '' && $newModuleStartTime !== $module->startTime->format('H:i:s')) {
-                    $updates['start_time'] = $newModuleStartTime;
-                }
-    
-                if ($newModuleEndTime !== '' && $newModuleEndTime !== $module->endTime->format('H:i:s')) {
-                    $updates['end_time'] = $newModuleEndTime;
-                }
-    
-                if ($newModuleIsActive !== (int)$module->isActive) {
-                    $this->moduleService->toggle($moduleId);
-                }
-    
-                if (!empty($updates)) {
-                    $this->moduleService->update($moduleId, $updates);
-                }
-    
-                $this->logger->debug("Module updated successfully");
+
+                $dateFormat = $this->config->modulesDateFormat ?? 'H:i';
+
+                $normalizedStart = (function(string $value, \DateTimeImmutable $fallback) use ($dateFormat): string {
+                    $value = trim($value);
+                    if ($value === '') {
+                        return $fallback->format($dateFormat);
+                    }
+                    $candidates = ['H:i', 'H:i:s'];
+                    foreach ($candidates as $fmt) {
+                        $dt = \DateTimeImmutable::createFromFormat($fmt, $value);
+                        if ($dt instanceof \DateTimeImmutable) {
+                            return $dt->format($dateFormat);
+                        }
+                    }
+                    try {
+                        $dt = new DateTimeImmutable($value);
+                        return $dt->format($dateFormat);
+                    } catch (Throwable) {
+                        return $fallback->format($dateFormat);
+                    }
+                })($newModuleStartTime, $module->startTime);
+
+                $normalizedEnd = (function(string $value, \DateTimeImmutable $fallback) use ($dateFormat): string {
+                    $value = trim($value);
+                    if ($value === '') {
+                        return $fallback->format($dateFormat);
+                    }
+                    $candidates = ['H:i', 'H:i:s'];
+                    foreach ($candidates as $fmt) {
+                        $dt = \DateTimeImmutable::createFromFormat($fmt, $value);
+                        if ($dt instanceof \DateTimeImmutable) {
+                            return $dt->format($dateFormat);
+                        }
+                    }
+                    try {
+                        $dt = new \DateTimeImmutable($value);
+                        return $dt->format($dateFormat);
+                    } catch (\Throwable) {
+                        return $fallback->format($dateFormat);
+                    }
+                })($newModuleEndTime, $module->endTime);
+
+                $updates = [
+                    'module_name' => $module->moduleName,
+                    'is_active' => $newModuleIsActive,
+                    'start_time' => $normalizedStart,
+                    'end_time' => $normalizedEnd,
+                ];
+
+                $this->moduleService->update($moduleId, $updates);
+
                 header('Location: /panel/modules');
                 exit;
             } catch (Exception $e) {
                 $this->logger->error('Module edit failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Nie udało się edytować modułu');
+                SessionHelper::set('error', 'Nie udało się edytować modułu: ' . $e->getMessage());
                 header('Location: /panel/modules');
                 exit;
             }

@@ -38,9 +38,9 @@ final readonly class config
     public static function fromEnv(): self
     {
         // Weather
-        $imgw = self::env('IMGW_WEATHER_URL', '');
-        $airly = self::env('AIRLY_ENDPOINT', '');
-        $key = self::env('AIRLY_API_KEY', '');
+        $imgw = self::env('IMGW_WEATHER_URL');
+        $airly = self::env('AIRLY_ENDPOINT');
+        $key = self::env('AIRLY_API_KEY');
         $loc = ltrim(self::env('AIRLY_LOCATION_ID', ''), '/');
 
         // Announcements
@@ -68,8 +68,8 @@ final readonly class config
         $minPasswordLength = (int) self::env('MIN_PASSWORD_LENGTH', 8);
 
         // Tram
-        $tramURL = self::env('TRAM_URL', '');
-        $stopsIDs = self::env('STOPS_IDS', '');
+        $tramURL = self::env('TRAM_URL');
+        $stopsIDs = self::env('STOPS_IDS');
 
         // Calendar
         $icalURL = self::env('ICAL_URL', '');

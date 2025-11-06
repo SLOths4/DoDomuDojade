@@ -129,7 +129,7 @@ $container->set(ModuleService::class, function (Container $c): ModuleService {
     $cfg = $c->get(config::class);
     return new ModuleService(
         $c->get(ModuleRepository::class),
-        $cfg->moduleTableColumns(),
+        $cfg->modulesDateFormat(),
     );
 });
 

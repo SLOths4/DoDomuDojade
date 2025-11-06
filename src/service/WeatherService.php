@@ -28,22 +28,6 @@ class WeatherService extends Model {
     )
     {
         parent::__construct($pdo, $logger);
-        if ($this->imgwWeatherUrl === '') {
-            $this->logger->error('IMGW endpoint is missing.');
-            throw new RuntimeException('IMGW endpoint is missing.');
-        }
-        if ($this->airlyUrl === '') {
-            $this->logger->error('Airly endpoint is missing.');
-            throw new RuntimeException('Airly endpoint is missing.');
-        }
-        if ($this->airlyApiKey === '') {
-            $this->logger->error('Airly API key is missing.');
-            throw new RuntimeException('Airly API key is missing.');
-        }
-        if ($this->airlyLocationId === '') {
-            $this->logger->error('Airly location ID is missing.');
-            throw new RuntimeException('Airly location ID is missing.');
-        }
     }
 
     /**
