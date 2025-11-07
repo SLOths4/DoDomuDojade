@@ -49,13 +49,12 @@ class PanelController extends Controller
     {
         try {
             if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== SessionHelper::get('csrf_token')) {
-                $this->logger->error("Nieprawidłowy token CSRF.");
-                SessionHelper::set('error', 'Nieprawidłowy token CSRF.');
-                header("Location: /login");
-                exit;
+                $this->logger->error("Invalid CSRF token.");
+                SessionHelper::set('error', 'Invalid CSRF token.');
+                $this->redirect('/login');
             }
         } catch (Exception $e) {
-            $this->logger->error("Csrf error occurred: ". $e->getMessage());
+            $this->logger->error("CSRF error occurred: ". $e->getMessage());
             $this->errorController->internalServerError();
         }
     }
@@ -64,7 +63,7 @@ class PanelController extends Controller
     {
         $userId = SessionHelper::get('user_id');
         if (!$userId) {
-            $this->handleError("No user logged in", "/login");
+            $this->handleError("Please sign in to continue", "No user logged in");
         }
     }
 
@@ -82,12 +81,63 @@ class PanelController extends Controller
     }
 
     #[NoReturn]
-    private function handleError(string $message, string $redirectTo = '/login'): void
+    private function handleError(string $visibleMessage, string $logMessage, string $redirectTo = '/login'): void
     {
-        $this->logger->error($message);
-        SessionHelper::set('error', $message);
-        header("Location: $redirectTo");
+        $this->logger->error($logMessage);
+        SessionHelper::set('error', $visibleMessage);
+        $this->redirect($redirectTo);
+    }
+
+    #[NoReturn]
+    private function redirect(string $to): void
+    {
+        header("Location: $to");
         exit;
+    }
+
+    private function buildUsernamesMap(array $users): array
+    {
+        $usernames = [];
+        foreach ($users as $u) {
+            $usernames[$u->id] = $u->username;
+        }
+        return $usernames;
+    }
+
+    private function formatCountdowns(array $countdowns): array
+    {
+        $out = [];
+        foreach ($countdowns as $countdown) {
+            $out[] = (object) [
+                'id' => $countdown->id,
+                'title' => $countdown->title,
+                'userId' => $countdown->userId,
+                'countTo' => $countdown->countTo instanceof DateTimeImmutable
+                    ? $countdown->countTo->format('Y-m-d')
+                    : $countdown->countTo,
+            ];
+        }
+        return $out;
+    }
+
+    private function formatAnnouncements(array $announcements): array
+    {
+        $out = [];
+        foreach ($announcements as $announcement) {
+            $out[] = (object) [
+                'id' => $announcement->id,
+                'title' => $announcement->title,
+                'text' => $announcement->text,
+                'userId' => $announcement->userId,
+                'date' => $announcement->date instanceof DateTimeImmutable
+                    ? $announcement->date->format('Y-m-d')
+                    : $announcement->date,
+                'validUntil' => $announcement->validUntil instanceof DateTimeImmutable
+                    ? $announcement->validUntil->format('Y-m-d')
+                    : $announcement->validUntil
+            ];
+        }
+        return $out;
     }
 
     public function index(): void
@@ -95,10 +145,7 @@ class PanelController extends Controller
         try {
             $user = $this->getActiveUser();
 
-            $showOnlyValid = $_SESSION['display_valid_announcements_only'] ?? false;
-            $announcements = $showOnlyValid
-                ? $this->announcementService->getValid()
-                : $this->announcementService->getAll();
+            $announcements = $this->announcementService->getAll();
             $users = $this->userService->getAll();
             $modules = $this->moduleService->getAll();
 
@@ -109,10 +156,7 @@ class PanelController extends Controller
                 'modules' => $modules
             ]);
         } catch (Exception $e) {
-            $this->logger->error("Error while loading index: " . $e->getMessage());
-            SessionHelper::set('error', 'Nie udało się załadować strony głównej.');
-            header("Location: /login");
-            exit;
+            $this->handleError("Failed to load panel", "Failed to load index: " . $e->getMessage());
         }
     }
 
@@ -127,10 +171,7 @@ class PanelController extends Controller
                 'users' => $users
             ]);
         } catch (Exception $e) {
-            $this->logger->error("Błąd podczas ładowania strony users: " . $e->getMessage());
-            SessionHelper::set('error', 'Nie udało się załadować strony users.');
-            header("Location: /login");
-            exit;
+            $this->handleError("Failed to load users page", "Failed to load users page: " . $e->getMessage());
         }
     }
 
@@ -141,22 +182,8 @@ class PanelController extends Controller
             $users = $this->userService->getAll();
             $countdowns = $this->countdownService->getAll();
 
-            $usernames = [];
-            foreach ($users as $u) {
-                $usernames[$u->id] = $u->username;
-            }
-
-            $formattedCountdowns = [];
-            foreach ($countdowns as $countdown) {
-                $formattedCountdowns[] = (object) [
-                    'id' => $countdown->id,
-                    'title' => $countdown->title,
-                    'userId' => $countdown->userId,
-                    'countTo' => $countdown->countTo instanceof \DateTimeImmutable 
-                        ? $countdown->countTo->format('Y-m-d') 
-                        : $countdown->countTo,
-                ];
-            }
+            $usernames = $this->buildUsernamesMap($users);
+            $formattedCountdowns = $this->formatCountdowns($countdowns);
 
             $this->render('countdowns', [
                 'user' => $user,
@@ -164,15 +191,9 @@ class PanelController extends Controller
                 'countdowns' => $formattedCountdowns
             ]);
         } catch (Exception $e) {
-            $this->logger->error("Error while loading countdowns: " . $e->getMessage());
-
-            SessionHelper::set('error', 'Nie udało się załadować stronę odliczania.');
-
-            header("Location: /login");
-            exit;
+            $this->handleError("Failed to load countdowns page", "Failed to load countdown page: " . $e->getMessage());
         }
     }
-
 
     public function announcements(): void
     {
@@ -181,25 +202,8 @@ class PanelController extends Controller
             $users = $this->userService->getAll();
             $announcements = $this->announcementService->getAll();
 
-            $usernames = [];
-            foreach ($users as $u) {
-                $usernames[$u->id] = $u->username;
-            }
-
-            foreach ($announcements as $announcement) {
-                $formattedAnnouncements[] = (object) [
-                    'id' => $announcement->id,
-                    'title' => $announcement->title,
-                    'text' => $announcement->text,
-                    'userId' => $announcement->userId,
-                    'date' => $announcement->date instanceof \DateTimeImmutable 
-                        ? $announcement->date->format('Y-m-d') 
-                        : $announcement->date,
-                    'validUntil' => $announcement->validUntil instanceof \DateTimeImmutable 
-                        ? $announcement->validUntil->format('Y-m-d') 
-                        : $announcement->validUntil
-                ];
-            }
+            $usernames = $this->buildUsernamesMap($users);
+            $formattedAnnouncements = $this->formatAnnouncements($announcements);
 
             $this->render('announcements', [
                 'user' => $user,
@@ -207,8 +211,7 @@ class PanelController extends Controller
                 'announcements' => $formattedAnnouncements
             ]);
         } catch (Exception $e) {
-            $this->logger->error("An error occurred: ".$e->getMessage());
-            $this->errorController->internalServerError();
+            $this->handleError("Failed to load announcements page", "Announcements error: ".$e->getMessage(), "/panel/announcements");
         }
     }
 
@@ -222,16 +225,15 @@ class PanelController extends Controller
                 'modules' => $modules
             ]);
         } catch (Exception $e) {
-            $this->logger->error("An error occurred: ".$e->getMessage());
-            $this->errorController->internalServerError();
+            $this->handleError("Failed to load modules page", "Modules error: ".$e->getMessage(), "/panel/modules");
         }
     }
 
-    #[NoReturn] public function logout(): void
+    #[NoReturn]
+    public function logout(): void
     {
         SessionHelper::destroy();
-        header("Location: /login");
-        exit;
+        $this->redirect('/login');
     }
 
     public function login(): void
@@ -240,26 +242,24 @@ class PanelController extends Controller
             $this->setCsrf();
             $this->render('login');
         } catch (Exception $e) {
-            $this->logger->error("An error occurred: ".$e->getMessage());
-            $this->errorController->internalServerError();
+            $this->handleError("Failed to load login page", "Login error: ".$e->getMessage());
         }
     }
 
-    #[NoReturn] public function authenticate(): void
+    public function authenticate(): void
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $this->logger->debug("User verification request received.");
                 $this->checkCsrf();
 
-                $username = trim($_POST['username']);
-                $password = trim($_POST['password']);
+                $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
+                $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
 
-                if (empty($password) || empty($username)) {
-                    $this->logger->error("Password or username cannot be null!");
-                    SessionHelper::set("error", "Pola nazwy użytkownika i hasła muszą być wypełnione!");
-                    header("Location: /login");
-                    exit;
+                if ($password === '' || $username === '') {
+                    $this->logger->error("Username or password is empty");
+                    SessionHelper::set("error", "Username and password are required.");
+                    $this->redirect("/login");
                 }
 
                 $user = $this->userService->getByExactUsername($username);
@@ -268,18 +268,14 @@ class PanelController extends Controller
                     $this->logger->debug("Correct password for given username.");
                     $this->setCsrf();
                     SessionHelper::set('user_id', $user->id);
-                    header("Location: /panel");
+                    $this->redirect("/panel");
                 } else {
-                    $this->logger->debug("Incorrect password for given username!");
-                    SessionHelper::set('error', 'Nieprawidłowa nazwa użytkownika lub hasło!');
-                    header("Location: /login");
+                    $this->logger->debug("Incorrect credentials");
+                    SessionHelper::set('error', 'Invalid username or password.');
+                    $this->redirect("/login");
                 }
-                exit;
             } catch (Exception $e) {
-                $this->logger->error("Authentication error occurred: ".$e->getMessage());
-                $this->errorController->internalServerError();
-                header("Location: /login");
-                exit;
+                $this->handleError("Authentication failed", "Authentication error: ".$e->getMessage());
             }
         }
     }
@@ -293,9 +289,8 @@ class PanelController extends Controller
             $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
             if (!$announcementId) {
                 $this->logger->error("Invalid announcement ID");
-                SessionHelper::set('error', 'Nieprawidłowe ID ogłoszenia.');
-                header('Location: /panel/announcements');
-                exit;
+                SessionHelper::set('error', 'Invalid announcement ID.');
+                $this->redirect('/panel/announcements');
             }
 
             try {
@@ -305,18 +300,16 @@ class PanelController extends Controller
 
                 if ($result) {
                     $this->logger->debug("Announcement deleted", ['id' => $announcementId]);
-                    SessionHelper::set('success', 'Ogłoszenie zostało usunięte.');
+                    SessionHelper::set('success', 'Announcement has been deleted.');
                 } else {
                     $this->logger->error("Announcement could not be deleted", ['id' => $announcementId]);
-                    SessionHelper::set('error', 'Nie udało się usunąć ogłoszenia.');
+                    SessionHelper::set('error', 'Failed to delete announcement.');
                 }
-                header('Location: /panel/announcements');
-                exit;
+                $this->redirect('/panel/announcements');
             } catch (Exception $e) {
                 $this->logger->error('Announcement deletion failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Wystąpił błąd w trakcie usuwania ogłoszenia.');
-                header('Location: /panel/announcements');
-                exit;
+                SessionHelper::set('error', 'Error occurred while deleting announcement.');
+                $this->redirect('/panel/announcements');
             }
         }
     }
@@ -327,18 +320,13 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $title = trim($_POST['title'] ?? '');
-            $text = trim($_POST['text'] ?? '');
-            $validUntil = $_POST['valid_until'] ?? '';
+            $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+            $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
+            $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
 
             $userId = SessionHelper::get('user_id');
 
             try {
-                $this->logger->debug("Add announcement request received", [
-                    'user_id' => $userId,
-                    'title' => $title
-                ]);
-
                 $data = [
                     'title' => $title,
                     'text' => $text,
@@ -348,20 +336,19 @@ class PanelController extends Controller
                 $success = $this->announcementService->create($data, $userId);
 
                 if ($success) {
-                    SessionHelper::set('success', 'Udało się dodać ogłoszenie.');
+                    SessionHelper::set('success', 'Announcement created.');
                     $this->logger->info("Announcement added successfully", ['user_id' => $userId]);
                 } else {
-                    SessionHelper::set('error', 'Nie udało się dodać ogłoszenia.');
+                    SessionHelper::set('error', 'Failed to add announcement.');
                     $this->logger->warning("Announcement add failed", ['user_id' => $userId]);
                 }
 
             } catch (Exception $e) {
-                SessionHelper::set('error', 'Wystąpił błąd podczas dodawania ogłoszenia.');
+                SessionHelper::set('error', 'Error while adding announcement.');
                 $this->logger->error("Exception while adding announcement", ['error' => $e->getMessage()]);
             }
 
-            header('Location: /panel/announcements');
-            exit;
+            $this->redirect('/panel/announcements');
         }
     }
 
@@ -371,14 +358,12 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $id = (int)($_POST['announcement_id'] ?? 0);
-            $title = trim($_POST['title'] ?? '');
-            $text = trim($_POST['text'] ?? '');
-            $validUntil = $_POST['valid_until'] ?? '';
+            $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+            $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+            $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
+            $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
 
             try {
-                $this->logger->debug("edit_announcement request received", ['id' => $id]);
-
                 $data = [
                     'title' => $title,
                     'text' => $text,
@@ -388,7 +373,7 @@ class PanelController extends Controller
                 $success = $this->announcementService->update($id, $data);
 
                 if ($success) {
-                    SessionHelper::set('success', 'Announcement updated successfully.');
+                    SessionHelper::set('success', 'Announcement updated.');
                     $this->logger->info("Announcement updated successfully", ['id' => $id]);
                 } else {
                     SessionHelper::set('error', 'No changes were made.');
@@ -403,8 +388,7 @@ class PanelController extends Controller
                 SessionHelper::set('error', 'Announcement update failed: ' . $e->getMessage());
             }
 
-            header('Location: /panel/announcements');
-            exit;
+            $this->redirect('/panel/announcements');
         }
     }
 
@@ -414,17 +398,16 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $username = trim($_POST['username']);
-            $password = trim($_POST['password']);
+            $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
+            $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
 
             try {
                 $this->logger->debug("add_user request received");
 
-                if (!isset($username) || !isset($password)) {
+                if ($username === '' || $password === '') {
                     $this->logger->error("Username and password are required");
-                    SessionHelper::set('error', 'Username and password are required!');
-                    header('Location: /panel/users');
-                    exit;
+                    SessionHelper::set('error', 'Username and password are required.');
+                    $this->redirect('/panel/users');
                 }
 
                 $data = [
@@ -435,23 +418,14 @@ class PanelController extends Controller
                 $result = $this->userService->create($data);
                 if ($result) {
                     $this->logger->info("User added successfully");
+                    SessionHelper::set('success', 'User created.');
                 } else {
                     $this->logger->error("User adding failed");
-                    SessionHelper::set('error', 'Failed to add user');
+                    SessionHelper::set('error', 'Failed to add user.');
                 }
-                header('Location: /panel/users');
-                exit;
+                $this->redirect('/panel/users');
             } catch (Exception $e) {
-                $this->logger->error('User adding failed', ['error' => $e->getMessage()]);
-                $errorMessage = match($e->getMessage()) {
-                    'Username too long' => 'Nazwa użytkownika jest za długa.',
-                    'Password hash too short' => 'Hasło jest za krótkie.',
-                    "User can't delete themselves." => "Użytkownik nie może usunąć sam siebie.",
-                    default => 'Nie udało się dodać użytkownika.'
-                };
-                SessionHelper::set('error', $errorMessage);
-                header('Location: /panel/users');
-                exit;
+                $this->handleError("Failed to add user", "User adding failed: " . $e->getMessage(), "/panel/users");
             }
         }
     }
@@ -460,31 +434,27 @@ class PanelController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
-            $userToDelete = trim($_POST['user_id']);
+            $userToDelete = (int)filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
 
             $user = $this->getActiveUser();
-            $userId = $user->id;
+            $userId = (int)$user->id;
             try {
                 if ($userId === $userToDelete) {
-                    SessionHelper::set('error', 'Użytkownik nie może usunąć sam siebie!');
-                    header('Location: /panel/users');
-                    exit;
+                    SessionHelper::set('error', 'User cannot delete themselves.');
+                    $this->redirect('/panel/users');
                 }
 
                 $result = $this->userService->delete($userId, $userToDelete);
                 if ($result) {
                     $this->logger->info("User deleted successfully");
+                    SessionHelper::set('success', 'User deleted.');
                 } else {
                     $this->logger->error("User deletion failed");
-                    SessionHelper::set('error', 'Nie udało się usunąć użytkownika');
+                    SessionHelper::set('error', 'Failed to delete user.');
                 }
-                header('Location: /panel/users');
-                exit;
+                $this->redirect('/panel/users');
             } catch (Exception $e) {
-                $this->logger->error('User deletion failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Nie udało usunąć się użytkownika');
-                header('Location: /panel/users');
-                exit;
+                $this->handleError("User deletion failed", "User deletion failed: " . $e->getMessage(), "/panel/users");
             }
         }
     }
@@ -495,8 +465,8 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $title = trim($_POST['title']);
-            $count_to = $_POST['count_to'];
+            $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+            $count_to = (string)filter_input(INPUT_POST, 'count_to', FILTER_UNSAFE_RAW);
 
             try {
                 $userId = SessionHelper::get('user_id');
@@ -506,10 +476,9 @@ class PanelController extends Controller
                     'title' => $title
                 ]);
 
-                if (empty($title) || empty($count_to)) {
+                if ($title === '' || $count_to === '') {
                     SessionHelper::set('error', 'All fields must be filled.');
-                    header('Location: /panel/countdowns');
-                    exit;
+                    $this->redirect('/panel/countdowns');
                 }
 
                 $data = [
@@ -518,14 +487,10 @@ class PanelController extends Controller
                 ];
 
                 $this->countdownService->create($data, $userId);
-                $this->logger->info("Countdown added successfully");
-                header('Location: /panel/countdowns');
-                exit;
+                SessionHelper::set('success', 'Countdown created.');
+                $this->redirect('/panel/countdowns');
             } catch (Exception $e) {
-                $this->logger->error('Countdown adding failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Nie udało się dodać odliczania.');
-                header('Location: /panel/countdowns');
-                exit;
+                $this->handleError("Failed to add countdown", "Countdown adding failed: " . $e->getMessage(), "/panel/countdowns");
             }
         }
     }
@@ -536,31 +501,28 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $countdownId = $_POST['countdown_id'];
+            $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
             try {
                 $this->countdownService->delete($countdownId);
                 $this->logger->info("Countdown deleted successfully");
-                header('Location: /panel/countdowns');
-                exit;
+                SessionHelper::set('success', 'Countdown deleted.');
+                $this->redirect('/panel/countdowns');
             } catch (Exception $e) {
-                $this->logger->error('Countdown deletion failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Failed to delete countdown');
-                header('Location: /panel/countdowns');
-                exit;
+                $this->handleError("Failed to delete countdown", "Countdown deletion failed: " . $e->getMessage(), "/panel/countdowns");
             }
         }
     }
 
-    public function editCountdown(): void 
+    public function editCountdown(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $newCountdownTitle = trim($_POST['title']);
-            $newRawCountdownCountTo = $_POST['count_to'];
-            $countdownId = (int)$_POST['countdown_id'];
+            $newCountdownTitle = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+            $newRawCountdownCountTo = (string)filter_input(INPUT_POST, 'count_to', FILTER_UNSAFE_RAW);
+            $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
             try {
                 $countdown = $this->countdownService->getById($countdownId);
@@ -576,27 +538,25 @@ class PanelController extends Controller
 
                 $updates = [];
 
-                if ($newCountdownTitle !== $countdown->title) {
+                if ($newCountdownTitle !== '' && $newCountdownTitle !== $countdown->title) {
                     $updates['title'] = $newCountdownTitle;
                 }
 
-                if ($newCountdownCountTo !== $countdown->countTo) {
+                if ($newCountdownCountTo != $countdown->countTo) {
                     $updates['count_to'] = $newCountdownCountTo;
                 }
 
                 if (!empty($updates)) {
                     $this->countdownService->update($countdownId, $updates);
                     $this->logger->debug("Updated countdown fields", ['countdown_id' => $countdownId, 'updates' => $updates]);
+                    SessionHelper::set('success', 'Countdown updated.');
+                } else {
+                    SessionHelper::set('error', 'No changes were made.');
                 }
 
-                $this->logger->debug("Countdown updated successfully");
-                header('Location: /panel/countdowns');
-                exit;
+                $this->redirect('/panel/countdowns');
             } catch (Exception $e) {
-                $this->logger->error('Countdown update failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Nie udało się edytować odliczania.');
-                header('Location: /panel/countdowns');
-                exit;
+                $this->handleError("Failed to update countdown", "Countdown update failed: " . $e->getMessage(), "/panel/countdowns");
             }
         }
     }
@@ -607,20 +567,18 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $moduleId = $_POST['module_id'];
-            $enable = $_POST['is_active'];
+            $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
+            $enable = filter_input(INPUT_POST, 'is_active', FILTER_UNSAFE_RAW);
 
             try {
-                if (!isset($moduleId) || !isset($enable)) {
-                    header("Location: /panel");
-                    exit;
+                if (!$moduleId || !isset($enable)) {
+                    $this->redirect("/panel");
                 }
                 $this->moduleService->toggle($moduleId);
+                $this->redirect("/panel");
             } catch (Exception $e) {
-                $this->logger->error("Error while toggling module", ['error' => $e->getMessage()]);
+                $this->handleError("Failed to toggle module", "Failed to toggle module: " . $e->getMessage(), "/panel");
             }
-            header("Location: /panel");
-            exit;
         }
     }
 
@@ -629,9 +587,9 @@ class PanelController extends Controller
             $this->checkCsrf();
             $this->checkIsUserLoggedIn();
 
-            $moduleId = (int)($_POST['module_id'] ?? 0);
-            $newModuleStartTime = trim($_POST['start_time'] ?? '');
-            $newModuleEndTime = trim($_POST['end_time'] ?? '');
+            $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
+            $newModuleStartTime = trim((string)filter_input(INPUT_POST, 'start_time', FILTER_UNSAFE_RAW));
+            $newModuleEndTime = trim((string)filter_input(INPUT_POST, 'end_time', FILTER_UNSAFE_RAW));
             $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
 
             try {
@@ -643,45 +601,8 @@ class PanelController extends Controller
 
                 $dateFormat = $this->config->modulesDateFormat ?? 'H:i';
 
-                $normalizedStart = (function(string $value, \DateTimeImmutable $fallback) use ($dateFormat): string {
-                    $value = trim($value);
-                    if ($value === '') {
-                        return $fallback->format($dateFormat);
-                    }
-                    $candidates = ['H:i', 'H:i:s'];
-                    foreach ($candidates as $fmt) {
-                        $dt = \DateTimeImmutable::createFromFormat($fmt, $value);
-                        if ($dt instanceof \DateTimeImmutable) {
-                            return $dt->format($dateFormat);
-                        }
-                    }
-                    try {
-                        $dt = new DateTimeImmutable($value);
-                        return $dt->format($dateFormat);
-                    } catch (Throwable) {
-                        return $fallback->format($dateFormat);
-                    }
-                })($newModuleStartTime, $module->startTime);
-
-                $normalizedEnd = (function(string $value, \DateTimeImmutable $fallback) use ($dateFormat): string {
-                    $value = trim($value);
-                    if ($value === '') {
-                        return $fallback->format($dateFormat);
-                    }
-                    $candidates = ['H:i', 'H:i:s'];
-                    foreach ($candidates as $fmt) {
-                        $dt = \DateTimeImmutable::createFromFormat($fmt, $value);
-                        if ($dt instanceof \DateTimeImmutable) {
-                            return $dt->format($dateFormat);
-                        }
-                    }
-                    try {
-                        $dt = new \DateTimeImmutable($value);
-                        return $dt->format($dateFormat);
-                    } catch (\Throwable) {
-                        return $fallback->format($dateFormat);
-                    }
-                })($newModuleEndTime, $module->endTime);
+                $normalizedStart = $this->normalizeTime($newModuleStartTime, $module->startTime, $dateFormat);
+                $normalizedEnd = $this->normalizeTime($newModuleEndTime, $module->endTime, $dateFormat);
 
                 $updates = [
                     'module_name' => $module->moduleName,
@@ -692,15 +613,31 @@ class PanelController extends Controller
 
                 $this->moduleService->update($moduleId, $updates);
 
-                header('Location: /panel/modules');
-                exit;
+                $this->redirect('/panel/modules');
             } catch (Exception $e) {
-                $this->logger->error('Module edit failed', ['error' => $e->getMessage()]);
-                SessionHelper::set('error', 'Nie udało się edytować modułu: ' . $e->getMessage());
-                header('Location: /panel/modules');
-                exit;
+                $this->handleError("Failed to edit module", "Module edit failed " . $e->getMessage(), "/panel/modules");
             }
         }
     }
-    
+
+    private function normalizeTime(string $value, DateTimeImmutable $fallback, string $dateFormat): string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return $fallback->format($dateFormat);
+        }
+        $candidates = ['H:i', 'H:i:s'];
+        foreach ($candidates as $fmt) {
+            $dt = DateTimeImmutable::createFromFormat($fmt, $value);
+            if ($dt instanceof DateTimeImmutable) {
+                return $dt->format($dateFormat);
+            }
+        }
+        try {
+            $dt = new DateTimeImmutable($value);
+            return $dt->format($dateFormat);
+        } catch (Throwable) {
+            return $fallback->format($dateFormat);
+        }
+    }
 }
