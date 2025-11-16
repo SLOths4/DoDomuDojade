@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace src\infrastructure\factories;
 
-use src\config\config;
+use src\config\Config;
 
 use PDO;
 use Exception;
+use src\exceptions\DatabaseException;
 
 class PDOFactory
 {
@@ -18,13 +19,13 @@ class PDOFactory
     public static function create(): PDO
     {
         try {
-            $cfg = config::fromEnv();
+            $cfg = Config::fromEnv();
             $dbDsn = $cfg->dbDsn();
             $dbUsername = $cfg->dbUsername();
             $dbPassword = $cfg->dbPassword();
 
             if (empty($dbDsn)) {
-                throw new Exception('Database DSN cannot be empty.');
+                throw DatabaseException::invalidCredentials($dbDsn);
             }
 
             $pdo = (!empty($dbUsername) || !empty($dbPassword))
@@ -35,7 +36,7 @@ class PDOFactory
 
             return $pdo;
         } catch (Exception $e) {
-            throw new Exception("Błąd połączenia z bazą danych: " . $e->getMessage(), 0, $e);
+            throw DatabaseException::connectionFailed($dbDsn, $e);
         }
     }
 }

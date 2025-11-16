@@ -2,12 +2,9 @@
 
 namespace src\service;
 
-
 use Exception;
-use PDO;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use src\core\Model;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -15,20 +12,15 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-// TODO zmienić na readonly
-class WeatherService extends Model {
+readonly class WeatherService {
     public function __construct(
-        PDO                                  $pdo,
-        LoggerInterface                      $logger,
-        private readonly HttpClientInterface $httpClient,
-        private readonly string              $imgwWeatherUrl,
-        private readonly string              $airlyUrl,
-        private readonly string              $airlyApiKey,
-        private readonly string              $airlyLocationId,
-    )
-    {
-        parent::__construct($pdo, $logger);
-    }
+        private LoggerInterface     $logger,
+        private HttpClientInterface $httpClient,
+        private string              $imgwWeatherUrl,
+        private string              $airlyUrl,
+        private string              $airlyApiKey,
+        private string              $airlyLocationId,
+    ){}
 
     /**
      * Makes HTTP request to the specified URL.

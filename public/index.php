@@ -7,13 +7,13 @@ if ($uri !== '/' && file_exists(__DIR__ . $uri) && in_array($ext, $allowedExtens
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require  __DIR__ . '/../src/bootstrap/error_handling.php';
+require __DIR__ . '/../src/bootstrap/ErrorHandling.php';
 
 $root = dirname(__DIR__);
 $dotenv = Dotenv\Dotenv::createImmutable($root);
 $dotenv->safeLoad();
 
-$container = require __DIR__ . '/../src/bootstrap/container.php';
+$container = require __DIR__ . '/../src/bootstrap/Container.php';
 
 try {
     registerErrorHandling($container);

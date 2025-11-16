@@ -12,7 +12,6 @@ readonly class CountdownService
     public function __construct(
         private CountdownRepository $repo,
         private int $MAX_TITLE_LENGTH,
-        private array $ALLOWED_FIELDS,
         private string $DATE_FORMAT
     ) {}
 
@@ -50,7 +49,7 @@ readonly class CountdownService
         $existing = $this->repo->findById($id);
         
         if ($existing === null) {
-            throw new Exception("Countdown with ID {$id} not found");
+            throw new Exception("Countdown with ID $id not found");
         }
         
         $updatedData = [

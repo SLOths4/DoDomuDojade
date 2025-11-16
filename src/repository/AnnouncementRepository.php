@@ -5,25 +5,23 @@ namespace src\repository;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use PDOStatement;
 use Psr\Log\LoggerInterface;
-use src\core\Model;
 use src\entities\Announcement;
+use src\infrastructure\helpers\DatabaseHelper;
 
-class AnnouncementRepository extends Model
+readonly class AnnouncementRepository
 {
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
-        private readonly string $TABLE_NAME,
-        private readonly string $DATE_FORMAT,
-    ) {
-        parent::__construct($pdo, $logger);
-    }
+        private PDO             $pdo,
+        private LoggerInterface $logger,
+        private DatabaseHelper $dbHelper,
+        private string  $TABLE_NAME,
+        private string  $DATE_FORMAT,
+    ) {}
 
     /**
      * Maps database row to Announcement entity.
-     * @param PDOStatement $r
+     * @param array $r
      * @return Announcement
      * @throws Exception
      */
@@ -46,7 +44,7 @@ class AnnouncementRepository extends Model
      */
     public function findAll(): array
     {
-        $stmt = $this->executeStatement("SELECT * FROM $this->TABLE_NAME");
+        $stmt = $this->dbHelper->executeStatement("SELECT * FROM $this->TABLE_NAME");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
@@ -58,7 +56,7 @@ class AnnouncementRepository extends Model
      */
     public function findValid(): array
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date",
             [':date' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]
         );
@@ -74,7 +72,7 @@ class AnnouncementRepository extends Model
      */
     public function findByTitle(string $title): array
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE title LIKE :title",
             [':title' => ["%$title%", PDO::PARAM_STR]]
         );
@@ -90,7 +88,7 @@ class AnnouncementRepository extends Model
      */
     public function findById(int $id): Announcement
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
@@ -116,7 +114,7 @@ class AnnouncementRepository extends Model
             VALUES (:title, :text, :date, :valid_until, :user_id)
         ");
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':title' => [$announcement->title, PDO::PARAM_STR],
             ':text' => [$announcement->text, PDO::PARAM_STR],
             ':date' => [$announcement->date->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -146,7 +144,7 @@ class AnnouncementRepository extends Model
             WHERE id = :id
         ");
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':id' => [$announcement->id, PDO::PARAM_INT],
             ':title' => [$announcement->title, PDO::PARAM_STR],
             ':text' => [$announcement->text, PDO::PARAM_STR],
@@ -170,7 +168,7 @@ class AnnouncementRepository extends Model
         $this->logger->debug("Deleting announcement", ["id" => $id]);
 
         $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
-        $this->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
+        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
 
         $success = $stmt->execute();
         $this->logger->info("Announcement delete " . ($success ? "successful" : "failed"));

@@ -7,53 +7,21 @@ use Exception;
 use PDO;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
-use src\core\Model;
 use src\entities\User;
+use src\infrastructure\helpers\DatabaseHelper;
 
-class UserRepository extends Model
+readonly class UserRepository
 {
     /**
      * @throws Exception
      */
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
-        private readonly string $TABLE_NAME,
-        private readonly string $DATE_FORMAT,
-    ) {
-        parent::__construct($pdo, $logger);
-        $this->checkSchema();
-    }
-
-    /**
-     * Funkcja sprawdzająca schemat na podstawie właściwości encji User.
-     * Konwertuje property names z camelCase na snake_case.
-     * Używa PRAGMA table_info dla SQLite.
-     * @throws Exception
-     */
-    private function checkSchema(): void
-    {
-        $reflection = new ReflectionClass(User::class);
-        $properties = $reflection->getProperties();
-
-        $expectedColumns = [];
-        foreach ($properties as $prop) {
-            $name = $prop->getName();
-            $column = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
-            $expectedColumns[] = $column;
-        }
-
-        $stmt = $this->executeStatement("PRAGMA table_info($this->TABLE_NAME)");
-        $actualColumns = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $actualColumns[] = $row['name'];
-        }
-
-        $missing = array_diff($expectedColumns, $actualColumns);
-        if (!empty($missing)) {
-            throw new Exception("Missing columns in table '$this->TABLE_NAME': " . implode(', ', $missing));
-        }
-    }
+        private PDO            $pdo,
+        private LoggerInterface        $logger,
+        private DatabaseHelper $dbHelper,
+        private string         $TABLE_NAME,
+        private string         $DATE_FORMAT,
+    ) {}
 
     /**
      * Zwraca dozwolone pola do update'u na podstawie encji (wszystkie poza id i createdAt).
@@ -97,7 +65,7 @@ class UserRepository extends Model
      */
     public function findAll(): array
     {
-        $stmt = $this->executeStatement("SELECT * FROM $this->TABLE_NAME");
+        $stmt = $this->dbHelper->executeStatement("SELECT * FROM $this->TABLE_NAME");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
@@ -110,7 +78,7 @@ class UserRepository extends Model
      */
     public function findByUsername(string $username): array
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE username LIKE :username",
             [':username' => ["%$username%", PDO::PARAM_STR]]
         );
@@ -126,7 +94,7 @@ class UserRepository extends Model
      */
     public function findById(int $id): User
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
@@ -145,7 +113,7 @@ class UserRepository extends Model
      */
     public function findByExactUsername(string $username): ?User
     {
-        $stmt = $this->executeStatement(
+        $stmt = $this->dbHelper->executeStatement(
             "SELECT * FROM $this->TABLE_NAME WHERE username = :username",
             [':username' => [$username, PDO::PARAM_STR]]
         );
@@ -166,7 +134,7 @@ class UserRepository extends Model
             INSERT INTO $this->TABLE_NAME (username, password_hash, created_at)
             VALUES (:username, :password_hash, :created_at)
         ");
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':username' => [$user->username, PDO::PARAM_STR],
             ':password_hash' => [$user->passwordHash, PDO::PARAM_STR],
             ':created_at' => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -190,7 +158,7 @@ class UserRepository extends Model
             SET username = :username, password_hash = :password_hash
             WHERE id = :id
         ");
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':id' => [$user->id, PDO::PARAM_INT],
             ':username' => [$user->username, PDO::PARAM_STR],
             ':password_hash' => [$user->passwordHash, PDO::PARAM_STR],
@@ -210,7 +178,7 @@ class UserRepository extends Model
     {
         $this->logger->debug("Deleting user", ["id" => $id]);
         $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
-        $this->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
+        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
         $success = $stmt->execute();
         $this->logger->info("User delete " . ($success ? "successful" : "failed"), ["id" => $id]);
         return $success && $stmt->rowCount() > 0;
@@ -231,7 +199,7 @@ class UserRepository extends Model
             SET password_hash = :password_hash
             WHERE id = :id
         ");
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':id' => [$id, PDO::PARAM_INT],
             ':password_hash' => [$newPasswordHash, PDO::PARAM_STR],
         ]);

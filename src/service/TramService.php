@@ -4,10 +4,8 @@ namespace src\service;
 
 use Exception;
 use InvalidArgumentException;
-use PDO;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use src\core\Model;
 use Symfony\Contracts\HttpClient\Exception\{ClientExceptionInterface,
     DecodingExceptionInterface,
     RedirectionExceptionInterface,
@@ -21,7 +19,7 @@ use Throwable;
  * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class TramService extends Model
+readonly class TramService
 {
     private const array ERROR_MESSAGES = [
         'invalid_response' => 'Invalid or incomplete API response structure',
@@ -34,22 +32,10 @@ class TramService extends Model
     ];
 
     public function __construct(
-        PDO                                  $pdo,
-        LoggerInterface                      $logger,
-        private readonly HttpClientInterface $httpClient,
-        private readonly string              $ztmUrl
-    )
-    {
-        parent::__construct($pdo, $logger);
-        if ($this->httpClient === null) {
-            $this->logger->error('HTTP client is missing.');
-            throw new RuntimeException('HTTP client is missing.');
-        }
-        if ($this->ztmUrl === '') {
-            $this->logger->error('ZTM url is missing.');
-            throw new RuntimeException('ZTM url is missing.');
-        }
-    }
+        private LoggerInterface     $logger,
+        private HttpClientInterface $httpClient,
+        private string              $ztmUrl
+    ){}
 
     /**
      * Validate GPS coordinates.

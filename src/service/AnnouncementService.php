@@ -7,12 +7,12 @@ use src\entities\Announcement;
 use DateTimeImmutable;
 use Exception;
 
-readonly class AnnouncementService {
+readonly class AnnouncementService
+{
     public function __construct(
         private AnnouncementRepository $repo,
         private int                    $MAX_TITLE_LENGTH,
         private int                    $MAX_TEXT_LENGTH,
-        private array                  $ALLOWED_FIELDS,
     ) {}
 
     /**
@@ -42,10 +42,6 @@ readonly class AnnouncementService {
         
         $existing = $this->repo->findById($id);
 
-        if ($existing === null) {
-            throw new Exception("Announcement with ID {$id} not found");
-        }
-        
         $updatedData = [
             'title' => isset($data['title']) ? trim($data['title']) : $existing->title,
             'text' => isset($data['text']) ? trim($data['text']) : $existing->text,

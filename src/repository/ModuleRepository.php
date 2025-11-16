@@ -6,19 +6,18 @@ use DateTimeImmutable;
 use PDO;
 use Psr\Log\LoggerInterface;
 use Exception;
-use src\core\Model;
 use src\entities\Module;
+use src\infrastructure\helpers\DatabaseHelper;
 
-class ModuleRepository extends Model
+readonly class ModuleRepository
 {
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
-        private readonly string $TABLE_NAME,
-        private readonly string $DATE_FORMAT,
-    ) {
-        parent::__construct($pdo, $logger);
-    }
+        private PDO             $pdo,
+        private LoggerInterface $logger,
+        private DatabaseHelper $dbHelper,
+        private string  $TABLE_NAME,
+        private string  $DATE_FORMAT,
+    ) {}
 
     /**
      * Adds a new module
@@ -34,7 +33,7 @@ class ModuleRepository extends Model
             'start_time' => [$module->startTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
             'end_time' => [$module->endTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
         ];
-        $this->executeStatement($query, $params);
+        $this->dbHelper->executeStatement($query, $params);
         return true;
     }
 
@@ -46,7 +45,7 @@ class ModuleRepository extends Model
     {
         $query = "SELECT * FROM $this->TABLE_NAME WHERE id = :id LIMIT 1";
         $params = ['id' => [$id, PDO::PARAM_INT]];
-        $stmt = $this->executeStatement($query, $params);
+        $stmt = $this->dbHelper->executeStatement($query, $params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$row) {
@@ -86,7 +85,7 @@ class ModuleRepository extends Model
 
         $stmt = $this->pdo->prepare($query);
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':id' => [$module->id, PDO::PARAM_INT],
             ':module_name' => [$module->moduleName, PDO::PARAM_STR],
             ':is_active' => [$module->isActive ? 1 : 0, PDO::PARAM_INT],
@@ -109,7 +108,7 @@ class ModuleRepository extends Model
     {
         $query = "DELETE FROM $this->TABLE_NAME WHERE id = :id";
         $params = ['id' => [$id, PDO::PARAM_INT]];
-        $this->executeStatement($query, $params);
+        $this->dbHelper->executeStatement($query, $params);
         return true;
     }
 
@@ -120,7 +119,7 @@ class ModuleRepository extends Model
     public function findAll(): array
     {
         $query = "SELECT * FROM $this->TABLE_NAME";
-        $stmt = $this->executeStatement($query);
+        $stmt = $this->dbHelper->executeStatement($query);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         $modules = [];
@@ -156,7 +155,7 @@ class ModuleRepository extends Model
     public function findActive(): array
     {
         $query = "SELECT * FROM $this->TABLE_NAME WHERE is_active = 1";
-        $stmt = $this->executeStatement($query);
+        $stmt = $this->dbHelper->executeStatement($query);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         $modules = [];
@@ -190,8 +189,8 @@ class ModuleRepository extends Model
      */
     public function findByName(string $moduleName): ?Module
     {
-        $query = "SELECT * FROM {$this->TABLE_NAME} WHERE module_name = :module_name LIMIT 1";
-        $stmt = $this->executeStatement($query, [
+        $query = "SELECT * FROM $this->TABLE_NAME WHERE module_name = :module_name LIMIT 1";
+        $stmt = $this->dbHelper->executeStatement($query, [
             ':module_name' => [$moduleName, PDO::PARAM_STR]
         ]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

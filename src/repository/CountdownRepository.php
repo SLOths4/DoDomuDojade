@@ -6,20 +6,18 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 use Psr\Log\LoggerInterface;
-use src\core\Model;
 use src\entities\Countdown;
+use src\infrastructure\helpers\DatabaseHelper;
 
-class CountdownRepository extends Model
+readonly class CountdownRepository
 {
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
-        private readonly string $TABLE_NAME,
-        private readonly string $DATE_FORMAT,
-    ) {
-        parent::__construct($pdo, $logger);
-        $this->logger->info('Countdown repository using table: ' . $this->TABLE_NAME);
-    }
+        private PDO                    $pdo,
+        private LoggerInterface        $logger,
+        private DatabaseHelper $dbHelper,
+        private string         $TABLE_NAME,
+        private string         $DATE_FORMAT,
+    ) {}
 
     /**
      * @throws Exception
@@ -39,9 +37,9 @@ class CountdownRepository extends Model
      */
     public function findById(int $id): ?Countdown
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->TABLE_NAME} WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME WHERE id = :id");
         
-        $this->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
+        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
         
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -54,9 +52,9 @@ class CountdownRepository extends Model
      */
     public function findCurrent(): ?Countdown
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->TABLE_NAME} WHERE count_to > :now ORDER BY count_to LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME WHERE count_to > :now ORDER BY count_to LIMIT 1");
         
-        $this->bindParams($stmt, [':now' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]);
+        $this->dbHelper->bindParams($stmt, [':now' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]);
         
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -69,7 +67,7 @@ class CountdownRepository extends Model
      */
     public function findAll(): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->TABLE_NAME}");
+        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME");
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -86,9 +84,9 @@ class CountdownRepository extends Model
     {
         $this->logger->debug('Adding countdown', ['countdown' => $countdown]);
 
-        $stmt = $this->pdo->prepare("INSERT INTO {$this->TABLE_NAME} (title, count_to, user_id) VALUES (:title, :count_to, :user_id)");
+        $stmt = $this->pdo->prepare("INSERT INTO $this->TABLE_NAME (title, count_to, user_id) VALUES (:title, :count_to, :user_id)");
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':title' => [$countdown->title, PDO::PARAM_STR],
             ':count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ':user_id' => [$countdown->userId, PDO::PARAM_INT],
@@ -110,9 +108,9 @@ class CountdownRepository extends Model
     {
         $this->logger->debug('Updating countdown', ['countdown' => $countdown]);
 
-        $stmt = $this->pdo->prepare("UPDATE {$this->TABLE_NAME} SET title = :title, count_to = :count_to WHERE id = :id");
+        $stmt = $this->pdo->prepare("UPDATE $this->TABLE_NAME SET title = :title, count_to = :count_to WHERE id = :id");
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':id' => [$countdown->id, PDO::PARAM_INT],
             ':title' => [$countdown->title, PDO::PARAM_STR],
             ':count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -134,9 +132,9 @@ class CountdownRepository extends Model
     {
         $this->logger->debug('Deleting countdown', ['id' => $id]);
 
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->TABLE_NAME} WHERE id = :id");
+        $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
 
-        $this->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
+        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
 
         $success = $stmt->execute();
         $this->logger->info("Countdown delete " . ($success ? "successful" : "failed"));
@@ -156,10 +154,10 @@ class CountdownRepository extends Model
     {
         $this->logger->debug('Updating countdown field', ['id' => $id, 'field' => $field]);
 
-        $query = "UPDATE {$this->TABLE_NAME} SET $field = :value WHERE id = :id";
+        $query = "UPDATE $this->TABLE_NAME SET $field = :value WHERE id = :id";
         $stmt = $this->pdo->prepare($query);
 
-        $this->bindParams($stmt, [
+        $this->dbHelper->bindParams($stmt, [
             ':value' => [$value, PDO::PARAM_STR],
             ':id' => [$id, PDO::PARAM_INT],
         ]);

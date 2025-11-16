@@ -5,10 +5,10 @@ namespace src\service;
 use DateTimeImmutable;
 use Exception;
 use src\entities\User;
-use src\infrastructure\helpers\SessionHelper;
 use src\repository\UserRepository;
 
-readonly class UserService {
+readonly class UserService
+{
     private array $ALLOWED_FIELDS;
     public function __construct(
         private UserRepository $repo,
@@ -60,15 +60,13 @@ readonly class UserService {
 
     /**
      * Deletes a user
+     * @param int $activeUserId
      * @param int $id
      * @return bool
      * @throws Exception
      */
     public function delete(int $activeUserId, int $id): bool {
-        $userId = $this->repo->findById($id); 
-        if (!$userId) {
-            throw new Exception("Invalid user ID.");
-        }
+        $this->repo->findById($id);
         if ($activeUserId === $id) {
             throw new Exception("User can't delete themselves.");
         }
@@ -117,7 +115,7 @@ readonly class UserService {
     /**
      * Changes a user's password
      * @param int $id
-     * @param string $newHash
+     * @param string $newPassword
      * @return bool
      * @throws Exception
      */
