@@ -152,8 +152,8 @@
                         <template x-if="!loading && announcements">
                             <template x-for="(group, index) in grouped" :key="index">
                                 <div x-show="current === index" x-transition>
-                                    <template x-for="a in group" :key="a.id">
-                                        <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
+                                    <template x-for="(a, ind) in group" :key="`${a.id}-${ind}`">
+                                    <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
                                             <h3 class="font-bold text-lg" x-text="a.title"></h3>
                                             <p class="text-lg" x-text="a.text"></p>
                                             <p class="text-sm text-gray-600 mt-1">
