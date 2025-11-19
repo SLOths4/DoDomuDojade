@@ -5,15 +5,12 @@ namespace src\repository;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use Psr\Log\LoggerInterface;
 use src\entities\Countdown;
 use src\infrastructure\helpers\DatabaseHelper;
 
 readonly class CountdownRepository
 {
     public function __construct(
-        private PDO                    $pdo,
-        private LoggerInterface        $logger,
         private DatabaseHelper $dbHelper,
         private string         $TABLE_NAME,
         private string         $DATE_FORMAT,
@@ -37,14 +34,12 @@ readonly class CountdownRepository
      */
     public function findById(int $id): ?Countdown
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME WHERE id = :id");
-        
-        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
-        
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return !empty($rows) ? $this->mapRow($rows[0]) : null;
+        $row = $this->dbHelper->getOne(
+            "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
+            [':id' => [$id, PDO::PARAM_INT]]
+        );
+
+        return $row !== null ? $this->mapRow($row) : null;
     }
 
     /**
@@ -52,14 +47,12 @@ readonly class CountdownRepository
      */
     public function findCurrent(): ?Countdown
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME WHERE count_to > :now ORDER BY count_to LIMIT 1");
-        
-        $this->dbHelper->bindParams($stmt, [':now' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]);
-        
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return !empty($rows) ? $this->mapRow($rows[0]) : null;
+        $row = $this->dbHelper->getOne(
+            "SELECT * FROM $this->TABLE_NAME WHERE count_to > :now ORDER BY count_to LIMIT 1",
+            [':now' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]
+        );
+
+        return $row !== null ? $this->mapRow($row) : null;
     }
 
     /**
@@ -67,10 +60,7 @@ readonly class CountdownRepository
      */
     public function findAll(): array
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM $this->TABLE_NAME");
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
         return array_map(fn($r) => $this->mapRow($r), $rows);
     }
 
@@ -82,20 +72,16 @@ readonly class CountdownRepository
      */
     public function add(Countdown $countdown): bool
     {
-        $this->logger->debug('Adding countdown', ['countdown' => $countdown]);
+        $lastId = $this->dbHelper->insert(
+            $this->TABLE_NAME,
+            [
+                'title'    => [$countdown->title, PDO::PARAM_STR],
+                'count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'user_id'  => [$countdown->userId, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("INSERT INTO $this->TABLE_NAME (title, count_to, user_id) VALUES (:title, :count_to, :user_id)");
-
-        $this->dbHelper->bindParams($stmt, [
-            ':title' => [$countdown->title, PDO::PARAM_STR],
-            ':count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
-            ':user_id' => [$countdown->userId, PDO::PARAM_INT],
-        ]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Countdown insert " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return !empty($lastId);
     }
 
     /**
@@ -106,20 +92,18 @@ readonly class CountdownRepository
      */
     public function update(Countdown $countdown): bool
     {
-        $this->logger->debug('Updating countdown', ['countdown' => $countdown]);
+        $affected = $this->dbHelper->update(
+            $this->TABLE_NAME,
+            [
+                'title'    => [$countdown->title, PDO::PARAM_STR],
+                'count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
+            ],
+            [
+                'id' => [$countdown->id, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("UPDATE $this->TABLE_NAME SET title = :title, count_to = :count_to WHERE id = :id");
-
-        $this->dbHelper->bindParams($stmt, [
-            ':id' => [$countdown->id, PDO::PARAM_INT],
-            ':title' => [$countdown->title, PDO::PARAM_STR],
-            ':count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
-        ]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Countdown update " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return $affected > 0;
     }
 
     /**
@@ -130,16 +114,14 @@ readonly class CountdownRepository
      */
     public function delete(int $id): bool
     {
-        $this->logger->debug('Deleting countdown', ['id' => $id]);
+        $affected = $this->dbHelper->delete(
+            $this->TABLE_NAME,
+            [
+                'id' => [$id, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
-
-        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Countdown delete " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return $affected > 0;
     }
 
     /**
@@ -152,19 +134,16 @@ readonly class CountdownRepository
      */
     public function updateField(int $id, string $field, string $value): bool
     {
-        $this->logger->debug('Updating countdown field', ['id' => $id, 'field' => $field]);
+        $affected = $this->dbHelper->update(
+            $this->TABLE_NAME,
+            [
+                $field => [$value, PDO::PARAM_STR],
+            ],
+            [
+                'id' => [$id, PDO::PARAM_INT],
+            ]
+        );
 
-        $query = "UPDATE $this->TABLE_NAME SET $field = :value WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);
-
-        $this->dbHelper->bindParams($stmt, [
-            ':value' => [$value, PDO::PARAM_STR],
-            ':id' => [$id, PDO::PARAM_INT],
-        ]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Countdown field update " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return $affected > 0;
     }
 }

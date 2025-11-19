@@ -5,7 +5,6 @@ namespace src\repository;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use src\entities\User;
 use src\infrastructure\helpers\DatabaseHelper;
@@ -16,8 +15,6 @@ readonly class UserRepository
      * @throws Exception
      */
     public function __construct(
-        private PDO            $pdo,
-        private LoggerInterface        $logger,
         private DatabaseHelper $dbHelper,
         private string         $TABLE_NAME,
         private string         $DATE_FORMAT,
@@ -65,8 +62,7 @@ readonly class UserRepository
      */
     public function findAll(): array
     {
-        $stmt = $this->dbHelper->executeStatement("SELECT * FROM $this->TABLE_NAME");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -78,11 +74,10 @@ readonly class UserRepository
      */
     public function findByUsername(string $username): array
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $rows = $this->dbHelper->getAll(
             "SELECT * FROM $this->TABLE_NAME WHERE username LIKE :username",
             [':username' => ["%$username%", PDO::PARAM_STR]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -94,15 +89,16 @@ readonly class UserRepository
      */
     public function findById(int $id): User
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $row = $this->dbHelper->getOne(
             "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (empty($rows)) {
+
+        if ($row === null) {
             throw new Exception("User with ID $id not found");
         }
-        return $this->mapRow($rows[0]);
+
+        return $this->mapRow($row);
     }
 
     /**
@@ -113,12 +109,12 @@ readonly class UserRepository
      */
     public function findByExactUsername(string $username): ?User
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $row = $this->dbHelper->getOne(
             "SELECT * FROM $this->TABLE_NAME WHERE username = :username",
             [':username' => [$username, PDO::PARAM_STR]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return empty($rows) ? null : $this->mapRow($rows[0]);
+
+        return $row === null ? null : $this->mapRow($row);
     }
 
     /**
@@ -129,19 +125,16 @@ readonly class UserRepository
      */
     public function add(User $user): bool
     {
-        $this->logger->debug("Adding user", ["username" => $user->username]);
-        $stmt = $this->pdo->prepare("
-            INSERT INTO $this->TABLE_NAME (username, password_hash, created_at)
-            VALUES (:username, :password_hash, :created_at)
-        ");
-        $this->dbHelper->bindParams($stmt, [
-            ':username' => [$user->username, PDO::PARAM_STR],
-            ':password_hash' => [$user->passwordHash, PDO::PARAM_STR],
-            ':created_at' => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
-        ]);
-        $success = $stmt->execute();
-        $this->logger->info("User insert " . ($success ? "successful" : "failed"), ["username" => $user->username]);
-        return $success && $stmt->rowCount() > 0;
+        $lastId = $this->dbHelper->insert(
+            $this->TABLE_NAME,
+            [
+                'username'      => [$user->username, PDO::PARAM_STR],
+                'password_hash' => [$user->passwordHash, PDO::PARAM_STR],
+                'created_at'    => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
+            ]
+        );
+
+        return !empty($lastId);
     }
 
     /**
@@ -152,20 +145,18 @@ readonly class UserRepository
      */
     public function update(User $user): bool
     {
-        $this->logger->debug("Updating user", ["id" => $user->id, "username" => $user->username]);
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->TABLE_NAME}
-            SET username = :username, password_hash = :password_hash
-            WHERE id = :id
-        ");
-        $this->dbHelper->bindParams($stmt, [
-            ':id' => [$user->id, PDO::PARAM_INT],
-            ':username' => [$user->username, PDO::PARAM_STR],
-            ':password_hash' => [$user->passwordHash, PDO::PARAM_STR],
-        ]);
-        $success = $stmt->execute();
-        $this->logger->info("User update " . ($success ? "successful" : "failed"), ["id" => $user->id]);
-        return $success && $stmt->rowCount() > 0;
+        $affected = $this->dbHelper->update(
+            $this->TABLE_NAME,
+            [
+                'username'      => [$user->username, PDO::PARAM_STR],
+                'password_hash' => [$user->passwordHash, PDO::PARAM_STR],
+            ],
+            [
+                'id' => [$user->id, PDO::PARAM_INT],
+            ]
+        );
+
+        return $affected > 0;
     }
 
     /**
@@ -176,12 +167,14 @@ readonly class UserRepository
      */
     public function delete(int $id): bool
     {
-        $this->logger->debug("Deleting user", ["id" => $id]);
-        $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
-        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
-        $success = $stmt->execute();
-        $this->logger->info("User delete " . ($success ? "successful" : "failed"), ["id" => $id]);
-        return $success && $stmt->rowCount() > 0;
+        $affected = $this->dbHelper->delete(
+            $this->TABLE_NAME,
+            [
+                'id' => [$id, PDO::PARAM_INT],
+            ]
+        );
+
+        return $affected > 0;
     }
 
     /**
@@ -193,18 +186,16 @@ readonly class UserRepository
      */
     public function updatePassword(int $id, string $newPasswordHash): bool
     {
-        $this->logger->debug("Updating user password", ["id" => $id]);
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->TABLE_NAME}
-            SET password_hash = :password_hash
-            WHERE id = :id
-        ");
-        $this->dbHelper->bindParams($stmt, [
-            ':id' => [$id, PDO::PARAM_INT],
-            ':password_hash' => [$newPasswordHash, PDO::PARAM_STR],
-        ]);
-        $success = $stmt->execute();
-        $this->logger->info("User password update " . ($success ? "successful" : "failed"), ["id" => $id]);
-        return $success && $stmt->rowCount() > 0;
+        $affected = $this->dbHelper->update(
+            $this->TABLE_NAME,
+            [
+                'password_hash' => [$newPasswordHash, PDO::PARAM_STR],
+            ],
+            [
+                'id' => [$id, PDO::PARAM_INT],
+            ]
+        );
+
+        return $affected > 0;
     }
 }
