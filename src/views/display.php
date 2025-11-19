@@ -402,7 +402,7 @@
                             this.loading = false;
                             console.error('Fetch error:', e);
                         }
-                        setTimeout(() => this.load(), 300000);
+                        setTimeout(() => this.load(), 1000);
                     },
                     update() {
                         if (!this.data) return;
@@ -420,7 +420,80 @@
                             h = Math.floor(diff / 3600000) % 24,
                             m = Math.floor(diff / 60000) % 60,
                             s = Math.floor(diff / 1000) % 60;
-                        this.message = `Do ${this.data.title} zostało ${d} dni ${h} godzin ${m} minut ${s} sekund.`;
+                        let odmianadni;
+                        let odmianagodzin;
+                        let odmianaminut;
+                        let odmianasekund;
+                        switch (d) {
+                            case 1:
+                                odmianadni = `1 dzień`;
+                                break;
+                            default:
+                                odmianadni = `${d} dni`;
+                        }
+                        switch (h) {
+                            case 1:
+                                odmianagodzin = `1 godzina`;
+                                break;
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 22:
+                            case 23:
+                                odmianagodzin = `${h} godziny`;
+                                break;
+                            default:
+                                odmianagodzin = `${h} godzin`;
+                        }
+                        switch (m) {
+                            case 1:
+                                odmianaminut = `1 minuta`;
+                                break;
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 22:
+                            case 23:
+                            case 24:
+                            case 32:
+                            case 33:
+                            case 34:
+                            case 42:
+                            case 43:
+                            case 44:
+                            case 52:
+                            case 53:
+                            case 54:
+                                odmianaminut = `${m} minuty`;
+                                break;
+                            default:
+                                odmianaminut = `${m} minut`;
+                        }
+                        switch (s) {
+                            case 1:
+                                odmianasekund = `1 sekunda`;
+                                break;
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 22:
+                            case 23:
+                            case 24:
+                            case 32:
+                            case 33:
+                            case 34:
+                            case 42:
+                            case 43:
+                            case 44:
+                            case 52:
+                            case 53:
+                            case 54:
+                                odmianasekund = `${s} sekundy`;
+                                break;
+                            default:
+                                odmianasekund = `${s} sekund`;
+                        }
+                        this.message = `Do ${this.data.title} : ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
                     }
                 }
             }

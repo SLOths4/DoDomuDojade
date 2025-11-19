@@ -53,7 +53,7 @@ readonly class UserRepository
         return new User(
             (int)$row['id'],
             (string)$row['username'],
-            (string)$row['password_hash'],
+            (string)$row['password'],
             new DateTimeImmutable($row['created_at'])
         );
     }

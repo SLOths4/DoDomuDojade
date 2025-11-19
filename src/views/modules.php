@@ -37,17 +37,17 @@ SessionHelper::remove('error');
                             <th class="px-4 py-2 border">Nazwa modułu</th>
                             <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
                             <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
-                            <th class="px-4 py-2 border" data-type="time">Stan</th>
-                            <th class="px-4 py-2 border" data-type="time">Akcje</th>
+                            <th class="px-4 py-2 border" >Stan</th>
+                            <th class="px-4 py-2 border" >Akcje</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php foreach ($modules as $module): ?>
-                            <tr>
+                            <tr x-data="{ isActive : <?= json_encode($module->isActive) ?> }">
                                 <td class="px-4 py-2 border"><?= htmlspecialchars($module->moduleName) ?></td>
                                 <td class="px-4 py-2 border"><?= htmlspecialchars($module->startTime->format('H:i')) ?></td>
                                 <td class="px-4 py-2 border"><?= htmlspecialchars($module->endTime->format('H:i')) ?></td>
-                                <td class="px-4 py-2 border"><?= $module->isActive ? "Włączony" : "Wyłączony" ?></td>
+                                <td class="px-4 py-2 border" x-bind:class="isActive ? 'bg-green-500' : 'bg-red-500'"><?= $module->isActive ? "Włączony" : "Wyłączony" ?></td>
                                 <td class="px-4 py-2 border space-x-2">
                                     <button type="button"
                                             class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"

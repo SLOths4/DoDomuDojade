@@ -27,9 +27,9 @@ final readonly class Config
         public string $usersDateFormat,
         public int $maxUsernameLength,
         public int $minPasswordLength,
-        public string $tramURL,
+        public string $tramUrl,
         public array  $stopsIDs,
-        public string $icalURL,
+        public string $icalUrl,
         private string $dbDsn,
         private string $dbUsername,
         private string $dbPassword,
@@ -69,11 +69,11 @@ final readonly class Config
             $minPasswordLength = (int)self::env('MIN_PASSWORD_LENGTH', 8);
 
             // Tram
-            $tramURL = self::env('TRAM_URL');
+            $tramUrl = self::env('TRAM_URL');
             $stopsIDs = self::env('STOPS_IDS');
 
             // Calendar
-            $icalURL = self::env('ICAL_URL', '');
+            $icalUrl = self::env('ICAL_URL', '');
 
             $dbDsn = self::env('DB_DSN', self::env('DB_HOST'));
             $dbUsername = self::env('DB_USERNAME', '');
@@ -97,9 +97,9 @@ final readonly class Config
                 $usersDateFormat,
                 $maxUsernameLength,
                 $minPasswordLength,
-                $tramURL,
+                $tramUrl,
                 explode(',', $stopsIDs),
-                $icalURL,
+                $icalUrl,
                 $dbDsn,
                 $dbUsername,
                 $dbPassword
