@@ -79,8 +79,6 @@ $container->set(PanelController::class, function (Container $c) {
 $container->set(AnnouncementRepository::class, function (Container $c): AnnouncementRepository {
     $cfg = $c->get(Config::class);
     return new AnnouncementRepository(
-        $c->get(PDO::class),
-        $c->get(LoggerInterface::class),
         $c->get(DatabaseHelper::class),
         $cfg->announcementsTableName,
         $cfg->announcementsDateFormat,
@@ -101,8 +99,6 @@ $container->set(AnnouncementService::class, function (Container $c): Announcemen
 $container->set(UserRepository::class, function (Container $c): UserRepository {
     $cfg = $c->get(Config::class);
     return new UserRepository(
-        $c->get(PDO::class),
-        $c->get(LoggerInterface::class),
         $c->get(DatabaseHelper::class),
         $cfg->usersTableName,
         $cfg->usersDateFormat,
@@ -123,8 +119,6 @@ $container->set(UserService::class, function (Container $c): UserService {
 $container->set(ModuleRepository::class, function (Container $c): ModuleRepository {
     $cfg = $c->get(Config::class);
     return new ModuleRepository(
-        $c->get(PDO::class),
-        $c->get(LoggerInterface::class),
         $c->get(DatabaseHelper::class),
         $cfg->modulesTableName,
         $cfg->modulesDateFormat,
@@ -155,8 +149,6 @@ $container->set(TramService::class, function (Container $c): TramService {
 $container->set(CountdownRepository::class, function (Container $c): CountdownRepository {
     $cfg = $c->get(Config::class);
     return new CountdownRepository(
-        $c->get(PDO::class),
-        $c->get(LoggerInterface::class),
         $c->get(DatabaseHelper::class),
         $cfg->countdownsTableName,
         $cfg->countdownsDateFormat,

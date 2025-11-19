@@ -5,15 +5,12 @@ namespace src\repository;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use Psr\Log\LoggerInterface;
 use src\entities\Announcement;
 use src\infrastructure\helpers\DatabaseHelper;
 
 readonly class AnnouncementRepository
 {
     public function __construct(
-        private PDO             $pdo,
-        private LoggerInterface $logger,
         private DatabaseHelper $dbHelper,
         private string  $TABLE_NAME,
         private string  $DATE_FORMAT,
@@ -44,8 +41,7 @@ readonly class AnnouncementRepository
      */
     public function findAll(): array
     {
-        $stmt = $this->dbHelper->executeStatement("SELECT * FROM $this->TABLE_NAME");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -56,11 +52,10 @@ readonly class AnnouncementRepository
      */
     public function findValid(): array
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $rows = $this->dbHelper->getAll(
             "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date",
             [':date' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -72,11 +67,10 @@ readonly class AnnouncementRepository
      */
     public function findByTitle(string $title): array
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $rows = $this->dbHelper->getAll(
             "SELECT * FROM $this->TABLE_NAME WHERE title LIKE :title",
             [':title' => ["%$title%", PDO::PARAM_STR]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -88,15 +82,16 @@ readonly class AnnouncementRepository
      */
     public function findById(int $id): Announcement
     {
-        $stmt = $this->dbHelper->executeStatement(
+        $row = $this->dbHelper->getOne(
             "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (empty($rows)) {
+
+        if ($row === null) {
             throw new Exception("Announcement with ID $id not found");
         }
-        return $this->mapRow($rows[0]);
+
+        return $this->mapRow($row);
     }
 
     /**
@@ -107,25 +102,18 @@ readonly class AnnouncementRepository
      */
     public function add(Announcement $announcement): bool
     {
-        $this->logger->debug("Adding announcement", ["announcement" => $announcement]);
+        $lastId = $this->dbHelper->insert(
+            $this->TABLE_NAME,
+            [
+                'title'       => [$announcement->title, PDO::PARAM_STR],
+                'text'        => [$announcement->text, PDO::PARAM_STR],
+                'date'        => [$announcement->date->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'user_id'     => [$announcement->userId, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("
-            INSERT INTO $this->TABLE_NAME (title, text, date, valid_until, user_id)
-            VALUES (:title, :text, :date, :valid_until, :user_id)
-        ");
-
-        $this->dbHelper->bindParams($stmt, [
-            ':title' => [$announcement->title, PDO::PARAM_STR],
-            ':text' => [$announcement->text, PDO::PARAM_STR],
-            ':date' => [$announcement->date->format($this->DATE_FORMAT), PDO::PARAM_STR],
-            ':valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
-            ':user_id' => [$announcement->userId, PDO::PARAM_INT],
-        ]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Announcement insert " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return !empty($lastId);
     }
 
     /**
@@ -136,25 +124,19 @@ readonly class AnnouncementRepository
      */
     public function update(Announcement $announcement): bool
     {
-        $this->logger->debug("Updating announcement", ["announcement" => $announcement]);
+        $affected = $this->dbHelper->update(
+            $this->TABLE_NAME,
+            [
+                'title'       => [$announcement->title, PDO::PARAM_STR],
+                'text'        => [$announcement->text, PDO::PARAM_STR],
+                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
+            ],
+            [
+                'id' => [$announcement->id, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("
-            UPDATE {$this->TABLE_NAME}
-            SET title = :title, text = :text, valid_until = :valid_until
-            WHERE id = :id
-        ");
-
-        $this->dbHelper->bindParams($stmt, [
-            ':id' => [$announcement->id, PDO::PARAM_INT],
-            ':title' => [$announcement->title, PDO::PARAM_STR],
-            ':text' => [$announcement->text, PDO::PARAM_STR],
-            ':valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
-        ]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Announcement update " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return $affected > 0;
     }
 
     /**
@@ -165,14 +147,13 @@ readonly class AnnouncementRepository
      */
     public function delete(int $id): bool
     {
-        $this->logger->debug("Deleting announcement", ["id" => $id]);
+        $affected = $this->dbHelper->delete(
+            $this->TABLE_NAME,
+            [
+                'id' => [$id, PDO::PARAM_INT],
+            ]
+        );
 
-        $stmt = $this->pdo->prepare("DELETE FROM $this->TABLE_NAME WHERE id = :id");
-        $this->dbHelper->bindParams($stmt, [':id' => [$id, PDO::PARAM_INT]]);
-
-        $success = $stmt->execute();
-        $this->logger->info("Announcement delete " . ($success ? "successful" : "failed"));
-
-        return $success && $stmt->rowCount() > 0;
+        return $affected > 0;
     }
 }
