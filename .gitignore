@@ -1,5 +1,6 @@
 # Ignore VScode workspace config files
 *.code-workspace
+.vscode/
 
 # Ignore PHPStorm project files
 .idea/
@@ -56,3 +57,4 @@ calendar_data/
 
 phpunit.xml
 tests
+public/assets/styles/output.css

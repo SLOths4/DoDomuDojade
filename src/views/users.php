@@ -3,7 +3,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -74,12 +74,12 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($users as $user): ?>
                         <tr>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($user['id']) ?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($user['username']) ?></td>
+                            <td class="px-4 py-2 border"><?= htmlspecialchars($user->id) ?></td>
+                            <td class="px-4 py-2 border"><?= htmlspecialchars($user->username) ?></td>
                             <td class="px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-user-id="<?= htmlspecialchars($user['id']) ?>">
+                                        data-user-id="<?= htmlspecialchars($user->id) ?>">
                                     Usuń
                                 </button>
                             </td>

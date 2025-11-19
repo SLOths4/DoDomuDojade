@@ -1,17 +1,17 @@
 <?php
-namespace src\models;
+
+namespace src\service;
 
 use Exception;
 use InvalidArgumentException;
-use PDO;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use src\core\Model;
 use Symfony\Contracts\HttpClient\Exception\{ClientExceptionInterface,
     DecodingExceptionInterface,
     RedirectionExceptionInterface,
     ServerExceptionInterface,
-    TransportExceptionInterface};
+    TransportExceptionInterface
+};
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
@@ -19,7 +19,7 @@ use Throwable;
  * PEKA e-monitor API wrapper
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-class TramModel extends Model
+readonly class TramService
 {
     private const array ERROR_MESSAGES = [
         'invalid_response' => 'Invalid or incomplete API response structure',
@@ -32,21 +32,10 @@ class TramModel extends Model
     ];
 
     public function __construct(
-        PDO $pdo,
-        LoggerInterface $logger,
-        private readonly HttpClientInterface $httpClient,
-        private readonly string $ztmUrl
-    ) {
-        parent::__construct($pdo, $logger);
-        if ($this->httpClient === null) {
-            $this->logger->error('HTTP client is missing.');
-            throw new RuntimeException('HTTP client is missing.');
-        }
-        if ($this->ztmUrl === '') {
-            $this->logger->error('ZTM url is missing.');
-            throw new RuntimeException('ZTM url is missing.');
-        }
-    }
+        private LoggerInterface     $logger,
+        private HttpClientInterface $httpClient,
+        private string              $ztmUrl
+    ){}
 
     /**
      * Validate GPS coordinates.
@@ -55,7 +44,8 @@ class TramModel extends Model
      * @param float $lon
      * @return bool
      */
-    private function isValidCoordinates(float $lat, float $lon): bool {
+    private function isValidCoordinates(float $lat, float $lon): bool
+    {
         return $lat >= -90 && $lat <= 90 && $lon >= -180 && $lon <= 180;
     }
 
@@ -67,7 +57,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    protected function makeApiRequest(string $method, array $params): array {
+    protected function makeApiRequest(string $method, array $params): array
+    {
         try {
             $response = $this->httpClient->request(
                 'POST',
@@ -110,7 +101,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    public function getTimes(string $stopId): array {
+    public function getTimes(string $stopId): array
+    {
         if (!preg_match('/^[A-Z0-9]+$/', $stopId)) {
             $this->logger->error(self::ERROR_MESSAGES['invalid_stop_id'], ['stopId' => $stopId]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_stop_id']);
@@ -139,7 +131,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    public function getStops(float $lat, float $lon): array {
+    public function getStops(float $lat, float $lon): array
+    {
         if (!$this->isValidCoordinates($lat, $lon)) {
             $this->logger->error(self::ERROR_MESSAGES['invalid_coordinates'], ['lat' => $lat, 'lon' => $lon]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_coordinates']);
@@ -168,7 +161,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    public function getLines(int $lineNumber): array {
+    public function getLines(int $lineNumber): array
+    {
         if ($lineNumber <= 0) {
             $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
@@ -190,7 +184,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    public function getRoutes(int $lineNumber): array {
+    public function getRoutes(int $lineNumber): array
+    {
         if ($lineNumber <= 0) {
             $this->logger->error(self::ERROR_MESSAGES['invalid_line_number'], ['lineNumber' => $lineNumber]);
             throw new InvalidArgumentException(self::ERROR_MESSAGES['invalid_line_number']);
@@ -212,7 +207,8 @@ class TramModel extends Model
      * @return array
      * @throws Exception
      */
-    public function getMessageForBollard(string $bollardSymbol): array {
+    public function getMessageForBollard(string $bollardSymbol): array
+    {
         try {
             return $this->makeApiRequest('findMessagesForBollard', ['symbol' => $bollardSymbol]);
         } catch (Exception $e) {

@@ -3,7 +3,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -15,7 +15,7 @@ SessionHelper::remove('error');
     <head>
         <meta charset="utf-8">
         <title>Panel | DoDomuDojadę</title>
-        <link rel="icon" type="image/x-icon" href="assets/resources/favicon.ico">
+        <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
@@ -38,7 +38,7 @@ SessionHelper::remove('error');
                 </div>
                 <div class="mb-2">
                     <label>
-                        <input type="datetime-local" name="count_to" class="w-full p-2 border rounded text-gray-600 dark:text-gray-400 dark:bg-gray-950 " required>
+                        <input type="datetime-local" name="count_to" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
                     </label>
                 </div>
                 <input type="submit" name="add_countdown" value="Dodaj" class="hover:!bg-primary-400 !bg-primary-200 text-white px-4 py-2 rounded">
@@ -60,20 +60,20 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($countdowns as $countdown): ?>
                         <tr>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($countdown['title']) ?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($users[$countdown['user_id']]['username'] ?? "Nieznany użytkownik")?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($countdown['count_to']) ?></td>
+                            <td class="px-4 py-2 border"><?= htmlspecialchars($countdown->title) ?></td>
+                            <td class="px-4 py-2 border"><?= htmlspecialchars($usernames[$countdown->userId] ?? "Nieznany użytkownik")?></td>
+                            <td class="px-4 py-2 border"><?= htmlspecialchars($countdown->countTo) ?></td>
                             <td class="px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-countdown-id="<?= htmlspecialchars($countdown['id']) ?>">
+                                        data-countdown-id="<?= htmlspecialchars($countdown->id) ?>">
                                     Usuń
                                 </button>
                                 <button type="button"
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-countdown-id="<?= htmlspecialchars($countdown['id']) ?>"
-                                        data-title="<?= htmlspecialchars($countdown['title']) ?>"
-                                        data-count-to="<?= htmlspecialchars($countdown['count_to']) ?>">
+                                        data-countdown-id="<?= htmlspecialchars($countdown->id) ?>"
+                                        data-title="<?= htmlspecialchars($countdown->title) ?>"
+                                        data-count-to="<?= htmlspecialchars($countdown->countTo) ?>">
                                     Edytuj
                                 </button>
                             </td>
@@ -216,16 +216,13 @@ SessionHelper::remove('error');
                     const initCounter = (field, counter) => {
                         const updateCounter = updateCounterFactory(field, counter);
 
-                        // Usuwamy poprzedni nasłuchiwacz (jeśli był)
                         field.removeEventListener("input", updateCounter);
 
-                        // Dodajemy nowy
                         field.addEventListener("input", () => {
-                            enforceMaxLength(field);   // zabezpieczenie
-                            updateCounter();           // aktualizacja licznika
+                            enforceMaxLength(field);
+                            updateCounter();
                         });
 
-                        // Inicjalizacja przy załadowaniu
                         enforceMaxLength(field);
                         updateCounter();
                     };

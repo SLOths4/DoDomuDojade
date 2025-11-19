@@ -3,7 +3,7 @@ namespace src\views;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use src\core\SessionHelper;
+use src\infrastructure\helpers\SessionHelper;
 
 SessionHelper::start();
 $error = SessionHelper::get('error');
@@ -30,38 +30,38 @@ SessionHelper::remove('error');
         <?php include('functions/navbar.php'); ?>
         <main class="flex-grow">
             <?php if (!empty($modules)): ?>
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <table id="modulesTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Nazwa modułu</th>
-                        <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
-                        <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
-                        <th class="px-4 py-2 border" data-type="time">Stan</th>
-                        <th class="px-4 py-2 border" data-type="time">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($modules as $module): ?>
+                <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                    <table id="modulesTable" class="w-full table-fixed border-collapse">
+                        <thead class="bg-gray-200 dark:bg-gray-700">
                         <tr>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($module['module_name']) ?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($module['start_time']) ?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($module['end_time']) ?></td>
-                            <td class="px-4 py-2 border"><?= $module['is_active'] ? "Włączony" : "Wyłączony" ?></td>
-                            <td class="px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-module-id="<?= htmlspecialchars($module['id']) ?>"
-                                        data-start-time="<?= htmlspecialchars($module['start_time']) ?>"
-                                        data-end-time="<?= htmlspecialchars($module['end_time']) ?>"
-                                        data-is-active="<?= htmlspecialchars((string)(int)$module['is_active']) ?>"
-                                >
-                                    Edytuj
-                                </button>
-                            </td>
+                            <th class="px-4 py-2 border">Nazwa modułu</th>
+                            <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
+                            <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
+                            <th class="px-4 py-2 border" >Stan</th>
+                            <th class="px-4 py-2 border" >Akcje</th>
                         </tr>
-                    <?php endforeach; ?>
-                    </tbody>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($modules as $module): ?>
+                            <tr x-data="{ isActive : <?= json_encode($module->isActive) ?> }">
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->moduleName) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->startTime->format('H:i')) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->endTime->format('H:i')) ?></td>
+                                <td class="px-4 py-2 border" x-bind:class="isActive ? 'bg-green-500' : 'bg-red-500'"><?= $module->isActive ? "Włączony" : "Wyłączony" ?></td>
+                                <td class="px-4 py-2 border space-x-2">
+                                    <button type="button"
+                                            class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
+                                            data-module-id="<?= htmlspecialchars((string)$module->id) ?>"
+                                            data-start-time="<?= htmlspecialchars($module->startTime->format('H:i')) ?>"
+                                            data-end-time="<?= htmlspecialchars($module->endTime->format('H:i')) ?>"
+                                            data-is-active="<?= $module->isActive ? '1' : '0' ?>"
+                                    >
+                                        Edytuj
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
                 </table>
             </div>
             <?php else: ?>
@@ -79,12 +79,12 @@ SessionHelper::remove('error');
 
                         <div class="mb-4">
                             <label for="edit_start_time" class="block text-sm font-medium text-gray-700 dark:text-white">Od</label>
-                            <input type="datetime" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
+                            <input type="time" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                         </div>
 
                         <div class="mb-4">
                             <label for="edit_end_time" class="block text-sm font-medium text-gray-700 dark:text-white">Do</label>
-                            <input type="datetime" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
+                            <input type="time" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white">
                         </div>
 
                         <div class="mb-4">
