@@ -253,9 +253,8 @@
                         }
                         try {
                             const res = await fetch('/display/get_weather', {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ function: 'weatherData' })
                             });
                             if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             let json;
@@ -264,16 +263,19 @@
                             } catch (e) {
                                 throw new Error('Niepoprawny JSON');
                             }
-                            const hasData = json && json.success && json.data && typeof json.data === 'object';
-                            if (!hasData) {
+
+                            if (!json || json.status !== 'success' || !json.data) {
                                 this.error = 'Błąd ładowania pogody';
                                 this.loading = false;
                                 this._firstLoadDone = true;
                                 return;
                             }
-                            if (this._isDifferent(this.data, json.data)) {
-                                this.data = json.data;
-                                const t = Number(json.data.temperature);
+
+                            const weather = json.data.weather;
+
+                            if (this._isDifferent(this.data, weather)) {
+                                this.data = weather;
+                                const t = Number(weather.temperature);
                                 if (!Number.isNaN(t)) this._setTempColor(t);
                             }
                             this.error = null;
@@ -320,15 +322,14 @@
                         this.error = null;
                         try {
                             const res = await fetch('/display/get_departures', {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ function: 'tramData' })
                             });
 
                             const json = await res.json();
 
-                            if (json.success && Array.isArray(json.data)) {
-                                const newData = json.data.slice(0, 11);
+                            if (json.status === 'success' && Array.isArray(json.data.departures)) {
+                                const newData = json.data.departures.slice(0, 11);
                                 if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
                                     this.data = newData;
                                 }
@@ -368,9 +369,8 @@
                     async load() {
                         try {
                             const res = await fetch('/display/get_countdown', {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ function: 'countdownData' })
                             });
                             const json = await res.json();
                             if (json.success && json.data?.length) {
@@ -510,22 +510,20 @@
                     async load() {
                         try {
                             const res = await fetch('/display/get_announcements', {
-                                method: 'POST',
+                                method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ function: 'announcementsData' })
                             });
+
                             const json = await res.json();
-                            if (json.success && json.data?.length) {
+                            if (json.status === 'success' && json.data?.length) {
                                 if (this.error || this.info) {
                                     this.error = null;
                                     this.info = null;
                                 }
-                                this.loading = true;
-                                if (JSON.stringify(this.announcements) === JSON.stringify(json.data)) {
-                                    this.loading = false;
-                                }
-                                if (JSON.stringify(this.announcements) !== JSON.stringify(json.data)) {
-                                    this.announcements = json.data;
+
+                                this.loading = JSON.stringify(this.data) !== JSON.stringify(json.announcements);
+                                if (JSON.stringify(this.data) !== JSON.stringify(json.announcements)) {
+                                    this.data = json.announcements;
                                     this.loading = false;
                                     this.grouped = this.chunk(json.data, 4);
                                     if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
@@ -557,7 +555,6 @@
                             this.current = (this.current + 1) % this.grouped.length;
                         }, 8000);
                     }
-
                 }
             }
         </script>

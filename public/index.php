@@ -40,11 +40,15 @@ try {
 }
 
 use FastRoute\RouteCollector;
-use function FastRoute\simpleDispatcher;
-use src\controllers\ErrorController;
-use src\controllers\PanelController;
+use src\controllers\AnnouncementsController;
+use src\controllers\CountdownController;
 use src\controllers\DisplayController;
+use src\controllers\ErrorController;
 use src\controllers\HomeController;
+use src\controllers\ModuleController;
+use src\controllers\PanelController;
+use src\controllers\UserController;
+use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     // 1. Trasy główne
@@ -57,22 +61,22 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     // 2. Trasy panelu administracyjnego
     // 2.1. Akcje użytkownika
     $r->addRoute('POST', '/panel/authenticate', [PanelController::class, 'authenticate']);
-    $r->addRoute('POST', '/panel/add_user', [PanelController::class, 'addUser']);
-    $r->addRoute('POST', '/panel/delete_user', [PanelController::class, 'deleteUser']);
+    $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser']);
+    $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser']);
 
     // 2.2. Akcje ogłoszeń
-    $r->addRoute('POST', '/panel/add_announcement', [PanelController::class, 'addAnnouncement']);
-    $r->addRoute('POST', '/panel/delete_announcement', [PanelController::class, 'deleteAnnouncement']);
-    $r->addRoute('POST', '/panel/edit_announcement', [PanelController::class, 'editAnnouncement']);
+    $r->addRoute('POST', '/panel/add_announcement', [AnnouncementsController::class, 'addAnnouncement']);
+    $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementsController::class, 'deleteAnnouncement']);
+    $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementsController::class, 'editAnnouncement']);
 
     // 2.3. Akcje powiązane z modułami
-    $r->addRoute('POST', '/panel/edit_module', [PanelController::class, 'editModule']);
-    $r->addRoute('POST', '/panel/toggle_module', [PanelController::class, 'toggleModule']);
+    $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule']);
+    $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule']);
 
     // 2.4. Akcje licznika
-    $r->addRoute('POST', '/panel/add_countdown', [PanelController::class, 'addCountdown']);
-    $r->addRoute('POST', '/panel/delete_countdown', [PanelController::class, 'deleteCountdown']);
-    $r->addRoute('POST', '/panel/edit_countdown', [PanelController::class, 'editCountdown']);
+    $r->addRoute('POST', '/panel/add_countdown', [CountdownController::class, 'addCountdown']);
+    $r->addRoute('POST', '/panel/delete_countdown', [CountdownController::class, 'deleteCountdown']);
+    $r->addRoute('POST', '/panel/edit_countdown', [CountdownController::class, 'editCountdown']);
 
     // 2.5. Wyświetlenie stron panelu
     $r->addRoute('GET', '/panel/users', [PanelController::class, 'users']);
@@ -81,12 +85,12 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules']);
 
     // 3. Trasy wyświetlacza (display)
-    $r->addRoute('POST', '/display/get_version', [DisplayController::class, 'getVersion']);
-    $r->addRoute('POST', '/display/get_departures', [DisplayController::class, 'getDepartures']);
-    $r->addRoute('POST', '/display/get_announcements', [DisplayController::class, 'getAnnouncements']);
-    $r->addRoute('POST', '/display/get_weather', [DisplayController::class, 'getWeather']);
-    $r->addRoute('POST', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
-    $r->addRoute('POST', '/display/get_events', [DisplayController::class, 'getEvents']);
+    $r->addRoute('GET', '/display/get_version', [DisplayController::class, 'getVersion']);
+    $r->addRoute('GET', '/display/get_departures', [DisplayController::class, 'getDepartures']);
+    $r->addRoute('GET', '/display/get_announcements', [DisplayController::class, 'getAnnouncements']);
+    $r->addRoute('GET', '/display/get_weather', [DisplayController::class, 'getWeather']);
+    $r->addRoute('GET', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
+    $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];

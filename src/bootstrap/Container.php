@@ -14,6 +14,8 @@ use src\repository\AnnouncementRepository;
 use src\repository\CountdownRepository;
 use src\repository\ModuleRepository;
 use src\repository\UserRepository;
+use src\security\AuthenticationService;
+use src\security\CsrfService;
 use src\service\AnnouncementService;
 use src\service\CountdownService;
 use src\service\ModuleService;
@@ -42,14 +44,21 @@ $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 // Config
 $container->set(Config::class, fn() => Config::fromEnv());
 
+// AuthenticationService
+$container->set(AuthenticationService::class, fn() => new AuthenticationService);
+
+// CsrfService
+$container->set(CsrfService::class, fn() => new CsrfService);
+
 // ErrorController
-$container->set(ErrorController::class, fn() => new ErrorController());
+$container->set(ErrorController::class, fn() => new ErrorController($container->get(AuthenticationService::class), $container->get(CsrfService::class), $container->get(LoggerInterface::class)));
 
 //DisplayController
 $container->set(DisplayController::class, function (Container $c) {
     $cfg = $c->get(Config::class);
-
     return new DisplayController(
+        $c->get(AuthenticationService::class),
+        $c->get(CsrfService::class),
         $c->get(LoggerInterface::class),
         $c->get(WeatherService::class),
         $c->get(ModuleService::class),
@@ -63,14 +72,15 @@ $container->set(DisplayController::class, function (Container $c) {
 
 // PanelController
 $container->set(PanelController::class, function (Container $c) {
-
     return new PanelController(
-        $c->get(ErrorController::class),
+        $c->get(AuthenticationService::class),
+        $c->get(CsrfService::class),
         $c->get(LoggerInterface::class),
+        $c->get(ErrorController::class),
         $c->get(ModuleService::class),
-        $c->get(AnnouncementService::class),
         $c->get(UserService::class),
         $c->get(CountdownService::class),
+        $c->get(AnnouncementService::class),
     );
 });
 

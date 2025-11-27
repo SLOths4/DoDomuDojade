@@ -98,7 +98,13 @@ readonly class TramService
      * Get departure times for a specific stop.
      *
      * @param string $stopId
-     * @return array
+     * @return array{
+     *     times: array{
+     *         line: string,
+     *         minutes: int,
+     *         direction: string
+     *     }
+     * }
      * @throws Exception
      */
     public function getTimes(string $stopId): array
@@ -116,7 +122,7 @@ readonly class TramService
                 throw new Exception(self::ERROR_MESSAGES['no_departure_data']);
             }
 
-            return $response;
+            return $response['success'];
         } catch (Exception $e) {
             $this->logger->error('getTimes failed', ['stopId' => $stopId, 'error' => $e->getMessage()]);
             throw new Exception(sprintf(self::ERROR_MESSAGES['api_error'], $e->getMessage()));

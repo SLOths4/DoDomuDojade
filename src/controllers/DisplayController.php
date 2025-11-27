@@ -6,7 +6,9 @@ use DateTimeZone;
 use Exception;
 use Psr\Log\LoggerInterface;
 use src\core\Controller;
-use src\infrastructure\helpers\SessionHelper;
+use src\infrastructure\traits\SendResponseTrait;
+use src\security\AuthenticationService;
+use src\security\CsrfService;
 use src\service\AnnouncementService;
 use src\service\CountdownService;
 use src\service\ModuleService;
@@ -16,8 +18,11 @@ use src\service\WeatherService;
 
 class DisplayController extends Controller
 {
+    use SendResponseTrait;
     public function __construct(
-        private readonly LoggerInterface     $logger,
+        AuthenticationService $authenticationService,
+        CsrfService $csrfService,
+        LoggerInterface $logger,
         private readonly WeatherService      $weatherService,
         private readonly ModuleService       $moduleService,
         private readonly TramService         $tramService,
@@ -27,7 +32,15 @@ class DisplayController extends Controller
         private readonly array               $StopIDs,
     )
     {
-        SessionHelper::start();
+        parent::__construct($authenticationService, $csrfService, $logger);
+    }
+
+    /**
+     * Renders display page
+     */
+    public function index(): void
+    {
+        $this->render('display');
     }
 
     /**
@@ -37,54 +50,25 @@ class DisplayController extends Controller
     {
         $isModuleVisible = $this->moduleService->isVisible($module);
         if ($isModuleVisible) {
-            $this->logger->info("$module is active.");
+            $this->logger->debug("$module is active.");
             return true;
         }
-        $this->logger->info("$module is not active");
+        $this->logger->debug("$module is not active");
         return false;
-    }
-
-    private function jsonHeaders(): void
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        header('Cache-Control: no-cache, must-revalidate');
-    }
-
-    private function jsonResponse(array $payload): void
-    {
-        try {
-            echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            $this->logger->error("Error serializing JSON response: " . $e->getMessage());
-            echo '{"success":false,"message":"Serialization error"}';
-        }
-    }
-
-    private function ensurePost(): bool
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return false;
-        }
-        $this->jsonHeaders();
-        return true;
-    }
-
-    public function index(): void
-    {
-        $this->render('display');
     }
 
     public function getDepartures(): void
     {
-        if (!$this->ensurePost()) { return; }
-
         try {
-            $this->logger->debug('Rozpoczęto pobieranie danych tramwajowych.');
+            $this->validateMethod($_SERVER['REQUEST_METHOD'], 'GET');
 
             if (!$this->isModuleVisible('tram')) {
-                $this->logger->debug("Moduł tram nie jest aktywny.");
-                $this->jsonResponse(['success' => true, 'is_active' => false, 'data' => null]);
-                return;
+                $this->sendSuccess(
+                    [
+                        'is_active' => false,
+                        'departures' => null
+                    ]
+                );
             }
 
             $departures = [];
@@ -92,16 +76,17 @@ class DisplayController extends Controller
                 try {
                     $stopDepartures = $this->tramService->getTimes($stopId);
                 } catch (Exception) {
+                    $this->logger->warning("No departures found for stop $stopId");
                     continue;
                 }
 
-                if (isset($stopDepartures['success']['times']) && is_array($stopDepartures['success']['times'])) {
-                    foreach ($stopDepartures['success']['times'] as $departure) {
+                if (isset($stopDepartures['times']) && is_array($stopDepartures['times'])) {
+                    foreach ($stopDepartures['times'] as $departure) {
                         $departures[] = [
                             'stopId' => $stopId,
-                            'line' => htmlspecialchars((string)$departure['line']),
-                            'minutes' => (int)htmlspecialchars((string)$departure['minutes']),
-                            'direction' => htmlspecialchars((string)$departure['direction']),
+                            'line' => (string)$departure['line'],
+                            'minutes' => (int)$departure['minutes'],
+                            'direction' => (string)$departure['direction'],
                         ];
                     }
                 } else {
@@ -112,33 +97,36 @@ class DisplayController extends Controller
             usort($departures, static fn($a, $b) => $a['minutes'] <=> $b['minutes']);
 
             if (!empty($departures)) {
-                $this->logger->debug('Pomyślnie pobrano dane tramwajowe.');
-                $this->jsonResponse(['success' => true, 'is_active' => true, 'data' => $departures]);
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'departures' => $departures
+                ]);
             } else {
-                $this->logger->warning('Brak danych o odjazdach dla wszystkich przystanków.');
-                $this->jsonResponse(['success' => false, 'is_active' => true, 'message' => 'Brak danych o odjazdach dla wybranych przystanków.']);
+                $this->sendSuccess([
+                    'success' => false,
+                    'is_active' => true
+                ], 'No departures found for provided stop IDs');
             }
-        } catch (Exception $e) {
-            $this->logger->error('Błąd podczas przetwarzania danych tramwajowych: ' . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'is_active' => true, 'message' => 'Błąd w trakcie przetwarzania danych tramwajowych.']);
+        } catch (Exception) {
+            $this->sendError('Error processing tram data', 500, []);
         }
     }
 
     public function getAnnouncements(): void
     {
-        if (!$this->ensurePost()) { return; }
-
         try {
-            $this->logger->debug('Rozpoczęto pobieranie ogłoszeń.');
+            $this->validateMethod($_SERVER['REQUEST_METHOD'], 'GET');
 
             if (!$this->isModuleVisible('announcements')) {
-                $this->logger->debug("Announcements module is not active.");
-                $this->jsonResponse(['success' => true, 'is_active' => false, 'data' => null]);
-                return;
+                $this->sendSuccess(
+                    [
+                        'is_active' => false,
+                        'announcements' => null
+                    ]
+                );
             }
 
             $announcements = $this->announcementsService->getValid();
-            $this->logger->debug('Pobrano listę ogłoszeń z bazy danych.');
 
             $response = [];
             foreach ($announcements as $announcement) {
@@ -146,96 +134,108 @@ class DisplayController extends Controller
                 $author = $user->username ?? 'Nieznany użytkownik';
 
                 $response[] = [
-                    'title' => htmlspecialchars($announcement->title),
+                    'title' => $announcement->title,
                     'author' => $author,
-                    'date' => htmlspecialchars($announcement->date->format('Y-m-d')),
-                    'validUntil' => htmlspecialchars($announcement->validUntil->format('Y-m-d')),
-                    'text' => htmlspecialchars($announcement->text),
+                    'date' => $announcement->date->format('Y-m-d'),
+                    'validUntil' => $announcement->validUntil->format('Y-m-d'),
+                    'text' => $announcement->text,
                 ];
             }
 
-            $this->logger->debug('Pomyślnie przetworzono dane ogłoszeń.');
-            $this->jsonResponse(['success' => true, 'is_active' => true, 'data' => $response]);
-        } catch (Exception $e) {
-            $this->logger->error('Błąd podczas pobierania ogłoszeń: ' . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Error fetching announcements']);
+            $this->sendSuccess(
+                [
+                    'is_active' => true,
+                    'announcements' => $response
+                ]
+            );
+        } catch (Exception) {
+            $this->sendError(
+                'Error fetching announcements',
+                500,
+                []
+            );
         }
     }
 
     public function getCountdown(): void
     {
-        if (!$this->ensurePost()) { return; }
-
         try {
-            $this->logger->debug('Rozpoczęto pobieranie danych odliczania.');
+            $this->validateMethod($_SERVER['REQUEST_METHOD'], 'GET');
 
             if (!$this->isModuleVisible('countdown')) {
-                $this->logger->debug("Moduł odliczania nie jest aktywny.");
-                $this->jsonResponse(['success' => true, 'is_active' => false, 'data' => null]);
-                return;
+                $this->sendSuccess(
+                    [
+                        'is_active' => false,
+                        'title' => null,
+                        'count_to' => null
+                    ]
+                );
             }
 
             $currentCountdown = $this->countdownService->getCurrent();
 
             if ($currentCountdown) {
                 $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
-                $response = [[
-                    'title' => htmlspecialchars($currentCountdown->title),
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'title' => $currentCountdown->title,
                     'count_to' => $dt->getTimestamp()
-                ]];
-                $this->logger->debug('Pomyślnie pobrano dane obecnego odliczania.');
-                $this->jsonResponse(['success' => true, 'data' => $response]);
+                ]);
             } else {
-                $this->logger->warning('Brak dostępnych danych odliczania.');
-                $this->jsonResponse(['success' => false, 'message' => 'Brak dostępnych danych odliczania.']);
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'title' => null,
+                    'count_to' => null
+                ], 'No countdown available');
             }
-        } catch (Exception $e) {
-            $this->logger->error('Błąd podczas przetwarzania danych odliczania: ' . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Błąd podczas przetwarzania danych odliczania.']);
+        } catch (Exception) {
+            $this->sendError('Błąd podczas przetwarzania danych odliczania.', 500, []);
         }
     }
 
     public function getWeather(): void
     {
-        if (!$this->ensurePost()) { return; }
-
         try {
-            $this->logger->debug('Rozpoczęto przetwarzanie danych pogodowych.');
+            $this->validateMethod($_SERVER['REQUEST_METHOD'], 'GET');
 
             if (!$this->isModuleVisible('weather')) {
-                $this->logger->debug("Moduł weather nie jest aktywny.");
-                $this->jsonResponse(['success' => true, 'is_active' => false, 'data' => null]);
-                return;
+                $this->sendSuccess([
+                    'is_active' => false,
+                    'weather' => null
+                ]);
             }
 
             $weatherServiceResponse = $this->weatherService->getWeather();
 
             if (empty($weatherServiceResponse)) {
-                $this->logger->warning('Brak danych pogodowych.');
-                $this->jsonResponse(['success' => false, 'message' => 'Brak danych pogodowych.']);
-                return;
+                $this->sendSuccess([
+                    'success' => true,
+                    'weather' => null
+                ], 'Brak danych pogodowych.');
             }
 
-            $this->logger->debug('Pomyślnie pobrano dane pogodowe.');
-            $this->jsonResponse([
-                'success' => true,
-                'data' => [
-                    'temperature' => htmlspecialchars((string)($weatherServiceResponse['imgw_temperature'] ?? 'Brak danych')),
-                    'pressure' => htmlspecialchars((string)($weatherServiceResponse['imgw_pressure'] ?? 'Brak danych')),
+            $this->sendSuccess([
+                'is_active' => true,
+                'weather' => [
+                    'temperature' => (string)($weatherServiceResponse['imgw_temperature'] ?? 'Brak danych'),
+                    'pressure' => (string)($weatherServiceResponse['imgw_pressure'] ?? 'Brak danych'),
                     'airlyAdvice' => $weatherServiceResponse['airly_index_advice'] !== null
-                        ? htmlspecialchars((string)$weatherServiceResponse['airly_index_advice'])
+                        ? (string)$weatherServiceResponse['airly_index_advice']
                         : 'Brak danych',
                     'airlyDescription' => $weatherServiceResponse['airly_index_description'] !== null
-                        ? htmlspecialchars((string)$weatherServiceResponse['airly_index_description'])
+                        ? (string)$weatherServiceResponse['airly_index_description']
                         : 'Brak danych',
                     'airlyColour' => $weatherServiceResponse['airly_index_colour'] !== null
-                        ? htmlspecialchars((string)$weatherServiceResponse['airly_index_colour'])
+                        ? (string)$weatherServiceResponse['airly_index_colour']
                         : 'Brak danych'
                 ]
             ]);
-        } catch (Exception $e) {
-            $this->logger->error('Błąd podczas pobierania danych pogodowych: ' . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Błąd pobierania danych pogodowych.']);
+        } catch (Exception) {
+            $this->sendError(
+                'Błąd pobierania danych pogodowych.',
+                500,
+                    []
+            );
         }
     }
 }
