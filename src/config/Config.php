@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace src\config;
+namespace App\config;
 
 use Exception;
-use src\exceptions\ConfigException;
+use App\Infrastructure\Exception\ConfigException;
 
 final readonly class Config
 {

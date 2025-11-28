@@ -8,6 +8,8 @@
 # Ignore node_modules directory
 node_modules/
 
+# Composer
+composer.phar
 
 # Ignore logs files
 *.log
