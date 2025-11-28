@@ -146,10 +146,12 @@ readonly class WeatherService {
      */
     public function getWeather(): array
     {
+        $this->logger->info('Fetching combined weather data');
+
         $imgwData = $this->getImgwWeatherData();
         $airlyData = $this->getAirlyData();
 
-        return [
+        $result = [
             'imgw_station' => $imgwData['stacja'] ?? null,
             'imgw_fromDate' => $imgwData['data_pomiaru'] ?? null,
             'imgw_fromHour' => $imgwData['godzina_pomiaru'] ?? null,
@@ -166,5 +168,12 @@ readonly class WeatherService {
             'airly_index_colour' => $airlyData['airly_index_colour'] ?? null,
             'airly_index_description' => $airlyData['airly_index_description'] ?? null,
         ];
+
+        $this->logger->info('Combined weather data prepared', [
+            'has_imgw' => $result['imgw_station'] !== null,
+            'has_airly' => $result['airly_index_value'] !== null,
+        ]);
+
+        return $result;
     }
 }

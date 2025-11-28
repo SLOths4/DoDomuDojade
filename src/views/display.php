@@ -17,6 +17,7 @@
         <div x-ref="header" class="flex mx-1 my-2">
             <!-- DATA I CZAS -->
             <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-2 shadow-custom justify-around items-center max-sm:hidden">
+                <!--suppress CheckImageSize -->
                 <img src="assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
                 <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
                     <i class="fa-solid fa-calendar text-primary-400"></i>
@@ -287,7 +288,7 @@
                             this.loading = false;
                             this._firstLoadDone = true;
                         }
-                        setTimeout(() => this.load(), 10000);
+                        setTimeout(() => this.load(), 60000);
                     }
                 }
             }
@@ -373,28 +374,39 @@
                                 headers: { 'Content-Type': 'application/json' },
                             });
                             const json = await res.json();
-                            if (json.success && json.data?.length) {
+
+                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                                this.loading = true;
+                                this.error = 'Błąd ładowania odliczania';
+                                this.info = null;
+                                if (this.intervalId) clearInterval(this.intervalId);
+                            } else if (json.data.is_active === false) {
+                                this.loading = false;
+                                this.error = null;
+                                this.info = null;
+                                this.data = null;
+                                this.message = '';
+                                if (this.intervalId) clearInterval(this.intervalId);
+                            } else if (!json.data.title || !json.data.count_to) {
+                                this.loading = false;
+                                this.info = 'Brak danych odliczania';
+                                this.error = null;
+                                this.data = null;
+                                this.message = '';
+                                if (this.intervalId) clearInterval(this.intervalId);
+                            } else {
                                 if (this.error || this.info) {
                                     this.error = null;
                                     this.info = null;
                                 }
 
-                                this.loading = JSON.stringify(this.data) !== JSON.stringify(json.data[0]);
-                                if (JSON.stringify(this.data) !== JSON.stringify(json.data[0])) {
-                                    this.data = json.data[0];
+                                if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                                    this.data = json.data;
                                     this.loading = false;
                                     this.update();
                                     if (this.intervalId) clearInterval(this.intervalId);
                                     this.intervalId = setInterval(() => this.update(), 1000);
                                 }
-                            } else if (!json.data?.length) {
-                                this.loading = true;
-                                this.info = 'Brak danych odliczania';
-                                if (this.intervalId) clearInterval(this.intervalId);
-                            } else if (!json.success) {
-                                this.loading = true;
-                                this.error = 'Błąd ładowania odliczania';
-                                if (this.intervalId) clearInterval(this.intervalId);
                             }
                         } catch (e) {
                             this.error = 'Błąd ładowania odliczania';
@@ -402,7 +414,7 @@
                             this.loading = false;
                             console.error('Fetch error:', e);
                         }
-                        setTimeout(() => this.load(), 1000);
+                        setTimeout(() => this.load(), 60000);
                     },
                     update() {
                         if (!this.data) return;
@@ -515,28 +527,52 @@
                             });
 
                             const json = await res.json();
-                            if (json.status === 'success' && json.data?.length) {
-                                if (this.error || this.info) {
-                                    this.error = null;
-                                    this.info = null;
-                                }
 
-                                this.loading = JSON.stringify(this.data) !== JSON.stringify(json.announcements);
-                                if (JSON.stringify(this.data) !== JSON.stringify(json.announcements)) {
-                                    this.data = json.announcements;
-                                    this.loading = false;
-                                    this.grouped = this.chunk(json.data, 4);
-                                    if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                                    this.rotate();
-                                }
-                            } else if (!json.data?.length) {
-                                this.loading = true;
-                                this.info = 'Brak danych ogłoszeń';
-                                if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                            } else if (!json.success) {
-                                this.loading = true;
+                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                                this.loading = false;
                                 this.error = 'Błąd ładowania ogłoszeń';
+                                this.info = null;
                                 if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                                return;
+                            }
+
+                            if (json.data.is_active === false) {
+                                // moduł WYŁĄCZONY – nic nie pokazujemy (ani error, ani info)
+                                this.loading = false;
+                                this.error = null;
+                                this.info = null;
+                                this.announcements = [];
+                                this.grouped = [];
+                                if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                                return;
+                            }
+
+                            const list = Array.isArray(json.data.announcements) ? json.data.announcements : [];
+
+                            if (!list.length) {
+                                // moduł włączony, ale brak danych – pokazujemy info
+                                this.loading = false;
+                                this.info = 'Brak danych ogłoszeń';
+                                this.error = null;
+                                this.announcements = [];
+                                this.grouped = [];
+                                if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                                return;
+                            }
+
+                            if (this.error || this.info) {
+                                this.error = null;
+                                this.info = null;
+                            }
+
+                            if (JSON.stringify(this.announcements) === JSON.stringify(list)) {
+                                this.loading = false;
+                            } else {
+                                this.announcements = list;
+                                this.loading = false;
+                                this.grouped = this.chunk(list, 4);
+                                if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                                this.rotate();
                             }
                         } catch (e) {
                             this.error = 'Błąd ładowania ogłoszeń';

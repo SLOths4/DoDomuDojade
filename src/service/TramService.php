@@ -39,7 +39,6 @@ readonly class TramService
 
     /**
      * Validate GPS coordinates.
-     *
      * @param float $lat
      * @param float $lon
      * @return bool
@@ -51,7 +50,6 @@ readonly class TramService
 
     /**
      * Make API request with common configuration.
-     *
      * @param string $method
      * @param array $params
      * @return array
@@ -131,7 +129,6 @@ readonly class TramService
 
     /**
      * Get stops near specified GPS coordinates.
-     *
      * @param float $lat
      * @param float $lon
      * @return array
@@ -162,7 +159,6 @@ readonly class TramService
 
     /**
      * Get line information.
-     *
      * @param int $lineNumber
      * @return array
      * @throws Exception
@@ -185,7 +181,6 @@ readonly class TramService
 
     /**
      * Get routes for a specific line.
-     *
      * @param int $lineNumber
      * @return array
      * @throws Exception
@@ -208,7 +203,6 @@ readonly class TramService
 
     /**
      * Get messages for a specific bollard.
-     *
      * @param string $bollardSymbol
      * @return array
      * @throws Exception

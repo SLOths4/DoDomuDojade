@@ -101,6 +101,7 @@ $container->set(AnnouncementService::class, function (Container $c): Announcemen
         $c->get(AnnouncementRepository::class),
         $cfg->announcementsMaxTitleLength,
         $cfg->announcementsMaxTextLength,
+        $c->get(LoggerInterface::class),
     );
 });
 
@@ -121,6 +122,7 @@ $container->set(UserService::class, function (Container $c): UserService {
         $c->get(UserRepository::class),
         $cfg->maxUsernameLength,
         $cfg->minPasswordLength,
+        $c->get(LoggerInterface::class),
     );
 });
 
@@ -140,6 +142,7 @@ $container->set(ModuleService::class, function (Container $c): ModuleService {
     return new ModuleService(
         $c->get(ModuleRepository::class),
         $cfg->modulesDateFormat,
+        $c->get(LoggerInterface::class),
     );
 });
 
@@ -171,6 +174,7 @@ $container->set(CountdownService::class, function (Container $c): CountdownServi
         $c->get(CountdownRepository::class),
         $cfg->countdownsMaxTitleLength,
         $cfg->countdownsDateFormat,
+        $c->get(LoggerInterface::class),
     );
 });
 

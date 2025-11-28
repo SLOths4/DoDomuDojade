@@ -50,10 +50,8 @@ class DisplayController extends Controller
     {
         $isModuleVisible = $this->moduleService->isVisible($module);
         if ($isModuleVisible) {
-            $this->logger->debug("$module is active.");
             return true;
         }
-        $this->logger->debug("$module is not active");
         return false;
     }
 
@@ -189,7 +187,7 @@ class DisplayController extends Controller
                 ], 'No countdown available');
             }
         } catch (Exception) {
-            $this->sendError('Błąd podczas przetwarzania danych odliczania.', 500, []);
+            $this->sendError('Error while processing countdowns.', 500, []);
         }
     }
 
@@ -211,7 +209,7 @@ class DisplayController extends Controller
                 $this->sendSuccess([
                     'success' => true,
                     'weather' => null
-                ], 'Brak danych pogodowych.');
+                ], 'No weather data available.');
             }
 
             $this->sendSuccess([
@@ -232,7 +230,7 @@ class DisplayController extends Controller
             ]);
         } catch (Exception) {
             $this->sendError(
-                'Błąd pobierania danych pogodowych.',
+                'Error fetching weather data.',
                 500,
                     []
             );

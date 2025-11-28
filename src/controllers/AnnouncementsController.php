@@ -43,6 +43,7 @@ class AnnouncementsController extends Controller
                 $this->logger->error("Announcement could not be deleted", ['id' => $announcementId]);
                 SessionHelper::set('error', 'Failed to delete announcement.');
             }
+            $this->redirect('/panel/announcements');
         } catch (Exception) {
             $this->redirect('/panel/announcements');
         }
@@ -71,6 +72,7 @@ class AnnouncementsController extends Controller
                 SessionHelper::set('error', 'Error adding announcement.');
                 $this->logger->warning("Announcement was not added");
             }
+            $this->redirect('/panel/announcements');
         } catch (Exception) {
             $this->redirect('/panel/announcements');
         }
@@ -100,6 +102,7 @@ class AnnouncementsController extends Controller
                 SessionHelper::set('error', 'No changes were made.');
                 $this->logger->warning("Announcement update made no changes", ['id' => $id]);
             }
+            $this->redirect('/panel/announcements');
         } catch (Exception){
             $this->redirect('/panel/announcements');
         }
