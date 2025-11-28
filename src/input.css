@@ -1,4 +1,4 @@
-@import "tailwindcss" source("./views") source("./views/functions");
+@import "tailwindcss" source("./Presentation");
 
 @theme {
     --color-beige: #F9FAFB;

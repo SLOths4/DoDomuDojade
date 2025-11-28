@@ -1,4 +1,7 @@
 <?php
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    die('vendor/autoload.php not found. Run: composer install');
+}
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $allowedExtensions = ['css', 'js', 'png', 'jpg', 'ico'];
 $ext = pathinfo($uri, PATHINFO_EXTENSION);
@@ -13,7 +16,7 @@ $root = dirname(__DIR__);
 $dotenv = Dotenv\Dotenv::createImmutable($root);
 $dotenv->safeLoad();
 
-$container = require __DIR__ . '/../src/bootstrap/Container.php';
+$container = require __DIR__ . '/../src/bootstrap/bootstrap.php';
 
 try {
     registerErrorHandling($container);
@@ -24,7 +27,7 @@ try {
     error_reporting(E_ALL);
 
     set_exception_handler(static function (Throwable $ex) {
-        http_response_code(500);
+        Http_response_code(500);
         header('Content-Type: text/plain; charset=utf-8');
         echo getenv('APP_ENV') === 'dev' ? ('Unhandled exception: ' . $ex->getMessage()) : 'Internal Server Error';
     });
@@ -32,7 +35,7 @@ try {
     register_shutdown_function(static function () {
         $error = error_get_last();
         if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
-            http_response_code(500);
+            Http_response_code(500);
             header('Content-Type: text/plain; charset=utf-8');
             echo getenv('APP_ENV') === 'dev' ? 'Fatal error (shutdown)' : 'Internal Server Error';
         }
@@ -40,14 +43,14 @@ try {
 }
 
 use FastRoute\RouteCollector;
-use src\controllers\AnnouncementsController;
-use src\controllers\CountdownController;
-use src\controllers\DisplayController;
-use src\controllers\ErrorController;
-use src\controllers\HomeController;
-use src\controllers\ModuleController;
-use src\controllers\PanelController;
-use src\controllers\UserController;
+use App\Http\Controller\AnnouncementsController;
+use App\Http\Controller\CountdownController;
+use App\Http\Controller\DisplayController;
+use App\Http\Controller\ErrorController;
+use App\Http\Controller\HomeController;
+use App\Http\Controller\ModuleController;
+use App\Http\Controller\PanelController;
+use App\Http\Controller\UserController;
 use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
@@ -93,11 +96,11 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
 });
 
-$httpMethod = $_SERVER['REQUEST_METHOD'];
+$HttpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 $uri = strtok($uri, '?');
 
-$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+$routeInfo = $dispatcher->dispatch($HttpMethod, $uri);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:

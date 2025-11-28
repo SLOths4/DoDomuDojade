@@ -18,8 +18,8 @@
     },
     "autoload": {
         "psr-4": {
-                "src\\": "src/"
-            }
+            "App\\": "src/"
+        }
     },
     "license": "CC-BY-NC-4.0",
     "require-dev": {
