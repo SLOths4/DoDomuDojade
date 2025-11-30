@@ -11,9 +11,6 @@ use App\Infrastructure\Helper\DatabaseHelper;
 
 readonly class UserRepository
 {
-    /**
-     * @throws Exception
-     */
     public function __construct(
         private DatabaseHelper $dbHelper,
         private string         $TABLE_NAME,

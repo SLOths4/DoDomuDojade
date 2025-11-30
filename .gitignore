@@ -5,6 +5,9 @@
 # Ignore PHPStorm project files
 .idea/
 
+# Tailwind CSS oputput
+input.css
+
 # Ignore node_modules directory
 node_modules/
 

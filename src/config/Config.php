@@ -30,6 +30,9 @@ final readonly class Config
         public string $tramUrl,
         public array  $stopsIDs,
         public string $icalUrl,
+        public string $quoteApiUrl,
+        public string $quoteDateFormat,
+        public string $quoteTableName,
         private string $dbDsn,
         private string $dbUsername,
         private string $dbPassword,
@@ -75,6 +78,11 @@ final readonly class Config
             // Calendar
             $icalUrl = self::env('ICAL_URL', '');
 
+            // Quote
+            $quoteApiUrl = self::env('QUOTE_API_URL');
+            $quoteDateFormat = self::env('QUOTE_DATE_FORMAT', 'Y-m-d');
+            $quoteTableName = self::env('QUOTE_TABLE_NAME', 'quotes');
+
             $dbDsn = self::env('DB_DSN', self::env('DB_HOST'));
             $dbUsername = self::env('DB_USERNAME', '');
             $dbPassword = self::env('DB_PASSWORD', '');
@@ -98,8 +106,11 @@ final readonly class Config
                 $maxUsernameLength,
                 $minPasswordLength,
                 $tramUrl,
-                explode(',', $stopsIDs),
+                explode(',', (string)$stopsIDs),
                 $icalUrl,
+                $quoteApiUrl,
+                $quoteDateFormat,
+                $quoteTableName,
                 $dbDsn,
                 $dbUsername,
                 $dbPassword
