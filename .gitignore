@@ -6,7 +6,7 @@
 .idea/
 
 # Tailwind CSS oputput
-input.css
+output.css
 
 # Ignore node_modules directory
 node_modules/
