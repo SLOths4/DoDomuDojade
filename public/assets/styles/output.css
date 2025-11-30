@@ -285,6 +285,9 @@
   .z-50 {
     z-index: 50;
   }
+  .col-span-2 {
+    grid-column: span 2 / span 2;
+  }
   .m-0 {
     margin: calc(var(--spacing) * 0);
   }
@@ -372,12 +375,6 @@
   .min-h-screen {
     min-height: 100vh;
   }
-  .w-1\/6 {
-    width: calc(1/6 * 100%);
-  }
-  .w-4\/6 {
-    width: calc(4/6 * 100%);
-  }
   .w-6 {
     width: calc(var(--spacing) * 6);
   }
@@ -446,6 +443,9 @@
   }
   .grid-flow-col {
     grid-auto-flow: column;
+  }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
