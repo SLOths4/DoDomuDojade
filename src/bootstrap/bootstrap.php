@@ -220,7 +220,6 @@ $container->set(QuoteRepository::class, function (Container $c): QuoteRepository
 });
 
 $container->set(FetchQuoteUseCase::class, function (Container $c): FetchQuoteUseCase {
-    $cfg = $c->get(Config::class);
     return new FetchQuoteUseCase(
         $c->get(LoggerInterface::class),
         $c->get(QuoteApiService::class),
