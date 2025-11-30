@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__. '/../../../'));
+$dotenv->load();
+
+use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
+use App\Application\UseCase\Quote\FetchQuoteUseCase;
+use App\Infrastructure\Repository\QuoteRepository;
+use App\Infrastructure\Service\QuoteApiService;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\AnnouncementService;
 use App\Application\UseCase\CountdownService;
@@ -24,8 +33,6 @@ use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
-require_once __DIR__ . '/../../vendor/autoload.php';
 
 $container = new Container();
 
@@ -66,6 +73,7 @@ $container->set(DisplayController::class, function (Container $c) {
         $c->get(AnnouncementService::class),
         $c->get(UserService::class),
         $c->get(CountdownService::class),
+        $c->get(FetchActiveQuoteUseCase::class),
         $cfg->stopsIDs,
     );
 });
@@ -189,6 +197,34 @@ $container->set(WeatherService::class, function (Container $c): WeatherService {
         $cfg->airlyEndpoint,
         $cfg->airlyApiKey,
         $cfg->airlyLocationId,
+    );
+});
+
+// QuoteApiService
+$container->set(QuoteApiService::class, function (Container $c): QuoteApiService {
+    $cfg = $c->get(Config::class);
+    return new QuoteApiService(
+        $c->get(LoggerInterface::class),
+        $c->get(HttpClientInterface::class),
+        $cfg->quoteApiUrl,
+    );
+});
+
+$container->set(QuoteRepository::class, function (Container $c): QuoteRepository {
+    $cfg = $c->get(Config::class);
+    return new QuoteRepository(
+        $c->get(DatabaseHelper::class),
+        $cfg->quoteTableName,
+        $cfg->quoteDateFormat
+    );
+});
+
+$container->set(FetchQuoteUseCase::class, function (Container $c): FetchQuoteUseCase {
+    $cfg = $c->get(Config::class);
+    return new FetchQuoteUseCase(
+        $c->get(LoggerInterface::class),
+        $c->get(QuoteApiService::class),
+        $c->get(QuoteRepository::class),
     );
 });
 

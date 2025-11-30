@@ -2,33 +2,35 @@
 
 namespace App\Http\Controller;
 
-use DateTimeZone;
-use Exception;
-use Psr\Log\LoggerInterface;
 use App\Application\UseCase\AnnouncementService;
 use App\Application\UseCase\CountdownService;
 use App\Application\UseCase\ModuleService;
-use App\Infrastructure\Service\TramService;
+use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\UserService;
-use App\Infrastructure\Service\WeatherService;
 use App\infrastructure\Security\AuthenticationService;
 use App\infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\TramService;
+use App\Infrastructure\Service\WeatherService;
 use App\infrastructure\Trait\SendResponseTrait;
+use DateTimeZone;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 class DisplayController extends BaseController
 {
     use SendResponseTrait;
     public function __construct(
-        AuthenticationService $authenticationService,
-        CsrfService $csrfService,
-        LoggerInterface $logger,
-        private readonly WeatherService      $weatherService,
-        private readonly ModuleService       $moduleService,
-        private readonly TramService         $tramService,
-        private readonly AnnouncementService $announcementsService,
-        private readonly UserService         $userService,
-        private readonly CountdownService    $countdownService,
-        private readonly array               $StopIDs,
+        AuthenticationService                    $authenticationService,
+        CsrfService                              $csrfService,
+        LoggerInterface                          $logger,
+        private readonly WeatherService          $weatherService,
+        private readonly ModuleService           $moduleService,
+        private readonly TramService             $tramService,
+        private readonly AnnouncementService     $announcementsService,
+        private readonly UserService             $userService,
+        private readonly CountdownService        $countdownService,
+        private readonly FetchActiveQuoteUseCase $fetchActiveQuoteUseCase,
+        private readonly array                   $StopIDs,
     )
     {
         parent::__construct($authenticationService, $csrfService, $logger);
@@ -224,6 +226,34 @@ class DisplayController extends BaseController
                 'Error fetching weather data.',
                 500,
                     []
+            );
+        }
+    }
+
+    public function getQuote(): void
+    {
+        try {
+            if (!$this->isModuleVisible('quote')) {
+                $this->sendSuccess([
+                    'is_active' => false,
+                    'quote' => null
+                ]);
+            }
+
+            $quote = $this->fetchActiveQuoteUseCase->execute();
+
+            $this->sendSuccess([
+                'is_active' => true,
+                'quote' => [
+                    'from' => $quote->author,
+                    'quote' => $quote->quote,
+                ]
+            ]);
+        } catch (Exception) {
+            $this->sendError(
+                'Error fetching quote data.',
+                500,
+                []
             );
         }
     }

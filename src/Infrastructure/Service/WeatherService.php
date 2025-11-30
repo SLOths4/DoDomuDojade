@@ -169,10 +169,7 @@ readonly class WeatherService {
             'airly_index_description' => $airlyData['airly_index_description'] ?? null,
         ];
 
-        $this->logger->info('Combined weather data prepared', [
-            'has_imgw' => $result['imgw_station'] !== null,
-            'has_airly' => $result['airly_index_value'] !== null,
-        ]);
+        $this->logger->info('Combined weather data prepared');
 
         return $result;
     }

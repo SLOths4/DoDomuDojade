@@ -9,7 +9,7 @@ use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
 
-class AnnouncementsController extends BaseController
+class AnnouncementController extends BaseController
 {
     public function __construct(
         AuthenticationService $authenticationService,
