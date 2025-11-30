@@ -363,10 +363,6 @@
 
                     checkOverflow() {
                         const elname = this.$refs.tramDiv;
-                        console.log(elname.scrollHeight)
-                        console.log(elname.clientHeight)
-                        console.log(elname.scrollWidth)
-                        console.log(elname.clientWidth)
                         if (elname.scrollHeight > elname.clientHeight || elname.scrollWidth > elname.clientWidth) {
                             this.calcExcessTram();
                         }
@@ -374,14 +370,11 @@
 
                     async init() {
                         await this.fetchDepartures();
-
                         const refreshData = async () => {
                             await this.fetchDepartures();
                             requestAnimationFrame(() => this.checkOverflow());
                         };
-
-                        await refreshData(); // Initial check after first load
-
+                        await refreshData();
                         setInterval(refreshData, 60000);
                     }
                 };
