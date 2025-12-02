@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use src\controllers\ErrorController;
-use src\infrastructure\container\Container;
-
 use Psr\Log\LoggerInterface;
+use App\Http\Controller\ErrorController;
+use App\Infrastructure\Container;
 
 function registerErrorHandling(Container $container): void
 {

@@ -5,9 +5,14 @@
 # Ignore PHPStorm project files
 .idea/
 
+# Tailwind CSS oputput
+output.css
+
 # Ignore node_modules directory
 node_modules/
 
+# Composer
+composer.phar
 
 # Ignore logs files
 *.log
