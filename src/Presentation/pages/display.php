@@ -60,10 +60,10 @@
         </div>
 
         <!-- 🔹 GŁÓWNY GRID: Tramwaje | Odliczanie + Ogłoszenia -->
-        <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2" :style="`height: ${gridHeight}px;`">
+        <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2 overflow-hidden" :style="`height: ${gridHeight}px;`">
 
             <!-- LEWA KOLUMNA: Tramwaje -->
-            <div x-data="tramDepartures()" x-init="init()" class="bg-white rounded-2xl shadow-custom py-2 px-1 overflow-hidden">
+            <div x-data="tramDepartures()" x-init="init()" x-ref="tramDiv" @tram-data-loaded.window="console.log('Tram departures refreshed')" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
                 <template x-if="loading">
                     <p class="text-center">Ładowanie danych...</p>
                 </template>
@@ -75,42 +75,36 @@
                     </div>
                 </template>
 
-                <div x-show="!loading && !error && data.length">
-                    <table class="table-fixed w-full">
-                        <thead>
-                        <tr class="font-bold text-primary-400 text-lg">
-                            <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
-                                <i class="fa-solid fa-train-tram"></i> Linia
-                            </th>
-                            <th class="w-4/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
-                                <i class="fa-solid fa-location-dot"></i> Kierunek
-                            </th>
-                            <th class="w-1/6 pb-2 text-xs md:max-lg:text-base lg:text-lg">
-                                <i class="fa-solid fa-clock"></i> Odjazd
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
-                            <tr class="text-center text-xs md:max-lg:text-base lg:text-lg">
-                                <td class="py-2 border-t border-gray-200">
-                                    <div
-                                            x-text="tram.line"
-                                            :class="[
-                          (count[tram.line] || 'bg-white'),
-                          tram.line < 20
-                            ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
-                            : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
-                        ]"
-                                            class="font-bold inline-flex items-center justify-center"
-                                    ></div>
-                                </td>
-                                <td class="py-2 border-t border-gray-200" x-text="tram.direction"></td>
-                                <td class="py-2 border-t border-gray-200" x-html="formatMinutes(tram.minutes)"></td>
-                            </tr>
-                        </template>
-                        </tbody>
-                    </table>
+                <div id="tramGrid" x-show="!loading && !error && data.length">
+                    <div class="grid grid-cols-4 w-full text-center">
+                        <div class="pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
+                            <i class="fa-solid fa-train-tram"></i> Linia
+                        </div>
+                        <div class="col-span-2 pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
+                            <i class="fa-solid fa-location-dot"></i> Kierunek
+                        </div>
+                        <div class="pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
+                            <i class="fa-solid fa-clock"></i> Odjazd
+                        </div>
+                    </div>
+                    <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
+                        <div class="demo grid grid-cols-4 w-full text-center">
+                            <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
+                                <div
+                                    x-text="tram.line"
+                                    :class="[
+                                      (count[tram.line] || 'bg-white'),
+                                      tram.line < 20
+                                        ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
+                                        : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
+                                    ]"
+                                    class="font-bold inline-flex items-center justify-center"
+                                ></div>
+                            </div>
+                            <div class="col-span-2 py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg"><a x-text="tram.direction"></a></div>
+                            <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg"><a x-html="formatMinutes(tram.minutes)"></a></div>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -185,7 +179,7 @@
                         <template x-if="!loading && announcements">
                             <template x-for="(group, index) in grouped" :key="index">
                                 <div x-show="current === index" x-transition>
-                                    <template x-for="(a, ind) in group" :key="`${a.id}-${ind}`">
+                                    <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
                                     <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
                                             <h3 class="font-bold text-lg" x-text="a.title"></h3>
                                             <p class="text-lg" x-text="a.text"></p>
@@ -215,8 +209,6 @@
                         </div>
                     </template>
                 </div>
-
-
             </div>
         </div>
 
@@ -238,6 +230,7 @@
                         const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
 
                         this.gridHeight = window.innerHeight - totalHeaderHeight; // 8px fudge factor/padding adjustment
+                        this.tramHeight = this.gridHeight - 1;
                     }
                 }
             }
@@ -364,7 +357,7 @@
                             const json = await res.json();
 
                             if (json.status === 'success' && Array.isArray(json.data.departures)) {
-                                const newData = json.data.departures.slice(0, 11);
+                                const newData = json.data.departures;
                                 if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
                                     this.data = newData;
                                 }
@@ -386,9 +379,37 @@
                         return `${h}h ${m}`;
                     },
 
+                    calcExcessTram() {
+                        var parentEl = this.$refs.tramDiv;
+                        var els = document.getElementsByClassName('demo');
+
+                        // Iterate backwards to remove last elements until no overflow
+                        for (var i = els.length - 1; i >= 0; i--) {
+                            if (!(parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth)) {
+                                break;
+                            }
+                            var el = els[i];
+                            if (el) {
+                                el.remove();
+                            }
+                        }
+                    },
+
+                    checkOverflow() {
+                        const elname = this.$refs.tramDiv;
+                        if (elname.scrollHeight > elname.clientHeight || elname.scrollWidth > elname.clientWidth) {
+                            this.calcExcessTram();
+                        }
+                    },
+
                     async init() {
                         await this.fetchDepartures();
-                        setInterval(() => this.fetchDepartures(), 60000);
+                        const refreshData = async () => {
+                            await this.fetchDepartures();
+                            requestAnimationFrame(() => this.checkOverflow());
+                        };
+                        await refreshData();
+                        setInterval(refreshData, 60000);
                     }
                 };
             }
