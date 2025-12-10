@@ -151,7 +151,7 @@
 
                     <!-- Error -->
                     <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 border border-red-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-red-500 text-sm font-medium" x-text="error"></p>
                         </div>
@@ -159,7 +159,7 @@
 
                     <!-- Info -->
                     <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 border border-yellow-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
                         </div>
@@ -181,7 +181,7 @@
 
                     <!-- Error -->
                     <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 border border-red-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-red-500 text-sm font-medium" x-text="error"></p>
                         </div>
@@ -189,7 +189,7 @@
 
                     <!-- Info -->
                     <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 border border-yellow-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
                         </div>
