@@ -33,6 +33,9 @@ final readonly class Config
         public string $quoteApiUrl,
         public string $quoteDateFormat,
         public string $quoteTableName,
+        public string $wordApiUrl,
+        public string $wordTableName,
+        public string $wordDateFormat,
         private string $dbDsn,
         private string $dbUsername,
         private string $dbPassword,
@@ -83,6 +86,12 @@ final readonly class Config
             $quoteDateFormat = self::env('QUOTE_DATE_FORMAT', 'Y-m-d');
             $quoteTableName = self::env('QUOTE_TABLE_NAME', 'quotes');
 
+            // Word
+            $wordApiUrl = self::env('WORD_API_URL');
+            $wordTableName = self::env('WORD_TABLE_NAME', 'words');
+            $wordDateFormat = self::env('WORD_DATE_FORMAT', 'Y-m-d');
+
+
             $dbDsn = self::env('DB_DSN', self::env('DB_HOST'));
             $dbUsername = self::env('DB_USERNAME', '');
             $dbPassword = self::env('DB_PASSWORD', '');
@@ -111,6 +120,9 @@ final readonly class Config
                 $quoteApiUrl,
                 $quoteDateFormat,
                 $quoteTableName,
+                $wordApiUrl,
+                $wordTableName,
+                $wordDateFormat,
                 $dbDsn,
                 $dbUsername,
                 $dbPassword

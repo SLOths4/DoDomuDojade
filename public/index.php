@@ -90,6 +90,7 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
     $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
     $r->addRoute('GET', '/display/get_quote', [DisplayController::class, 'getQuote']);
+    $r->addRoute('GET', '/display/get_word', [DisplayController::class, 'getWord']);
 });
 
 $HttpMethod = $_SERVER['REQUEST_METHOD'];
