@@ -30,7 +30,7 @@ readonly class WordRepository
             (string)$row['word'],
             (string)$row['ipa'],
             (string)$row['definition'],
-            new DateTimeImmutable($row['curr_date'])
+            new DateTimeImmutable($row['fetched_on'])
         );
     }
 
@@ -48,7 +48,7 @@ readonly class WordRepository
                 'word'              => [$word->word, PDO::PARAM_STR],
                 'ipa'               => [$word->ipa, PDO::PARAM_STR],
                 'definition'        => [$word->definition, PDO::PARAM_STR],
-                'curr_date'         => [$word->currDate->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'fetched_on'         => [$word->fetchedOn->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ]
         );
 
@@ -64,8 +64,8 @@ readonly class WordRepository
     {
         $date = date($this->DATE_FORMAT);
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE curr_date = :curr_date",
-            ['curr_date' => [$date, PDO::PARAM_STR]]
+            "SELECT * FROM $this->TABLE_NAME WHERE fetched_on = :fetched_on",
+            ['fetched_on' => [$date, PDO::PARAM_STR]]
         );
         return $row === null ? null : $this->mapRow($row);
     }

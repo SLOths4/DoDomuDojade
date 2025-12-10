@@ -23,7 +23,7 @@ readonly class WordApiService
     /**
      * @throws Exception
      */
-    private function todayIs(): string
+    static function todayIs(): string
     {
         $dateNow = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         return $dateNow->format('d-m-Y');

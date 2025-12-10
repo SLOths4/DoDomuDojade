@@ -89,7 +89,7 @@ final readonly class Config
             // Word
             $wordApiUrl = self::env('WORD_API_URL');
             $wordTableName = self::env('WORD_TABLE_NAME', 'words');
-            $wordDateFormat = self::env('WORD_DATE_FORMAT', 'd-m-Y');
+            $wordDateFormat = self::env('WORD_DATE_FORMAT', 'Y-m-d');
 
 
             $dbDsn = self::env('DB_DSN', self::env('DB_HOST'));

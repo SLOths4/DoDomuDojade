@@ -10,7 +10,7 @@ class Word {
         public string $word,
         public string $ipa,
         public string $definition,
-        public DateTimeImmutable $currDate
+        public DateTimeImmutable $fetchedOn
     ){}
 }
 
