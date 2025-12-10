@@ -15,7 +15,7 @@ readonly class FetchActiveWordUseCase
     ) {}
 
     /**
-     * Fetches today's quote
+     * Fetches today's word
      * @return ?Word
      * @throws Exception
      */
