@@ -10,6 +10,10 @@ use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Quote\FetchQuoteUseCase;
 use App\Infrastructure\Repository\QuoteRepository;
 use App\Infrastructure\Service\QuoteApiService;
+use App\Application\UseCase\Word\FetchActiveWordUseCase;
+use App\Application\UseCase\Word\FetchWordUseCase;
+use App\Infrastructure\Repository\WordRepository;
+use App\Infrastructure\Service\WordApiService;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\AnnouncementService;
 use App\Application\UseCase\CountdownService;
@@ -74,6 +78,7 @@ $container->set(DisplayController::class, function (Container $c) {
         $c->get(UserService::class),
         $c->get(CountdownService::class),
         $c->get(FetchActiveQuoteUseCase::class),
+        $c->get(FetchActiveWordUseCase::class),
         $cfg->stopsIDs,
     );
 });
@@ -224,6 +229,32 @@ $container->set(FetchQuoteUseCase::class, function (Container $c): FetchQuoteUse
         $c->get(LoggerInterface::class),
         $c->get(QuoteApiService::class),
         $c->get(QuoteRepository::class),
+    );
+});
+
+$container->set(WordApiService::class, function (Container $c): WordApiService {
+    $cfg = $c->get(Config::class);
+    return new WordApiService(
+        $c->get(LoggerInterface::class),
+        $c->get(HttpClientInterface::class),
+        $cfg->wordApiUrl,
+    );
+});
+
+$container->set(WordRepository::class, function (Container $c): WordRepository {
+    $cfg = $c->get(Config::class);
+    return new WordRepository(
+        $c->get(DatabaseHelper::class),
+        $cfg->wordTableName,
+        $cfg->wordDateFormat,
+    );
+});
+
+$container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCase {
+    return new FetchWordUseCase(
+        $c->get(LoggerInterface::class),
+        $c->get(WordApiService::class),
+        $c->get(WordRepository::class),
     );
 });
 
