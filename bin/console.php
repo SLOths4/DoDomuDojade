@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use App\Application\UseCase\Quote\FetchQuoteUseCase;
+use App\Application\UseCase\Word\FetchWordUseCase;
 
 chdir(__DIR__ . '/..');
 
@@ -13,6 +14,10 @@ $command = $argv[1] ?? null;
 switch ($command) {
     case 'quote:fetch':
         $container->get(FetchQuoteUseCase::class)->execute();
+        break;
+
+    case 'word:fetch':
+        $container->get(FetchWordUseCase::class)->execute();
         break;
 
     default:

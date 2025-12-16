@@ -6,6 +6,7 @@ use App\Application\UseCase\AnnouncementService;
 use App\Application\UseCase\CountdownService;
 use App\Application\UseCase\ModuleService;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
+use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\UserService;
 use App\infrastructure\Security\AuthenticationService;
 use App\infrastructure\Security\CsrfService;
@@ -30,6 +31,7 @@ class DisplayController extends BaseController
         private readonly UserService             $userService,
         private readonly CountdownService        $countdownService,
         private readonly FetchActiveQuoteUseCase $fetchActiveQuoteUseCase,
+        private readonly FetchActiveWordUseCase  $fetchActiveWordUseCase,
         private readonly array                   $StopIDs,
     )
     {
@@ -252,6 +254,34 @@ class DisplayController extends BaseController
         } catch (Exception) {
             $this->sendError(
                 'Error fetching quote data.',
+                500,
+                []
+            );
+        }
+    }
+    public function getWord(): void
+    {
+        try {
+            if (!$this->isModuleVisible('word')) {
+                $this->sendSuccess([
+                    'is_active' => false,
+                    'word' => null
+                ]);
+            }
+
+            $word = $this->fetchActiveWordUseCase->execute();
+
+            $this->sendSuccess([
+                'is_active' => true,
+                'word' => [
+                    'word'          => $word->word,
+                    'ipa'           => $word->ipa,
+                    'definition'    => $word->definition,
+                ]
+            ]);
+        } catch (Exception) {
+            $this->sendError(
+                'Error fetching word data.',
                 500,
                 []
             );

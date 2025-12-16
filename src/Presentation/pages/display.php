@@ -112,15 +112,13 @@
 
                 <!-- ODLICZANIE -->
                 <div x-data="countdown()" x-init="load()">
-                    <!-- Parent div, hidden when error or info -->
-                    <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
-                        <template x-if="loading">
-                            <p class="text-center">Ładowanie...</p>
-                        </template>
-                        <template x-if="!loading && data">
-                            <p x-text="message"></p>
-                        </template>
-                    </div>
+
+                    <template x-if="loading || data">
+                        <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+                            <p x-show="loading" class="text-center">Ładowanie...</p>
+                            <p x-show="!loading && data" x-text="message"></p>
+                        </div>
+                    </template>
 
                     <!-- Error template, outside parent -->
                     <template x-if="error">
@@ -140,22 +138,20 @@
                 </div>
 
                 <div x-data="quote()" x-init="load()">
-                    <!-- Cytat - widoczny gdy załadowany -->
-                    <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
-                        <template x-if="loading">
-                            <p class="text-center text-gray-500">Ładowanie...</p>
-                        </template>
-                        <template x-if="!loading && data">
-                            <div class="space-y-2">
+
+                    <template x-if="loading || data">
+                        <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
+                            <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
+                            <div x-show="!loading && data" class="space-y-2">
                                 <p class="font-mono text-lg italic text-center" x-text="data.quote.quote"></p>
                                 <p class="text-right text-sm text-gray-600" x-text="data.quote.from ? `— ${data.quote.from}` : ''"></p>
                             </div>
-                        </template>
-                    </div>
+                        </div>
+                    </template>
 
                     <!-- Error -->
                     <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 border border-red-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-red-500 text-sm font-medium" x-text="error"></p>
                         </div>
@@ -163,7 +159,37 @@
 
                     <!-- Info -->
                     <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 border border-yellow-500 rounded-lg flex items-center space-x-2">
+                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-data="word()" x-init="load()">
+
+                    <template x-if="loading || data">
+                        <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
+                            <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
+                            <div x-show="!loading && data" class="space-y-2">
+                                <p class="font-mono text-lg italic text-center" x-text="data.word.word"></p>
+                                <p class="font-mono text-lg italic text-center" x-text="data.word.ipa"></p>
+                                <p class="font-mono text-lg italic text-center" x-text="data.word.definition"></p>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Error -->
+                    <template x-if="error">
+                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
+                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
+                        </div>
+                    </template>
+
+                    <!-- Info -->
+                    <template x-if="info">
+                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
                             <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
                         </div>
@@ -172,7 +198,7 @@
 
 
                 <div x-data="announcements()" x-init="load()">
-                    <div class="flex-1 overflow-y-auto py-2">
+                    <div x-show="!error && !info" class="flex-1 overflow-y-auto py-2">
                         <template x-if="loading">
                             <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
                         </template>
@@ -607,6 +633,56 @@
                             }
                         } catch (e) {
                             this.error = 'Błąd ładowania cytatu';
+                            this.loading = false;
+                            console.error('Fetch error:', e);
+                        }
+                        setTimeout(() => this.load(), 60000);
+                    }
+                }
+            }
+
+            function word() {
+                return {
+                    data: null,
+                    error: null,
+                    loading: true,
+                    info: null,
+                    async load() {
+                        try {
+                            const res = await fetch('/display/get_word', {
+                                method: 'GET',
+                                headers: { 'Content-Type': 'application/json' },
+                            });
+                            const json = await res.json();
+
+                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                                this.loading = false;
+                                this.error = 'Błąd ładowania słowa';
+                                this.info = null;
+                                this.data = null;
+                            } else if (json.data.is_active === false) {
+                                this.loading = false;
+                                this.error = null;
+                                this.info = null;
+                                this.data = null;
+                            } else if (!json.data.word || !json.data.word.word) {
+                                this.loading = false;
+                                this.info = 'Brak dostępnego cytatu';
+                                this.error = null;
+                                this.data = null;
+                            } else {
+                                if (this.error || this.info) {
+                                    this.error = null;
+                                    this.info = null;
+                                }
+
+                                if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                                    this.data = json.data;
+                                    this.loading = false;
+                                }
+                            }
+                        } catch (e) {
+                            this.error = 'Błąd ładowania słowa';
                             this.loading = false;
                             console.error('Fetch error:', e);
                         }
