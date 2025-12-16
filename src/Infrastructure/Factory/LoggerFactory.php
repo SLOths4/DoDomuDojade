@@ -3,34 +3,82 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Factory;
 
-use Monolog\Level;
+use App\Infrastructure\Exception\LoggerException;
 use Monolog\Logger;
+use Monolog\Level;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class LoggerFactory
 {
-    public static function create(?string $channel = 'app'): LoggerInterface
+    /**
+     * @throws LoggerException
+     */
+    public static function create(
+        string $logsDirectory,
+        string $channel,
+        string $level = 'info'
+    ): LoggerInterface {
+        try {
+            $logger = new Logger($channel);
+            $resolvedLevel = self::resolveLogLevel($level);
+
+            if (!self::ensureLogsDirectory($logsDirectory)) {
+                $logger->pushHandler(new StreamHandler('php://stdout', Level::Debug));
+                return $logger;
+            }
+
+            if ($resolvedLevel === Level::Debug) {
+                $logger->pushHandler(
+                    new RotatingFileHandler(
+                        "$logsDirectory/app.log",
+                        14,
+                        Level::Debug
+                    )
+                );
+                return $logger;
+            }
+
+            $logger->pushHandler(
+                new RotatingFileHandler(
+                    "$logsDirectory/app.log",
+                    7,
+                    Level::Info
+                )
+            );
+
+            return $logger;
+        } catch (Throwable $e) {
+            throw LoggerException::creationFailed($e);
+        }
+    }
+
+    private static function ensureLogsDirectory(string $directory): bool
     {
-        $logger = new Logger($channel ?? 'app');
-        $env = getenv('APP_ENV') ?: ($_ENV['APP_ENV'] ?? 'prod');
-
-        if ($env === 'test') {
-            $logger->pushHandler(new StreamHandler('php://stdout', Level::Debug));
-            return $logger;
+        try {
+            if (!is_dir($directory)) {
+                mkdir($directory, 0775, true);
+            }
+            return is_writable($directory);
+        } catch (Throwable) {
+            return false;
         }
+    }
 
-        $logsDir = __DIR__ . '/../../../logs';
-        if (!is_dir($logsDir)) {
-            @mkdir($logsDir, 0775, true);
-        }
-        if (!is_writable($logsDir)) {
-            $logger->pushHandler(new StreamHandler('php://stdout', Level::Debug));
-            return $logger;
-        }
-
-        $logger->pushHandler(new RotatingFileHandler($logsDir . '/app.log', 7, Level::Debug));
-        return $logger;
+    private static function resolveLogLevel(string $value): Level
+    {
+        return match (strtolower(trim($value))) {
+            'debug' => Level::Debug,
+            'info' => Level::Info,
+            'notice' => Level::Notice,
+            'warning' => Level::Warning,
+            'error' => Level::Error,
+            'critical' => Level::Critical,
+            'alert' => Level::Alert,
+            'emergency' => Level::Emergency,
+            default => Level::Info,
+        };
     }
 }

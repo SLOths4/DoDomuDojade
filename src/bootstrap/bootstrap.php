@@ -37,7 +37,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 $container = new Container();
 
 // Logger
-$container->set(LoggerInterface::class, fn() => LoggerFactory::create());
+$container->set(LoggerInterface::class, function(Container $c) {
+    $cfg = $c->get(Config::class);
+    return LoggerFactory::create(
+        logsDirectory: $cfg->loggingDirectoryPath,
+        channel: $cfg->loggingChannelName,
+        level: $cfg->loggingLevel,
+    );
+});
 
 // PDO
 $container->set(PDO::class, fn() => PDOFactory::create());

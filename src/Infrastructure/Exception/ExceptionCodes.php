@@ -5,6 +5,10 @@ namespace App\Infrastructure\Exception;
 
 enum ExceptionCodes: int
 {
+    // Logger
+    case LOGGER_CREATION_FAILED = 1501;
+
+    // Database
     case DB_INVALID_CREDENTIALS = 1001;
     case DB_CONNECTION_FAILED = 1002;
     case DB_QUERY_FAILED = 1003;

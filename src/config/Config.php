@@ -10,6 +10,9 @@ final readonly class Config
 {
 
     public function __construct(
+        public string $loggingDirectoryPath,
+        public string $loggingChannelName,
+        public string $loggingLevel,
         public string $imgwWeatherUrl,
         public string $airlyEndpoint,
         public string $airlyApiKey,
@@ -44,6 +47,11 @@ final readonly class Config
     public static function fromEnv(): self
     {
         try {
+            // Logging
+            $loggingDirectoryPath = self::env('LOGGING_DIRECTORY_PATH');
+            $loggingChannelName = self::env('LOGGING_CHANNEL_NAME', 'APP');
+            $loggingLevel = self::env('LOGGING_LEVEL', 'INFO');
+
             // Weather
             $imgw = self::env('IMGW_WEATHER_URL');
             $airly = self::env('AIRLY_ENDPOINT');
@@ -88,6 +96,9 @@ final readonly class Config
             $dbPassword = self::env('DB_PASSWORD', '');
 
             return new self(
+                $loggingDirectoryPath,
+                $loggingChannelName,
+                $loggingLevel,
                 $imgw,
                 $airly,
                 $key,
