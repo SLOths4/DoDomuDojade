@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Domain\Countdown;
-use App\infrastructure\Repository\CountdownRepository;
+use App\Infrastructure\Repository\CountdownRepository;
 
 readonly class CountdownService
 {

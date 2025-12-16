@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Domain\User;
-use App\infrastructure\Repository\UserRepository;
+use App\Infrastructure\Repository\UserRepository;
 
 readonly class UserService
 {

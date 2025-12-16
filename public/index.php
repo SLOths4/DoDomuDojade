@@ -23,19 +23,36 @@ try {
     error_reporting(E_ALL);
 
     set_exception_handler(static function (Throwable $ex) {
-        Http_response_code(500);
+        http_response_code(500);
         header('Content-Type: text/plain; charset=utf-8');
-        echo getenv('APP_ENV') === 'dev' ? ('Unhandled exception: ' . $ex->getMessage()) : 'Internal Server Error';
+
+        if (getenv('APP_ENV') === 'dev') {
+            echo "Unhandled exception:\n\n";
+            echo get_class($ex) . ': ' . $ex->getMessage() . "\n\n";
+            echo $ex->getTraceAsString();
+        } else {
+            echo 'Internal Server Error';
+        }
     });
 
     register_shutdown_function(static function () {
         $error = error_get_last();
         if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
-            Http_response_code(500);
+            http_response_code(500);
             header('Content-Type: text/plain; charset=utf-8');
-            echo getenv('APP_ENV') === 'dev' ? 'Fatal error (shutdown)' : 'Internal Server Error';
+
+            if (getenv('APP_ENV') === 'dev') {
+                echo "Fatal error:\n\n";
+                echo "Type: " . $error['type'] . "\n";
+                echo "Message: " . $error['message'] . "\n";
+                echo "File: " . $error['file'] . "\n";
+                echo "Line: " . $error['line'];
+            } else {
+                echo 'Internal Server Error';
+            }
         }
     });
+
 }
 
 use FastRoute\RouteCollector;

@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Domain\Module;
-use App\infrastructure\Repository\ModuleRepository;
+use App\Infrastructure\Repository\ModuleRepository;
 
 readonly class ModuleService
 {

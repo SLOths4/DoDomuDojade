@@ -6,17 +6,26 @@ use JetBrains\PhpStorm\NoReturn;
 
 trait SendResponseTrait {
     #[NoReturn]
-    protected function sendSuccess(array $data, string $message = ''): void
+    protected function sendSuccess(array $data, string $message = '', int $responseCode = 200): void
     {
-        header('Content-type: Application/json');
-        echo json_encode(['status' => 'success', 'data' => $data, 'message' => $message]);
+        header('Content-type: application/json');
+        http_response_code($responseCode);
+
+        echo json_encode(
+            [
+                'status' => 'success',
+                'data' => $data,
+                'message' => $message
+            ]);
         exit;
     }
 
     #[NoReturn]
-    protected function sendError(string $message, int $code, array $data): void
+    protected function sendError(string $message, int $code, array $data, int $responseCode = 200): void
     {
-        header('Content-type: Application/json');
+        header('Content-type: application/json');
+        http_response_code($responseCode);
+
         echo json_encode(
             [
                 'status' => 'error',

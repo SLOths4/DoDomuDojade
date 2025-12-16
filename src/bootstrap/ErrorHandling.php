@@ -106,6 +106,8 @@ function registerErrorHandling(Container $container): void
             }
         });
     } catch (Throwable $bootstrapError) {
+        error_log("❌ CRITICAL ERROR IN registerErrorHandling: " . $bootstrapError->getMessage());
+        error_log("Stack trace: " . $bootstrapError->getTraceAsString());
         set_exception_handler(static function (Throwable $e) use ($isDev) {
             http_response_code(500);
             $wantsJson =

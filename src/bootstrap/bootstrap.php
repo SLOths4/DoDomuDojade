@@ -21,7 +21,7 @@ use App\Application\UseCase\ModuleService;
 use App\Infrastructure\Service\TramService;
 use App\Application\UseCase\UserService;
 use App\Infrastructure\Service\WeatherService;
-use App\Config\Config;
+use App\config\Config;
 use App\Http\Controller\DisplayController;
 use App\Http\Controller\ErrorController;
 use App\Http\Controller\PanelController;
@@ -38,7 +38,12 @@ use App\Infrastructure\Security\CsrfService;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+try {
 $container = new Container();
+
+// Config
+$container->set(Config::class, fn() => Config::fromEnv());
+error_log("✓ Config loaded");
 
 // Logger
 $container->set(LoggerInterface::class, function(Container $c) {
@@ -49,9 +54,11 @@ $container->set(LoggerInterface::class, function(Container $c) {
         level: $cfg->loggingLevel,
     );
 });
+error_log("✓ Logger loaded");
 
 // PDO
 $container->set(PDO::class, fn() => PDOFactory::create());
+error_log("✓ PDO loaded");
 
 // DatabaseHelper
 $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->get(PDO::class), $container->get(LoggerInterface::class)));
@@ -59,50 +66,11 @@ $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->ge
 // HTTP client
 $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 
-// Config
-$container->set(Config::class, fn() => Config::fromEnv());
-
 // AuthenticationService
 $container->set(AuthenticationService::class, fn() => new AuthenticationService);
 
 // CsrfService
 $container->set(CsrfService::class, fn() => new CsrfService);
-
-// ErrorController
-$container->set(ErrorController::class, fn() => new ErrorController($container->get(AuthenticationService::class), $container->get(CsrfService::class), $container->get(LoggerInterface::class)));
-
-//DisplayController
-$container->set(DisplayController::class, function (Container $c) {
-    $cfg = $c->get(Config::class);
-    return new DisplayController(
-        $c->get(AuthenticationService::class),
-        $c->get(CsrfService::class),
-        $c->get(LoggerInterface::class),
-        $c->get(WeatherService::class),
-        $c->get(ModuleService::class),
-        $c->get(TramService::class),
-        $c->get(AnnouncementService::class),
-        $c->get(UserService::class),
-        $c->get(CountdownService::class),
-        $c->get(FetchActiveQuoteUseCase::class),
-        $c->get(FetchActiveWordUseCase::class),
-        $cfg->stopsIDs,
-    );
-});
-
-// PanelController
-$container->set(PanelController::class, function (Container $c) {
-    return new PanelController(
-        $c->get(AuthenticationService::class),
-        $c->get(CsrfService::class),
-        $c->get(LoggerInterface::class),
-        $c->get(ErrorController::class),
-        $c->get(ModuleService::class),
-        $c->get(UserService::class),
-        $c->get(CountdownService::class),
-        $c->get(AnnouncementService::class),
-    );
-});
 
 // ANNOUNCEMENTS
 // AnnouncementsRepository
@@ -110,8 +78,8 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
     $cfg = $c->get(Config::class);
     return new AnnouncementRepository(
         $c->get(DatabaseHelper::class),
-        $cfg->announcementsTableName,
-        $cfg->announcementsDateFormat,
+        $cfg->announcementTableName,
+        $cfg->announcementDateFormat,
     );
 });
 // AnnouncementsModel
@@ -119,8 +87,8 @@ $container->set(AnnouncementService::class, function (Container $c): Announcemen
     $cfg = $c->get(Config::class);
     return new AnnouncementService(
         $c->get(AnnouncementRepository::class),
-        $cfg->announcementsMaxTitleLength,
-        $cfg->announcementsMaxTextLength,
+        $cfg->announcementMaxTitleLength,
+        $cfg->announcementMaxTextLength,
         $c->get(LoggerInterface::class),
     );
 });
@@ -131,8 +99,8 @@ $container->set(UserRepository::class, function (Container $c): UserRepository {
     $cfg = $c->get(Config::class);
     return new UserRepository(
         $c->get(DatabaseHelper::class),
-        $cfg->usersTableName,
-        $cfg->usersDateFormat,
+        $cfg->userTableName,
+        $cfg->userDateFormat,
     );
 });
 // UserService
@@ -152,8 +120,8 @@ $container->set(ModuleRepository::class, function (Container $c): ModuleReposito
     $cfg = $c->get(Config::class);
     return new ModuleRepository(
         $c->get(DatabaseHelper::class),
-        $cfg->modulesTableName,
-        $cfg->modulesDateFormat,
+        $cfg->moduleTableName,
+        $cfg->moduleDateFormat,
     );
 });
 // ModuleService
@@ -161,7 +129,7 @@ $container->set(ModuleService::class, function (Container $c): ModuleService {
     $cfg = $c->get(Config::class);
     return new ModuleService(
         $c->get(ModuleRepository::class),
-        $cfg->modulesDateFormat,
+        $cfg->moduleDateFormat,
         $c->get(LoggerInterface::class),
     );
 });
@@ -183,8 +151,8 @@ $container->set(CountdownRepository::class, function (Container $c): CountdownRe
     $cfg = $c->get(Config::class);
     return new CountdownRepository(
         $c->get(DatabaseHelper::class),
-        $cfg->countdownsTableName,
-        $cfg->countdownsDateFormat,
+        $cfg->countdownTableName,
+        $cfg->countdownDateFormat,
     );
 });
 // CountdownService
@@ -192,8 +160,8 @@ $container->set(CountdownService::class, function (Container $c): CountdownServi
     $cfg = $c->get(Config::class);
     return new CountdownService(
         $c->get(CountdownRepository::class),
-        $cfg->countdownsMaxTitleLength,
-        $cfg->countdownsDateFormat,
+        $cfg->countdownMaxTitleLength,
+        $cfg->countdownDateFormat,
         $c->get(LoggerInterface::class),
     );
 });
@@ -265,4 +233,46 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
     );
 });
 
+// ErrorController
+    $container->set(ErrorController::class, fn() => new ErrorController($container->get(AuthenticationService::class), $container->get(CsrfService::class), $container->get(LoggerInterface::class)));
+
+//DisplayController
+    $container->set(DisplayController::class, function (Container $c) {
+        $cfg = $c->get(Config::class);
+        return new DisplayController(
+            $c->get(AuthenticationService::class),
+            $c->get(CsrfService::class),
+            $c->get(LoggerInterface::class),
+            $c->get(WeatherService::class),
+            $c->get(ModuleService::class),
+            $c->get(TramService::class),
+            $c->get(AnnouncementService::class),
+            $c->get(UserService::class),
+            $c->get(CountdownService::class),
+            $c->get(FetchActiveQuoteUseCase::class),
+            $c->get(FetchActiveWordUseCase::class),
+            $cfg->stopID,
+        );
+    });
+
+// PanelController
+    $container->set(PanelController::class, function (Container $c) {
+        return new PanelController(
+            $c->get(AuthenticationService::class),
+            $c->get(CsrfService::class),
+            $c->get(LoggerInterface::class),
+            $c->get(ErrorController::class),
+            $c->get(ModuleService::class),
+            $c->get(UserService::class),
+            $c->get(CountdownService::class),
+            $c->get(AnnouncementService::class),
+        );
+    });
+
 return $container;
+
+} catch (Throwable $e) {
+    error_log("❌ BOOTSTRAP ERROR: " . $e->getMessage());
+    error_log($e->getTraceAsString());
+}
+
