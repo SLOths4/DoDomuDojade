@@ -15,11 +15,9 @@ switch ($command) {
     case 'quote:fetch':
         $container->get(FetchQuoteUseCase::class)->execute();
         break;
-
     case 'word:fetch':
         $container->get(FetchWordUseCase::class)->execute();
         break;
-
     default:
         fwrite(STDERR, "Unknown command: $command\n");
         exit(1);

@@ -38,12 +38,10 @@ use App\Infrastructure\Security\CsrfService;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-try {
 $container = new Container();
 
 // Config
 $container->set(Config::class, fn() => Config::fromEnv());
-error_log("✓ Config loaded");
 
 // Logger
 $container->set(LoggerInterface::class, function(Container $c) {
@@ -54,11 +52,9 @@ $container->set(LoggerInterface::class, function(Container $c) {
         level: $cfg->loggingLevel,
     );
 });
-error_log("✓ Logger loaded");
 
 // PDO
 $container->set(PDO::class, fn() => PDOFactory::create());
-error_log("✓ PDO loaded");
 
 // DatabaseHelper
 $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->get(PDO::class), $container->get(LoggerInterface::class)));
@@ -270,9 +266,3 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
     });
 
 return $container;
-
-} catch (Throwable $e) {
-    error_log("❌ BOOTSTRAP ERROR: " . $e->getMessage());
-    error_log($e->getTraceAsString());
-}
-

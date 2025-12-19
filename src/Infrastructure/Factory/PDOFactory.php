@@ -8,7 +8,7 @@ use PDO;
 use App\config\Config;
 use App\Infrastructure\Exception\DatabaseException;
 
-class PDOFactory
+final class PDOFactory
 {
     /**
      * Creates PDO instance
