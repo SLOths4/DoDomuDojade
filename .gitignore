@@ -63,4 +63,3 @@ calendar_data/
 phpunit.xml
 tests
 public/assets/styles/output.css
-composer.lock

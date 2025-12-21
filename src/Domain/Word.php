@@ -4,7 +4,7 @@ namespace App\Domain;
 
 use DateTimeImmutable;
 
-class Word {
+readonly class Word {
     public function __construct(
         public ?int $id,
         public string $word,

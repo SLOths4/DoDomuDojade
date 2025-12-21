@@ -5,7 +5,10 @@ namespace App\Http\Controller;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\CountdownService;
+use App\Application\UseCase\Countdown\CreateCountdownUseCase;
+use App\Application\UseCase\Countdown\DeleteCountdownUseCase;
+use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
+use App\Application\UseCase\Countdown\UpdateCountdownUseCase;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
 
@@ -15,7 +18,10 @@ class CountdownController extends BaseController
         AuthenticationService $authenticationService,
         CsrfService $csrfService,
         LoggerInterface $logger,
-        protected readonly countdownService $countdownService,
+        private readonly CreateCountdownUseCase $createCountdownUseCase,
+        private readonly DeleteCountdownUseCase $deleteCountdownUseCase,
+        private readonly GetCountdownByIdUseCase $getCountdownByIdUseCase,
+        private readonly UpdateCountdownUseCase $updateCountdownUseCase,
     )
     {
         parent::__construct($authenticationService, $csrfService, $logger);
@@ -23,9 +29,6 @@ class CountdownController extends BaseController
     public function addCountdown() : void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->checkIsUserLoggedIn();
-
             $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
             $count_to = (string)filter_input(INPUT_POST, 'count_to', FILTER_UNSAFE_RAW);
             $userId = $this->getCurrentUserId();
@@ -36,7 +39,7 @@ class CountdownController extends BaseController
 
             $data = ['title' => $title, 'count_to' => $count_to];
 
-            $this->countdownService->create($data, $userId);
+            $this->createCountdownUseCase->execute($data, $userId);
             $this->handleSuccess('Countdown created.', 'Countdown created.', '/panel/countdowns');
         } catch (Exception $e) {
             $this->handleError("Failed to add countdown", "Countdown adding failed: " . $e->getMessage(), "/panel/countdowns");
@@ -47,14 +50,11 @@ class CountdownController extends BaseController
     public function editCountdown(): void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->checkIsUserLoggedIn();
-
             $newCountdownTitle = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
             $newRawCountdownCountTo = (string)filter_input(INPUT_POST, 'count_to', FILTER_UNSAFE_RAW);
             $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
-            $countdown = $this->countdownService->getById($countdownId);
+            $countdown = $this->getCountdownByIdUseCase->execute($countdownId);
             if (empty($countdown)) {
                 throw new Exception("Countdown not found");
             }
@@ -71,12 +71,12 @@ class CountdownController extends BaseController
                 $updates['title'] = $newCountdownTitle;
             }
 
-            if ($newCountdownCountTo != $countdown->countTo) {
+            if ($newCountdownCountTo != $countdown->countTo->format('Y-m-d H:i:s')) {
                 $updates['count_to'] = $newCountdownCountTo;
             }
 
             if (!empty($updates)) {
-                $this->countdownService->update($countdownId, $updates);
+                $this->updateCountdownUseCase->execute($countdownId, $updates);
                     $this->handleSuccess('Countdown updated.', "Updated countdown fields", '/panel/countdowns');
                 } else {
                     $this->handleError('No changes were made.', 'Error while editing countdown', '/panel/countdowns');
@@ -89,12 +89,9 @@ class CountdownController extends BaseController
     public function deleteCountdown(): void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->checkIsUserLoggedIn();
-
             $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
-            $this->countdownService->delete($countdownId);
+            $this->deleteCountdownUseCase->execute($countdownId);
 
             $this->handleSuccess("Countdown deleted successfully", "Countdown deleted successfully", '/panel/countdowns');
         } catch (Exception $e) {

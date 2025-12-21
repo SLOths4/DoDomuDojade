@@ -2,9 +2,9 @@
 
 ## Wspierane wersje
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.0.0   | :white_check_mark: |
+| Wersja | Wspierana |
+|--------|-----------|
+| 1.0.0  | ✅         |
 
 ## Zgłaszanie błędów bezpieczeństwa
 

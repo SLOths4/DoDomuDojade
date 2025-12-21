@@ -4,7 +4,7 @@ namespace App\Domain;
 
 use DateTimeImmutable;
 
-class Quote
+readonly class Quote
 {
     public function __construct(
         public ?int $id,

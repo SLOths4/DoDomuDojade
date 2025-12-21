@@ -44,16 +44,16 @@ SessionHelper::remove('error');
                         <tbody>
                         <?php foreach ($modules as $module): ?>
                             <tr x-data="{ isActive : <?= json_encode($module->isActive) ?> }">
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->moduleName) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->startTime->format('H:i')) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($module->endTime->format('H:i')) ?></td>
+                                <td class="px-4 py-2 border"><?= e($module->moduleName) ?></td>
+                                <td class="px-4 py-2 border"><?= e($module->startTime->format('H:i')) ?></td>
+                                <td class="px-4 py-2 border"><?= e($module->endTime->format('H:i')) ?></td>
                                 <td class="px-4 py-2 border" x-bind:class="isActive ? 'bg-green-500' : 'bg-red-500'"><?= $module->isActive ? "Włączony" : "Wyłączony" ?></td>
                                 <td class="px-4 py-2 border space-x-2">
                                     <button type="button"
                                             class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                            data-module-id="<?= htmlspecialchars((string)$module->id) ?>"
-                                            data-start-time="<?= htmlspecialchars($module->startTime->format('H:i')) ?>"
-                                            data-end-time="<?= htmlspecialchars($module->endTime->format('H:i')) ?>"
+                                            data-module-id="<?= e((string)$module->id) ?>"
+                                            data-start-time="<?= e($module->startTime->format('H:i')) ?>"
+                                            data-end-time="<?= e($module->endTime->format('H:i')) ?>"
                                             data-is-active="<?= $module->isActive ? '1' : '0' ?>"
                                     >
                                         Edytuj
@@ -74,7 +74,7 @@ SessionHelper::remove('error');
                 <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                     <h2 class="text-xl font-semibold mb-4">Edytuj godziny wyświetlania modułu</h2>
                     <form method="POST" action="/panel/edit_module" id="editModuleForm">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
                         <input type="hidden" id="edit_module_id" name="module_id">
 
                         <div class="mb-4">

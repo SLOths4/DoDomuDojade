@@ -31,7 +31,7 @@ SessionHelper::remove('error');
         <main class="flex-grow">
             <?php if (SessionHelper::has('error')): ?>
                 <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
-                    <?= htmlspecialchars(SessionHelper::get('error')) ?>
+                    <?= e(SessionHelper::get('error')) ?>
                 </div>
             <?php endif; ?>
 
@@ -55,7 +55,7 @@ SessionHelper::remove('error');
                 </div>
                 <div class="flex items-center justify-between">
                     <input type="submit" name="add_announcement" value="Dodaj" class="!bg-primary-200 dark:text-white px-4 py-2 rounded hover:!bg-primary-400">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
                 </div>
             </form>
 
@@ -75,24 +75,24 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($announcements as $announcement): ?>
                         <tr>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->title) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($usernames[$announcement->userId] ?? "Nieznany użytkownik") ?><br>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= e($announcement->title) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= e($usernames[$announcement->userId] ?? "Nieznany użytkownik") ?><br>
                             </td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->date) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->validUntil) ?></td>
-                            <td class="break-words whitespace-normal px-4 py-2 border"><?= htmlspecialchars($announcement->text) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= e($announcement->date) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= e($announcement->validUntil) ?></td>
+                            <td class="break-words whitespace-normal px-4 py-2 border"><?= e($announcement->text) ?></td>
                             <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>">
+                                        data-announcement-id="<?= e($announcement->id) ?>">
                                     Usuń
                                 </button>
                                 <button type="button"
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-announcement-id="<?= htmlspecialchars($announcement->id) ?>"
-                                        data-title="<?= htmlspecialchars($announcement->title) ?>"
-                                        data-text="<?= htmlspecialchars($announcement->text) ?>"
-                                        data-valid-until="<?= htmlspecialchars($announcement->validUntil) ?>">
+                                        data-announcement-id="<?= e($announcement->id) ?>"
+                                        data-title="<?= e($announcement->title) ?>"
+                                        data-text="<?= e($announcement->text) ?>"
+                                        data-valid-until="<?= e($announcement->validUntil) ?>">
                                     Edytuj
                                 </button>
                             </td>
@@ -122,7 +122,7 @@ SessionHelper::remove('error');
                 </div>
 
                 <form method="POST" action="/panel/delete_announcement" class="delete-form hidden">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="announcement_id" value="">
                 </form>
             </div>
@@ -133,7 +133,7 @@ SessionHelper::remove('error');
                 <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                     <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
                     <form method="POST" action="/panel/edit_announcement" id="editAnnouncementForm">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
                         <input type="hidden" id="edit_announcement_id" name="announcement_id">
 
                         <div class="mb-4">

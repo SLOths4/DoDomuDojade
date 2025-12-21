@@ -5,10 +5,13 @@ namespace App\Http\Controller;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\AnnouncementService;
-use App\Application\UseCase\CountdownService;
-use App\Application\UseCase\ModuleService;
-use App\Application\UseCase\UserService;
+use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
+use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
+use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
+use App\Application\UseCase\Module\GetAllModulesUseCase;
+use App\Application\UseCase\User\GetAllUsersUseCase;
+use App\Application\UseCase\User\GetUserByIdUseCase;
+use App\Application\UseCase\User\GetUserByUsernameUseCase;
 use App\Domain\User;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
@@ -21,14 +24,16 @@ use App\Infrastructure\Security\CsrfService;
 class PanelController extends BaseController
 {
     function __construct(
-        AuthenticationService $authenticationService,
-        CsrfService $csrfService,
-        LoggerInterface $logger,
+        AuthenticationService        $authenticationService,
+        CsrfService                  $csrfService,
+        LoggerInterface              $logger,
         private readonly ErrorController     $errorController,
-        private readonly ModuleService       $moduleService,
-        private readonly UserService         $userService,
-        private readonly CountdownService    $countdownService,
-        private readonly AnnouncementService $announcementService,
+        private readonly GetAllModulesUseCase $getAllModulesUseCase,
+        private readonly GetAllUsersUseCase  $getAllUsersUseCase,
+        private readonly GetUserByIdUseCase  $getUserByIdUseCase,
+        private readonly GetUserByUsernameUseCase $getUserByUsernameUseCase,
+        private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
+        private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
     )
     {
         parent::__construct($authenticationService, $csrfService, $logger);
@@ -37,9 +42,8 @@ class PanelController extends BaseController
     private function getActiveUser(): User
     {
         try {
-            $this->checkIsUserLoggedIn();
             $userId = SessionHelper::get('user_id');
-            return $this->userService->getById($userId);
+            return $this->getUserByIdUseCase->execute($userId);
         } catch (Exception $e) {
             $this->logger->error("Error while getting user: " . $e->getMessage());
             $this->errorController->internalServerError();
@@ -96,7 +100,7 @@ class PanelController extends BaseController
     {
         try {
             $user = $this->getActiveUser();
-            $users = $this->userService->getAll();
+            $users = $this->getAllUsersUseCase->execute();
 
             $this->render('pages/users', [
                 'user' => $user,
@@ -113,8 +117,8 @@ class PanelController extends BaseController
     {
         try {
             $user = $this->getActiveUser();
-            $users = $this->userService->getAll();
-            $countdowns = $this->countdownService->getAll();
+            $users = $this->getAllUsersUseCase->execute();
+            $countdowns = $this->getAllCountdownsUseCase->execute();
 
             $usernames = $this->buildUsernamesMap($users);
             $formattedCountdowns = $this->formatCountdowns($countdowns);
@@ -135,7 +139,7 @@ class PanelController extends BaseController
     {
         try {
             $user = $this->getActiveUser();
-            $modules = $this->moduleService->getAll();
+            $modules = $this->getAllModulesUseCase->execute();
             $this->render('pages/modules', [
                 'user' => $user,
                 'modules' => $modules,
@@ -163,7 +167,6 @@ class PanelController extends BaseController
     {
         try {
                 $this->logger->debug("User verification request received.");
-                $this->validateCsrf($_POST['csrf_token']);
 
                 $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
                 $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
@@ -174,7 +177,7 @@ class PanelController extends BaseController
                     $this->redirect("/login");
                 }
 
-                $user = $this->userService->getByExactUsername($username);
+                $user = $this->getUserByUsernameUseCase->execute($username);
 
                 if ($user && password_verify($password, $user->passwordHash)) {
                     $this->logger->debug("Correct password for given username.");
@@ -196,9 +199,9 @@ class PanelController extends BaseController
         try {
             $user = $this->getActiveUser();
 
-            $announcements = $this->announcementService->getAll();
-            $users = $this->userService->getAll();
-            $modules = $this->moduleService->getAll();
+            $announcements = $this->getAllAnnouncementsUseCase->execute();
+            $users = $this->getAllUsersUseCase->execute();
+            $modules = $this->getAllModulesUseCase->execute();
 
             $this->render('pages/panel', [
                 'user' => $user,
@@ -217,8 +220,8 @@ class PanelController extends BaseController
     {
         try {
             $user = $this->getActiveUser();
-            $users = $this->userService->getAll();
-            $announcements = $this->announcementService->getAll();
+            $users = $this->getAllUsersUseCase->execute();
+            $announcements = $this->getAllAnnouncementsUseCase->execute();
 
             $usernames = $this->buildUsernamesMap($users);
             $formattedAnnouncements = $this->formatAnnouncements($announcements);
