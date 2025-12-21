@@ -42,27 +42,9 @@ class BaseController{
         exit;
     }
 
-    /**
-     * @throws Exception
-     */
-    protected function requireAuth(): void
-    {
-        if (!$this->authenticationService->isUserLoggedIn()) {
-            throw UserException::noUserLoggedIn();
-        }
-    }
-
     protected function getCurrentUserId(): ?int
     {
         return $this->authenticationService->getCurrentUserId();
-    }
-
-    protected function checkIsUserLoggedIn(): void
-    {
-        $userId = SessionHelper::get('user_id');
-        if (!$userId) {
-            $this->handleError("Please sign in to continue", "No user logged in");
-        }
     }
 
     #[NoReturn]
@@ -70,16 +52,6 @@ class BaseController{
     {
         $this->authenticationService->logout();
         $this->redirect('/login');
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function validateCsrf(string $token): void
-    {
-        if (!$this->csrfService->validateCsrf($token, SessionHelper::get('csrf_token'))) {
-            throw ValidationException::invalidCsrf();
-        }
     }
 
     /**

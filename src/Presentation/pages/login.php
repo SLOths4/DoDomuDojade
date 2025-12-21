@@ -34,10 +34,10 @@ SessionHelper::remove('error');
                 <?php if ($error): ?>
                     <div class="mb-5 bg-red-200 border border-red-800 rounded-lg flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
-                        <p class="text-red-500 text-sm font-medium"><?= htmlspecialchars($error) ?></p>
+                        <p class="text-red-500 text-sm font-medium"><?= e($error) ?></p>
                     </div>
                 <?php endif; ?>
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token', '')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token', '')) ?>">
                 <button type="submit" class="shadow-custom dark:text-white bg-primary-200 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Zaloguj się</button>
             </form>
         </main>

@@ -12,14 +12,14 @@ final class PDOFactory
 {
     /**
      * Creates PDO instance
+     * @param Config $cfg
      * @return PDO
      * @throws Exception
      */
-    public static function create(): PDO
+    public function create(Config $cfg): PDO
     {
+        $dbDsn = $cfg->dbDsn();
         try {
-            $cfg = Config::fromEnv();
-            $dbDsn = $cfg->dbDsn();
             $dbUsername = $cfg->dbUsername();
             $dbPassword = $cfg->dbPassword();
 

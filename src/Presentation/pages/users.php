@@ -34,7 +34,7 @@ SessionHelper::remove('error');
                     <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
                     <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10">
                         <h2 class="text-xl font-semibold text-red-700 mb-4">Wystąpił błąd</h2>
-                        <p class="text-gray-700 mb-6"><?= htmlspecialchars($error) ?></p>
+                        <p class="text-gray-700 mb-6"><?= e($error) ?></p>
                         <div class="flex justify-end">
                             <button id="closeErrorModal" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
                                 Zamknij
@@ -57,8 +57,8 @@ SessionHelper::remove('error');
                 </div>
                 <input type="submit" name="add_user" value="Dodaj" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400">
 
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                <input type="hidden" name="user_id" value="<?= e(SessionHelper::get('user_id')) ?>">
             </form>
 
             <?php if (!empty($users)): ?>
@@ -74,12 +74,12 @@ SessionHelper::remove('error');
                     <tbody>
                     <?php foreach ($users as $user): ?>
                         <tr>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($user->id) ?></td>
-                            <td class="px-4 py-2 border"><?= htmlspecialchars($user->username) ?></td>
+                            <td class="px-4 py-2 border"><?= e($user->id) ?></td>
+                            <td class="px-4 py-2 border"><?= e($user->username) ?></td>
                             <td class="px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-user-id="<?= htmlspecialchars($user->id) ?>">
+                                        data-user-id="<?= e($user->id) ?>">
                                     Usuń
                                 </button>
                             </td>
@@ -109,7 +109,7 @@ SessionHelper::remove('error');
                 </div>
 
                 <form method="POST" action="/panel/delete_user" class="delete-form hidden">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
                     <input type="hidden" name="user_id" value="">
                 </form>
             </div>

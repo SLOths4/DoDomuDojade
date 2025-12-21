@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 use App\Infrastructure\Exception\BaseException;
+use App\Infrastructure\Exception\UserException;
+use App\Infrastructure\Exception\ValidationException;
+use App\Infrastructure\Exception\ExceptionCodes;
+use App\Infrastructure\Helper\SessionHelper;
 use Psr\Log\LoggerInterface;
 use App\Http\Controller\ErrorController;
 use App\Infrastructure\Container;
@@ -30,7 +34,7 @@ function registerErrorHandling(Container $container): void
     $renderError = static function (Throwable $e) use ($container, $isDev, $isJsonRequest) {
         $httpCode = 500;
         $errorCode = 'INTERNAL_SERVER_ERROR';
-        $message = $isDev ? $e->getMessage() : 'Unexpected error ocurred.';
+        $message = $isDev ? $e->getMessage() : 'Unexpected error occurred.';
         $data = [];
 
         if ($e instanceof BaseException) {
@@ -51,8 +55,21 @@ function registerErrorHandling(Container $container): void
             exit;
         }
 
+        // Special handling for HTML requests
+        if ($e instanceof UserException && $e->errorCode === ExceptionCodes::USER_NOT_LOGGED_IN->value) {
+            SessionHelper::set('error', 'Proszę się zalogować, aby kontynuować.');
+            header('Location: /login');
+            exit;
+        }
+
+        if ($e instanceof ValidationException && $e->errorCode === ExceptionCodes::INVALID_CSRF->value) {
+            SessionHelper::set('error', 'Błąd CSRF. Spróbuj ponownie.');
+            header('Location: /login');
+            exit;
+        }
+
         try {
-            http_response_code($httpCode);
+            http_code: http_response_code($httpCode);
             $errorController = $container->get(ErrorController::class);
             $errorController->internalServerError();
         } catch (Throwable) {

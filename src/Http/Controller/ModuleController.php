@@ -5,7 +5,9 @@ namespace App\Http\Controller;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\ModuleService;
+use App\Application\UseCase\Module\GetModuleByIdUseCase;
+use App\Application\UseCase\Module\ToggleModuleUseCase;
+use App\Application\UseCase\Module\UpdateModuleUseCase;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
 
@@ -15,7 +17,9 @@ class ModuleController extends BaseController
         AuthenticationService $authenticationService,
         CsrfService $csrfService,
         LoggerInterface $logger,
-        private readonly ModuleService       $moduleService,
+        private readonly GetModuleByIdUseCase $getModuleByIdUseCase,
+        private readonly ToggleModuleUseCase  $toggleModuleUseCase,
+        private readonly UpdateModuleUseCase  $updateModuleUseCase,
     )
     {
         parent::__construct($authenticationService, $csrfService, $logger);
@@ -23,9 +27,6 @@ class ModuleController extends BaseController
     public function toggleModule(): void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->checkIsUserLoggedIn();
-
             $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
             $enable = filter_input(INPUT_POST, 'is_active', FILTER_UNSAFE_RAW);
 
@@ -33,7 +34,7 @@ class ModuleController extends BaseController
                 $this->redirect("/panel");
             }
 
-            $this->moduleService->toggle($moduleId);
+            $this->toggleModuleUseCase->execute($moduleId);
             $this->redirect("/panel");
 
         } catch (Exception $e) {
@@ -43,21 +44,18 @@ class ModuleController extends BaseController
 
     public function editModule(): void {
             try {
-                $this->validateCsrf($_POST['csrf_token']);
-                $this->checkIsUserLoggedIn();
-
                 $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
                 $newModuleStartTime = trim((string)filter_input(INPUT_POST, 'start_time', FILTER_UNSAFE_RAW));
                 $newModuleEndTime = trim((string)filter_input(INPUT_POST, 'end_time', FILTER_UNSAFE_RAW));
                 $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
 
-                $module = $this->moduleService->getById($moduleId);
+                $module = $this->getModuleByIdUseCase->execute($moduleId);
 
                 if (empty($module)) {
                     throw new Exception("Module not found");
                 }
 
-                $dateFormat = $this->config->modulesDateFormat ?? 'H:i';
+                $dateFormat = 'H:i';
 
                 $normalizedStart = $this->normalizeTime($newModuleStartTime, $module->startTime, $dateFormat);
                 $normalizedEnd = $this->normalizeTime($newModuleEndTime, $module->endTime, $dateFormat);
@@ -69,7 +67,7 @@ class ModuleController extends BaseController
                     'end_time' => $normalizedEnd,
                 ];
 
-                $this->moduleService->update($moduleId, $updates);
+                $this->updateModuleUseCase->execute($moduleId, $updates);
 
                 $this->redirect('/panel/modules');
             } catch (Exception $e) {

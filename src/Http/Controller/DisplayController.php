@@ -2,12 +2,12 @@
 
 namespace App\Http\Controller;
 
-use App\Application\UseCase\AnnouncementService;
-use App\Application\UseCase\CountdownService;
-use App\Application\UseCase\ModuleService;
+use App\Application\UseCase\Countdown\GetCurrentCountdownUseCase;
+use App\Application\UseCase\Module\IsModuleVisibleUseCase;
+use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
-use App\Application\UseCase\UserService;
+use App\Application\UseCase\User\GetUserByIdUseCase;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
 use App\Infrastructure\Service\TramService;
@@ -25,11 +25,11 @@ class DisplayController extends BaseController
         CsrfService                              $csrfService,
         LoggerInterface                          $logger,
         private readonly WeatherService          $weatherService,
-        private readonly ModuleService           $moduleService,
+        private readonly IsModuleVisibleUseCase  $isModuleVisibleUseCase,
         private readonly TramService             $tramService,
-        private readonly AnnouncementService     $announcementsService,
-        private readonly UserService             $userService,
-        private readonly CountdownService        $countdownService,
+        private readonly GetValidAnnouncementsUseCase $getValidAnnouncementsUseCase,
+        private readonly GetUserByIdUseCase      $getUserByIdUseCase,
+        private readonly GetCurrentCountdownUseCase $getCurrentCountdownUseCase,
         private readonly FetchActiveQuoteUseCase $fetchActiveQuoteUseCase,
         private readonly FetchActiveWordUseCase  $fetchActiveWordUseCase,
         private readonly array                   $StopIDs,
@@ -51,11 +51,7 @@ class DisplayController extends BaseController
      */
     private function isModuleVisible(string $module): bool
     {
-        $isModuleVisible = $this->moduleService->isVisible($module);
-        if ($isModuleVisible) {
-            return true;
-        }
-        return false;
+        return $this->isModuleVisibleUseCase->execute($module);
     }
 
     public function getDepartures(): void
@@ -123,11 +119,11 @@ class DisplayController extends BaseController
                 );
             }
 
-            $announcements = $this->announcementsService->getValid();
+            $announcements = $this->getValidAnnouncementsUseCase->execute();
 
             $response = [];
             foreach ($announcements as $announcement) {
-                $user = $this->userService->getById($announcement->userId);
+                $user = $this->getUserByIdUseCase->execute($announcement->userId);
                 $author = $user->username ?? 'Nieznany użytkownik';
 
                 $response[] = [
@@ -167,7 +163,7 @@ class DisplayController extends BaseController
                 );
             }
 
-            $currentCountdown = $this->countdownService->getCurrent();
+            $currentCountdown = $this->getCurrentCountdownUseCase->execute();
 
             if ($currentCountdown) {
                 $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));

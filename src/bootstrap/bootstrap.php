@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../Infrastructure/Helper/functions.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__. '/../../../'));
 $dotenv->load();
@@ -15,11 +16,30 @@ use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\AnnouncementService;
-use App\Application\UseCase\CountdownService;
-use App\Application\UseCase\ModuleService;
+use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
+use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
+use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
+use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
+use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
+use App\Application\UseCase\Countdown\CreateCountdownUseCase;
+use App\Application\UseCase\Countdown\DeleteCountdownUseCase;
+use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
+use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
+use App\Application\UseCase\Countdown\GetCurrentCountdownUseCase;
+use App\Application\UseCase\Countdown\UpdateCountdownUseCase;
+use App\Application\UseCase\Module\GetAllModulesUseCase;
+use App\Application\UseCase\Module\GetModuleByIdUseCase;
+use App\Application\UseCase\Module\IsModuleVisibleUseCase;
+use App\Application\UseCase\Module\ToggleModuleUseCase;
+use App\Application\UseCase\Module\UpdateModuleUseCase;
 use App\Infrastructure\Service\TramService;
-use App\Application\UseCase\UserService;
+use App\Application\UseCase\User\CreateUserUseCase;
+use App\Application\UseCase\User\DeleteUserUseCase;
+use App\Application\UseCase\User\GetAllUsersUseCase;
+use App\Application\UseCase\User\GetUserByIdUseCase;
+use App\Application\UseCase\User\GetUserByUsernameUseCase;
+use App\Application\UseCase\User\UpdateUserUseCase;
+use App\Application\UseCase\User\ChangePasswordUseCase;
 use App\Infrastructure\Service\WeatherService;
 use App\config\Config;
 use App\Http\Controller\DisplayController;
@@ -54,7 +74,7 @@ $container->set(LoggerInterface::class, function(Container $c) {
 });
 
 // PDO
-$container->set(PDO::class, fn() => PDOFactory::create());
+$container->set(PDO::class, fn(Container $c) => $c->get(PDOFactory::class)->create($c->get(Config::class)));
 
 // DatabaseHelper
 $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->get(PDO::class), $container->get(LoggerInterface::class)));
@@ -78,19 +98,16 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
         $cfg->announcementDateFormat,
     );
 });
-// AnnouncementsModel
-$container->set(AnnouncementService::class, function (Container $c): AnnouncementService {
-    $cfg = $c->get(Config::class);
-    return new AnnouncementService(
-        $c->get(AnnouncementRepository::class),
-        $cfg->announcementMaxTitleLength,
-        $cfg->announcementMaxTextLength,
-        $c->get(LoggerInterface::class),
-    );
-});
+
+// Announcement Use Cases
+$container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
+$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
+$container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
 
 // USERS
-// UserModel
+// UserRepository
 $container->set(UserRepository::class, function (Container $c): UserRepository {
     $cfg = $c->get(Config::class);
     return new UserRepository(
@@ -99,14 +116,36 @@ $container->set(UserRepository::class, function (Container $c): UserRepository {
         $cfg->userDateFormat,
     );
 });
-// UserService
-$container->set(UserService::class, function (Container $c): UserService {
+
+// User Use Cases
+$container->set(CreateUserUseCase::class, function(Container $c) {
     $cfg = $c->get(Config::class);
-    return new UserService(
+    return new CreateUserUseCase(
         $c->get(UserRepository::class),
-        $cfg->maxUsernameLength,
-        $cfg->minPasswordLength,
         $c->get(LoggerInterface::class),
+        $cfg->maxUsernameLength,
+        $cfg->minPasswordLength
+    );
+});
+$container->set(DeleteUserUseCase::class, fn(Container $c) => new DeleteUserUseCase($c->get(UserRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetAllUsersUseCase::class, fn(Container $c) => new GetAllUsersUseCase($c->get(UserRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetUserByIdUseCase::class, fn(Container $c) => new GetUserByIdUseCase($c->get(UserRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetUserByUsernameUseCase::class, fn(Container $c) => new GetUserByUsernameUseCase($c->get(UserRepository::class), $c->get(LoggerInterface::class)));
+$container->set(UpdateUserUseCase::class, function(Container $c) {
+    $cfg = $c->get(Config::class);
+    return new UpdateUserUseCase(
+        $c->get(UserRepository::class),
+        $c->get(LoggerInterface::class),
+        $cfg->maxUsernameLength,
+        $cfg->minPasswordLength
+    );
+});
+$container->set(ChangePasswordUseCase::class, function(Container $c) {
+    $cfg = $c->get(Config::class);
+    return new ChangePasswordUseCase(
+        $c->get(UserRepository::class),
+        $c->get(LoggerInterface::class),
+        $cfg->minPasswordLength
     );
 });
 
@@ -120,13 +159,18 @@ $container->set(ModuleRepository::class, function (Container $c): ModuleReposito
         $cfg->moduleDateFormat,
     );
 });
-// ModuleService
-$container->set(ModuleService::class, function (Container $c): ModuleService {
+
+// Module Use Cases
+$container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleVisibleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(UpdateModuleUseCase::class, function(Container $c) {
     $cfg = $c->get(Config::class);
-    return new ModuleService(
+    return new UpdateModuleUseCase(
         $c->get(ModuleRepository::class),
-        $cfg->moduleDateFormat,
         $c->get(LoggerInterface::class),
+        $cfg->moduleDateFormat
     );
 });
 
@@ -151,14 +195,26 @@ $container->set(CountdownRepository::class, function (Container $c): CountdownRe
         $cfg->countdownDateFormat,
     );
 });
-// CountdownService
-$container->set(CountdownService::class, function (Container $c): CountdownService {
+
+// Countdown Use Cases
+$container->set(CreateCountdownUseCase::class, function(Container $c) {
     $cfg = $c->get(Config::class);
-    return new CountdownService(
+    return new CreateCountdownUseCase(
         $c->get(CountdownRepository::class),
-        $cfg->countdownMaxTitleLength,
-        $cfg->countdownDateFormat,
         $c->get(LoggerInterface::class),
+        $cfg->countdownMaxTitleLength
+    );
+});
+$container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(UpdateCountdownUseCase::class, function(Container $c) {
+    $cfg = $c->get(Config::class);
+    return new UpdateCountdownUseCase(
+        $c->get(CountdownRepository::class),
+        $c->get(LoggerInterface::class),
+        $cfg->countdownMaxTitleLength
     );
 });
 
@@ -240,11 +296,11 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
             $c->get(CsrfService::class),
             $c->get(LoggerInterface::class),
             $c->get(WeatherService::class),
-            $c->get(ModuleService::class),
+            $c->get(IsModuleVisibleUseCase::class),
             $c->get(TramService::class),
-            $c->get(AnnouncementService::class),
-            $c->get(UserService::class),
-            $c->get(CountdownService::class),
+            $c->get(GetValidAnnouncementsUseCase::class),
+            $c->get(GetUserByIdUseCase::class),
+            $c->get(GetCurrentCountdownUseCase::class),
             $c->get(FetchActiveQuoteUseCase::class),
             $c->get(FetchActiveWordUseCase::class),
             $cfg->stopID,
@@ -258,10 +314,12 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
             $c->get(CsrfService::class),
             $c->get(LoggerInterface::class),
             $c->get(ErrorController::class),
-            $c->get(ModuleService::class),
-            $c->get(UserService::class),
-            $c->get(CountdownService::class),
-            $c->get(AnnouncementService::class),
+            $c->get(GetAllModulesUseCase::class),
+            $c->get(GetAllUsersUseCase::class),
+            $c->get(GetUserByIdUseCase::class),
+            $c->get(GetUserByUsernameUseCase::class),
+            $c->get(GetAllCountdownsUseCase::class),
+            $c->get(GetAllAnnouncementsUseCase::class),
         );
     });
 

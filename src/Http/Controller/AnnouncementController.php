@@ -4,7 +4,9 @@ namespace App\Http\Controller;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\AnnouncementService;
+use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
+use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
+use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Security\CsrfService;
@@ -15,7 +17,9 @@ class AnnouncementController extends BaseController
         AuthenticationService $authenticationService,
         CsrfService $csrfService,
         LoggerInterface $logger,
-        private readonly AnnouncementService         $announcementService,
+        private readonly CreateAnnouncementUseCase $createAnnouncementUseCase,
+        private readonly DeleteAnnouncementUseCase $deleteAnnouncementUseCase,
+        private readonly EditAnnouncementUseCase   $editAnnouncementUseCase,
     ){
         parent::__construct($authenticationService, $csrfService, $logger);
     }
@@ -23,16 +27,13 @@ class AnnouncementController extends BaseController
     public function deleteAnnouncement(): void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->checkIsUserLoggedIn();
-
             $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
             if (!$announcementId) {
                 SessionHelper::set('error', 'Invalid announcement ID.');
                 $this->redirect('/panel/announcements');
             }
 
-            $result = $this->announcementService->delete($announcementId);
+            $result = $this->deleteAnnouncementUseCase->execute($announcementId);
 
             if ($result) {
                 $this->logger->debug("Announcement deleted", ['id' => $announcementId]);
@@ -50,9 +51,6 @@ class AnnouncementController extends BaseController
     public function addAnnouncement(): void
     {
         try{
-            $this->requireAuth();
-            $this->validateCsrf($_POST['csrf_token']);
-
             $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
             $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
             $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
@@ -61,7 +59,7 @@ class AnnouncementController extends BaseController
 
             $data = ['title' => $title, 'text' => $text, 'valid_until' => $validUntil];
 
-            $success = $this->announcementService->create($data, $userId);
+            $success = $this->createAnnouncementUseCase->execute($data, $userId);
             if ($success) {
                 SessionHelper::set('success', 'Announcement added.');
                 $this->logger->info("Announcement added successfully");
@@ -78,10 +76,6 @@ class AnnouncementController extends BaseController
     public function editAnnouncement(): void
     {
         try {
-            $this->validateCsrf($_POST['csrf_token']);
-            $this->requireAuth();
-
-
             $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
             $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
             $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
@@ -89,7 +83,7 @@ class AnnouncementController extends BaseController
 
             $data = ['title' => $title, 'text' => $text, 'valid_until' => $validUntil];
 
-            $success = $this->announcementService->update($id, $data);
+            $success = $this->editAnnouncementUseCase->execute($id, $data);
 
             if ($success) {
                 SessionHelper::set('success', 'Announcement updated.');
