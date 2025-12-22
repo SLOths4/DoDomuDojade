@@ -406,18 +406,24 @@ class DatabaseHelper
     }
 
     /**
-     * Deletes rows from a table.
+     * Deletes rows from a table with optional additional WHERE conditions.
      *
      * Conditions are required to prevent accidental full-table deletion.
      *
      * @param string $table The table name.
-     * @param array<string, mixed> $conditions The WHERE conditions.
+     * @param array<string, mixed> $conditions The WHERE conditions (key = value pairs).
+     * @param string|null $additionalWhere Additional WHERE clause (e.g., "decided_at < :date").
+     * @param array<string, mixed> $additionalParams Additional parameters for the additional WHERE clause.
      * @return int The number of affected rows.
      * @throws RuntimeException|Exception|InvalidArgumentException On failure or empty conditions.
      */
-    public function delete(string $table, array $conditions = []): int
-    {
-        if (empty($conditions)) {
+    public function delete(
+        string $table,
+        array $conditions = [],
+        ?string $additionalWhere = null,
+        array $additionalParams = []
+    ): int {
+        if (empty($conditions) && empty($additionalWhere)) {
             throw new InvalidArgumentException("Delete conditions cannot be empty (safety measure)");
         }
 
@@ -429,6 +435,11 @@ class DatabaseHelper
             $params[":$key"] = is_array($value) ? $value : [$value];
         }
 
+        if ($additionalWhere) {
+            $whereClause[] = "($additionalWhere)";
+            $params = array_merge($params, $additionalParams);
+        }
+
         $query = "DELETE FROM $table WHERE " . implode(" AND ", $whereClause);
 
         $stmt = $this->executeStatement($query, $params);
@@ -438,6 +449,7 @@ class DatabaseHelper
 
         return $rowCount;
     }
+
 
     /**
      * Counts rows in a table with optional conditions.

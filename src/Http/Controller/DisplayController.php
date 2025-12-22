@@ -15,6 +15,7 @@ use App\Infrastructure\Service\WeatherService;
 use App\Infrastructure\Trait\SendResponseTrait;
 use DateTimeZone;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
 class DisplayController extends BaseController
@@ -107,6 +108,7 @@ class DisplayController extends BaseController
         }
     }
 
+    #[NoReturn]
     public function getAnnouncements(): void
     {
         try {
@@ -123,14 +125,16 @@ class DisplayController extends BaseController
 
             $response = [];
             foreach ($announcements as $announcement) {
-                $user = $this->getUserByIdUseCase->execute($announcement->userId);
+
+                if (!is_null($announcement->userId)) {
+                    $user = $this->getUserByIdUseCase->execute($announcement->userId);
+                }
+
                 $author = $user->username ?? 'Nieznany użytkownik';
 
                 $response[] = [
                     'title' => $announcement->title,
                     'author' => $author,
-                    'date' => $announcement->date->format('Y-m-d'),
-                    'validUntil' => $announcement->validUntil->format('Y-m-d'),
                     'text' => $announcement->text,
                 ];
             }
@@ -240,13 +244,20 @@ class DisplayController extends BaseController
 
             $quote = $this->fetchActiveQuoteUseCase->execute();
 
-            $this->sendSuccess([
-                'is_active' => true,
-                'quote' => [
-                    'from' => $quote->author,
-                    'quote' => $quote->quote,
-                ]
-            ]);
+            if ($quote) {
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'quote' => [
+                        'from' => $quote->author,
+                        'quote' => $quote->quote,
+                    ]
+                ]);
+            } else {
+                $this->sendSuccess([
+                    'success' => true,
+                    'quote' => null
+                ], 'No quote available.');
+            }
         } catch (Exception) {
             $this->sendError(
                 'Error fetching quote data.',
@@ -267,14 +278,21 @@ class DisplayController extends BaseController
 
             $word = $this->fetchActiveWordUseCase->execute();
 
-            $this->sendSuccess([
-                'is_active' => true,
-                'word' => [
-                    'word'          => $word->word,
-                    'ipa'           => $word->ipa,
-                    'definition'    => $word->definition,
-                ]
-            ]);
+            if ($word) {
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'word' => [
+                        'word'          => $word->word,
+                        'ipa'           => $word->ipa,
+                        'definition'    => $word->definition,
+                    ]
+                ]);
+            } else {
+                $this->sendSuccess([
+                    'success' => true,
+                    'word' => null
+                ], 'No word available.');
+            }
         } catch (Exception) {
             $this->sendError(
                 'Error fetching word data.',

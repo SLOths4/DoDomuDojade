@@ -210,9 +210,6 @@
                                             <h3 class="font-bold text-lg" x-text="a.title"></h3>
                                             <p class="text-lg" x-text="a.text"></p>
                                             <p class="text-sm text-gray-600 mt-1">
-                                                <i class="fa-solid fa-calendar text-primary-400"></i>
-                                                <strong>Utworzono:</strong> <span x-text="a.date"></span>
-                                                <strong>Ważne do:</strong> <span x-text="a.validUntil"></span>
                                                 <i class="fa-solid fa-user pl-2 text-primary-400"></i>
                                                 <span x-text="a.author"></span>
                                             </p>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\UseCase\Announcement;
 
 use App\Domain\Announcement;
+use App\Domain\Enum\AnnouncementStatus;
 use App\Infrastructure\Repository\AnnouncementRepository;
 use App\config\Config;
 use DateTimeImmutable;
@@ -30,13 +31,11 @@ readonly class CreateAnnouncementUseCase
 
         $this->validate($data);
 
-        $announcement = new Announcement(
-            null,
-            trim($data['title']),
-            trim($data['text']),
-            new DateTimeImmutable(),
-            new DateTimeImmutable($data['valid_until']),
-            $userId
+        $announcement = Announcement::createNew(
+            title: trim($data['title']),
+            text: trim($data['text']),
+            validUntil: new DateTimeImmutable($data['valid_until']),
+            userId: $userId
         );
 
         $result = $this->repository->add($announcement);

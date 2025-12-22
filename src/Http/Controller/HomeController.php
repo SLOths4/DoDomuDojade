@@ -8,4 +8,9 @@ class HomeController extends BaseController
     {
         $this->render('pages/index');
     }
+
+    public function proposeAnnouncement(): void
+    {
+        $this->render('pages/announcementPropose');
+    }
 }

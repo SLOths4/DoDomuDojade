@@ -67,6 +67,8 @@ try {
         $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
 
         // 2.3. Akcje powiązane z modułami
         $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
@@ -91,6 +93,10 @@ try {
         $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
         $r->addRoute('GET', '/display/get_quote', [DisplayController::class, 'getQuote']);
         $r->addRoute('GET', '/display/get_word', [DisplayController::class, 'getWord']);
+
+        // 4. Trasy ogólnodostępne (public)
+        $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
+        $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());

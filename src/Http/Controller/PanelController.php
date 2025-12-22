@@ -2,12 +2,12 @@
 
 namespace App\Http\Controller;
 
+use App\Domain\Enum\AnnouncementStatus;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
 use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
-use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
 use App\Application\UseCase\Module\GetAllModulesUseCase;
 use App\Application\UseCase\User\GetAllUsersUseCase;
 use App\Application\UseCase\User\GetUserByIdUseCase;
@@ -85,12 +85,17 @@ class PanelController extends BaseController
                 'title' => $announcement->title,
                 'text' => $announcement->text,
                 'userId' => $announcement->userId,
-                'date' => $announcement->date instanceof DateTimeImmutable
-                    ? $announcement->date->format('Y-m-d')
-                    : $announcement->date,
+                'createdAt' => $announcement->createdAt instanceof DateTimeImmutable
+                    ? $announcement->createdAt->format('Y-m-d H:i:s')
+                    : $announcement->createdAt,
                 'validUntil' => $announcement->validUntil instanceof DateTimeImmutable
                     ? $announcement->validUntil->format('Y-m-d')
-                    : $announcement->validUntil
+                    : $announcement->validUntil,
+                'status' => $announcement->status->name,
+                'decidedAt' => $announcement->decidedAt instanceof DateTimeImmutable
+                    ? $announcement->decidedAt->format('Y-m-d H:i:s')
+                    : $announcement->decidedAt,
+                'decidedBy' => $announcement->decidedBy,
             ];
         }
         return $out;
@@ -224,12 +229,16 @@ class PanelController extends BaseController
             $announcements = $this->getAllAnnouncementsUseCase->execute();
 
             $usernames = $this->buildUsernamesMap($users);
-            $formattedAnnouncements = $this->formatAnnouncements($announcements);
+            $allAnnouncements = $this->formatAnnouncements($announcements);
+
+            $pendingAnnouncements = array_filter($allAnnouncements, fn($a) => $a->status === AnnouncementStatus::PENDING->name);
+            $decidedAnnouncements = array_filter($allAnnouncements, fn($a) => $a->status !== AnnouncementStatus::PENDING->name);
 
             $this->render('pages/announcements', [
                 'user' => $user,
                 'usernames' => $usernames,
-                'announcements' => $formattedAnnouncements,
+                'announcements' => $decidedAnnouncements,
+                'pendingAnnouncements' => $pendingAnnouncements,
                 'footer' => true,
                 'navbar' => true
             ]);
