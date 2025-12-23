@@ -1,29 +1,49 @@
 <?php
-
 namespace App\Http\Controller;
 
-use App\Infrastructure\Exception\ValidationException;
-use Exception;
+use App\Infrastructure\Translation\LanguageTranslator;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
-use Random\RandomException;
-use App\Infrastructure\Exception\UserException;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use App\Http\Context\LocaleContext;
+use App\Infrastructure\Service\CsrfTokenService;
+use Random\RandomException;
 
-class BaseController{
+class BaseController
+{
     public function __construct(
         protected readonly AuthenticationService $authenticationService,
-        protected readonly CsrfService $csrfService,
-        protected readonly LoggerInterface $logger
-    ){}
+        protected readonly CsrfTokenService $csrfTokenService,
+        protected readonly LoggerInterface $logger,
+        protected readonly LanguageTranslator $translator,
+        protected readonly LocaleContext $localeContext
+    ) {}
 
+    /**
+     * Render a view with data
+     * Automatically handles error/success messages from the session
+     * @throws RandomException
+     */
     protected function render($view, $data = []): void
     {
         $data['VIEWS_PATH'] = dirname(__DIR__, 2) . '/Presentation/';
         $data['footer'] = $data['footer'] ?? false;
         $data['navbar'] = $data['navbar'] ?? false;
+        $data['csrf_token'] = $this->csrfTokenService->getOrCreate();
+
+        SessionHelper::start();
+
+        $errorKey = SessionHelper::get('error');
+        $successKey = SessionHelper::get('success');
+
+        SessionHelper::remove('error');
+        SessionHelper::remove('success');
+
+        $data['error'] = $errorKey ? $this->translator->trans($errorKey) : null;
+        $data['success'] = $successKey ? $this->translator->trans($successKey) : null;
+
+        $data['locale'] = $this->localeContext->get();
 
         extract($data);
 
@@ -35,18 +55,27 @@ class BaseController{
         }
     }
 
+    /**
+     * Redirect to URL
+     */
     #[NoReturn]
     protected function redirect(string $to): void
     {
-        header("Location: $to");
+        header("Location: $to", true);
         exit;
     }
 
+    /**
+     * Get currently authenticated user ID
+     */
     protected function getCurrentUserId(): ?int
     {
         return $this->authenticationService->getCurrentUserId();
     }
 
+    /**
+     * Logout current user
+     */
     #[NoReturn]
     public function logout(): void
     {
@@ -55,28 +84,19 @@ class BaseController{
     }
 
     /**
-     * @throws RandomException
+     * Set a success message and redirect
+     * Use this for successful operations in controllers
+     *
+     * Example:
+     * $this->successAndRedirect('announcement.created_successfully', '/panel/announcements');
      */
-    protected function setCsrf(): void
-    {
-        if (!SessionHelper::has('csrf_token')) {
-            SessionHelper::set('csrf_token', bin2hex(random_bytes(32)));
-        }
-    }
-
     #[NoReturn]
-    protected function handleError(string $visibleMessage, string $logMessage, string $redirectTo = '/login'): void
+    protected function successAndRedirect(string $successKey, string $redirectTo): void
     {
-        $this->logger->error($logMessage);
-        SessionHelper::set('error', $visibleMessage);
-        $this->redirect($redirectTo);
-    }
+        SessionHelper::start();
+        SessionHelper::set('success', $successKey);
+        $this->logger->info("Success: $successKey");
 
-    #[NoReturn]
-    protected function handleSuccess(string $visibleMessage, string $infoMessage, string $redirectTo = '/panel'): void
-    {
-        $this->logger->info($infoMessage);
-        SessionHelper::set('success', $visibleMessage);
         $this->redirect($redirectTo);
     }
 }

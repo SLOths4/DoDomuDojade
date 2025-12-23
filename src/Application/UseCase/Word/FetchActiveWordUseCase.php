@@ -2,7 +2,7 @@
 
 namespace App\Application\UseCase\Word;
 
-use App\Domain\Word;
+use App\Domain\Entity\Word;
 use App\Infrastructure\Repository\WordRepository;
 use Exception;
 use Psr\Log\LoggerInterface;

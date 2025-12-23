@@ -2,65 +2,74 @@
 
 namespace App\Http\Controller;
 
+use App\Domain\Exception\UserException;
+use App\Http\Context\LocaleContext;
+use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Translation\LanguageTranslator;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\User\CreateUserUseCase;
 use App\Application\UseCase\User\DeleteUserUseCase;
-use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
 
 class UserController extends BaseController
 {
     public function __construct(
         AuthenticationService $authenticationService,
-        CsrfService $csrfService,
+        CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
+        LanguageTranslator $translator,
+        LocaleContext $localeContext,
         private readonly CreateUserUseCase $createUserUseCase,
         private readonly DeleteUserUseCase $deleteUserUseCase,
-    )
-    {
-        parent::__construct($authenticationService, $csrfService, $logger);
+    ) {
+        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
     }
 
+    /**
+     * Create a new user
+     *
+     * @throws UserException
+     * @throws Exception
+     */
     public function addUser(): void
     {
-        try {
-            $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
-            $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
+        $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
+        $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
 
-            $result = $this->createUserUseCase->execute($username, $password);
-            if ($result) {
-                $this->logger->info("User added successfully");
-                SessionHelper::set('success', 'User created.');
-            } else {
-                $this->logger->error("User adding failed");
-                SessionHelper::set('error', 'Failed to add user.');
-            }
-            $this->redirect('/panel/users');
-        } catch (Exception $e) {
-            $this->handleError("Failed to add user", "User adding failed: " . $e->getMessage(), "/panel/users");
+        if (empty($username) || empty($password)) {
+            throw UserException::emptyFields();
         }
+
+        $this->createUserUseCase->execute($username, $password);
+
+        $this->logger->info("User created successfully", ['username' => $username]);
+        $this->successAndRedirect('user.created_successfully', '/panel/users');
     }
 
+    /**
+     * Delete a user
+     *
+     * @throws UserException
+     * @throws Exception
+     */
     public function deleteUser(): void
     {
-        try {
-            $userToDelete = (int)filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
-            $userId = $this->getCurrentUserId();
+        $userToDeleteId = (int)filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
 
-            $result = $this->deleteUserUseCase->execute($userId, $userToDelete);
-
-            if ($result) {
-                $this->logger->info("User deleted successfully");
-                SessionHelper::set('success', 'User deleted.');
-            } else {
-                $this->logger->error("User deletion failed");
-                SessionHelper::set('error', 'Failed to delete user.');
-            }
-            $this->redirect('/panel/users');
-        } catch (Exception $e) {
-            $this->handleError("User deletion failed", "User deletion failed: " . $e->getMessage(), "/panel/users");
+        if (!$userToDeleteId || $userToDeleteId <= 0) {
+            throw UserException::invalidId();
         }
+
+        $currentUserId = $this->getCurrentUserId();
+
+        if (!$currentUserId) {
+            throw UserException::unauthorized();
+        }
+
+        $this->deleteUserUseCase->execute($currentUserId, $userToDeleteId);
+
+        $this->logger->info("User deleted successfully", ['deleted_id' => $userToDeleteId, 'deleted_by' => $currentUserId]);
+        $this->successAndRedirect('user.deleted_successfully', '/panel/users');
     }
 }

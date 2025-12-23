@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Module;
 
-use App\Domain\Module;
+use App\Domain\Entity\Module;
+use App\Infrastructure\Helper\DateTimeHelper;
 use App\Infrastructure\Repository\ModuleRepository;
-use Psr\Log\LoggerInterface;
 use DateTimeImmutable;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class UpdateModuleUseCase
 {
     public function __construct(
         private ModuleRepository $repository,
         private LoggerInterface $logger,
-        private string $dateFormat
     ) {}
 
     /**
@@ -36,19 +36,19 @@ readonly class UpdateModuleUseCase
         }
 
         $startTime = isset($data['start_time'])
-            ? DateTimeImmutable::createFromFormat($this->dateFormat, $data['start_time'])
+            ? DateTimeHelper::parse($data['start_time'])
             : $module->startTime;
 
         $endTime = isset($data['end_time'])
-            ? DateTimeImmutable::createFromFormat($this->dateFormat, $data['end_time'])
+            ? DateTimeHelper::parse($data['end_time'])
             : $module->endTime;
 
         $updatedModule = new Module(
-            $id,
-            $module->moduleName,
-            isset($data['is_active']) ? (bool)$data['is_active'] : $module->isActive,
-            $startTime,
-            $endTime
+            id: $id,
+            moduleName: $module->moduleName,
+            isActive: isset($data['is_active']) ? (bool)$data['is_active'] : $module->isActive,
+            startTime: $startTime,
+            endTime: $endTime
         );
 
         $result = $this->repository->update($updatedModule);
@@ -67,8 +67,8 @@ readonly class UpdateModuleUseCase
     private function validate(array $data): void
     {
         if (isset($data['start_time']) && isset($data['end_time'])) {
-            $start = DateTimeImmutable::createFromFormat($this->dateFormat, $data['start_time']);
-            $end = DateTimeImmutable::createFromFormat($this->dateFormat, $data['end_time']);
+            $start = DateTimeHelper::parse($data['start_time']);
+            $end = DateTimeHelper::parse($data['end_time']);
 
             if ($start && $end && $end <= $start) {
                 $this->logger->warning('Invalid module time range', [

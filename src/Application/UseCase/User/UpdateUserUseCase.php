@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\User;
 
-use App\Domain\User;
+use App\Domain\Entity\User;
 use App\Infrastructure\Repository\UserRepository;
-use Psr\Log\LoggerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class UpdateUserUseCase
 {

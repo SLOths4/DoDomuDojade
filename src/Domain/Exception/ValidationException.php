@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Exception;
+namespace App\Domain\Exception;
 
+use App\Domain\Enum\ExceptionCodes;
 use Throwable;
 
-class ValidationException extends BaseException
+class ValidationException extends DomainException
 {
 
     /**

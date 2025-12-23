@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
-use App\Infrastructure\Exception\ValidationException;
+use App\Domain\Exception\ValidationException;
 
 final readonly class Password
 {
@@ -27,7 +27,7 @@ final readonly class Password
      */
     public static function fromHash(string $hash): self
     {
-        $instance = new self('dummy_pass', 0); // Bypass validation
+        $instance = new self('dummy_pass', 0);
         $instance->hash = $hash;
         return $instance;
     }

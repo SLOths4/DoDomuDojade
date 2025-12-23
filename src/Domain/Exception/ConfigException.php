@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Infrastructure\Exception;
+namespace App\Domain\Exception;
 
 use Throwable;
 
-class ConfigException extends BaseException
+class ConfigException extends DomainException
 {
     private const int CODE_MISSING_VARIABLE = 100;
     private const int CODE_LOADING_FAILED = 101;

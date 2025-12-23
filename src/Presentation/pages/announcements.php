@@ -1,13 +1,3 @@
-<?php
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-
-?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -29,9 +19,15 @@ SessionHelper::remove('error');
     <?php include $VIEWS_PATH . 'layouts/navbar.php'; ?>
 <?php endif; ?>
 <main class="flex-grow">
-    <?php if (SessionHelper::has('error')): ?>
+    <?php if ($error): ?>
         <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            <?= e(SessionHelper::get('error')) ?>
+            <?= $error ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($success): ?>
+        <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
+            <?= $success ?>
         </div>
     <?php endif; ?>
 
@@ -56,7 +52,7 @@ SessionHelper::remove('error');
         </div>
         <div class="flex items-center justify-between">
             <input type="submit" name="add_announcement" value="Dodaj" class="!bg-primary-200 dark:text-white px-4 py-2 rounded hover:!bg-primary-400">
-            <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
         </div>
     </form>
 
@@ -87,14 +83,14 @@ SessionHelper::remove('error');
                         <td class="break-words whitespace-normal px-4 py-2 border"><?= e($announcement->text) ?></td>
                         <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
                             <form method="POST" action="/panel/approve_announcement" class="inline">
-                                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                                <input type="hidden" name="csrf_token" value="<?= e($csrf_token) ?>">
                                 <input type="hidden" name="announcement_id" value="<?= e($announcement->id) ?>">
                                 <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm">
                                     <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
                                 </button>
                             </form>
                             <form method="POST" action="/panel/reject_announcement" class="inline">
-                                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                                 <input type="hidden" name="announcement_id" value="<?= e($announcement->id) ?>">
                                 <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm">
                                     <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
@@ -213,7 +209,7 @@ SessionHelper::remove('error');
         </div>
 
         <form method="POST" action="/panel/delete_announcement" class="delete-form hidden">
-            <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
             <input type="hidden" name="announcement_id" value="">
         </form>
     </div>
@@ -224,7 +220,7 @@ SessionHelper::remove('error');
         <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
             <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
             <form method="POST" action="/panel/edit_announcement" id="editAnnouncementForm">
-                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <input type="hidden" id="edit_announcement_id" name="announcement_id">
 
                 <div class="mb-4">

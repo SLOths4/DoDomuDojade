@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\Domain\Announcement;
+use App\Domain\Entity\Announcement;
 use App\Infrastructure\Repository\AnnouncementRepository;
 use Exception;
 use Psr\Log\LoggerInterface;

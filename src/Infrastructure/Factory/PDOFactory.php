@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Factory;
 
+use App\config\Config;
+use App\Domain\Exception\DatabaseException;
 use Exception;
 use PDO;
-use App\config\Config;
-use App\Infrastructure\Exception\DatabaseException;
 
 final class PDOFactory
 {

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\config;
 
+use App\Domain\Exception\ConfigException;
 use Exception;
-use App\Infrastructure\Exception\ConfigException;
 
 final readonly class Config
 {
@@ -78,7 +78,7 @@ final readonly class Config
 
             // Modules
             $moduleTableName = self::env('MODULE_TABLE_NAME', 'module');
-            $moduleDateFormat = self::env('MODULE_DATE_FORMAT', 'H:i');
+            static $moduleDateformat = 'H:i:s';
 
             // Users
             $userTableName = self::env('USER_TABLE_NAME', 'user');
@@ -123,7 +123,7 @@ final readonly class Config
                 $announcementMaxTextLength,
                 $announcementMinTextLength,
                 $moduleTableName,
-                $moduleDateFormat,
+                $moduleDateformat,
                 $countdownTableName,
                 $countdownMaxTitleLength,
                 $countdownDateFormat,

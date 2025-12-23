@@ -2,6 +2,9 @@
 
 namespace App\Http\Controller;
 
+use App\Domain\Exception\ModuleException;
+use App\Http\Context\LocaleContext;
+use App\Infrastructure\Translation\LanguageTranslator;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -9,78 +12,101 @@ use App\Application\UseCase\Module\GetModuleByIdUseCase;
 use App\Application\UseCase\Module\ToggleModuleUseCase;
 use App\Application\UseCase\Module\UpdateModuleUseCase;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\CsrfTokenService;
 
 class ModuleController extends BaseController
 {
     public function __construct(
         AuthenticationService $authenticationService,
-        CsrfService $csrfService,
+        CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
+        LanguageTranslator $translator,
+        LocaleContext $localeContext,
         private readonly GetModuleByIdUseCase $getModuleByIdUseCase,
-        private readonly ToggleModuleUseCase  $toggleModuleUseCase,
-        private readonly UpdateModuleUseCase  $updateModuleUseCase,
-    )
-    {
-        parent::__construct($authenticationService, $csrfService, $logger);
+        private readonly ToggleModuleUseCase $toggleModuleUseCase,
+        private readonly UpdateModuleUseCase $updateModuleUseCase,
+    ) {
+        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
     }
+
+    /**
+     * Toggle module active/inactive status
+     *
+     * @throws ModuleException
+     * @throws Exception
+     */
     public function toggleModule(): void
     {
-        try {
-            $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
-            $enable = filter_input(INPUT_POST, 'is_active', FILTER_UNSAFE_RAW);
+        $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
 
-            if (!$moduleId || !isset($enable)) {
-                $this->redirect("/panel");
-            }
-
-            $this->toggleModuleUseCase->execute($moduleId);
-            $this->redirect("/panel");
-
-        } catch (Exception $e) {
-            $this->handleError("Failed to toggle module", "Failed to toggle module: " . $e->getMessage(), "/panel");
+        if (!$moduleId || $moduleId <= 0) {
+            throw ModuleException::invalidId();
         }
+
+        $this->toggleModuleUseCase->execute($moduleId);
+
+        $this->logger->info("Module toggled", ['id' => $moduleId]);
+        $this->successAndRedirect('module.toggled_successfully', '/panel/modules');
     }
 
-    public function editModule(): void {
-            try {
-                $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
-                $newModuleStartTime = trim((string)filter_input(INPUT_POST, 'start_time', FILTER_UNSAFE_RAW));
-                $newModuleEndTime = trim((string)filter_input(INPUT_POST, 'end_time', FILTER_UNSAFE_RAW));
-                $newModuleIsActive = isset($_POST['is_active']) ? 1 : 0;
+    /**
+     * Edit module settings (times and active status)
+     *
+     * @throws ModuleException
+     * @throws Exception
+     */
+    public function editModule(): void
+    {
+        $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
 
-                $module = $this->getModuleByIdUseCase->execute($moduleId);
+        if (!$moduleId || $moduleId <= 0) {
+            throw ModuleException::invalidId();
+        }
 
-                if (empty($module)) {
-                    throw new Exception("Module not found");
-                }
+        $newStartTime = trim((string)filter_input(INPUT_POST, 'start_time', FILTER_UNSAFE_RAW));
+        $newEndTime = trim((string)filter_input(INPUT_POST, 'end_time', FILTER_UNSAFE_RAW));
+        $isActive = isset($_POST['is_active']) ? 1 : 0;
 
-                $dateFormat = 'H:i';
+        $module = $this->getModuleByIdUseCase->execute($moduleId);
+        if (!$module) {
+            throw ModuleException::notFound($moduleId);
+        }
 
-                $normalizedStart = $this->normalizeTime($newModuleStartTime, $module->startTime, $dateFormat);
-                $normalizedEnd = $this->normalizeTime($newModuleEndTime, $module->endTime, $dateFormat);
+        $normalizedStart = $this->normalizeTime($newStartTime, $module->startTime, 'H:i');
+        $normalizedEnd = $this->normalizeTime($newEndTime, $module->endTime, 'H:i');
 
-                $updates = [
-                    'module_name' => $module->moduleName,
-                    'is_active' => $newModuleIsActive,
-                    'start_time' => $normalizedStart,
-                    'end_time' => $normalizedEnd,
-                ];
+        $updates = [
+            'module_name' => $module->moduleName,
+            'is_active' => $isActive,
+            'start_time' => $normalizedStart,
+            'end_time' => $normalizedEnd,
+        ];
 
-                $this->updateModuleUseCase->execute($moduleId, $updates);
+        $this->updateModuleUseCase->execute($moduleId, $updates);
 
-                $this->redirect('/panel/modules');
-            } catch (Exception $e) {
-                $this->handleError("Failed to edit module", "Module edit failed " . $e->getMessage(), "/panel/modules");
-            }
+        $this->logger->info("Module updated", ['id' => $moduleId]);
+        $this->successAndRedirect('module.updated_successfully', '/panel/modules');
     }
 
+    /**
+     * Normalize time input with fallback
+     *
+     * Handles multiple time formats: H:i, H:i:s, and generic datetime strings
+     * Returns in H:i format
+     *
+     * @param string $value Input time value
+     * @param DateTimeImmutable $fallback Fallback time if parsing fails
+     * @param string $dateFormat Output format
+     * @return string Normalized time in requested format
+     */
     private function normalizeTime(string $value, DateTimeImmutable $fallback, string $dateFormat): string
     {
         $value = trim($value);
+
         if ($value === '') {
             return $fallback->format($dateFormat);
         }
+
         $candidates = ['H:i', 'H:i:s'];
         foreach ($candidates as $fmt) {
             $dt = DateTimeImmutable::createFromFormat($fmt, $value);
@@ -88,6 +114,7 @@ class ModuleController extends BaseController
                 return $dt->format($dateFormat);
             }
         }
+
         try {
             $dt = new DateTimeImmutable($value);
             return $dt->format($dateFormat);

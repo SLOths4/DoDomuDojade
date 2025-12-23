@@ -2,7 +2,7 @@
 
 namespace App\Application\UseCase\Quote;
 
-use App\Domain\Quote;
+use App\Domain\Entity\Quote;
 use App\Infrastructure\Repository\QuoteRepository;
 use Exception;
 use Psr\Log\LoggerInterface;

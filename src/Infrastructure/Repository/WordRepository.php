@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Word;
+use App\Domain\Entity\Word;
 use App\Infrastructure\Helper\DatabaseHelper;
 use DateTimeImmutable;
 use Exception;

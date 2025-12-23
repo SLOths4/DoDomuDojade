@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Factory;
 
-use App\Infrastructure\Exception\LoggerException;
-use Monolog\Logger;
-use Monolog\Level;
-use Monolog\Handler\StreamHandler;
+use App\Domain\Exception\LoggerException;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

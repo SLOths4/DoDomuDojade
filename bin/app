@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+use App\Console\Kernel;
+
+chdir(__DIR__ . '/..');
+require __DIR__ . '/../vendor/autoload.php';
+$container = require __DIR__ . '/../src/bootstrap/bootstrap.php';
+
+$kernel = $container->get(Kernel::class);
+exit($kernel->execute($argv));

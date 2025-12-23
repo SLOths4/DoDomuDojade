@@ -1,13 +1,3 @@
-<?php
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-
-?>
 <!DOCTYPE html>
 <html lang="pl">
     <head>
@@ -27,6 +17,17 @@ SessionHelper::remove('error');
     <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
         <?php if ($navbar): ?>
             <?php include $VIEWS_PATH . 'layouts/navbar.php'; ?>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
+                <?= $error ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
+                <?= $success ?>
+            </div>
         <?php endif; ?>
         <main class="flex-grow">
             <?php if (!empty($modules)): ?>
@@ -74,7 +75,7 @@ SessionHelper::remove('error');
                 <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                     <h2 class="text-xl font-semibold mb-4">Edytuj godziny wyświetlania modułu</h2>
                     <form method="POST" action="/panel/edit_module" id="editModuleForm">
-                        <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                         <input type="hidden" id="edit_module_id" name="module_id">
 
                         <div class="mb-4">

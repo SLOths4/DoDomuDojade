@@ -1,13 +1,3 @@
-<?php
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-
-?>
 <!DOCTYPE html>
 <html lang="pl">
     <head>
@@ -25,7 +15,7 @@ SessionHelper::remove('error');
         <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     </head>
     <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
-    <?php if ($navbar): ?>
+    <?php if (!empty($navbar)): ?>
         <?php include $VIEWS_PATH . 'layouts/navbar.php'; ?>
     <?php endif; ?>
         <main class="flex-grow">
@@ -44,6 +34,12 @@ SessionHelper::remove('error');
                 </div>
             <?php endif; ?>
 
+            <?php if (!empty($success)): ?>
+                <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
+                    <?= $success ?>
+                </div>
+            <?php endif; ?>
+
             <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded-2xl shadow-custom mx-1 dark:bg-gray-900 dark:text-white">
                 <div class="mb-2">
                     <label>
@@ -57,8 +53,8 @@ SessionHelper::remove('error');
                 </div>
                 <input type="submit" name="add_user" value="Dodaj" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400">
 
-                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
-                <input type="hidden" name="user_id" value="<?= e(SessionHelper::get('user_id')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                <input type="hidden" name="user_id" value="<?= e($user->id) ?>">
             </form>
 
             <?php if (!empty($users)): ?>
@@ -109,7 +105,7 @@ SessionHelper::remove('error');
                 </div>
 
                 <form method="POST" action="/panel/delete_user" class="delete-form hidden">
-                    <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                     <input type="hidden" name="user_id" value="">
                 </form>
             </div>

@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\Domain\Announcement;
-use App\Domain\Enum\AnnouncementStatus;
-use App\Infrastructure\Repository\AnnouncementRepository;
 use App\config\Config;
+use App\Domain\Entity\Announcement;
+use App\Infrastructure\Repository\AnnouncementRepository;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;

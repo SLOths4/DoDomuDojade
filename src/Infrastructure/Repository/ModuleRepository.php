@@ -2,18 +2,21 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\Module;
+use App\Infrastructure\Helper\DatabaseHelper;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use App\Domain\Module;
-use App\Infrastructure\Helper\DatabaseHelper;
 
 readonly class ModuleRepository
 {
+    private const string DEFAULT_START_TIME = '00:00:00';
+    private const string DEFAULT_END_TIME = '23:59:59';
+
     public function __construct(
         private DatabaseHelper $dbHelper,
         private string         $TABLE_NAME,
-        private string         $DATE_FORMAT,
+        private string         $DATE_FORMAT
     ) {}
 
     /**
@@ -21,12 +24,8 @@ readonly class ModuleRepository
      */
     private function mapRow(array $row): Module
     {
-        $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']);
-        $endTime   = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']);
-
-        if (!$startTime || !$endTime) {
-            throw new Exception('Nieprawidłowy format daty w rekordzie modułu');
-        }
+        $startTime = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['start_time']) ?: DateTimeImmutable::createFromFormat($this->DATE_FORMAT, self::DEFAULT_START_TIME);
+        $endTime   = DateTimeImmutable::createFromFormat($this->DATE_FORMAT, $row['end_time']) ?: DateTimeImmutable::createFromFormat($this->DATE_FORMAT, self::DEFAULT_END_TIME);
 
         return new Module(
             (int)$row['id'],
@@ -67,7 +66,7 @@ readonly class ModuleRepository
             $this->TABLE_NAME,
             [
                 'module_name' => [$module->moduleName, PDO::PARAM_STR],
-                'is_active'   => [$module->isActive ? 1 : 0, PDO::PARAM_INT],
+                'is_active'   => [$module->isActive, PDO::PARAM_BOOL],
                 'start_time'  => [$module->startTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
                 'end_time'    => [$module->endTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ],

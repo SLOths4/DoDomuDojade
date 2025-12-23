@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Quote;
+use App\Domain\Entity\Quote;
 use App\Infrastructure\Helper\DatabaseHelper;
 use DateTimeImmutable;
 use Exception;

@@ -10,7 +10,7 @@ use PDOStatement;
 use RuntimeException;
 use Psr\Log\LoggerInterface;
 
-class DatabaseHelper
+readonly class DatabaseHelper
 {
     protected PDO $pdo;
     protected LoggerInterface $logger;
@@ -276,7 +276,7 @@ class DatabaseHelper
         $placeholders = array_map(fn($col) => ":$col", $columns);
 
         $query = sprintf(
-            "INSERT INTO %s (%s) VALUES (%s)",
+            "INSERT INTO \"%s\" (%s) VALUES (%s)",
             $table,
             implode(", ", $columns),
             implode(", ", $placeholders)
@@ -337,7 +337,7 @@ class DatabaseHelper
         }
 
         $query = sprintf(
-            "INSERT INTO %s (%s) VALUES %s",
+            "INSERT INTO \"%s\" (%s) VALUES (%s)",
             $table,
             implode(", ", $columns),
             implode(", ", $valuesClauses)
@@ -384,7 +384,7 @@ class DatabaseHelper
             $params[":set_$key"] = is_array($value) ? $value : [$value];
         }
 
-        $query = "UPDATE $table SET " . implode(", ", $setClause);
+        $query = "UPDATE \"$table\" SET " . implode(", ", $setClause);
 
         if (!empty($conditions)) {
             $whereClause = [];
@@ -440,7 +440,7 @@ class DatabaseHelper
             $params = array_merge($params, $additionalParams);
         }
 
-        $query = "DELETE FROM $table WHERE " . implode(" AND ", $whereClause);
+        $query = "DELETE FROM \"$table\" WHERE " . implode(" AND ", $whereClause);
 
         $stmt = $this->executeStatement($query, $params);
         $rowCount = $stmt->rowCount();
@@ -461,7 +461,7 @@ class DatabaseHelper
      */
     public function count(string $table, array $conditions = []): int
     {
-        $query = "SELECT COUNT(*) FROM $table";
+        $query = "SELECT COUNT(*) FROM \"$table\"";
         $params = [];
 
         if (!empty($conditions)) {
@@ -512,7 +512,7 @@ class DatabaseHelper
         string $columns = '*',
         ?string $orderBy = null
     ): array {
-        $query = "SELECT $columns FROM $table";
+        $query = "SELECT $columns FROM \"$table\"";
         $params = [];
 
         if (!empty($conditions)) {

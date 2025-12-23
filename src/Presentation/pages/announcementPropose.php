@@ -17,21 +17,25 @@
                 Zgłoś ogłoszenie
             </h1>
             <p class="text-gray-600 dark:text-gray-400">
-                Podziel się swoją wiadomością z innymi użytkownikami DoDomuDojadę
+                Podziel się swoim ogłoszeniem z innymi uczniami
             </p>
         </div>
 
         <!-- Success Message -->
-        <div id="successMessage" class="hidden mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded dark:bg-green-900 dark:border-green-700 dark:text-green-200">
+        <?php if ($success): ?>
+        <div id="successMessage" class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded dark:bg-green-900 dark:border-green-700 dark:text-green-200">
             <i class="fas fa-check-circle mr-2"></i>
-            <span id="successText">Ogłoszenie zostało zgłoszone! Czeka na akceptację administratora.</span>
+            <span id="successText"><?= $success ?></span>
         </div>
+        <?php endif; ?>
 
+        <?php if ($error): ?>
         <!-- Error Message -->
-        <div id="errorMessage" class="hidden mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded dark:bg-red-900 dark:border-red-700 dark:text-red-200">
+        <div id="errorMessage" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded dark:bg-red-900 dark:border-red-700 dark:text-red-200">
             <i class="fas fa-exclamation-circle mr-2"></i>
-            <span id="errorText">Coś poszło nie tak. Spróbuj ponownie.</span>
+            <span id="errorText"><?= $error ?></span>
         </div>
+        <?php endif; ?>
 
         <!-- Form Card -->
         <div class="mb-3 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
@@ -50,7 +54,7 @@
                         maxlength="255"
                         required
                         placeholder="Np. Potrzebuję pomocy z zadaniem z matematyki"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent dark:bg-gray-950 dark:border-gray-700 dark:text-white"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white"
                     >
                     <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         <span id="title_counter">0</span> / 255 znaków
@@ -69,7 +73,7 @@
                         required
                         rows="6"
                         placeholder="Opisz szczegóły swojego ogłoszenia. Gdzie? Kiedy? Dodatkowe informacje..."
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"
                     ></textarea>
                     <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         <span id="content_counter">0</span> / 5000 znaków
@@ -85,7 +89,7 @@
                         type="date"
                         id="expires_at"
                         name="expires_at"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent dark:bg-gray-950 dark:border-gray-700 dark:text-white"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white"
                     >
                     <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Jeśli nie wybierzesz daty, ogłoszenie będzie ważne przez 30 dni
@@ -106,7 +110,7 @@
             <p class="text-sm text-gray-700 dark:text-gray-300">
                 <i class="fas fa-info-circle text-primary-400 dark:text-primary-300 mr-2"></i>
                 <strong>Ważne:</strong> Twoje ogłoszenie będzie oczekiwać na akceptację administratora przed publikacją.
-                Spróbuj być konkretny* i rzeczowy* – ogłoszenia spamowe będą odrzucone.
+                Spróbuj być konkretn* i rzeczow* – ogłoszenia spamowe będą odrzucone.
             </p>
         </div>
     </main>
@@ -189,20 +193,6 @@
         // Submit form
         form.submit();
     });
-
-            const showError = (message) => {
-        document.getElementById('errorText').textContent = message;
-        errorMessage.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            // Show success message if present in URL params or session
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('success')) {
-                successMessage.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
     </script>
 </body>
 </html>

@@ -1,13 +1,3 @@
-<?php
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-
-?>
 <!DOCTYPE html>
 <html lang="pl">
     <head>
@@ -28,6 +18,17 @@ SessionHelper::remove('error');
         <?php if ($navbar): ?>
             <?php include $VIEWS_PATH . 'layouts/navbar.php'; ?>
         <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
+                <?= $error ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
+                <?= $success ?>
+            </div>
+        <?php endif; ?>
         <main class="flex-grow">
             <form method="POST" action="/panel/add_countdown" class="mb-6 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
                 <div class="mb-2">
@@ -42,8 +43,8 @@ SessionHelper::remove('error');
                     </label>
                 </div>
                 <input type="submit" name="add_countdown" value="Dodaj" class="hover:!bg-primary-400 !bg-primary-200 text-white px-4 py-2 rounded">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
-                <input type="hidden" name="user_id" value="<?= htmlspecialchars(SessionHelper::get('user_id')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                <input type="hidden" name="user_id" value="<?= $user->id ?>">
             </form>
 
             <?php if (!empty($countdowns)): ?>
@@ -103,7 +104,7 @@ SessionHelper::remove('error');
                 </div>
 
                 <form method="POST" action="/panel/delete_countdown" class="delete-form hidden">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                     <input type="hidden" name="countdown_id" value="">
                 </form>
             </div>
@@ -114,7 +115,7 @@ SessionHelper::remove('error');
                 <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
                     <h2 class="text-xl font-semibold mb-4">Edytuj ogłoszenie</h2>
                     <form method="POST" action="/panel/edit_countdown" id="editCountdownForm">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SessionHelper::get('csrf_token')) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                         <input type="hidden" id="edit_countdown_id" name="countdown_id">
 
                         <div class="mb-4">

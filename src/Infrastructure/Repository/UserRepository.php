@@ -2,12 +2,12 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\User;
+use App\Infrastructure\Helper\DatabaseHelper;
 use DateTimeImmutable;
 use Exception;
 use PDO;
 use ReflectionClass;
-use App\Domain\User;
-use App\Infrastructure\Helper\DatabaseHelper;
 
 readonly class UserRepository
 {
@@ -59,7 +59,7 @@ readonly class UserRepository
      */
     public function findAll(): array
     {
-        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
+        $rows = $this->dbHelper->getAll("SELECT * FROM \"$this->TABLE_NAME\"");
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -72,7 +72,7 @@ readonly class UserRepository
     public function findByUsername(string $username): array
     {
         $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE username LIKE :username",
+            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username LIKE :username",
             [':username' => ["%$username%", PDO::PARAM_STR]]
         );
         return array_map(fn($row) => $this->mapRow($row), $rows);
@@ -87,7 +87,7 @@ readonly class UserRepository
     public function findById(int $id): User
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
+            "SELECT * FROM \"$this->TABLE_NAME\" WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
 
@@ -107,7 +107,7 @@ readonly class UserRepository
     public function findByExactUsername(string $username): ?User
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE username = :username",
+            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username = :username",
             [':username' => [$username, PDO::PARAM_STR]]
         );
 

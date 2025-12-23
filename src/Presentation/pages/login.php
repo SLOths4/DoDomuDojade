@@ -1,17 +1,3 @@
-<?php
-/**
- * @var string $VIEWS_PATH
- * @var bool $footer
- */
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-
-?>
 <!DOCTYPE html>
 <html lang="pl">
     <head>
@@ -37,7 +23,7 @@ SessionHelper::remove('error');
                         <p class="text-red-500 text-sm font-medium"><?= e($error) ?></p>
                     </div>
                 <?php endif; ?>
-                <input type="hidden" name="csrf_token" value="<?= e(SessionHelper::get('csrf_token', '')) ?>">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <button type="submit" class="shadow-custom dark:text-white bg-primary-200 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Zaloguj się</button>
             </form>
         </main>
