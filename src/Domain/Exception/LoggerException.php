@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Exception;
+namespace App\Domain\Exception;
 
+use App\Domain\Enum\ExceptionCodes;
 use Throwable;
 
-class LoggerException extends BaseException
+class LoggerException extends DomainException
 {
     public static function creationFailed(?Throwable $previous = null): LoggerException {
         return new self(

@@ -2,69 +2,84 @@
 
 namespace App\Http\Controller;
 
-use DateTimeImmutable;
-use Exception;
-use Psr\Log\LoggerInterface;
 use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
 use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
-use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
 use App\Application\UseCase\Module\GetAllModulesUseCase;
 use App\Application\UseCase\User\GetAllUsersUseCase;
 use App\Application\UseCase\User\GetUserByIdUseCase;
-use App\Application\UseCase\User\GetUserByUsernameUseCase;
-use App\Domain\User;
+use App\Domain\Entity\User;
+use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Exception\ViewException;
+use App\Http\Context\LocaleContext;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Translation\LanguageTranslator;
+use DateTimeImmutable;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 /**
- * Panel controller
+ * Panel controller - handles admin panel views and data aggregation
+ *
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
 class PanelController extends BaseController
 {
-    function __construct(
-        AuthenticationService        $authenticationService,
-        CsrfService                  $csrfService,
-        LoggerInterface              $logger,
-        private readonly ErrorController     $errorController,
+    public function __construct(
+        AuthenticationService $authenticationService,
+        CsrfTokenService $csrfTokenService,
+        LoggerInterface $logger,
+        LanguageTranslator $translator,
+        LocaleContext $localeContext,
         private readonly GetAllModulesUseCase $getAllModulesUseCase,
-        private readonly GetAllUsersUseCase  $getAllUsersUseCase,
-        private readonly GetUserByIdUseCase  $getUserByIdUseCase,
-        private readonly GetUserByUsernameUseCase $getUserByUsernameUseCase,
+        private readonly GetAllUsersUseCase $getAllUsersUseCase,
+        private readonly GetUserByIdUseCase $getUserByIdUseCase,
         private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
         private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
-    )
-    {
-        parent::__construct($authenticationService, $csrfService, $logger);
+    ) {
+        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
     }
 
+    /**
+     * Get currently authenticated user
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     private function getActiveUser(): User
     {
-        try {
-            $userId = SessionHelper::get('user_id');
-            return $this->getUserByIdUseCase->execute($userId);
-        } catch (Exception $e) {
-            $this->logger->error("Error while getting user: " . $e->getMessage());
-            $this->errorController->internalServerError();
-            exit;
+        SessionHelper::start();
+        $userId = SessionHelper::get('user_id');
+
+        if (!$userId) {
+            throw ViewException::userNotAuthenticated();
         }
+
+        return $this->getUserByIdUseCase->execute($userId);
     }
 
+    /**
+     * Build map of user IDs to usernames for display purposes
+     */
     private function buildUsernamesMap(array $users): array
     {
         $usernames = [];
-        foreach ($users as $u) {
-            $usernames[$u->id] = $u->username;
+        foreach ($users as $user) {
+            $usernames[$user->id] = $user->username;
         }
         return $usernames;
     }
 
+    /**
+     * Format countdown objects for display
+     * Ensures consistent date formatting
+     */
     private function formatCountdowns(array $countdowns): array
     {
-        $out = [];
+        $formatted = [];
         foreach ($countdowns as $countdown) {
-            $out[] = (object) [
+            $formatted[] = (object)[
                 'id' => $countdown->id,
                 'title' => $countdown->title,
                 'userId' => $countdown->userId,
@@ -73,168 +88,165 @@ class PanelController extends BaseController
                     : $countdown->countTo,
             ];
         }
-        return $out;
+        return $formatted;
     }
 
+    /**
+     * Format announcement objects for display
+     * Separates pending and decided announcements, ensures consistent formatting
+     */
     private function formatAnnouncements(array $announcements): array
     {
-        $out = [];
+        $formatted = [];
         foreach ($announcements as $announcement) {
-            $out[] = (object)[
+            $formatted[] = (object)[
                 'id' => $announcement->id,
                 'title' => $announcement->title,
                 'text' => $announcement->text,
                 'userId' => $announcement->userId,
-                'date' => $announcement->date instanceof DateTimeImmutable
-                    ? $announcement->date->format('Y-m-d')
-                    : $announcement->date,
+                'createdAt' => $announcement->createdAt instanceof DateTimeImmutable
+                    ? $announcement->createdAt->format('Y-m-d H:i:s')
+                    : $announcement->createdAt,
                 'validUntil' => $announcement->validUntil instanceof DateTimeImmutable
                     ? $announcement->validUntil->format('Y-m-d')
-                    : $announcement->validUntil
+                    : $announcement->validUntil,
+                'status' => $announcement->status->name,
+                'decidedAt' => $announcement->decidedAt instanceof DateTimeImmutable
+                    ? $announcement->decidedAt->format('Y-m-d H:i:s')
+                    : $announcement->decidedAt,
+                'decidedBy' => $announcement->decidedBy,
             ];
         }
-        return $out;
+        return $formatted;
     }
 
+    /**
+     * Display users management page
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     public function users(): void
     {
-        try {
-            $user = $this->getActiveUser();
-            $users = $this->getAllUsersUseCase->execute();
+        $user = $this->getActiveUser();
+        $users = $this->getAllUsersUseCase->execute();
 
-            $this->render('pages/users', [
-                'user' => $user,
-                'users' => $users,
-                'footer' => true,
-                'navbar' => true
-            ]);
-        } catch (Exception $e) {
-            $this->handleError("Failed to load users page", "Failed to load users page: " . $e->getMessage());
-        }
+        $this->logger->info("Users page loaded");
+
+        $this->render('pages/users', [
+            'user' => $user,
+            'users' => $users,
+            'footer' => true,
+            'navbar' => true
+        ]);
     }
 
+    /**
+     * Display countdowns management page
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     public function countdowns(): void
     {
-        try {
-            $user = $this->getActiveUser();
-            $users = $this->getAllUsersUseCase->execute();
-            $countdowns = $this->getAllCountdownsUseCase->execute();
+        $user = $this->getActiveUser();
+        $users = $this->getAllUsersUseCase->execute();
+        $countdowns = $this->getAllCountdownsUseCase->execute();
 
-            $usernames = $this->buildUsernamesMap($users);
-            $formattedCountdowns = $this->formatCountdowns($countdowns);
+        $usernames = $this->buildUsernamesMap($users);
+        $formattedCountdowns = $this->formatCountdowns($countdowns);
 
-            $this->render('pages/countdowns', [
-                'user' => $user,
-                'usernames' => $usernames,
-                'countdowns' => $formattedCountdowns,
-                'footer' => true,
-                'navbar' => true
-            ]);
-        } catch (Exception $e) {
-            $this->handleError("Failed to load countdowns page", "Failed to load countdown page: " . $e->getMessage());
-        }
+        $this->logger->info("Countdowns page loaded");
+
+        $this->render('pages/countdowns', [
+            'user' => $user,
+            'usernames' => $usernames,
+            'countdowns' => $formattedCountdowns,
+            'footer' => true,
+            'navbar' => true
+        ]);
     }
 
+    /**
+     * Display modules management page
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     public function modules(): void
     {
-        try {
-            $user = $this->getActiveUser();
-            $modules = $this->getAllModulesUseCase->execute();
-            $this->render('pages/modules', [
-                'user' => $user,
-                'modules' => $modules,
-                'footer' => true,
-                'navbar' => true
-            ]);
-        } catch (Exception $e) {
-            $this->handleError("Failed to load modules page", "Modules error: ".$e->getMessage(), "/panel/modules");
-        }
+        $user = $this->getActiveUser();
+        $modules = $this->getAllModulesUseCase->execute();
+
+        $this->logger->info("Modules page loaded");
+
+        $this->render('pages/modules', [
+            'user' => $user,
+            'modules' => $modules,
+            'footer' => true,
+            'navbar' => true
+        ]);
     }
 
-    public function login(): void
-    {
-        try {
-            $this->setCsrf();
-            $this->render('pages/login', [
-                'footer' => true
-            ]);
-        } catch (Exception $e) {
-            $this->handleError("Failed to load login page", "Login error: ".$e->getMessage());
-        }
-    }
-
-    public function authenticate(): void
-    {
-        try {
-                $this->logger->debug("User verification request received.");
-
-                $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
-                $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
-
-                if ($password === '' || $username === '') {
-                    $this->logger->error("Username or password is empty");
-                    SessionHelper::set("error", "Username and password are required.");
-                    $this->redirect("/login");
-                }
-
-                $user = $this->getUserByUsernameUseCase->execute($username);
-
-                if ($user && password_verify($password, $user->passwordHash)) {
-                    $this->logger->debug("Correct password for given username.");
-                    $this->setCsrf();
-                    SessionHelper::set('user_id', $user->id);
-                    $this->redirect("/panel");
-                } else {
-                    $this->logger->debug("Incorrect credentials");
-                    SessionHelper::set('error', 'Invalid username or password.');
-                    $this->redirect("/login");
-                }
-        } catch (Exception $e) {
-            $this->handleError("Authentication failed", "Authentication error: " . $e->getMessage());
-        }
-    }
-
+    /**
+     * Display the main admin panel page with overview
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     public function index(): void
     {
-        try {
-            $user = $this->getActiveUser();
+        $user = $this->getActiveUser();
+        $announcements = $this->getAllAnnouncementsUseCase->execute();
+        $users = $this->getAllUsersUseCase->execute();
+        $modules = $this->getAllModulesUseCase->execute();
 
-            $announcements = $this->getAllAnnouncementsUseCase->execute();
-            $users = $this->getAllUsersUseCase->execute();
-            $modules = $this->getAllModulesUseCase->execute();
+        $this->logger->info("Panel index loaded");
 
-            $this->render('pages/panel', [
-                'user' => $user,
-                'announcements' => $announcements,
-                'users' => $users,
-                'modules' => $modules,
-                'footer' => true,
-                'navbar' => true
-            ]);
-        } catch (Exception $e) {
-            $this->handleError("Failed to load panel", "Failed to load index: " . $e->getMessage());
-        }
+        $this->render('pages/panel', [
+            'user' => $user,
+            'announcements' => $announcements,
+            'users' => $users,
+            'modules' => $modules,
+            'footer' => true,
+            'navbar' => true
+        ]);
     }
 
+    /**
+     * Display announcements management page
+     * Shows pending announcements separately from decided ones
+     *
+     * @throws ViewException
+     * @throws Exception
+     */
     public function announcements(): void
     {
-        try {
-            $user = $this->getActiveUser();
-            $users = $this->getAllUsersUseCase->execute();
-            $announcements = $this->getAllAnnouncementsUseCase->execute();
+        $user = $this->getActiveUser();
+        $users = $this->getAllUsersUseCase->execute();
+        $announcements = $this->getAllAnnouncementsUseCase->execute();
 
-            $usernames = $this->buildUsernamesMap($users);
-            $formattedAnnouncements = $this->formatAnnouncements($announcements);
+        $usernames = $this->buildUsernamesMap($users);
+        $allAnnouncements = $this->formatAnnouncements($announcements);
 
-            $this->render('pages/announcements', [
-                'user' => $user,
-                'usernames' => $usernames,
-                'announcements' => $formattedAnnouncements,
-                'footer' => true,
-                'navbar' => true
-            ]);
-        } catch (Exception) {
-            $this->redirect('/panel');
-        }
+        $pendingAnnouncements = array_filter(
+            $allAnnouncements,
+            fn($a) => $a->status === AnnouncementStatus::PENDING->name
+        );
+        $decidedAnnouncements = array_filter(
+            $allAnnouncements,
+            fn($a) => $a->status !== AnnouncementStatus::PENDING->name
+        );
+
+        $this->logger->info("Announcements page loaded");
+
+        $this->render('pages/announcements', [
+            'user' => $user,
+            'usernames' => $usernames,
+            'announcements' => $decidedAnnouncements,
+            'pendingAnnouncements' => $pendingAnnouncements,
+            'footer' => true,
+            'navbar' => true
+        ]);
     }
 }

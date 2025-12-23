@@ -1,13 +1,3 @@
-<?php
-namespace App\Presentation\pages;
-
-use App\Infrastructure\Helper\SessionHelper;
-
-SessionHelper::start();
-$error = SessionHelper::get('error');
-SessionHelper::remove('error');
-?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>

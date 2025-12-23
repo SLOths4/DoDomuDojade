@@ -1,20 +1,23 @@
 <?php
 declare(strict_types=1);
 
-use App\Infrastructure\Exception\UserException;
-use App\Infrastructure\Helper\StaticFileHandlingHelper;
-use FastRoute\RouteCollector;
+use App\bootstrap\ExceptionHandler;
 use App\Http\Controller\AnnouncementController;
 use App\Http\Controller\CountdownController;
 use App\Http\Controller\DisplayController;
 use App\Http\Controller\ErrorController;
 use App\Http\Controller\HomeController;
+use App\Http\Controller\LoginController;
 use App\Http\Controller\ModuleController;
 use App\Http\Controller\PanelController;
 use App\Http\Controller\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
+use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Middleware\MiddlewarePipeline;
+use App\Infrastructure\Helper\StaticFileHandlingHelper;
+use FastRoute\RouteCollector;
+use GuzzleHttp\Psr7\ServerRequest;
 use function FastRoute\simpleDispatcher;
 
 if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -28,14 +31,15 @@ $container = require_once __DIR__ . '/../src/bootstrap/bootstrap.php';
 /** @noinspection PhpUnhandledExceptionInspection */
 registerErrorHandling($container);
 
+$request = ServerRequest::fromGlobals();
+
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 if (!is_string($requestUri)) {
     $requestUri = '/';
 }
 
-$uri = parse_url($requestUri, PHP_URL_PATH) ?? '/';
-
-$HttpMethod = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+$uri = $request->getUri()->getPath();
+$HttpMethod = $request->getMethod();
 
 $validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
 if (!in_array($HttpMethod, $validMethods, true)) {
@@ -54,12 +58,12 @@ try {
         $r->addRoute('GET', '/', [HomeController::class, 'index']);
         $r->addRoute('GET', '/display', [DisplayController::class, 'index']);
         $r->addRoute('GET', '/panel', [PanelController::class, 'index', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('GET', '/login', [PanelController::class, 'login']);
-        $r->addRoute('GET', '/logout', [PanelController::class, 'logout']);
+        $r->addRoute('GET', '/login', [LoginController::class, 'show']);
+        $r->addRoute('GET', '/logout', [LoginController::class, 'logout']);
 
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika
-        $r->addRoute('POST', '/panel/authenticate', [PanelController::class, 'authenticate', 'middleware' => [CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/authenticate', [LoginController::class, 'authenticate', 'middleware' => [CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
 
@@ -67,6 +71,8 @@ try {
         $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
         $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
 
         // 2.3. Akcje powiązane z modułami
         $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
@@ -91,6 +97,10 @@ try {
         $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
         $r->addRoute('GET', '/display/get_quote', [DisplayController::class, 'getQuote']);
         $r->addRoute('GET', '/display/get_word', [DisplayController::class, 'getWord']);
+
+        // 4. Trasy ogólnodostępne (public)
+        $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
+        $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
@@ -128,11 +138,12 @@ switch ($routeInfo[0]) {
                 $controller = $container->get($controllerClass);
 
                 $pipeline = new MiddlewarePipeline();
+                $pipeline->add($container->get(LocaleMiddleware::class));
                 foreach ($middlewares as $mwClass) {
                     $pipeline->add($container->get($mwClass));
                 }
 
-                $pipeline->run(fn() => $controller->$methodName($vars));
+                $pipeline->run($request, fn() => $controller->$methodName($vars));
 
             } elseif (is_callable($handlerData)) {
                 $handlerData($vars);
@@ -141,19 +152,8 @@ switch ($routeInfo[0]) {
                     'Handler must be array [class, method] or callable'
                 );
             }
-        } catch (UserException $e) {
-            http_response_code(401);
-            header('Location: /login');
-            exit;
         } catch (Throwable $e) {
-            error_log(sprintf(
-                'Controller execution failed for %s %s: %s',
-                $HttpMethod,
-                $uri,
-                $e->getMessage()
-            ));
-            $container->get(ErrorController::class)->internalServerError();
-            exit;
+            $container->get(ExceptionHandler::class)->handle($e);
         }
         break;
 

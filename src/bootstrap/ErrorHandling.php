@@ -1,14 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use App\Infrastructure\Exception\BaseException;
-use App\Infrastructure\Exception\UserException;
-use App\Infrastructure\Exception\ValidationException;
-use App\Infrastructure\Exception\ExceptionCodes;
-use App\Infrastructure\Helper\SessionHelper;
-use Psr\Log\LoggerInterface;
+use App\Domain\Exception\DomainException;
 use App\Http\Controller\ErrorController;
 use App\Infrastructure\Container;
+use Psr\Log\LoggerInterface;
 
 /**
  * @throws ReflectionException
@@ -37,7 +33,7 @@ function registerErrorHandling(Container $container): void
         $message = $isDev ? $e->getMessage() : 'Unexpected error occurred.';
         $data = [];
 
-        if ($e instanceof BaseException) {
+        if ($e instanceof DomainException) {
             $errorCode = $e->errorCode;
             $data = $e->context;
         }
@@ -52,19 +48,6 @@ function registerErrorHandling(Container $container): void
                 'data' => $data,
                 'trace' => $isDev ? $e->getTrace() : null
             ]);
-            exit;
-        }
-
-        // Special handling for HTML requests
-        if ($e instanceof UserException && $e->errorCode === ExceptionCodes::USER_NOT_LOGGED_IN->value) {
-            SessionHelper::set('error', 'Proszę się zalogować, aby kontynuować.');
-            header('Location: /login');
-            exit;
-        }
-
-        if ($e instanceof ValidationException && $e->errorCode === ExceptionCodes::INVALID_CSRF->value) {
-            SessionHelper::set('error', 'Błąd CSRF. Spróbuj ponownie.');
-            header('Location: /login');
             exit;
         }
 
@@ -95,7 +78,7 @@ function registerErrorHandling(Container $container): void
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
-            'context' => ($e instanceof BaseException) ? $e->context : []
+            'context' => ($e instanceof DomainException) ? $e->context : []
         ]);
 
         $renderError($e);

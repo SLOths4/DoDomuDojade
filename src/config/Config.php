@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\config;
 
+use App\Domain\Exception\ConfigException;
 use Exception;
-use App\Infrastructure\Exception\ConfigException;
 
 final readonly class Config
 {
@@ -20,7 +20,9 @@ final readonly class Config
         public string $announcementTableName,
         public string $announcementDateFormat,
         public int    $announcementMaxTitleLength,
+        public int    $announcementMinTitleLength,
         public int    $announcementMaxTextLength,
+        public int    $announcementMinTextLength,
         public string $moduleTableName,
         public string $moduleDateFormat,
         public string $countdownTableName,
@@ -65,7 +67,9 @@ final readonly class Config
             $announcementTableName = self::env('ANNOUNCEMENT_TABLE_NAME', 'announcement');
             $announcementDateFormat = self::env('ANNOUNCEMENT_DATE_FORMAT', 'Y-m-d');
             $announcementMaxTitleLength = (int)self::env('ANNOUNCEMENT_MAX_TITLE_LENGTH', 255);
+            $announcementMinTitleLength = (int)self::env('ANNOUNCEMENT_MIN_TEXT_LENGTH', 5);
             $announcementMaxTextLength = (int)self::env('ANNOUNCEMENT_MAX_TEXT_LENGTH', 65535);
+            $announcementMinTextLength = (int)self::env('ANNOUNCEMENT_MIN_TEXT_LENGTH', 10);
 
             // Countdowns
             $countdownTableName = self::env('COUNTDOWN_TABLE_NAME', 'countdown');
@@ -74,7 +78,7 @@ final readonly class Config
 
             // Modules
             $moduleTableName = self::env('MODULE_TABLE_NAME', 'module');
-            $moduleDateFormat = self::env('MODULE_DATE_FORMAT', 'H:i');
+            static $moduleDateformat = 'H:i:s';
 
             // Users
             $userTableName = self::env('USER_TABLE_NAME', 'user');
@@ -115,9 +119,11 @@ final readonly class Config
                 $announcementTableName,
                 $announcementDateFormat,
                 $announcementMaxTitleLength,
+                $announcementMinTitleLength,
                 $announcementMaxTextLength,
+                $announcementMinTextLength,
                 $moduleTableName,
-                $moduleDateFormat,
+                $moduleDateformat,
                 $countdownTableName,
                 $countdownMaxTitleLength,
                 $countdownDateFormat,

@@ -2,12 +2,28 @@
 
 namespace App\Infrastructure\Helper;
 
-class SessionHelper {
+final readonly class SessionHelper {
 
     public static function start(): void {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
+
+    public static function validateFingerprint(): bool {
+        $storedIp = self::get('user_ip_hash');
+        $storedAgent = self::get('user_agent_hash');
+
+        $currentIp = hash('sha256', $_SERVER['REMOTE_ADDR']);
+        $currentAgent = hash('sha256', $_SERVER['HTTP_USER_AGENT']);
+
+        return $storedIp === $currentIp && $storedAgent === $currentAgent;
+    }
+
+    public static function setWithFingerprint(string $key, mixed $value): void {
+        self::set($key, $value);
+        self::set('user_ip_hash', hash('sha256', $_SERVER['REMOTE_ADDR']));
+        self::set('user_agent_hash', hash('sha256', $_SERVER['HTTP_USER_AGENT']));
     }
 
     public static function set(string $key, mixed $value): void {

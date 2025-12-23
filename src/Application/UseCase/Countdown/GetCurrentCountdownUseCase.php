@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Countdown;
 
-use App\Domain\Countdown;
+use App\Domain\Entity\Countdown;
 use App\Infrastructure\Repository\CountdownRepository;
-use Psr\Log\LoggerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class GetCurrentCountdownUseCase
 {

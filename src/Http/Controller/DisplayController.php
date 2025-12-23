@@ -2,44 +2,55 @@
 
 namespace App\Http\Controller;
 
+use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
 use App\Application\UseCase\Countdown\GetCurrentCountdownUseCase;
 use App\Application\UseCase\Module\IsModuleVisibleUseCase;
-use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\User\GetUserByIdUseCase;
+use App\Domain\Exception\DisplayException;
+use App\Http\Context\LocaleContext;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\CsrfTokenService;
 use App\Infrastructure\Service\TramService;
 use App\Infrastructure\Service\WeatherService;
 use App\Infrastructure\Trait\SendResponseTrait;
+use App\Infrastructure\Translation\LanguageTranslator;
 use DateTimeZone;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Display controller - handles public display API endpoints
+ * Returns JSON responses for frontend display module
+ */
 class DisplayController extends BaseController
 {
     use SendResponseTrait;
+
     public function __construct(
-        AuthenticationService                    $authenticationService,
-        CsrfService                              $csrfService,
-        LoggerInterface                          $logger,
-        private readonly WeatherService          $weatherService,
-        private readonly IsModuleVisibleUseCase  $isModuleVisibleUseCase,
-        private readonly TramService             $tramService,
-        private readonly GetValidAnnouncementsUseCase $getValidAnnouncementsUseCase,
-        private readonly GetUserByIdUseCase      $getUserByIdUseCase,
-        private readonly GetCurrentCountdownUseCase $getCurrentCountdownUseCase,
-        private readonly FetchActiveQuoteUseCase $fetchActiveQuoteUseCase,
-        private readonly FetchActiveWordUseCase  $fetchActiveWordUseCase,
-        private readonly array                   $StopIDs,
+        AuthenticationService                           $authenticationService,
+        CsrfTokenService                                $csrfTokenService,
+        LoggerInterface                                 $logger,
+        LanguageTranslator                              $translator,
+        LocaleContext                                   $localeContext,
+        private readonly WeatherService                 $weatherService,
+        private readonly IsModuleVisibleUseCase         $isModuleVisibleUseCase,
+        private readonly TramService                    $tramService,
+        private readonly GetValidAnnouncementsUseCase   $getValidAnnouncementsUseCase,
+        private readonly GetUserByIdUseCase             $getUserByIdUseCase,
+        private readonly GetCurrentCountdownUseCase     $getCurrentCountdownUseCase,
+        private readonly FetchActiveQuoteUseCase        $fetchActiveQuoteUseCase,
+        private readonly FetchActiveWordUseCase         $fetchActiveWordUseCase,
+        private readonly array                          $StopIDs,
     )
     {
-        parent::__construct($authenticationService, $csrfService, $logger);
+        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
     }
 
     /**
-     * Renders display page
+     * Render public display page
      */
     public function index(): void
     {
@@ -47,6 +58,9 @@ class DisplayController extends BaseController
     }
 
     /**
+     * Check if a module is visible/active
+     *
+     * @throws DisplayException
      * @throws Exception
      */
     private function isModuleVisible(string $module): bool
@@ -54,233 +68,282 @@ class DisplayController extends BaseController
         return $this->isModuleVisibleUseCase->execute($module);
     }
 
+    /**
+     * Get tram departures for configured stops
+     *
+     * @throws DisplayException
+     */
+    #[NoReturn]
     public function getDepartures(): void
     {
-        try {
-            if (!$this->isModuleVisible('tram')) {
-                $this->sendSuccess(
-                    [
-                        'is_active' => false,
-                        'departures' => null
-                    ]
-                );
-            }
-
-            $departures = [];
-            foreach ($this->StopIDs as $stopId) {
-                try {
-                    $stopDepartures = $this->tramService->getTimes($stopId);
-                } catch (Exception) {
-                    $this->logger->warning("No departures found for stop $stopId");
-                    continue;
-                }
-
-                if (isset($stopDepartures['times']) && is_array($stopDepartures['times'])) {
-                    foreach ($stopDepartures['times'] as $departure) {
-                        $departures[] = [
-                            'stopId' => $stopId,
-                            'line' => (string)$departure['line'],
-                            'minutes' => (int)$departure['minutes'],
-                            'direction' => (string)$departure['direction'],
-                        ];
-                    }
-                } else {
-                    $this->logger->warning("Brak dostępnych danych o odjazdach dla przystanku: $stopId.");
-                }
-            }
-
-            usort($departures, static fn($a, $b) => $a['minutes'] <=> $b['minutes']);
-
-            if (!empty($departures)) {
-                $this->sendSuccess([
-                    'is_active' => true,
-                    'departures' => $departures
-                ]);
-            } else {
-                $this->sendSuccess([
-                    'success' => false,
-                    'is_active' => true
-                ], 'No departures found for provided stop IDs');
-            }
-        } catch (Exception) {
-            $this->sendError('Error processing tram data', 500, []);
+        if (!$this->isModuleVisible('tram')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'departures' => null
+            ]);
+            exit;
         }
-    }
 
-    public function getAnnouncements(): void
-    {
-        try {
-            if (!$this->isModuleVisible('announcements')) {
-                $this->sendSuccess(
-                    [
-                        'is_active' => false,
-                        'announcements' => null
-                    ]
-                );
+        $departures = [];
+        foreach ($this->StopIDs as $stopId) {
+            try {
+                $stopDepartures = $this->tramService->getTimes($stopId);
+            } catch (Exception $e) {
+                $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
+                continue;
             }
 
-            $announcements = $this->getValidAnnouncementsUseCase->execute();
+            if (!isset($stopDepartures['times']) || !is_array($stopDepartures['times'])) {
+                $this->logger->warning("Invalid departure data format", ['stopId' => $stopId]);
+                continue;
+            }
 
-            $response = [];
-            foreach ($announcements as $announcement) {
-                $user = $this->getUserByIdUseCase->execute($announcement->userId);
-                $author = $user->username ?? 'Nieznany użytkownik';
-
-                $response[] = [
-                    'title' => $announcement->title,
-                    'author' => $author,
-                    'date' => $announcement->date->format('Y-m-d'),
-                    'validUntil' => $announcement->validUntil->format('Y-m-d'),
-                    'text' => $announcement->text,
+            foreach ($stopDepartures['times'] as $departure) {
+                $departures[] = [
+                    'stopId' => $stopId,
+                    'line' => (string)$departure['line'],
+                    'minutes' => (int)$departure['minutes'],
+                    'direction' => (string)$departure['direction'],
                 ];
             }
-
-            $this->sendSuccess(
-                [
-                    'is_active' => true,
-                    'announcements' => $response
-                ]
-            );
-        } catch (Exception) {
-            $this->sendError(
-                'Error fetching announcements',
-                500,
-                []
-            );
         }
+
+        usort($departures, static fn($a, $b) => $a['minutes'] <=> $b['minutes']);
+
+        if (empty($departures)) {
+            $this->sendSuccess([
+                'is_active' => true,
+                'departures' => []
+            ]);
+            exit;
+        }
+
+        $this->sendSuccess([
+            'is_active' => true,
+            'departures' => $departures
+        ]);
+        exit;
     }
 
+    /**
+     * Get valid announcements for display
+     *
+     * @throws DisplayException
+     */
+    #[NoReturn]
+    public function getAnnouncements(): void
+    {
+        if (!$this->isModuleVisible('announcements')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'announcements' => null
+            ]);
+            exit;
+        }
+
+        $announcements = $this->getValidAnnouncementsUseCase->execute();
+
+        if (empty($announcements)) {
+            $this->sendSuccess([
+                'is_active' => true,
+                'announcements' => []
+            ]);
+            exit;
+        }
+
+        $response = [];
+        foreach ($announcements as $announcement) {
+            $author = 'Nieznany użytkownik';
+
+            if (!is_null($announcement->userId)) {
+                try {
+                    $user = $this->getUserByIdUseCase->execute($announcement->userId);
+                    $author = $user->username;
+                } catch (Exception $e) {
+                    $this->logger->warning("Failed to fetch announcement author", [
+                        'userId' => $announcement->userId
+                    ]);
+                }
+            }
+
+            $response[] = [
+                'title' => $announcement->title,
+                'author' => $author,
+                'text' => $announcement->text,
+            ];
+        }
+
+        $this->sendSuccess([
+            'is_active' => true,
+            'announcements' => $response
+        ]);
+    }
+
+    /**
+     * Get the current countdown
+     *
+     * @throws DisplayException
+     * @throws Exception
+     */
+    #[NoReturn]
     public function getCountdown(): void
     {
-        try {
-            if (!$this->isModuleVisible('countdown')) {
-                $this->sendSuccess(
-                    [
-                        'is_active' => false,
-                        'title' => null,
-                        'count_to' => null
-                    ]
-                );
-            }
-
-            $currentCountdown = $this->getCurrentCountdownUseCase->execute();
-
-            if ($currentCountdown) {
-                $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
-                $this->sendSuccess([
-                    'is_active' => true,
-                    'title' => $currentCountdown->title,
-                    'count_to' => $dt->getTimestamp()
-                ]);
-            } else {
-                $this->sendSuccess([
-                    'is_active' => true,
-                    'title' => null,
-                    'count_to' => null
-                ], 'No countdown available');
-            }
-        } catch (Exception) {
-            $this->sendError('Error while processing countdowns.', 500, []);
+        if (!$this->isModuleVisible('countdown')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'title' => null,
+                'count_to' => null
+            ]);
+            exit;
         }
+
+        $currentCountdown = $this->getCurrentCountdownUseCase->execute();
+
+        if (!$currentCountdown) {
+            $this->sendSuccess([
+                'is_active' => true,
+                'title' => null,
+                'count_to' => null
+            ]);
+            exit;
+        }
+
+        // ✅ Convert to Warsaw timezone and Unix timestamp
+        $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
+
+        $this->sendSuccess([
+            'is_active' => true,
+            'title' => $currentCountdown->title,
+            'count_to' => $dt->getTimestamp()
+        ]);
+        exit;
     }
 
+    /**
+     * Get current weather data from multiple sources
+     *
+     * @throws DisplayException
+     */
+    #[NoReturn]
     public function getWeather(): void
     {
+        if (!$this->isModuleVisible('weather')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'weather' => null
+            ]);
+            exit;
+        }
+
         try {
-            if (!$this->isModuleVisible('weather')) {
-                $this->sendSuccess([
-                    'is_active' => false,
-                    'weather' => null
-                ]);
-            }
+            $weatherData = $this->weatherService->getWeather();
+        } catch (Exception $e) {
+            $this->logger->error("Failed to fetch weather data", ['error' => $e->getMessage()]);
+            throw DisplayException::failedToFetchWeather();
+        }
 
-            $weatherServiceResponse = $this->weatherService->getWeather();
-
-            if (empty($weatherServiceResponse)) {
-                $this->sendSuccess([
-                    'success' => true,
-                    'weather' => null
-                ], 'No weather data available.');
-            }
-
+        if (empty($weatherData)) {
             $this->sendSuccess([
                 'is_active' => true,
-                'weather' => [
-                    'temperature' => (string)($weatherServiceResponse['imgw_temperature'] ?? 'Brak danych'),
-                    'pressure' => (string)($weatherServiceResponse['imgw_pressure'] ?? 'Brak danych'),
-                    'airlyAdvice' => $weatherServiceResponse['airly_index_advice'] !== null
-                        ? (string)$weatherServiceResponse['airly_index_advice']
-                        : 'Brak danych',
-                    'airlyDescription' => $weatherServiceResponse['airly_index_description'] !== null
-                        ? (string)$weatherServiceResponse['airly_index_description']
-                        : 'Brak danych',
-                    'airlyColour' => $weatherServiceResponse['airly_index_colour'] !== null
-                        ? (string)$weatherServiceResponse['airly_index_colour']
-                        : 'Brak danych'
-                ]
+                'weather' => null
             ]);
-        } catch (Exception) {
-            $this->sendError(
-                'Error fetching weather data.',
-                500,
-                    []
-            );
+            exit;
         }
+
+        // ✅ Format weather response
+        $this->sendSuccess([
+            'is_active' => true,
+            'weather' => [
+                'temperature' => (string)($weatherData['imgw_temperature'] ?? 'N/A'),
+                'pressure' => (string)($weatherData['imgw_pressure'] ?? 'N/A'),
+                'airlyAdvice' => (string)($weatherData['airly_index_advice'] ?? 'N/A'),
+                'airlyDescription' => (string)($weatherData['airly_index_description'] ?? 'N/A'),
+                'airlyColour' => (string)($weatherData['airly_index_colour'] ?? 'N/A')
+            ]
+        ]);
+        exit;
     }
 
+    /**
+     * Get active quote of the day
+     *
+     * @throws DisplayException
+     */
+    #[NoReturn]
     public function getQuote(): void
     {
+        if (!$this->isModuleVisible('quote')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'quote' => null
+            ]);
+            exit;
+        }
+
         try {
-            if (!$this->isModuleVisible('quote')) {
-                $this->sendSuccess([
-                    'is_active' => false,
-                    'quote' => null
-                ]);
-            }
-
             $quote = $this->fetchActiveQuoteUseCase->execute();
+        } catch (Exception $e) {
+            $this->logger->error("Failed to fetch quote", ['error' => $e->getMessage()]);
+            throw DisplayException::failedToFetchQuote();
+        }
 
+        if (!$quote) {
             $this->sendSuccess([
                 'is_active' => true,
-                'quote' => [
-                    'from' => $quote->author,
-                    'quote' => $quote->quote,
-                ]
+                'quote' => null
             ]);
-        } catch (Exception) {
-            $this->sendError(
-                'Error fetching quote data.',
-                500,
-                []
-            );
+            exit;
         }
+
+        $this->sendSuccess([
+            'is_active' => true,
+            'quote' => [
+                'from' => $quote->author,
+                'quote' => $quote->quote,
+            ]
+        ]);
+        exit;
     }
+
+    /**
+     * Get active word of the day
+     *
+     * @throws DisplayException
+     */
+    #[NoReturn]
     public function getWord(): void
     {
+        if (!$this->isModuleVisible('word')) {
+            $this->sendSuccess([
+                'is_active' => false,
+                'word' => null
+            ]);
+            exit;
+        }
+
         try {
-            if (!$this->isModuleVisible('word')) {
-                $this->sendSuccess([
-                    'is_active' => false,
-                    'word' => null
-                ]);
-            }
-
             $word = $this->fetchActiveWordUseCase->execute();
+        } catch (Exception $e) {
+            $this->logger->error("Failed to fetch word", ['error' => $e->getMessage()]);
+            throw DisplayException::failedToFetchWord();
+        }
 
+        if (!$word) {
             $this->sendSuccess([
                 'is_active' => true,
-                'word' => [
-                    'word'          => $word->word,
-                    'ipa'           => $word->ipa,
-                    'definition'    => $word->definition,
-                ]
+                'word' => null
             ]);
-        } catch (Exception) {
-            $this->sendError(
-                'Error fetching word data.',
-                500,
-                []
-            );
+            exit;
         }
+
+        $this->sendSuccess([
+            'is_active' => true,
+            'word' => [
+                'word' => $word->word,
+                'ipa' => $word->ipa,
+                'definition' => $word->definition,
+            ]
+        ]);
+        exit;
     }
 }

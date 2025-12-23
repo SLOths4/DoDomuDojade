@@ -8,7 +8,16 @@ class AuthenticationService
 {
 
     public function isUserLoggedIn(): bool {
-        return SessionHelper::has('user_id');
+        if (!SessionHelper::has('user_id')) {
+            return false;
+        }
+
+        if (!SessionHelper::validateFingerprint()) {
+            $this->logout();
+            return false;
+        }
+
+        return true;
     }
 
     public function getCurrentUserId(): ?int {

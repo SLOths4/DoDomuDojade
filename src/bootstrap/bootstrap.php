@@ -7,14 +7,23 @@ require_once __DIR__ . '/../Infrastructure/Helper/functions.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__. '/../../../'));
 $dotenv->load();
 
+use App\Application\UseCase\Announcement\DeleteRejectedSinceAnnouncementUseCase;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Quote\FetchQuoteUseCase;
+use App\bootstrap\ExceptionHandler;
+use App\Console\CommandRegistry;
+use App\Console\Commands\AnnouncementRejectedDeleteCommand;
+use App\Console\Commands\QuoteFetchCommand;
+use App\Console\Commands\WordFetchCommand;
+use App\Console\Kernel;
+use App\Http\Context\LocaleContext;
 use App\Infrastructure\Repository\QuoteRepository;
 use App\Infrastructure\Service\QuoteApiService;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
+use App\Infrastructure\Translation\LanguageTranslator;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
 use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
@@ -54,7 +63,7 @@ use App\Infrastructure\Repository\CountdownRepository;
 use App\Infrastructure\Repository\ModuleRepository;
 use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\CsrfTokenService;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -85,8 +94,39 @@ $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 // AuthenticationService
 $container->set(AuthenticationService::class, fn() => new AuthenticationService);
 
-// CsrfService
-$container->set(CsrfService::class, fn() => new CsrfService);
+// CsrfTokenService
+$container->set(CsrfTokenService::class, fn() => new CsrfTokenService);
+
+$container->set(LocaleContext::class, function () {
+    return new LocaleContext();
+});
+
+$container->set(LanguageTranslator::class, function ($c) {
+    return new LanguageTranslator(
+        $c->get(LocaleContext::class),
+    );
+});
+
+$container->set(ExceptionHandler::class, function (Container $c) {
+    return new ExceptionHandler(
+        $c,
+        $c->get(LoggerInterface::class),
+    );
+});
+
+$container->set(CommandRegistry::class, function ($c) {
+    $registry = new CommandRegistry();
+
+    $registry->register($c->get(QuoteFetchCommand::class));
+    $registry->register($c->get(WordFetchCommand::class));
+    $registry->register($c->get(AnnouncementRejectedDeleteCommand::class));
+
+    return $registry;
+});
+
+$container->set(Kernel::class, function ($c) {
+    return new Kernel($c->get(CommandRegistry::class));
+});
 
 // ANNOUNCEMENTS
 // AnnouncementsRepository
@@ -102,6 +142,7 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
 // Announcement Use Cases
 $container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
 $container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
 $container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
 $container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
@@ -163,14 +204,19 @@ $container->set(ModuleRepository::class, function (Container $c): ModuleReposito
 // Module Use Cases
 $container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
-$container->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleVisibleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(IsModuleVisibleUseCase::class, function(Container $c) {
+    $cfg = $c->get(Config::class);
+    return new IsModuleVisibleUseCase(
+        $c->get(ModuleRepository::class),
+        $c->get(LoggerInterface::class),
+        $cfg->moduleDateFormat,
+    );
+});
 $container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
 $container->set(UpdateModuleUseCase::class, function(Container $c) {
-    $cfg = $c->get(Config::class);
     return new UpdateModuleUseCase(
         $c->get(ModuleRepository::class),
         $c->get(LoggerInterface::class),
-        $cfg->moduleDateFormat
     );
 });
 
@@ -286,15 +332,23 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
 });
 
 // ErrorController
-    $container->set(ErrorController::class, fn() => new ErrorController($container->get(AuthenticationService::class), $container->get(CsrfService::class), $container->get(LoggerInterface::class)));
+$container->set(ErrorController::class, fn() => new ErrorController(
+    $container->get(AuthenticationService::class),
+    $container->get(CsrfTokenService::class),
+    $container->get(LoggerInterface::class),
+    $container->get(LanguageTranslator::class),
+    $container->get(LocaleContext::class)
+));
 
 //DisplayController
-    $container->set(DisplayController::class, function (Container $c) {
+$container->set(DisplayController::class, function (Container $c) {
         $cfg = $c->get(Config::class);
         return new DisplayController(
             $c->get(AuthenticationService::class),
-            $c->get(CsrfService::class),
+            $c->get(CsrfTokenService::class),
             $c->get(LoggerInterface::class),
+            $c->get(LanguageTranslator::class),
+            $c->get(LocaleContext::class),
             $c->get(WeatherService::class),
             $c->get(IsModuleVisibleUseCase::class),
             $c->get(TramService::class),
@@ -305,19 +359,19 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
             $c->get(FetchActiveWordUseCase::class),
             $cfg->stopID,
         );
-    });
+});
 
 // PanelController
     $container->set(PanelController::class, function (Container $c) {
         return new PanelController(
             $c->get(AuthenticationService::class),
-            $c->get(CsrfService::class),
+            $c->get(CsrfTokenService::class),
             $c->get(LoggerInterface::class),
-            $c->get(ErrorController::class),
+            $c->get(LanguageTranslator::class),
+            $c->get(LocaleContext::class),
             $c->get(GetAllModulesUseCase::class),
             $c->get(GetAllUsersUseCase::class),
             $c->get(GetUserByIdUseCase::class),
-            $c->get(GetUserByUsernameUseCase::class),
             $c->get(GetAllCountdownsUseCase::class),
             $c->get(GetAllAnnouncementsUseCase::class),
         );

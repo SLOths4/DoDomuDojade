@@ -4,18 +4,19 @@ declare(strict_types=1);
 namespace App\Infrastructure;
 
 use Closure;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 use RuntimeException;
 
-final class Container
+final class Container implements ContainerInterface
 {
     /** @var array<string, mixed> */
     private array $instances = [];
 
-    /** @var Closure */
+    /** @var array<string, Closure> */
     private array $factories = [];
 
     public function set(string $id, Closure $factory): void
@@ -40,6 +41,17 @@ final class Container
         }
 
         throw new RuntimeException("Service not found: $id");
+    }
+
+    public function has(string $id): bool
+    {
+        if (array_key_exists($id, $this->instances)) {
+            return true;
+        }
+        if (array_key_exists($id, $this->factories)) {
+            return true;
+        }
+        return class_exists($id);
     }
 
     /**

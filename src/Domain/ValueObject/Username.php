@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
-use App\Infrastructure\Exception\ValidationException;
+use App\Domain\Exception\ValidationException;
 
 final readonly class Username
 {

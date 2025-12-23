@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Domain\Exception\AuthenticationException;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Exception\UserException;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * AuthMiddleware - Ensures only authenticated users can access protected routes.
  * Throws UserException if a user is not logged in.
  */
-readonly class AuthMiddleware implements MiddlewareInterface
+final readonly class AuthMiddleware implements MiddlewareInterface
 {
     /**
      * @param AuthenticationService $authService Checks if user has valid session
@@ -22,15 +23,16 @@ readonly class AuthMiddleware implements MiddlewareInterface
     /**
      * Validates user authentication before proceeding.
      *
-     * @param callable $next Next middleware/controller in a pipeline
-     * @throws UserException When a user is not authenticated
+     * @param Request $request
+     * @param callable $next
+     * @throws AuthenticationException When a user is not authenticated
      */
-    public function handle(callable $next): void
+    public function handle(Request $request, callable $next): void
     {
         if (!$this->authService->isUserLoggedIn()) {
-            throw UserException::noUserLoggedIn();
+            throw AuthenticationException::noUserLoggedIn();
         }
 
-        $next();
+        $next($request);
     }
 }

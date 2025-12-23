@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Exception;
+namespace App\Domain\Exception;
 
 use Exception;
 use Throwable;
 
-class BaseException extends Exception
+class DomainException extends Exception
 {
     public readonly int $errorCode;
     public readonly array $context;

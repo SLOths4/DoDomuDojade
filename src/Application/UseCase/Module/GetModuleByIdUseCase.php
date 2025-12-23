@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Module;
 
-use App\Domain\Module;
+use App\Domain\Entity\Module;
 use App\Infrastructure\Repository\ModuleRepository;
-use Psr\Log\LoggerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class GetModuleByIdUseCase
 {

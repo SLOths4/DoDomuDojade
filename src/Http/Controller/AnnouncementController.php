@@ -2,99 +2,210 @@
 
 namespace App\Http\Controller;
 
-use Exception;
-use Psr\Log\LoggerInterface;
+use App\Application\UseCase\Announcement\ApproveRejectAnnouncementUseCase;
 use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
 use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
 use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
+use App\Application\UseCase\Announcement\ProposeAnnouncementUseCase;
+use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Exception\AnnouncementException;
+use App\Http\Context\LocaleContext;
+use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Translation\LanguageTranslator;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Security\CsrfService;
+use Exception;
+use Psr\Log\LoggerInterface;
+
 
 class AnnouncementController extends BaseController
 {
     public function __construct(
-        AuthenticationService $authenticationService,
-        CsrfService $csrfService,
-        LoggerInterface $logger,
-        private readonly CreateAnnouncementUseCase $createAnnouncementUseCase,
-        private readonly DeleteAnnouncementUseCase $deleteAnnouncementUseCase,
-        private readonly EditAnnouncementUseCase   $editAnnouncementUseCase,
+        AuthenticationService                               $authenticationService,
+        CsrfTokenService                                    $csrfTokenService,
+        LoggerInterface                                     $logger,
+        LanguageTranslator                                  $translator,
+        LocaleContext                                       $localeContext,
+        private readonly CreateAnnouncementUseCase          $createAnnouncementUseCase,
+        private readonly DeleteAnnouncementUseCase          $deleteAnnouncementUseCase,
+        private readonly EditAnnouncementUseCase            $editAnnouncementUseCase,
+        private readonly ProposeAnnouncementUseCase         $proposeAnnouncementUseCase,
+        private readonly ApproveRejectAnnouncementUseCase   $approveRejectAnnouncementUseCase,
     ){
-        parent::__construct($authenticationService, $csrfService, $logger);
+        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
     }
 
+    /**
+     * @throws AnnouncementException
+     * @throws Exception
+     */
     public function deleteAnnouncement(): void
     {
-        try {
-            $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-            if (!$announcementId) {
-                SessionHelper::set('error', 'Invalid announcement ID.');
-                $this->redirect('/panel/announcements');
-            }
+        $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
-            $result = $this->deleteAnnouncementUseCase->execute($announcementId);
-
-            if ($result) {
-                $this->logger->debug("Announcement deleted", ['id' => $announcementId]);
-                SessionHelper::set('success', 'Announcement has been deleted.');
-            } else {
-                $this->logger->error("Announcement could not be deleted", ['id' => $announcementId]);
-                SessionHelper::set('error', 'Failed to delete announcement.');
-            }
-            $this->redirect('/panel/announcements');
-        } catch (Exception) {
-            $this->redirect('/panel/announcements');
+        if (!$announcementId || $announcementId <= 0) {
+            throw AnnouncementException::invalidId();
         }
+
+        $this->deleteAnnouncementUseCase->execute($announcementId);
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.deleted_successfully');
+        $this->logger->info("Announcement deleted", ['id' => $announcementId]);
+
+        $this->redirect('/panel/announcements');
     }
 
+    /**
+     * @throws AnnouncementException
+     * @throws Exception
+     */
     public function addAnnouncement(): void
     {
-        try{
-            $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
-            $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
-            $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
+        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+        $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
+        $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
 
-            $userId = $this->getCurrentUserId();
-
-            $data = ['title' => $title, 'text' => $text, 'valid_until' => $validUntil];
-
-            $success = $this->createAnnouncementUseCase->execute($data, $userId);
-            if ($success) {
-                SessionHelper::set('success', 'Announcement added.');
-                $this->logger->info("Announcement added successfully");
-            } else {
-                SessionHelper::set('error', 'Error adding announcement.');
-                $this->logger->warning("Announcement was not added");
-            }
-            $this->redirect('/panel/announcements');
-        } catch (Exception) {
-            $this->redirect('/panel/announcements');
+        if (empty($title)) {
+            throw AnnouncementException::emptyTitle();
         }
+
+        if (empty($text)) {
+            throw AnnouncementException::emptyText();
+        }
+
+        $userId = $this->getCurrentUserId();
+        $this->createAnnouncementUseCase->execute(
+            ['title' => $title, 'text' => $text, 'valid_until' => $validUntil],
+            $userId
+        );
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.created_successfully');
+        $this->logger->info("Announcement created successfully");
+
+        $this->redirect('/panel/announcements');
     }
 
+    /**
+     * @throws AnnouncementException
+     * @throws Exception
+     */
     public function editAnnouncement(): void
     {
-        try {
-            $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-            $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
-            $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
-            $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
+        $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
-            $data = ['title' => $title, 'text' => $text, 'valid_until' => $validUntil];
-
-            $success = $this->editAnnouncementUseCase->execute($id, $data);
-
-            if ($success) {
-                SessionHelper::set('success', 'Announcement updated.');
-                $this->logger->info("Announcement updated successfully", ['id' => $id]);
-            } else {
-                SessionHelper::set('error', 'No changes were made.');
-                $this->logger->warning("Announcement update made no changes", ['id' => $id]);
-            }
-            $this->redirect('/panel/announcements');
-        } catch (Exception){
-            $this->redirect('/panel/announcements');
+        if (!$id || $id <= 0) {
+            throw AnnouncementException::invalidId();
         }
+
+        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+        $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
+        $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
+        $status = (int)filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+
+        if (empty($title)) {
+            throw AnnouncementException::emptyTitle();
+        }
+
+        if (empty($text)) {
+            throw AnnouncementException::emptyText();
+        }
+
+        $userId = $this->getCurrentUserId();
+
+        $this->editAnnouncementUseCase->execute(
+            $id,
+            ['title' => $title, 'text' => $text, 'valid_until' => $validUntil, 'status' => $status],
+            $userId
+        );
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.updated_successfully');
+        $this->logger->info("Announcement updated", ['id' => $id]);
+
+        $this->redirect('/panel/announcements');
+    }
+
+    /**
+     * @throws AnnouncementException
+     */
+    public function approveAnnouncement(): void
+    {
+        $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+
+        if (!$announcementId || $announcementId <= 0) {
+            throw AnnouncementException::invalidId();
+        }
+
+        $userId = $this->getCurrentUserId();
+        $this->approveRejectAnnouncementUseCase->execute(
+            $announcementId,
+            AnnouncementStatus::APPROVED,
+            $userId
+        );
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.approved_successfully');
+        $this->logger->info("Announcement approved", ['id' => $announcementId]);
+
+        $this->redirect('/panel/announcements');
+    }
+
+    /**
+     * @throws AnnouncementException
+     */
+    public function rejectAnnouncement(): void
+    {
+        $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+
+        if (!$announcementId || $announcementId <= 0) {
+            throw AnnouncementException::invalidId();
+        }
+
+        $userId = $this->getCurrentUserId();
+        $this->approveRejectAnnouncementUseCase->execute(
+            $announcementId,
+            AnnouncementStatus::REJECTED,
+            $userId
+        );
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.rejected_successfully');
+        $this->logger->info("Announcement rejected", ['id' => $announcementId]);
+
+        $this->redirect('/panel/announcements');
+    }
+
+
+    /**
+     * @throws AnnouncementException
+     * @throws Exception
+     */
+    public function proposeAnnouncement(): void
+    {
+        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
+        $text = trim((string)filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
+        $validUntil = (string)filter_input(INPUT_POST, 'expires_at', FILTER_UNSAFE_RAW);
+
+        if (empty($title)) {
+            throw AnnouncementException::emptyTitle();
+        }
+
+        if (empty($text)) {
+            throw AnnouncementException::emptyText();
+        }
+
+        $announcementId = $this->proposeAnnouncementUseCase->execute([
+            'title' => $title,
+            'text' => $text,
+            'valid_until' => $validUntil
+        ]);
+
+        SessionHelper::start();
+        SessionHelper::set('success', 'announcement.proposed_successfully');
+        $this->logger->info("Announcement proposed", ['id' => $announcementId]);
+
+        $this->redirect('/propose');
     }
 }
