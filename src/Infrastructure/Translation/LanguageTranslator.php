@@ -30,7 +30,7 @@ final class LanguageTranslator implements Translator
      * @param array $params Parameters to interpolate in the message
      * @return string Translated message
      */
-    public function trans(string $key, array $params = []): string
+    public function translate(string $key, array $params = []): string
     {
         $locale = $this->context->get();
 

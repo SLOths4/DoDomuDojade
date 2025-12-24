@@ -10,7 +10,6 @@ $dotenv->load();
 use App\Application\UseCase\Announcement\DeleteRejectedSinceAnnouncementUseCase;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Quote\FetchQuoteUseCase;
-use App\bootstrap\ExceptionHandler;
 use App\Console\CommandRegistry;
 use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
@@ -105,13 +104,6 @@ $container->set(LocaleContext::class, function () {
 $container->set(LanguageTranslator::class, function ($c) {
     return new LanguageTranslator(
         $c->get(LocaleContext::class),
-    );
-});
-
-$container->set(ExceptionHandler::class, function (Container $c) {
-    return new ExceptionHandler(
-        $c,
-        $c->get(LoggerInterface::class),
     );
 });
 

@@ -40,8 +40,8 @@ class BaseController
         SessionHelper::remove('error');
         SessionHelper::remove('success');
 
-        $data['error'] = $errorKey ? $this->translator->trans($errorKey) : null;
-        $data['success'] = $successKey ? $this->translator->trans($successKey) : null;
+        $data['error'] = $errorKey ? $this->translator->translate($errorKey) : null;
+        $data['success'] = $successKey ? $this->translator->translate($successKey) : null;
 
         $data['locale'] = $this->localeContext->get();
 

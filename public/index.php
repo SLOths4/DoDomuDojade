@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use App\bootstrap\ExceptionHandler;
 use App\Http\Controller\AnnouncementController;
 use App\Http\Controller\CountdownController;
 use App\Http\Controller\DisplayController;
@@ -13,8 +12,10 @@ use App\Http\Controller\PanelController;
 use App\Http\Controller\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
+use App\Http\Middleware\ExceptionMiddleware;
 use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Middleware\MiddlewarePipeline;
+use App\Http\Middleware\RequestContextMiddleware;
 use App\Infrastructure\Helper\StaticFileHandlingHelper;
 use FastRoute\RouteCollector;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -129,31 +130,29 @@ switch ($routeInfo[0]) {
         $handlerData = $routeInfo[1];
         $vars = $routeInfo[2];
 
-        try {
-            if (is_array($handlerData)) {
-                $controllerClass = $handlerData[0];
-                $methodName = $handlerData[1];
-                $middlewares = $handlerData['middleware'] ?? [];
+        if (is_array($handlerData)) {
+            $controllerClass = $handlerData[0];
+            $methodName = $handlerData[1];
+            $middlewares = $handlerData['middleware'] ?? [];
 
-                $controller = $container->get($controllerClass);
+            $controller = $container->get($controllerClass);
 
-                $pipeline = new MiddlewarePipeline();
-                $pipeline->add($container->get(LocaleMiddleware::class));
-                foreach ($middlewares as $mwClass) {
-                    $pipeline->add($container->get($mwClass));
-                }
+            $pipeline = new MiddlewarePipeline();
 
-                $pipeline->run($request, fn() => $controller->$methodName($vars));
+            $pipeline->add($container->get(RequestContextMiddleware::class));
+            $pipeline->add($container->get(ExceptionMiddleware::class));
+            $pipeline->add($container->get(LocaleMiddleware::class));
 
-            } elseif (is_callable($handlerData)) {
-                $handlerData($vars);
-            } else {
-                throw new RuntimeException(
-                    'Handler must be array [class, method] or callable'
-                );
+            foreach ($middlewares as $mwClass) {
+                $pipeline->add($container->get($mwClass));
             }
-        } catch (Throwable $e) {
-            $container->get(ExceptionHandler::class)->handle($e);
+
+            $pipeline->run($request, fn() => $controller->$methodName($vars));
+
+        } elseif (is_callable($handlerData)) {
+            $handlerData($vars);
+        } else {
+            throw new RuntimeException('Handler must be array [class, method] or callable');
         }
         break;
 
