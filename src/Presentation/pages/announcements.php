@@ -243,9 +243,9 @@
                 <div class="mb-4">
                     <label for="edit_status" class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Status</label>
                     <select id="edit_status" name="status" class="w-full p-2 border rounded dark:bg-gray-950 dark:border-gray-700 dark:text-white">
-                        <option value="0">PENDING</option>
-                        <option value="1">APPROVED</option>
-                        <option value="2">REJECTED</option>
+                        <option value="PENDING">Oczekuje zatwierdzenia</option>
+                        <option value="APPROVED">Zatwierdzone</option>
+                        <option value="REJECTED">Odrzucone</option>
                     </select>
                 </div>
 

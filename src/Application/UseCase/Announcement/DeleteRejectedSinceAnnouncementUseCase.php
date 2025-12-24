@@ -12,12 +12,13 @@ readonly class DeleteRejectedSinceAnnouncementUseCase
 {
     public function __construct(
         private AnnouncementRepository $repository,
-        private LoggerInterface        $logger
-    )
-    {
-    }
+        private LoggerInterface        $logger,
+    ){}
 
     /**
+     * Deletes rejected announcements older than the specified date
+     * @param string $date
+     * @return int number of announcements deleted
      * @throws Exception
      */
     public function execute(string $date): int

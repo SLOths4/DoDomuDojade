@@ -2,6 +2,9 @@
 
 namespace App\Http\Controller;
 
+use App\Application\DataTransferObject\AddAnnouncementDTO;
+use App\Application\DataTransferObject\EditAnnouncementDTO;
+use App\Application\DataTransferObject\ProposeAnnouncementDTO;
 use App\Application\UseCase\Announcement\ApproveRejectAnnouncementUseCase;
 use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
 use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
@@ -15,6 +18,7 @@ use App\Infrastructure\Translation\LanguageTranslator;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
 
@@ -39,13 +43,10 @@ class AnnouncementController extends BaseController
      * @throws AnnouncementException
      * @throws Exception
      */
+    #[NoReturn]
     public function deleteAnnouncement(): void
     {
         $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-
-        if (!$announcementId || $announcementId <= 0) {
-            throw AnnouncementException::invalidId();
-        }
 
         $this->deleteAnnouncementUseCase->execute($announcementId);
 
@@ -57,26 +58,16 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws AnnouncementException
      * @throws Exception
      */
+    #[NoReturn]
     public function addAnnouncement(): void
     {
-        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
-        $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
-        $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
-
-        if (empty($title)) {
-            throw AnnouncementException::emptyTitle();
-        }
-
-        if (empty($text)) {
-            throw AnnouncementException::emptyText();
-        }
-
+        $dto = AddAnnouncementDTO::fromHttpRequest($_POST);
         $userId = $this->getCurrentUserId();
+
         $this->createAnnouncementUseCase->execute(
-            ['title' => $title, 'text' => $text, 'valid_until' => $validUntil],
+            $dto,
             $userId
         );
 
@@ -91,32 +82,17 @@ class AnnouncementController extends BaseController
      * @throws AnnouncementException
      * @throws Exception
      */
+    #[NoReturn]
     public function editAnnouncement(): void
     {
         $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
-        if (!$id || $id <= 0) {
-            throw AnnouncementException::invalidId();
-        }
-
-        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
-        $text = trim((string)filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
-        $validUntil = (string)filter_input(INPUT_POST, 'valid_until', FILTER_UNSAFE_RAW);
-        $status = (int)filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
-
-        if (empty($title)) {
-            throw AnnouncementException::emptyTitle();
-        }
-
-        if (empty($text)) {
-            throw AnnouncementException::emptyText();
-        }
-
+        $dto = EditAnnouncementDTO::fromHttpRequest($_POST);
         $userId = $this->getCurrentUserId();
 
         $this->editAnnouncementUseCase->execute(
             $id,
-            ['title' => $title, 'text' => $text, 'valid_until' => $validUntil, 'status' => $status],
+            $dto,
             $userId
         );
 
@@ -128,17 +104,14 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws AnnouncementException
+     * @throws Exception
      */
     public function approveAnnouncement(): void
     {
         $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
-        if (!$announcementId || $announcementId <= 0) {
-            throw AnnouncementException::invalidId();
-        }
-
         $userId = $this->getCurrentUserId();
+
         $this->approveRejectAnnouncementUseCase->execute(
             $announcementId,
             AnnouncementStatus::APPROVED,
@@ -153,15 +126,12 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws AnnouncementException
+     * @throws Exception
      */
+    #[NoReturn]
     public function rejectAnnouncement(): void
     {
         $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-
-        if (!$announcementId || $announcementId <= 0) {
-            throw AnnouncementException::invalidId();
-        }
 
         $userId = $this->getCurrentUserId();
         $this->approveRejectAnnouncementUseCase->execute(
@@ -179,28 +149,14 @@ class AnnouncementController extends BaseController
 
 
     /**
-     * @throws AnnouncementException
      * @throws Exception
      */
+    #[NoReturn]
     public function proposeAnnouncement(): void
     {
-        $title = trim((string)filter_input(INPUT_POST, 'title', FILTER_UNSAFE_RAW));
-        $text = trim((string)filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
-        $validUntil = (string)filter_input(INPUT_POST, 'expires_at', FILTER_UNSAFE_RAW);
+        $dto = ProposeAnnouncementDTO::fromHttpRequest($_POST);
 
-        if (empty($title)) {
-            throw AnnouncementException::emptyTitle();
-        }
-
-        if (empty($text)) {
-            throw AnnouncementException::emptyText();
-        }
-
-        $announcementId = $this->proposeAnnouncementUseCase->execute([
-            'title' => $title,
-            'text' => $text,
-            'valid_until' => $validUntil
-        ]);
+        $announcementId = $this->proposeAnnouncementUseCase->execute($dto);
 
         SessionHelper::start();
         SessionHelper::set('success', 'announcement.proposed_successfully');

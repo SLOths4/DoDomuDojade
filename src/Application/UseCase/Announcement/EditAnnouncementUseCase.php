@@ -3,135 +3,100 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\config\Config;
+use App\Application\DataTransferObject\EditAnnouncementDTO;
 use App\Domain\Entity\Announcement;
-use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Exception\AnnouncementException;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Repository\AnnouncementRepository;
+use DateMalformedStringException;
 use DateTimeImmutable;
 use Exception;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
 readonly class EditAnnouncementUseCase
 {
     public function __construct(
         private AnnouncementRepository $repository,
-        private Config                 $config,
-        private LoggerInterface        $logger
+        private LoggerInterface $logger,
+        private AnnouncementValidationHelper $validator,
     ) {}
 
     /**
-     * @throws InvalidArgumentException
+     * Edits existing announcement
+     * @param int $id
+     * @param EditAnnouncementDTO $dto
+     * @param int $adminId
+     * @return int $id
+     * @throws AnnouncementException
      * @throws Exception
      */
-    public function execute(int $id, array $data, int $adminId): int
+    public function execute(int $id, EditAnnouncementDTO $dto, int $adminId): int
     {
         $this->logger->info('Executing EditAnnouncementUseCase', [
             'announcement_id' => $id,
-            'payload_keys' => array_keys($data)
+            'admin_id' => $adminId,
         ]);
 
+        $this->validator->validateAnnouncementId($id);
+
         $existing = $this->repository->findById($id);
+        if (!$existing) {
+            throw AnnouncementException::notFound($id);
+        }
 
-        $this->validate($data);
+        $this->validateBusinessRules($dto);
 
-        $newStatus = isset($data['status'])
-            ? $this->stringToStatus($data['status'])
-            : $existing->status;
+        $updated = $this->mapDtoToEntity($dto, $existing, $adminId);
 
-        $isStatusChanged = $newStatus !== $existing->status;
+        $success = $this->repository->update($updated);
 
-        $updated = new Announcement(
-            id: $existing->id,
-            title: isset($data['title']) ? trim($data['title']) : $existing->title,
-            text: isset($data['text']) ? trim($data['text']) : $existing->text,
-            createdAt: $existing->createdAt,
-            validUntil: isset($data['valid_until'])
-                ? new DateTimeImmutable($data['valid_until'])
-                : $existing->validUntil,
-            userId: $existing->userId,
-            status: $newStatus,
-            decidedAt: $isStatusChanged ? new DateTimeImmutable() : $existing->decidedAt,
-            decidedBy: $isStatusChanged ? $adminId : $existing->decidedBy,
-        );
-
-        $result = $this->repository->update($updated);
-
-        if (!$result) {
-            throw new InvalidArgumentException('announcement.update_failed');
+        if (!$success) {
+            throw AnnouncementException::failedToUpdate();
         }
 
         $this->logger->info('Announcement updated successfully', [
             'announcement_id' => $id,
+            'admin_id' => $adminId,
         ]);
 
         return $id;
     }
 
     /**
-     * @throws InvalidArgumentException
+     * Maps DTO to entity
+     * @param EditAnnouncementDTO $dto
+     * @param Announcement $existing
+     * @param int $adminId
+     * @return Announcement
      */
-    private function validate(array $data): void
-    {
-        $maxTitleLength = $this->config->announcementMaxTitleLength ?? 255;
-        $maxTextLength = $this->config->announcementMaxTextLength ?? 5000;
+    private function mapDtoToEntity(
+        EditAnnouncementDTO $dto,
+        Announcement $existing,
+        int $adminId
+    ): Announcement {
+        $statusChanged = $dto->status !== null && $dto->status !== $existing->status;
 
-        if (isset($data['title'])) {
-            $title = trim($data['title']);
-
-            if (empty($title)) {
-                throw new InvalidArgumentException('announcement.title_required');
-            }
-
-            if (mb_strlen($title) > $maxTitleLength) {
-                throw new InvalidArgumentException('announcement.title_too_long');
-            }
-        }
-
-        if (isset($data['text'])) {
-            $text = trim($data['text']);
-
-            if (empty($text)) {
-                throw new InvalidArgumentException('announcement.text_required');
-            }
-
-            if (mb_strlen($text) > $maxTextLength) {
-                throw new InvalidArgumentException('announcement.text_too_long');
-            }
-        }
-
-        if (isset($data['valid_until'])) {
-            try {
-                $validUntil = new DateTimeImmutable($data['valid_until']);
-                $today = new DateTimeImmutable();
-
-                if ($validUntil < $today) {
-                    throw new InvalidArgumentException('announcement.expiration_date_in_past');
-                }
-            } catch (Exception $e) {
-                throw new InvalidArgumentException('announcement.invalid_date_format');
-            }
-        }
+        return new Announcement(
+            id: $existing->id,
+            title: $dto->title,
+            text: $dto->text,
+            createdAt: $existing->createdAt,
+            validUntil: $dto->validUntil,
+            userId: $existing->userId,
+            status: $dto->status ?? $existing->status,
+            decidedAt: $statusChanged ? new DateTimeImmutable() : $existing->decidedAt,
+            decidedBy: $statusChanged ? $adminId : $existing->decidedBy,
+        );
     }
 
-    private function stringToStatus(string|int $status): AnnouncementStatus
+    /**
+     * Validates business logic
+     * @throws AnnouncementException|DateMalformedStringException
+     */
+    private function validateBusinessRules(EditAnnouncementDTO $dto): void
     {
-        $statusMap = [
-            0 => AnnouncementStatus::PENDING,
-            1 => AnnouncementStatus::APPROVED,
-            2 => AnnouncementStatus::REJECTED,
-            'PENDING' => AnnouncementStatus::PENDING,
-            'APPROVED' => AnnouncementStatus::APPROVED,
-            'REJECTED' => AnnouncementStatus::REJECTED,
-        ];
-
-        $key = (string)$status;
-
-        if (!isset($statusMap[$key]) && !isset($statusMap[(int)$status])) {
-            throw new InvalidArgumentException('announcement.invalid_status');
-        }
-
-        return $statusMap[$key] ?? $statusMap[(int)$status];
+        $this->validator->validateTitle($dto->title);
+        $this->validator->validateText($dto->text);
+        $this->validator->validateValidUntilDate($dto->validUntil);
     }
-
 }

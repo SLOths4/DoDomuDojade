@@ -5,7 +5,7 @@ namespace App\Domain\Entity;
 use App\Domain\Enum\AnnouncementStatus;
 use DateTimeImmutable;
 
-class Announcement {
+final class Announcement {
     public function __construct(
         public ?int               $id,
         public string             $title,
@@ -56,17 +56,23 @@ class Announcement {
         );
     }
 
-    public function approve(int $userId): void
+    public function approve(int $decidedBy): void
     {
         $this->status = AnnouncementStatus::APPROVED;
         $this->decidedAt = new DateTimeImmutable();
-        $this->decidedBy = $userId;
+        $this->decidedBy = $decidedBy;
     }
 
-    public function reject(int $userId): void
+    public function reject(int $decidedBy): void
     {
         $this->status = AnnouncementStatus::REJECTED;
         $this->decidedAt = new DateTimeImmutable();
-        $this->decidedBy = $userId;
+        $this->decidedBy = $decidedBy;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->status === AnnouncementStatus::APPROVED
+            && new DateTimeImmutable() <= $this->validUntil;
     }
 }

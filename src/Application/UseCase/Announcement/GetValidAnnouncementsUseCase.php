@@ -16,6 +16,7 @@ readonly class GetValidAnnouncementsUseCase
     ) {}
 
     /**
+     * Fetches all valid announcements
      * @return Announcement[]
      * @throws Exception
      */

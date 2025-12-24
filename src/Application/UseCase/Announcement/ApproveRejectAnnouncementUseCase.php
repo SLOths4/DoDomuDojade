@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\Domain\Entity\Announcement;
 use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Exception\AnnouncementException;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Repository\AnnouncementRepository;
-use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -16,7 +16,8 @@ readonly class ApproveRejectAnnouncementUseCase
 {
     public function __construct(
         private AnnouncementRepository $repository,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private AnnouncementValidationHelper $validator,
     ) {}
 
     /**
@@ -31,32 +32,25 @@ readonly class ApproveRejectAnnouncementUseCase
             'admin_id' => $adminId
         ]);
 
+        $this->validator->validateAnnouncementId($announcementId);
+
         $announcement = $this->repository->findById($announcementId);
 
         if (!$announcement) {
-            throw new InvalidArgumentException('announcement.not_found');
+            throw AnnouncementException::notFound($announcementId);
         }
 
-        if ($announcement->status !== AnnouncementStatus::PENDING) {
-            throw new InvalidArgumentException('announcement.already_decided');
+        if ($status === AnnouncementStatus::APPROVED) {
+            $announcement->approve($adminId);
+        } else {
+            $announcement->reject($adminId);
         }
 
-        $updated = new Announcement(
-            id: $announcement->id,
-            title: $announcement->title,
-            text: $announcement->text,
-            createdAt: $announcement->createdAt,
-            validUntil: $announcement->validUntil,
-            userId: $announcement->userId,
-            status: $status,
-            decidedAt: new DateTimeImmutable(),
-            decidedBy: $adminId,
-        );
 
-        $result = $this->repository->update($updated);
+        $result = $this->repository->update($announcement);
 
         if (!$result) {
-            throw new InvalidArgumentException('announcement.update_failed');
+            throw AnnouncementException::failedToUpdateStatus();
         }
 
         $this->logger->info('Announcement decision made', [

@@ -29,6 +29,9 @@ return [
         'empty_title' => 'Tytuł ogłoszenia nie może być pusty',
         'empty_text' => 'Treść ogłoszenia nie może być pusta',
         'invalid_valid_until' => 'Data ważności musi być w przyszłości',
+        'expiration_to_far_in_future' => 'Data ważności zbytnio wybiega w przyszłość',
+        'invalid_text_length' => 'Nieprawidłowa długość tekstu',
+        'invalid_title_length' => 'Nieprawidłowa długość tytułu',
 
         // Operations
         'not_found' => 'Ogłoszenie nie zostało znalezione',

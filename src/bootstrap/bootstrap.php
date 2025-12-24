@@ -17,6 +17,7 @@ use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
 use App\Http\Context\LocaleContext;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Repository\QuoteRepository;
 use App\Infrastructure\Service\QuoteApiService;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
@@ -140,10 +141,10 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
 });
 
 // Announcement Use Cases
-$container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
-$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
+$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
 $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
-$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(Config::class), $c->get(LoggerInterface::class)));
+$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
 $container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
 

@@ -48,6 +48,10 @@ return [
         'approved_successfully' => 'Announcement has been approved',
         'rejected_successfully' => 'Announcement has been rejected',
         'proposed_successfully' => 'Announcement has been submitted for approval',
+
+        'expiration_to_far_in_future' => 'Expiration date is to far in the future',
+        'invalid_text_length' => 'Invalid text length',
+        'invalid_title_length' => 'Invalid title length'
     ],
 
     'countdown' => [

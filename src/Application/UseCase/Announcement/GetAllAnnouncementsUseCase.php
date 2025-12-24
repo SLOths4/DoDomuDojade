@@ -13,9 +13,10 @@ readonly class GetAllAnnouncementsUseCase
     public function __construct(
         private AnnouncementRepository $repository,
         private LoggerInterface $logger
-    ) {}
+    ){}
 
     /**
+     * Fetches all announcements
      * @return Announcement[]
      * @throws Exception
      */

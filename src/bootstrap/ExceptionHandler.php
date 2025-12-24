@@ -1,11 +1,9 @@
 <?php
-// src/bootstrap/ExceptionHandler.php
 namespace App\bootstrap;
 
 use App\Domain\Exception\DomainException;
 use App\Http\Controller\ErrorController;
 use App\Infrastructure\Helper\SessionHelper;
-use App\Infrastructure\Translation\Translator;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

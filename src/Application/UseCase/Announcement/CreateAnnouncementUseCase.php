@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\config\Config;
+use App\Application\DataTransferObject\AddAnnouncementDTO;
 use App\Domain\Entity\Announcement;
+use App\Domain\Exception\AnnouncementException;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Repository\AnnouncementRepository;
-use DateTimeImmutable;
+use DateMalformedStringException;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -14,54 +16,60 @@ readonly class CreateAnnouncementUseCase
 {
     public function __construct(
         private AnnouncementRepository $repository,
-        private Config $config,
-        private LoggerInterface $logger
-    ) {}
+        private LoggerInterface $logger,
+        private AnnouncementValidationHelper $validator,
+    ){}
 
     /**
      * @throws Exception
      */
-    public function execute(array $data, int $userId): bool
+    public function execute(AddAnnouncementDTO $dto, int $adminId): int
     {
         $this->logger->info('Executing CreateAnnouncementUseCase', [
-            'user_id' => $userId,
-            'payload_keys' => array_keys($data)
+            'admin_id' => $adminId,
         ]);
 
-        $this->validate($data);
+        $this->validateBusinessRules($dto);
 
-        $announcement = Announcement::createNew(
-            title: trim($data['title']),
-            text: trim($data['text']),
-            validUntil: new DateTimeImmutable($data['valid_until']),
-            userId: $userId
-        );
+        $new = $this->mapDtoToEntity($dto, $adminId);
 
-        $result = $this->repository->add($announcement);
+        $id = $this->repository->add($new);
 
         $this->logger->info('Announcement created successfully', [
-            'user_id' => $userId,
-            'success' => $result
+            'announcement_id' => $id,
+            'admin_id' => $adminId
         ]);
 
-        return $result;
+        return $id;
     }
 
     /**
-     * @throws Exception
+     *
+     * @param AddAnnouncementDTO $dto
+     * @param int $adminId
+     * @return Announcement
      */
-    private function validate(array $data): void
+    private function mapDtoToEntity(
+        AddAnnouncementDTO $dto,
+        int $adminId
+    ): Announcement {
+
+       return Announcement::createNew(
+            title: $dto->title,
+            text: $dto->text,
+            validUntil: $dto->validUntil,
+            userId: $adminId,
+       );
+    }
+
+    /**
+     * Validates business logic
+     * @throws AnnouncementException|DateMalformedStringException
+     */
+    private function validateBusinessRules(AddAnnouncementDTO $dto): void
     {
-        if (mb_strlen($data['title'] ?? '') > $this->config->announcementMaxTitleLength) {
-            throw new Exception('Title too long');
-        }
-
-        if (mb_strlen($data['text'] ?? '') > $this->config->announcementMaxTextLength) {
-            throw new Exception('Text too long');
-        }
-
-        if (empty($data['valid_until'])) {
-            throw new Exception('Missing expiration date');
-        }
+        $this->validator->validateTitle($dto->title);
+        $this->validator->validateText($dto->text);
+        $this->validator->validateValidUntilDate($dto->validUntil);
     }
 }

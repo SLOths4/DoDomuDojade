@@ -3,107 +3,76 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Announcement;
 
-use App\config\Config;
+use App\Application\DataTransferObject\ProposeAnnouncementDTO;
 use App\Domain\Entity\Announcement;
+use App\Domain\Exception\AnnouncementException;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Repository\AnnouncementRepository;
-use DateTimeImmutable;
+use DateMalformedStringException;
 use Exception;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
 readonly class ProposeAnnouncementUseCase
 {
     public function __construct(
         private AnnouncementRepository $repository,
-        private Config                 $config,
+        private AnnouncementValidationHelper $validator,
         private LoggerInterface        $logger
     ) {}
 
     /**
-     * @throws InvalidArgumentException
+     * Adds a new announcement
+     * @param ProposeAnnouncementDTO $dto
+     * @return int
+     * @throws AnnouncementException
+     * @throws DateMalformedStringException
      * @throws Exception
      */
-    public function execute(array $data): bool
+    public function execute(ProposeAnnouncementDTO $dto): int
     {
-        $this->logger->info('Executing ProposeAnnouncementUseCase', [
-            'payload_keys' => array_keys($data)
+        $this->logger->info('Proposing announcement', [
+            'title' => $dto->title,
+            'valid_until' => $dto->validUntil->format('Y-m-d')
         ]);
 
-        $this->validate($data);
+        $this->validateBusinessRules($dto);
 
-        $validUntil = !empty($data['valid_until'])
-            ? new DateTimeImmutable($data['valid_until'])
-            : new DateTimeImmutable()->modify('+30 days');
+        $announcement = $this->mapDtoToEntity($dto);
 
-        $announcement = Announcement::proposeNew(
-            title: trim($data['title']),
-            text: trim($data['text']),
-            validUntil: $validUntil
-        );
+        $id = $this->repository->add($announcement);
 
-        $result = $this->repository->add($announcement);
-
-        if ($result <= 0) {
-            throw new InvalidArgumentException('announcement.failed_to_save');
+        if (!$id) {
+            throw AnnouncementException::failedToCreate();
         }
 
-        $this->logger->info('Announcement proposed successfully', [
-            'valid_until' => $validUntil->format('Y-m-d')
-        ]);
+        $this->logger->info('Announcement proposed successfully', ['id' => $id]);
 
-        return $result;
+        return $id;
     }
 
     /**
-     * @throws InvalidArgumentException
+     * Maps DTO to entity
+     * @param ProposeAnnouncementDTO $dto
+     * @return Announcement
      */
-    private function validate(array $data): void
+    private function mapDtoToEntity(ProposeAnnouncementDTO $dto): Announcement
     {
-        $title = trim($data['title'] ?? '');
-        $text = trim($data['text'] ?? '');
+        return Announcement::proposeNew(
+            title: $dto->title,
+            text: $dto->text,
+            validUntil: $dto->validUntil
+        );
+    }
 
-        $minTitleLength = $this->config->announcementMinTitleLength;
-        $maxTitleLength = $this->config->announcementMaxTitleLength;
-        $minTextLength = $this->config->announcementMinTextLength;
-        $maxTextLength = $this->config->announcementMaxTextLength;
-
-        if (empty($title)) {
-            throw new InvalidArgumentException('announcement.title_required');
-        }
-
-        if (empty($text)) {
-            throw new InvalidArgumentException('announcement.text_required');
-        }
-
-        $titleLength = mb_strlen($title);
-        if ($titleLength < $minTitleLength) {
-            throw new InvalidArgumentException('announcement.title_too_short');
-        }
-
-        if ($titleLength > $maxTitleLength) {
-            throw new InvalidArgumentException('announcement.title_too_long');
-        }
-
-        $textLength = mb_strlen($text);
-        if ($textLength < $minTextLength) {
-            throw new InvalidArgumentException('announcement.text_too_short');
-        }
-
-        if ($textLength > $maxTextLength) {
-            throw new InvalidArgumentException('announcement.text_too_long');
-        }
-
-        if (!empty($data['valid_until'])) {
-            try {
-                $validUntil = new DateTimeImmutable($data['valid_until']);
-                $today = new DateTimeImmutable();
-
-                if ($validUntil < $today) {
-                    throw new InvalidArgumentException('announcement.expiration_date_in_past');
-                }
-            } catch (Exception $e) {
-                throw new InvalidArgumentException('announcement.invalid_date_format');
-            }
-        }
+    /**
+     * Validates business logic
+     * @throws DateMalformedStringException
+     * @throws AnnouncementException
+     */
+    private function validateBusinessRules(ProposeAnnouncementDTO $dto): void
+    {
+        $this->validator->validateTitle($dto->title);
+        $this->validator->validateText($dto->text);
+        $this->validator->validateValidUntilDate($dto->validUntil);
     }
 }

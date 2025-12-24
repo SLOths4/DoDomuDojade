@@ -114,10 +114,10 @@ readonly class AnnouncementRepository
     /**
      * Adds an announcement.
      * @param Announcement $announcement
-     * @return bool
+     * @return int
      * @throws Exception
      */
-    public function add(Announcement $announcement): bool
+    public function add(Announcement $announcement): int
     {
         $lastId = $this->dbHelper->insert(
             $this->TABLE_NAME,
@@ -139,7 +139,7 @@ readonly class AnnouncementRepository
             ]
         );
 
-        return !empty($lastId);
+        return (int)$lastId;
     }
 
     /**
