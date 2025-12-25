@@ -37,7 +37,7 @@ readonly class EditAnnouncementUseCase
             'admin_id' => $adminId,
         ]);
 
-        $this->validator->validateAnnouncementId($id);
+        $this->validator->validateId($id);
 
         $existing = $this->repository->findById($id);
         if (!$existing) {
@@ -72,7 +72,7 @@ readonly class EditAnnouncementUseCase
     private function mapDtoToEntity(
         EditAnnouncementDTO $dto,
         Announcement $existing,
-        int $adminId
+        int $adminId,
     ): Announcement {
         $statusChanged = $dto->status !== null && $dto->status !== $existing->status;
 

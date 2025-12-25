@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Application\DataTransferObject;
@@ -9,42 +8,35 @@ use App\Domain\Exception\MissingParameterException;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
-final readonly class AddAnnouncementDTO
+final readonly class AddEditCountdownDTO
 {
     public function __construct(
-        public string              $title,
-        public string              $text,
-        public DateTimeImmutable   $validUntil,
+        public string            $title,
+        public DateTimeImmutable $countTo,
     ){}
 
     /**
-     * @throws MissingParameterException
      * @throws InvalidDateTimeException
+     * @throws MissingParameterException
      */
     public static function fromHttpRequest(array $post): self
     {
         $title = (string)($post['title']);
-        $text = (string)($post['text']);
-        $validUntil = $post['valid_until'];
+        $countTo = $post['count_to'];
 
         try {
-            $validUntil = new DateTimeImmutable($validUntil);
+            $countTo = new DateTimeImmutable($countTo);
         } catch (DateMalformedStringException $e) {
-            throw new InvalidDateTimeException($validUntil, "valid_until", null, $e);
+            throw new InvalidDateTimeException($countTo, "count_to", null, $e);
         }
 
         if (empty($title)) {
             throw new MissingParameterException("title");
         }
 
-        if (empty($text)) {
-            throw new MissingParameterException("text");
-        }
-
         return new self(
             title: $title,
-            text: $text,
-            validUntil: $validUntil,
+            countTo: $countTo,
         );
     }
 }

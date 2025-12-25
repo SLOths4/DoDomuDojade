@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\UseCase\Countdown;
 
 use App\Domain\Entity\Countdown;
+use App\Domain\Exception\CountdownException;
 use App\Infrastructure\Repository\CountdownRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,10 @@ readonly class GetCurrentCountdownUseCase
     {
         $this->logger->debug('Fetching current countdown');
         $countdown = $this->repository->findCurrent();
-        $this->logger->debug('Fetched current countdown', ['found' => $countdown !== null]);
+        if (!$countdown) {
+            throw CountdownException::failedToFetch();
+        }
+        $this->logger->debug('Fetched current countdown');
         return $countdown;
     }
 }

@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Countdown;
 
+use App\Application\DataTransferObject\AddEditCountdownDTO;
 use App\Domain\Entity\Countdown;
+use App\Domain\Exception\CountdownException;
+use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Repository\CountdownRepository;
-use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -14,59 +16,71 @@ readonly class UpdateCountdownUseCase
     public function __construct(
         private CountdownRepository $repository,
         private LoggerInterface $logger,
-        private int $maxTitleLength
+        private CountdownValidationHelper $validator,
     ) {}
 
     /**
      * @throws Exception
      */
-    public function execute(int $id, array $data): bool
+    public function execute(int $id, AddEditCountdownDTO $dto, int $adminId): bool
     {
         $this->logger->info('Updating countdown', [
             'countdown_id' => $id,
-            'payload_keys' => array_keys($data),
+            'admin_id' => $adminId,
         ]);
 
-        $this->validate($data);
+        $this->validator->validateId($id);
+
+        $this->validateBusinessRules($dto);
 
         $existing = $this->repository->findById($id);
-
-        if ($existing === null) {
-            $this->logger->warning('Countdown not found for update', ['countdown_id' => $id]);
-            throw new Exception("Countdown with ID $id not found");
+        if (!$existing) {
+            throw CountdownException::notFound($id);
         }
 
-        $updatedData = [
-            'title' => isset($data['title']) ? trim($data['title']) : $existing->title,
-            'count_to' => isset($data['count_to'])
-                ? new DateTimeImmutable($data['count_to'])
-                : $existing->countTo,
-        ];
-
-        $updated = new Countdown(
-            $existing->id,
-            $updatedData['title'],
-            $updatedData['count_to'],
-            $existing->userId
-        );
+        $updated = $this->mapDtoToEntity($dto, $existing, $adminId);
 
         $result = $this->repository->update($updated);
 
+        if (!$result){
+            throw CountdownException::failedToUpdate();
+        }
+
         $this->logger->info('Countdown update finished', [
             'countdown_id' => $id,
-            'success' => $result,
+            'admin_id' => $adminId,
         ]);
 
-        return $result;
+        return true;
     }
 
     /**
+     * Maps DTO to entity
+     * @param AddEditCountdownDTO $dto
+     * @param Countdown $existing
+     * @param int $adminId
+     * @return Countdown
+     */
+    private function mapDtoToEntity(
+        AddEditCountdownDTO $dto,
+        Countdown $existing,
+        int $adminId,
+    ): Countdown {
+        return new Countdown(
+          id: $existing->id,
+          title: $dto->title,
+          countTo: $dto->countTo,
+          userId: $adminId,
+        );
+    }
+
+    /**
+     * Validates business logic
      * @throws Exception
      */
-    private function validate(array $data): void
+    private function validateBusinessRules(AddEditCountdownDTO $dto): void
     {
-        if (isset($data['title']) && strlen($data['title']) > $this->maxTitleLength) {
-            throw new Exception('Title too long');
-        }
+        $this->validator->validateTitle($dto->title);
+        $this->validator->validateCountToDate($dto->countTo);
     }
 }

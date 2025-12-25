@@ -22,8 +22,18 @@ class ValidationException extends DomainException
 
     public static function invalidCsrf(?Throwable $previous = null): self {
         return new self(
-            "Invalid csrf",
+            "csrf.invalid",
             ExceptionCodes::INVALID_CSRF->value,
+            [],
+            $previous
+        );
+    }
+
+    public static function missingCsrf(?Throwable $previous = null): self
+    {
+        return new self(
+            "csrf.missing",
+            ExceptionCodes::MISSING_CSRF->value,
             [],
             $previous
         );

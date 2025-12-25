@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Application\DataTransferObject;
 
+use DateMalformedStringException;
+use App\Domain\Exception\InvalidDateTimeException;
+use App\Domain\Exception\MissingParameterException;
 use DateTimeImmutable;
 use Exception;
 
@@ -20,13 +23,29 @@ final readonly class ProposeAnnouncementDTO
     /**
      * @throws Exception
      */
-    public static function fromHttpRequest(array $post, string $defaultExpiry = '+30 days'): self
+    public static function fromHttpRequest(array $post, DateTimeImmutable $defaultValidUntil): self
     {
-        $title = trim((string)($post['title'] ?? ''));
-        $text = trim((string)($post['content'] ?? ''));
-        $validUntil = !empty($post['expires_at'])
-            ? new DateTimeImmutable($post['expires_at'])
-            : new DateTimeImmutable()->modify($defaultExpiry);
+        $title = trim((string)($post['title']));
+        $text = trim((string)($post['content']));
+        $validUntil = $post['expires_at'];
+
+        if (empty($validUntil)) {
+            $validUntil = $defaultValidUntil;
+        } else {
+            try {
+                $validUntil = new DateTimeImmutable($validUntil);
+            } catch (DateMalformedStringException $e) {
+                throw new InvalidDateTimeException($validUntil, "expires_at", null, $e);
+            }
+        }
+
+        if (empty($title)) {
+            throw new MissingParameterException("title");
+        }
+
+        if (empty($text)) {
+            throw new MissingParameterException("text");
+        }
 
         return new self(
             title: $title,

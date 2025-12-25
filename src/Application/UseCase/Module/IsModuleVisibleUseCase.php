@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Module;
 
+use App\Domain\Exception\ModuleException;
 use App\Infrastructure\Repository\ModuleRepository;
 use Psr\Log\LoggerInterface;
 use DateTimeImmutable;
@@ -25,11 +26,11 @@ readonly class IsModuleVisibleUseCase
 
         $now = new DateTimeImmutable();
         $formatted = $now->format($this->DATE_FORMAT);
+
         $module = $this->repository->findByName($moduleName);
 
-        if ($module === null) {
-            $this->logger->warning('Module not found when checking visibility', ['module_name' => $moduleName]);
-            throw new Exception("Module not found with name: $moduleName");
+        if (!$module) {
+            throw ModuleException::notFound($module->id);
         }
 
         if (!$module->isActive) {

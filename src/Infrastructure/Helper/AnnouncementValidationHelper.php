@@ -4,6 +4,7 @@ namespace App\Infrastructure\Helper;
 
 use App\config\Config;
 use App\Domain\Exception\AnnouncementException;
+use DateMalformedStringException;
 use DateTimeImmutable;
 
 final readonly class AnnouncementValidationHelper {
@@ -69,13 +70,18 @@ final readonly class AnnouncementValidationHelper {
      * - Max 1 into the future
      *
      * @throws AnnouncementException
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function validateValidUntilDate(DateTimeImmutable $validUntil): void
     {
         $today = new DateTimeImmutable();
 
-        $maxDate = $today->modify('+1 year');
+        if ($validUntil < $today) {
+            throw AnnouncementException::expirationInThePast();
+        }
+
+        $maxDate = $this->config->announcementMaxValidDate;
+        $maxDate = $today->modify($maxDate);
         if ($validUntil > $maxDate) {
             throw AnnouncementException::expirationTooFarInFuture();
         }
@@ -86,7 +92,7 @@ final readonly class AnnouncementValidationHelper {
      *
      * @throws AnnouncementException
      */
-    public function validateAnnouncementId(int $id): void
+    public function validateId(int $id): void
     {
         if ($id <= 0) {
             throw AnnouncementException::invalidId($id);

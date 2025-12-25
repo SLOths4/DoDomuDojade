@@ -10,6 +10,7 @@ use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
 use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
 use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
 use App\Application\UseCase\Announcement\ProposeAnnouncementUseCase;
+use App\config\Config;
 use App\Domain\Enum\AnnouncementStatus;
 use App\Domain\Exception\AnnouncementException;
 use App\Http\Context\LocaleContext;
@@ -17,6 +18,7 @@ use App\Infrastructure\Service\CsrfTokenService;
 use App\Infrastructure\Translation\LanguageTranslator;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Security\AuthenticationService;
+use DateTimeImmutable;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
@@ -30,6 +32,7 @@ class AnnouncementController extends BaseController
         LoggerInterface                                     $logger,
         LanguageTranslator                                  $translator,
         LocaleContext                                       $localeContext,
+        private readonly Config                             $config,
         private readonly CreateAnnouncementUseCase          $createAnnouncementUseCase,
         private readonly DeleteAnnouncementUseCase          $deleteAnnouncementUseCase,
         private readonly EditAnnouncementUseCase            $editAnnouncementUseCase,
@@ -106,6 +109,7 @@ class AnnouncementController extends BaseController
     /**
      * @throws Exception
      */
+    #[NoReturn]
     public function approveAnnouncement(): void
     {
         $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
@@ -154,7 +158,10 @@ class AnnouncementController extends BaseController
     #[NoReturn]
     public function proposeAnnouncement(): void
     {
-        $dto = ProposeAnnouncementDTO::fromHttpRequest($_POST);
+        $today = new DateTimeImmutable();
+        $modified = $today->modify($this->config->announcementDefaultValidDate);
+
+        $dto = ProposeAnnouncementDTO::fromHttpRequest($_POST, $modified);
 
         $announcementId = $this->proposeAnnouncementUseCase->execute($dto);
 

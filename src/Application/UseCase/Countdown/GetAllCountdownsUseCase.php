@@ -3,10 +3,14 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Countdown;
 
+use App\Domain\Exception\CountdownException;
 use App\Infrastructure\Repository\CountdownRepository;
 use Psr\Log\LoggerInterface;
 use Exception;
 
+/**
+ * Fetches all available countdowns
+ */
 readonly class GetAllCountdownsUseCase
 {
     public function __construct(
@@ -21,7 +25,10 @@ readonly class GetAllCountdownsUseCase
     {
         $this->logger->debug('Fetching all countdowns');
         $countdowns = $this->repository->findAll();
-        $this->logger->debug('Fetched all countdowns', ['count' => count($countdowns)]);
+        if (!$countdowns) {
+            throw CountdownException::failedToFetch();
+        }
+        $this->logger->debug('Fetched all countdowns');
         return $countdowns;
     }
 }

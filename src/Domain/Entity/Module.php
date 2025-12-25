@@ -4,7 +4,7 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
-readonly class Module {
+class Module {
     public function __construct(
         public ?int              $id,
         public string            $moduleName,
@@ -12,4 +12,9 @@ readonly class Module {
         public DateTimeImmutable $startTime,
         public DateTimeImmutable $endTime,
     ){}
+
+    public function toggle(): void
+    {
+        $this->isActive = !$this->isActive;
+    }
 }

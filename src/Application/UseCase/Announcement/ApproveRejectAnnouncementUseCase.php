@@ -32,7 +32,7 @@ readonly class ApproveRejectAnnouncementUseCase
             'admin_id' => $adminId
         ]);
 
-        $this->validator->validateAnnouncementId($announcementId);
+        $this->validator->validateId($announcementId);
 
         $announcement = $this->repository->findById($announcementId);
 

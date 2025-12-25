@@ -58,7 +58,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_status',
-            ExceptionCodes::ANNOUNCEMENT_EMPTY_TEXT->value,
+            ExceptionCodes::ANNOUNCEMENT_INVALID_STATUS->value,
             [
                 'staus' => $status
             ]
@@ -129,7 +129,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.status_update_failed',
-            ExceptionCodes::ANNOUNCEMENT_UPDATE_FAILED->value
+            ExceptionCodes::ANNOUNCEMENT_STATUS_UPDATE_FAILED->value
         );
     }
 
@@ -142,7 +142,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_title_length',
-            ExceptionCodes::ANNOUNCEMENT_NO_CHANGES->value,
+            ExceptionCodes::ANNOUNCEMENT_TITLE_TOO_SHORT->value,
             [
                 'min title length' => $minTitleLength,
             ]
@@ -158,7 +158,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
                 'announcement.invalid_text_length',
-                ExceptionCodes::ANNOUNCEMENT_NO_CHANGES->value,
+                ExceptionCodes::ANNOUNCEMENT_TEXT_TOO_SHORT->value,
                 [
                     'min title length' => $minTextLength,
                 ]
@@ -174,7 +174,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_title_length',
-            ExceptionCodes::ANNOUNCEMENT_NO_CHANGES->value,
+            ExceptionCodes::ANNOUNCEMENT_TITLE_TOO_LONG->value,
             [
                 'max title length' => $maxTitleLength
             ]
@@ -190,7 +190,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_text_length',
-            ExceptionCodes::ANNOUNCEMENT_NO_CHANGES->value,
+            ExceptionCodes::ANNOUNCEMENT_TEXT_TOO_LONG->value,
             [
                 'max title length' => $maxTextLength
             ]
@@ -204,8 +204,16 @@ final class AnnouncementException extends DomainException
     public static function expirationTooFarInFuture(): self
     {
             return new self(
-                'announcement.expiration_to_far_in_future',
-                ExceptionCodes::ANNOUNCEMENT_NO_CHANGES->value
+                'announcement.expiration_to_far_in_the_future',
+                ExceptionCodes::ANNOUNCEMENT_EXPIRATION_TOO_FAR_IN_THE_FUTURE->value,
             );
+    }
+
+    public static function expirationInThePast(): self
+    {
+        return new self(
+            'announcement.expiration_in_the_past',
+            ExceptionCodes::ANNOUNCEMENT_EXPIRATION_IN_THE_PAST->value,
+        );
     }
 }

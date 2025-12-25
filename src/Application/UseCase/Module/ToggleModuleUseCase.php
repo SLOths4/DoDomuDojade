@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Module;
 
-use App\Domain\Entity\Module;
+use App\Domain\Exception\ModuleException;
+use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Repository\ModuleRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -12,7 +13,8 @@ readonly class ToggleModuleUseCase
 {
     public function __construct(
         private ModuleRepository $repository,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private ModuleValidationHelper $validator,
     ) {}
 
     /**
@@ -22,28 +24,26 @@ readonly class ToggleModuleUseCase
     {
         $this->logger->info('Toggling module active status', ['module_id' => $id]);
 
+        $this->validator->validateId($id);
+
         $module = $this->repository->findById($id);
-        if ($module === null) {
-            $this->logger->warning('Module does not exist', ['module_id' => $id]);
-            throw new Exception("Module with id: $id does not exist");
+        if (!$module) {
+            throw ModuleException::notFound($id);
         }
 
-        $toggledModule = new Module(
-            $module->id,
-            $module->moduleName,
-            !$module->isActive,
-            $module->startTime,
-            $module->endTime
-        );
+        $module->toggle();
 
-        $result = $this->repository->update($toggledModule);
+        $result = $this->repository->update($module);
+
+        if (!$result) {
+            throw ModuleException::failedToToggle();
+        }
 
         $this->logger->info('Module toggle finished', [
             'module_id' => $id,
-            'success' => $result,
-            'new_status' => !$module->isActive,
+            'new_status' => $module->isActive,
         ]);
 
-        return $result;
+        return true;
     }
 }

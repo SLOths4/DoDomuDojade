@@ -8,6 +8,9 @@ use App\Infrastructure\Repository\AnnouncementRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches all available announcements
+ */
 readonly class GetAllAnnouncementsUseCase
 {
     public function __construct(
@@ -22,7 +25,9 @@ readonly class GetAllAnnouncementsUseCase
      */
     public function execute(): array
     {
-        $this->logger->debug('Executing GetAllAnnouncementsUseCase');
-        return $this->repository->findAll();
+        $this->logger->debug('Fetching all announcements');
+        $result = $this->repository->findAll();
+        $this->logger->debug('Fetched all announcements');
+        return $result;
     }
 }

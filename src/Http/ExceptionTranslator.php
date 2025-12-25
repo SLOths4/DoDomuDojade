@@ -8,6 +8,7 @@ use App\Domain\Exception\CountdownException;
 use App\Domain\Exception\DomainException;
 use App\Domain\Exception\ModuleException;
 use App\Domain\Exception\UserException;
+use App\Domain\Exception\ValidationException;
 use App\Http\Context\RequestContext;
 
 final readonly class ExceptionTranslator
@@ -30,6 +31,8 @@ final readonly class ExceptionTranslator
 
         // Modules: /panel/edit_module, /panel/toggle_module → /panel/modules
         ModuleException::class => '/panel/modules',
+
+        ValidationException::class => '/panel',
     ];
 
     /**

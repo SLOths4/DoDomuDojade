@@ -52,10 +52,6 @@ class PanelController extends BaseController
         SessionHelper::start();
         $userId = SessionHelper::get('user_id');
 
-        if (!$userId) {
-            throw ViewException::userNotAuthenticated();
-        }
-
         return $this->getUserByIdUseCase->execute($userId);
     }
 

@@ -30,12 +30,12 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
     public function handle(Request $request, callable $next): void
     {
         try {
-            $token = $this->csrfTokenService->getOrCreate();
-
-            $_REQUEST['csrf_token_generated'] = $token;
+            $this->csrfTokenService->getOrCreate();
 
             $isPostRequest = $_SERVER['REQUEST_METHOD'] === 'POST';
             if ($isPostRequest) {
+                $this->hasToken($_POST);
+
                 $providedToken = $_POST['csrf_token'];
 
                 if (!$this->csrfTokenService->validate($providedToken)) {
@@ -50,4 +50,13 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
         $next($request);
     }
 
+    /**
+     * @throws ValidationException
+     */
+    private function hasToken($post): void
+    {
+        if (empty($post['csrf_token'])) {
+            throw ValidationException::missingCsrf();
+        }
+    }
 }

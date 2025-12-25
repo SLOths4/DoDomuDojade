@@ -10,7 +10,7 @@ use PDOStatement;
 use RuntimeException;
 use Psr\Log\LoggerInterface;
 
-readonly class DatabaseHelper
+final readonly class DatabaseHelper
 {
     protected PDO $pdo;
     protected LoggerInterface $logger;

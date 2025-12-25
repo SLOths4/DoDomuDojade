@@ -3,7 +3,8 @@ return [
     'error.user_not_found' => 'User not found',
 
     'csrf' => [
-        'invalid' => 'Invalid csrf token'
+        'invalid' => 'Invalid csrf token',
+        'missing' => 'Csrf token missing',
     ],
 
     // Auth
@@ -32,11 +33,18 @@ return [
         'invalid_id' => 'Invalid announcement ID',
         'empty_title' => 'Announcement title cannot be empty',
         'empty_text' => 'Announcement text cannot be empty',
-        'invalid_valid_until' => 'Expiry date must be in the future',
+        'invalid_status' => 'Invalid announcement status',
         'not_found' => 'Announcement not found',
         'create_failed' => 'Failed to create announcement',
         'delete_failed' => 'Failed to delete announcement',
         'update_failed' => 'Failed to update announcement',
+        'status_update_failed' => 'Failed to update announcement status',
+        'invalid_title_length' => 'Invalid title length',
+        'invalid_text_length' => 'Invalid text length',
+        'expiration_to_far_in_future' => 'Expiration date is to far in the future',
+        'expiration_in_the_past' => 'Expiration date cannot be in the past',
+
+
         'no_changes' => 'No changes were made',
         'unauthorized' => 'You do not have permission for this action',
         'cannot_edit_others' => 'You can only edit your own announcements',
@@ -49,9 +57,6 @@ return [
         'rejected_successfully' => 'Announcement has been rejected',
         'proposed_successfully' => 'Announcement has been submitted for approval',
 
-        'expiration_to_far_in_future' => 'Expiration date is to far in the future',
-        'invalid_text_length' => 'Invalid text length',
-        'invalid_title_length' => 'Invalid title length'
     ],
 
     'countdown' => [
@@ -63,6 +68,7 @@ return [
         'create_failed' => 'Failed to create countdown',
         'update_failed' => 'Failed to update countdown',
         'delete_failed' => 'Failed to delete countdown',
+        'fetch_failed' => 'Failed to fetch countdown',
         'created_successfully' => 'Countdown has been created',
         'updated_successfully' => 'Countdown has been updated',
         'deleted_successfully' => 'Countdown has been deleted',

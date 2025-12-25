@@ -2,6 +2,7 @@
 namespace App\Domain\Exception;
 
 use App\Domain\Enum\ExceptionCodes;
+use DateTimeImmutable;
 
 /**
  * Module domain exceptions - contains translation KEYS
@@ -20,24 +21,16 @@ final class ModuleException extends DomainException
     }
 
     /**
-     * Module isn't found in database
+     * Module isn't found in a database
      */
-    public static function notFound(int $id): self
+    public static function notFound(?int $id = null): self
     {
         return new self(
             'module.not_found',
-            ExceptionCodes::MODULE_NOT_FOUND->value
-        );
-    }
-
-    /**
-     * Invalid time format provided
-     */
-    public static function invalidTimeFormat(): self
-    {
-        return new self(
-            'module.invalid_time_format',
-            ExceptionCodes::MODULE_INVALID_TIME_FORMAT->value
+            ExceptionCodes::MODULE_NOT_FOUND->value,
+            [
+                '$id' => $id
+            ]
         );
     }
 
@@ -60,6 +53,40 @@ final class ModuleException extends DomainException
         return new self(
             'module.toggle_failed',
             ExceptionCodes::MODULE_TOGGLE_FAILED->value
+        );
+    }
+
+    public static function invalidStartTime(DateTimeImmutable $startTime): self
+    {
+        return new self(
+            'module.invalid_start_time',
+            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            [
+                'start_time' => $startTime
+            ]
+        );
+    }
+
+    public static function invalidEndTime(DateTimeImmutable $endTime): self
+    {
+        return new self(
+            'module.invalid_end_time',
+            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            [
+                'end_time' => $endTime
+            ]
+        );
+    }
+
+    public static function startTimeGreaterThanEndTime(DateTimeImmutable $startTime, DateTimeImmutable $endTime): self
+    {
+        return new self(
+            'module.start_time_greater_than_end_time',
+            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            [
+                'start_time' => $startTime,
+                'end_time' => $endTime
+            ]
         );
     }
 }

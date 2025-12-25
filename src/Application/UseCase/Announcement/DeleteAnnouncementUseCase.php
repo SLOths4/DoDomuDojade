@@ -27,18 +27,18 @@ readonly class DeleteAnnouncementUseCase
     {
         $this->logger->info('Executing DeleteAnnouncementUseCase', ['announcement_id' => $announcementId]);
 
-        $this->validator->validateAnnouncementId($announcementId);
+        $this->validator->validateId($announcementId);
 
         $result = $this->repository->delete($announcementId);
-
-        $this->logger->info('Announcement deleted successfully', [
-            'announcement_id' => $announcementId,
-            'success' => $result
-        ]);
 
         if (!$result) {
             throw AnnouncementException::failedToDelete($announcementId);
         }
+
+        $this->logger->info('Announcement deleted successfully', [
+            'announcement_id' => $announcementId,
+            'success' => true
+        ]);
 
         return true;
     }

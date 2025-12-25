@@ -67,12 +67,12 @@ readonly class CountdownRepository
     /**
      * Adds a countdown.
      * @param Countdown $countdown
-     * @return bool
+     * @return int
      * @throws Exception
      */
-    public function add(Countdown $countdown): bool
+    public function add(Countdown $countdown): int
     {
-        $lastId = $this->dbHelper->insert(
+        return $this->dbHelper->insert(
             $this->TABLE_NAME,
             [
                 'title'    => [$countdown->title, PDO::PARAM_STR],
@@ -80,8 +80,6 @@ readonly class CountdownRepository
                 'user_id'  => [$countdown->userId, PDO::PARAM_INT],
             ]
         );
-
-        return !empty($lastId);
     }
 
     /**

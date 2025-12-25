@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\DataTransferObject;
 
 use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Exception\AnnouncementException;
 use DateTimeImmutable;
 
 final readonly class EditAnnouncementDTO
@@ -15,13 +16,15 @@ final readonly class EditAnnouncementDTO
         public ?AnnouncementStatus $status = null,
     ) {}
 
+    /**
+     * @throws \DateMalformedStringException
+     * @throws AnnouncementException
+     */
     public static function fromHttpRequest(array $post): self
     {
-        $title = trim((string)($post['title'] ?? ''));
-        $text = trim((string)($post['text'] ?? ''));
-        $validUntil = !empty($post['valid_until'])
-            ? new DateTimeImmutable($post['valid_until'])
-            : null;
+        $title = (string)($post['title']);
+        $text = (string)($post['text'] ?? '');
+        $validUntil = new DateTimeImmutable($post['valid_until']);
 
         $status = null;
         if (isset($post['status'])) {

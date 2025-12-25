@@ -21,7 +21,7 @@ readonly class GetAllModulesUseCase
     {
         $this->logger->debug('Fetching all modules');
         $modules = $this->repository->findAll();
-        $this->logger->debug('Fetched all modules', ['count' => count($modules)]);
+        $this->logger->debug('Fetched all modules');
         return $modules;
     }
 }

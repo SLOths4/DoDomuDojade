@@ -3,64 +3,77 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Countdown;
 
+use App\Application\DataTransferObject\AddEditCountdownDTO;
 use App\Domain\Entity\Countdown;
+use App\Domain\Exception\CountdownException;
+use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Repository\CountdownRepository;
-use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Creates countdown with provided data
+ */
 readonly class CreateCountdownUseCase
 {
     public function __construct(
         private CountdownRepository $repository,
         private LoggerInterface $logger,
-        private int $maxTitleLength
+        private CountdownValidationHelper $validator,
     ) {}
 
     /**
      * @throws Exception
      */
-    public function execute(array $data, int $userId): bool
+    public function execute(AddEditCountdownDTO $dto, int $adminId): int
     {
         $this->logger->info('Creating countdown', [
-            'user_id' => $userId,
-            'payload_keys' => array_keys($data),
+            'admin_id' => $adminId,
         ]);
 
-        $this->validate($data);
+        $this->validateBusinessRules($dto);
 
-        $countdown = new Countdown(
-            null,
-            trim($data['title']),
-            new DateTimeImmutable($data['count_to']),
-            $userId
-        );
+        $new = $this->mapDtoToEntity($dto, $adminId);
 
-        $result = $this->repository->add($countdown);
+        $id = $this->repository->add($new);
+
+        if (!$id) {
+            throw CountdownException::failedToCreate();
+        }
 
         $this->logger->info('Countdown creation finished', [
-            'user_id' => $userId,
-            'success' => $result,
+            'admin_id' => $adminId,
+            'countdown_id' => $id,
         ]);
 
-        return $result;
+        return $id;
+    }
+
+    /**
+     *
+     * @param AddEditCountdownDTO $dto
+     * @param int $adminId
+     * @return Countdown
+     */
+    private function mapDtoToEntity(
+        AddEditCountdownDTO $dto,
+        int $adminId
+    ): Countdown {
+
+        return new Countdown(
+            id: null,
+            title: $dto->title,
+            countTo: $dto->countTo,
+            userId: $adminId,
+        );
     }
 
     /**
      * @throws Exception
      */
-    private function validate(array $data): void
+    private function validateBusinessRules(AddEditCountdownDTO $dto): void
     {
-        if (empty($data['title'])) {
-            throw new Exception('Missing title');
-        }
-
-        if (strlen($data['title']) > $this->maxTitleLength) {
-            throw new Exception('Title too long');
-        }
-
-        if (empty($data['count_to'])) {
-            throw new Exception('Missing countdown date');
-        }
+        $this->validator->validateTitle($dto->title);
+        $this->validator->validateCountToDate($dto->countTo);
     }
 }

@@ -17,6 +17,8 @@ use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
 use App\Http\Context\LocaleContext;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Infrastructure\Helper\CountdownValidationHelper;
+use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Repository\QuoteRepository;
 use App\Infrastructure\Service\QuoteApiService;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
@@ -196,7 +198,7 @@ $container->set(ModuleRepository::class, function (Container $c): ModuleReposito
 
 // Module Use Cases
 $container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
-$container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class) ));
 $container->set(IsModuleVisibleUseCase::class, function(Container $c) {
     $cfg = $c->get(Config::class);
     return new IsModuleVisibleUseCase(
@@ -205,11 +207,12 @@ $container->set(IsModuleVisibleUseCase::class, function(Container $c) {
         $cfg->moduleDateFormat,
     );
 });
-$container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
+$container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class) ));
 $container->set(UpdateModuleUseCase::class, function(Container $c) {
     return new UpdateModuleUseCase(
         $c->get(ModuleRepository::class),
         $c->get(LoggerInterface::class),
+        $c->get(ModuleValidationHelper::class),
     );
 });
 
@@ -237,23 +240,21 @@ $container->set(CountdownRepository::class, function (Container $c): CountdownRe
 
 // Countdown Use Cases
 $container->set(CreateCountdownUseCase::class, function(Container $c) {
-    $cfg = $c->get(Config::class);
     return new CreateCountdownUseCase(
         $c->get(CountdownRepository::class),
         $c->get(LoggerInterface::class),
-        $cfg->countdownMaxTitleLength
+        $c->get(CountdownValidationHelper::class),
     );
 });
-$container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class) ));
 $container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
-$container->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class) ));
 $container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
 $container->set(UpdateCountdownUseCase::class, function(Container $c) {
-    $cfg = $c->get(Config::class);
     return new UpdateCountdownUseCase(
         $c->get(CountdownRepository::class),
         $c->get(LoggerInterface::class),
-        $cfg->countdownMaxTitleLength
+        $c->get(CountdownValidationHelper::class),
     );
 });
 

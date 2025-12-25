@@ -22,6 +22,8 @@ return [
         'missing_data' => 'Brakuje wymaganych danych',
     ],
 
+
+
     // announcement
     'announcement' => [
         // Validation
@@ -32,12 +34,15 @@ return [
         'expiration_to_far_in_future' => 'Data ważności zbytnio wybiega w przyszłość',
         'invalid_text_length' => 'Nieprawidłowa długość tekstu',
         'invalid_title_length' => 'Nieprawidłowa długość tytułu',
+        'invalid_status' => 'Nieprawidłowy status ogłoszenia',
+        'expiration_in_the_past' => 'Data ważności nie może być w przeszłości',
 
         // Operations
         'not_found' => 'Ogłoszenie nie zostało znalezione',
         'create_failed' => 'Nie udało się dodać ogłoszenia',
         'delete_failed' => 'Nie udało się usunąć ogłoszenia',
         'update_failed' => 'Nie udało się zaktualizować ogłoszenia',
+        'status_update_failed' => 'Nie udało się zaktualizować status',
         'no_changes' => 'Nie wprowadzono żadnych zmian',
 
         // Authorization
@@ -66,6 +71,7 @@ return [
         'create_failed' => 'Nie udało się utworzyć odliczania',
         'update_failed' => 'Nie udało się zaktualizować odliczania',
         'delete_failed' => 'Nie udało się usunąć odliczania',
+        'fetch_failed' => 'Nie udało się pobrać odliczania/odliczań',
         'created_successfully' => 'Odliczanie zostało utworzone',
         'updated_successfully' => 'Odliczanie zostało zaktualizowane',
         'deleted_successfully' => 'Odliczanie zostało usunięte',
