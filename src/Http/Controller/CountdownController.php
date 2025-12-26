@@ -4,31 +4,27 @@ namespace App\Http\Controller;
 
 use App\Application\DataTransferObject\AddEditCountdownDTO;
 use App\Domain\Exception\CountdownException;
-use App\Http\Context\LocaleContext;
-use App\Infrastructure\Translation\LanguageTranslator;
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\Countdown\CreateCountdownUseCase;
 use App\Application\UseCase\Countdown\DeleteCountdownUseCase;
 use App\Application\UseCase\Countdown\UpdateCountdownUseCase;
-use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Service\CsrfTokenService;
 
-class CountdownController extends BaseController
+final class CountdownController extends BaseController
 {
     public function __construct(
-        AuthenticationService $authenticationService,
-        CsrfTokenService $csrfTokenService,
-        LoggerInterface $logger,
-        LanguageTranslator $translator,
-        LocaleContext $localeContext,
+        private readonly LoggerInterface                         $logger,
+        readonly ViewRendererInterface                   $renderer,
+        readonly FlashMessengerInterface                 $flash,
+        readonly RequestContext                          $requestContext,
         private readonly CreateCountdownUseCase $createCountdownUseCase,
         private readonly DeleteCountdownUseCase $deleteCountdownUseCase,
         private readonly UpdateCountdownUseCase $updateCountdownUseCase,
-    ) {
-        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
-    }
+    ) {}
 
     /**
      * Create a new countdown
@@ -37,12 +33,14 @@ class CountdownController extends BaseController
     #[NoReturn]
     public function addCountdown(): void
     {
+        $this->logger->debug("Received add countdown request");
         $dto = AddEditCountdownDTO::fromHttpRequest($_POST);
         $userId = $this->getCurrentUserId();
 
         $this->createCountdownUseCase->execute($dto, $userId);
 
-        $this->successAndRedirect('countdown.created_successfully', '/panel/countdowns');
+        $this->flash('success', 'countdown.created_successfully');
+        $this->redirect('/panel/countdowns');
     }
 
     /**
@@ -52,6 +50,7 @@ class CountdownController extends BaseController
     #[NoReturn]
     public function editCountdown(): void
     {
+        $this->logger->debug("Received edit countdown request");
         $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
         $dto = AddEditCountdownDTO::fromHttpRequest($_POST);
@@ -59,7 +58,8 @@ class CountdownController extends BaseController
 
         $this->updateCountdownUseCase->execute($countdownId, $dto, $userId);
 
-        $this->successAndRedirect('countdown.updated_successfully', '/panel/countdowns');
+        $this->flash('success', 'countdown.updated_successfully');
+        $this->redirect('/panel/countdowns');
     }
 
     /**
@@ -70,10 +70,12 @@ class CountdownController extends BaseController
     #[NoReturn]
     public function deleteCountdown(): void
     {
+        $this->logger->debug("Received delete countdown request");
         $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
 
         $this->deleteCountdownUseCase->execute($countdownId);
 
-        $this->successAndRedirect('countdown.deleted_successfully', '/panel/countdowns');
+        $this->flash('success', 'countdown.deleted_successfully');
+        $this->redirect('/panel/countdowns');
     }
 }

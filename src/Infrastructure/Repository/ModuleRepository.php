@@ -96,7 +96,7 @@ readonly class ModuleRepository
     public function findActive(): array
     {
         $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE is_active = 1"
+            "SELECT * FROM $this->TABLE_NAME WHERE is_active = true"
         );
 
         return array_map(fn(array $row) => $this->mapRow($row), $rows);

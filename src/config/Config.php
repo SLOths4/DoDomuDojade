@@ -15,6 +15,9 @@ final readonly class Config
      * @param string $loggingDirectoryPath
      * @param string $loggingChannelName
      * @param string $loggingLevel
+     * @param string $viewPath
+     * @param string $twigCachePath
+     * @param bool   $twigDebug
      * @param string $imgwWeatherUrl
      * @param string $airlyEndpoint
      * @param string $airlyApiKey
@@ -53,6 +56,9 @@ final readonly class Config
         public string $loggingDirectoryPath,
         public string $loggingChannelName,
         public string $loggingLevel,
+        public string $viewPath,
+        public string $twigCachePath,
+        public bool   $twigDebug,
         public string $imgwWeatherUrl,
         public string $airlyEndpoint,
         public string $airlyApiKey,
@@ -98,6 +104,11 @@ final readonly class Config
             $loggingDirectoryPath = self::env('LOGGING_DIRECTORY_PATH');
             $loggingChannelName = self::env('LOGGING_CHANNEL_NAME', 'APP');
             $loggingLevel = self::env('LOGGING_LEVEL', 'INFO');
+
+            // Twig
+            $viewPath = self::env('VIEWS_PATH');
+            $twigCachePath = self::env('TWIG_CACHE_PATH');
+            $twigDebug = (bool)self::env('TWIG_DEBUG');
 
             // Weather
             $imgw = self::env('IMGW_WEATHER_URL');
@@ -156,6 +167,9 @@ final readonly class Config
                 loggingDirectoryPath: $loggingDirectoryPath,
                 loggingChannelName: $loggingChannelName,
                 loggingLevel: $loggingLevel,
+                viewPath: $viewPath,
+                twigCachePath: $twigCachePath,
+                twigDebug: $twigDebug,
                 imgwWeatherUrl: $imgw,
                 airlyEndpoint: $airly,
                 airlyApiKey: $key,

@@ -6,15 +6,11 @@ use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
 use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
 use App\Application\UseCase\Module\GetAllModulesUseCase;
 use App\Application\UseCase\User\GetAllUsersUseCase;
-use App\Application\UseCase\User\GetUserByIdUseCase;
-use App\Domain\Entity\User;
 use App\Domain\Enum\AnnouncementStatus;
 use App\Domain\Exception\ViewException;
-use App\Http\Context\LocaleContext;
-use App\Infrastructure\Helper\SessionHelper;
-use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Service\CsrfTokenService;
-use App\Infrastructure\Translation\LanguageTranslator;
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -27,33 +23,15 @@ use Psr\Log\LoggerInterface;
 class PanelController extends BaseController
 {
     public function __construct(
-        AuthenticationService $authenticationService,
-        CsrfTokenService $csrfTokenService,
-        LoggerInterface $logger,
-        LanguageTranslator $translator,
-        LocaleContext $localeContext,
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+        private readonly LoggerInterface $logger,
         private readonly GetAllModulesUseCase $getAllModulesUseCase,
         private readonly GetAllUsersUseCase $getAllUsersUseCase,
-        private readonly GetUserByIdUseCase $getUserByIdUseCase,
         private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
         private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
-    ) {
-        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
-    }
-
-    /**
-     * Get currently authenticated user
-     *
-     * @throws ViewException
-     * @throws Exception
-     */
-    private function getActiveUser(): User
-    {
-        SessionHelper::start();
-        $userId = SessionHelper::get('user_id');
-
-        return $this->getUserByIdUseCase->execute($userId);
-    }
+    ){}
 
     /**
      * Build map of user IDs to usernames for display purposes
@@ -124,16 +102,12 @@ class PanelController extends BaseController
      */
     public function users(): void
     {
-        $user = $this->getActiveUser();
         $users = $this->getAllUsersUseCase->execute();
 
         $this->logger->info("Users page loaded");
 
         $this->render('pages/users', [
-            'user' => $user,
             'users' => $users,
-            'footer' => true,
-            'navbar' => true
         ]);
     }
 
@@ -145,7 +119,6 @@ class PanelController extends BaseController
      */
     public function countdowns(): void
     {
-        $user = $this->getActiveUser();
         $users = $this->getAllUsersUseCase->execute();
         $countdowns = $this->getAllCountdownsUseCase->execute();
 
@@ -155,44 +128,34 @@ class PanelController extends BaseController
         $this->logger->info("Countdowns page loaded");
 
         $this->render('pages/countdowns', [
-            'user' => $user,
             'usernames' => $usernames,
             'countdowns' => $formattedCountdowns,
-            'footer' => true,
-            'navbar' => true
         ]);
     }
 
     /**
      * Display modules management page
      *
-     * @throws ViewException
      * @throws Exception
      */
     public function modules(): void
     {
-        $user = $this->getActiveUser();
         $modules = $this->getAllModulesUseCase->execute();
 
         $this->logger->info("Modules page loaded");
 
         $this->render('pages/modules', [
-            'user' => $user,
             'modules' => $modules,
-            'footer' => true,
-            'navbar' => true
         ]);
     }
 
     /**
      * Display the main admin panel page with overview
      *
-     * @throws ViewException
      * @throws Exception
      */
     public function index(): void
     {
-        $user = $this->getActiveUser();
         $announcements = $this->getAllAnnouncementsUseCase->execute();
         $users = $this->getAllUsersUseCase->execute();
         $modules = $this->getAllModulesUseCase->execute();
@@ -200,12 +163,9 @@ class PanelController extends BaseController
         $this->logger->info("Panel index loaded");
 
         $this->render('pages/panel', [
-            'user' => $user,
             'announcements' => $announcements,
             'users' => $users,
             'modules' => $modules,
-            'footer' => true,
-            'navbar' => true
         ]);
     }
 
@@ -213,12 +173,10 @@ class PanelController extends BaseController
      * Display announcements management page
      * Shows pending announcements separately from decided ones
      *
-     * @throws ViewException
      * @throws Exception
      */
     public function announcements(): void
     {
-        $user = $this->getActiveUser();
         $users = $this->getAllUsersUseCase->execute();
         $announcements = $this->getAllAnnouncementsUseCase->execute();
 
@@ -237,12 +195,9 @@ class PanelController extends BaseController
         $this->logger->info("Announcements page loaded");
 
         $this->render('pages/announcements', [
-            'user' => $user,
             'usernames' => $usernames,
             'announcements' => $decidedAnnouncements,
             'pendingAnnouncements' => $pendingAnnouncements,
-            'footer' => true,
-            'navbar' => true
         ]);
     }
 }

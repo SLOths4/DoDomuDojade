@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Domain\Exception\ValidationException;
+use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\CsrfTokenService;
 use GuzzleHttp\Psr7\Request;
 use Random\RandomException;
@@ -16,9 +17,11 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
 {
     /**
      * @param CsrfTokenService $csrfTokenService
+     * @param RequestContext $requestContext
      */
     public function __construct(
-        private CsrfTokenService $csrfTokenService
+        private CsrfTokenService $csrfTokenService,
+        private RequestContext   $requestContext,
     ) {}
 
     /**
@@ -30,13 +33,14 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
     public function handle(Request $request, callable $next): void
     {
         try {
-            $this->csrfTokenService->getOrCreate();
+            $csrf = $this->csrfTokenService->getOrCreate();
+            $this->requestContext->set('csrf_token', $csrf);
 
             $isPostRequest = $_SERVER['REQUEST_METHOD'] === 'POST';
             if ($isPostRequest) {
                 $this->hasToken($_POST);
 
-                $providedToken = $_POST['csrf_token'];
+                $providedToken = $_POST['_token'];
 
                 if (!$this->csrfTokenService->validate($providedToken)) {
                     throw ValidationException::invalidCsrf();
@@ -55,7 +59,7 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
      */
     private function hasToken($post): void
     {
-        if (empty($post['csrf_token'])) {
+        if (empty($post['_token'])) {
             throw ValidationException::missingCsrf();
         }
     }

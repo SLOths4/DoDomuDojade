@@ -14,7 +14,6 @@ readonly class IsModuleVisibleUseCase
     public function __construct(
         private ModuleRepository $repository,
         private LoggerInterface $logger,
-        private string $DATE_FORMAT,
     ) {}
 
     /**
@@ -25,7 +24,6 @@ readonly class IsModuleVisibleUseCase
         $this->logger->debug('Checking if module is visible', ['module_name' => $moduleName]);
 
         $now = new DateTimeImmutable();
-        $formatted = $now->format($this->DATE_FORMAT);
 
         $module = $this->repository->findByName($moduleName);
 
@@ -38,7 +36,7 @@ readonly class IsModuleVisibleUseCase
             return false;
         }
 
-        $visible = ($module->startTime <= $formatted && $module->endTime >= $formatted);
+        $visible = ($module->startTime <= $now && $now <= $module->endTime);
 
         $this->logger->debug('Module visibility evaluated', [
             'module_name' => $moduleName,

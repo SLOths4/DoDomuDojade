@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}DoDomuDojade{% endblock %}</title>
+    <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
+</head>
+<body class="flex flex-col min-h-screen text-center bg-primary-200 dark:bg-gray-800 dark:text-white">
+{% block content %}{% endblock %}
+{% include "layouts/footer.twig" %}
+</body>
+</html>

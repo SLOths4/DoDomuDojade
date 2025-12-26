@@ -2,8 +2,18 @@
 
 namespace App\Http\Controller;
 
-class ErrorController extends BaseController
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
+
+final class ErrorController extends BaseController
 {
+    public function __construct(
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+    ){}
+
     public function notFound(): void
     {
         $this->render('errors/404');

@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Context;
 
+use App\Domain\Entity\User;
+
 final class RequestContext
 {
     private static ?self $instance = null;
     private array $data = [];
-
-    private function __construct() {}
 
     public static function getInstance(): self
     {
@@ -21,5 +21,15 @@ final class RequestContext
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->data[$key] ?? $default;
+    }
+
+    public function getCurrentUser(): ?User
+    {
+        return $this->get('user');
+    }
+
+    public function setCurrentUser(User $user): void
+    {
+        $this->set('user', $user);
     }
 }

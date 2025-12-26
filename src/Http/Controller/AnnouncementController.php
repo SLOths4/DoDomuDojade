@@ -13,34 +13,29 @@ use App\Application\UseCase\Announcement\ProposeAnnouncementUseCase;
 use App\config\Config;
 use App\Domain\Enum\AnnouncementStatus;
 use App\Domain\Exception\AnnouncementException;
-use App\Http\Context\LocaleContext;
-use App\Infrastructure\Service\CsrfTokenService;
-use App\Infrastructure\Translation\LanguageTranslator;
-use App\Infrastructure\Helper\SessionHelper;
-use App\Infrastructure\Security\AuthenticationService;
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
 use DateTimeImmutable;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
 
-class AnnouncementController extends BaseController
+final class AnnouncementController extends BaseController
 {
     public function __construct(
-        AuthenticationService                               $authenticationService,
-        CsrfTokenService                                    $csrfTokenService,
-        LoggerInterface                                     $logger,
-        LanguageTranslator                                  $translator,
-        LocaleContext                                       $localeContext,
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+        private readonly LoggerInterface                    $logger,
         private readonly Config                             $config,
         private readonly CreateAnnouncementUseCase          $createAnnouncementUseCase,
         private readonly DeleteAnnouncementUseCase          $deleteAnnouncementUseCase,
         private readonly EditAnnouncementUseCase            $editAnnouncementUseCase,
         private readonly ProposeAnnouncementUseCase         $proposeAnnouncementUseCase,
         private readonly ApproveRejectAnnouncementUseCase   $approveRejectAnnouncementUseCase,
-    ){
-        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
-    }
+    ){}
 
     /**
      * @throws AnnouncementException
@@ -49,14 +44,11 @@ class AnnouncementController extends BaseController
     #[NoReturn]
     public function deleteAnnouncement(): void
     {
+        $this->logger->debug("Add announcement request received");
         $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-
         $this->deleteAnnouncementUseCase->execute($announcementId);
-
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.deleted_successfully');
-        $this->logger->info("Announcement deleted", ['id' => $announcementId]);
-
+        $this->logger->debug("Add announcement request received");
+        $this->flash('success', 'announcement.deleted_successfully');
         $this->redirect('/panel/announcements');
     }
 
@@ -74,10 +66,7 @@ class AnnouncementController extends BaseController
             $userId
         );
 
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.created_successfully');
-        $this->logger->info("Announcement created successfully");
-
+        $this->flash('success', 'announcement.created_successfully');
         $this->redirect('/panel/announcements');
     }
 
@@ -99,10 +88,7 @@ class AnnouncementController extends BaseController
             $userId
         );
 
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.updated_successfully');
-        $this->logger->info("Announcement updated", ['id' => $id]);
-
+        $this->flash('success', 'announcement.updated_successfully');
         $this->redirect('/panel/announcements');
     }
 
@@ -122,10 +108,7 @@ class AnnouncementController extends BaseController
             $userId
         );
 
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.approved_successfully');
-        $this->logger->info("Announcement approved", ['id' => $announcementId]);
-
+        $this->flash('success', 'announcement.approved_successfully');
         $this->redirect('/panel/announcements');
     }
 
@@ -144,10 +127,7 @@ class AnnouncementController extends BaseController
             $userId
         );
 
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.rejected_successfully');
-        $this->logger->info("Announcement rejected", ['id' => $announcementId]);
-
+        $this->flash('success', 'announcement.rejected_successfully');
         $this->redirect('/panel/announcements');
     }
 
@@ -163,12 +143,9 @@ class AnnouncementController extends BaseController
 
         $dto = ProposeAnnouncementDTO::fromHttpRequest($_POST, $modified);
 
-        $announcementId = $this->proposeAnnouncementUseCase->execute($dto);
+        $this->proposeAnnouncementUseCase->execute($dto);
 
-        SessionHelper::start();
-        SessionHelper::set('success', 'announcement.proposed_successfully');
-        $this->logger->info("Announcement proposed", ['id' => $announcementId]);
-
+        $this->flash('success', 'announcement.proposed_successfully');
         $this->redirect('/propose');
     }
 }

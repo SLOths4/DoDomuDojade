@@ -41,6 +41,7 @@ final readonly class ExceptionTranslator
     private const array USER_SCOPE_REDIRECTS = [
         AuthenticationException::class => '/login',
         AnnouncementException::class => '/propose',
+        ValidationException::class => '/propose',
     ];
 
 

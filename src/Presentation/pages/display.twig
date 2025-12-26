@@ -654,7 +654,7 @@
 
                             if (!json || json.status !== 'success' || typeof json.data !== 'object') {
                                 this.loading = false;
-                                this.error = 'Błąd ładowania słowa';
+                                this.error = 'Błąd ładowania słowa dnia';
                                 this.info = null;
                                 this.data = null;
                             } else if (json.data.is_active === false) {
@@ -664,7 +664,7 @@
                                 this.data = null;
                             } else if (!json.data.word || !json.data.word.word) {
                                 this.loading = false;
-                                this.info = 'Brak dostępnego cytatu';
+                                this.info = 'Brak dostępnego słowa dnia';
                                 this.error = null;
                                 this.data = null;
                             } else {
@@ -759,7 +759,7 @@
                             if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                             console.error(e);
                         }
-                        setTimeout(() => this.load(), 4000);
+                        setTimeout(() => this.load(), 8000);
                     },
                     chunk(arr, size) {
                         return Array.from({ length: Math.ceil(arr.length / size) },

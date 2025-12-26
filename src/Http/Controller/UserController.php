@@ -3,28 +3,24 @@
 namespace App\Http\Controller;
 
 use App\Domain\Exception\UserException;
-use App\Http\Context\LocaleContext;
-use App\Infrastructure\Service\CsrfTokenService;
-use App\Infrastructure\Translation\LanguageTranslator;
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\User\CreateUserUseCase;
 use App\Application\UseCase\User\DeleteUserUseCase;
-use App\Infrastructure\Security\AuthenticationService;
 
-class UserController extends BaseController
+final class UserController extends BaseController
 {
     public function __construct(
-        AuthenticationService $authenticationService,
-        CsrfTokenService $csrfTokenService,
-        LoggerInterface $logger,
-        LanguageTranslator $translator,
-        LocaleContext $localeContext,
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+        private readonly LoggerInterface $logger,
         private readonly CreateUserUseCase $createUserUseCase,
         private readonly DeleteUserUseCase $deleteUserUseCase,
-    ) {
-        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
-    }
+    ) {}
 
     /**
      * Create a new user
@@ -34,6 +30,7 @@ class UserController extends BaseController
      */
     public function addUser(): void
     {
+        $this->logger->debug("Received add user request");
         $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
         $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
 
@@ -43,8 +40,8 @@ class UserController extends BaseController
 
         $this->createUserUseCase->execute($username, $password);
 
-        $this->logger->info("User created successfully", ['username' => $username]);
-        $this->successAndRedirect('user.created_successfully', '/panel/users');
+        $this->flash('success', 'user.created_successfully');
+        $this->redirect('/panel/users');
     }
 
     /**
@@ -55,6 +52,7 @@ class UserController extends BaseController
      */
     public function deleteUser(): void
     {
+        $this->logger->debug("Received delete user request");
         $userToDeleteId = (int)filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
 
         if (!$userToDeleteId || $userToDeleteId <= 0) {
@@ -63,13 +61,9 @@ class UserController extends BaseController
 
         $currentUserId = $this->getCurrentUserId();
 
-        if (!$currentUserId) {
-            throw UserException::unauthorized();
-        }
-
         $this->deleteUserUseCase->execute($currentUserId, $userToDeleteId);
 
-        $this->logger->info("User deleted successfully", ['deleted_id' => $userToDeleteId, 'deleted_by' => $currentUserId]);
-        $this->successAndRedirect('user.deleted_successfully', '/panel/users');
+        $this->flash('success', 'user.deleted_successfully');
+        $this->redirect('/panel/users');
     }
 }

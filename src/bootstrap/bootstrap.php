@@ -16,16 +16,21 @@ use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
 use App\Http\Context\LocaleContext;
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Factory\TwigFactory;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Repository\QuoteRepository;
+use App\Infrastructure\Service\FlashMessengerService;
 use App\Infrastructure\Service\QuoteApiService;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
 use App\Infrastructure\Translation\LanguageTranslator;
+use App\Infrastructure\View\TwigRenderer;
+use App\Infrastructure\View\ViewRendererInterface;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
 use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
@@ -68,6 +73,7 @@ use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Twig\Environment;
 
 $container = new Container();
 
@@ -94,7 +100,7 @@ $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->ge
 $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 
 // AuthenticationService
-$container->set(AuthenticationService::class, fn() => new AuthenticationService);
+$container->set(AuthenticationService::class, fn() => new AuthenticationService($container->get(UserRepository::class)));
 
 // CsrfTokenService
 $container->set(CsrfTokenService::class, fn() => new CsrfTokenService);
@@ -121,6 +127,21 @@ $container->set(CommandRegistry::class, function ($c) {
 
 $container->set(Kernel::class, function ($c) {
     return new Kernel($c->get(CommandRegistry::class));
+});
+
+$container->set(Environment::class, fn(Container $c) => $c->get(TwigFactory::class)->create($c->get(Config::class)));
+
+$container->set(ViewRendererInterface::class, function (Container $c) {
+    return new TwigRenderer(
+      $c->get(Environment::class),
+      $c->get(RequestContext::class),
+        $c->get(LocaleContext::class),
+        $c->get(FlashMessengerService::class),
+    );
+});
+
+$container->set(\App\Infrastructure\Service\FlashMessengerInterface::class, function (Container $c) {
+    return new FlashMessengerService();
 });
 
 // ANNOUNCEMENTS
@@ -204,7 +225,6 @@ $container->set(IsModuleVisibleUseCase::class, function(Container $c) {
     return new IsModuleVisibleUseCase(
         $c->get(ModuleRepository::class),
         $c->get(LoggerInterface::class),
-        $cfg->moduleDateFormat,
     );
 });
 $container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class) ));
@@ -326,23 +346,22 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
 });
 
 // ErrorController
-$container->set(ErrorController::class, fn() => new ErrorController(
-    $container->get(AuthenticationService::class),
-    $container->get(CsrfTokenService::class),
-    $container->get(LoggerInterface::class),
-    $container->get(LanguageTranslator::class),
-    $container->get(LocaleContext::class)
-));
+$container->set(ErrorController::class, function (Container $c): ErrorController {
+    return new ErrorController(
+        $c->get(RequestContext::class),
+        $c->get(TwigRenderer::class),
+        $c->get(FlashMessengerService::class),
+    );
+});
 
 //DisplayController
 $container->set(DisplayController::class, function (Container $c) {
         $cfg = $c->get(Config::class);
         return new DisplayController(
-            $c->get(AuthenticationService::class),
-            $c->get(CsrfTokenService::class),
+            $c->get(RequestContext::class),
+            $c->get(TwigRenderer::class),
+            $c->get(FlashMessengerService::class),
             $c->get(LoggerInterface::class),
-            $c->get(LanguageTranslator::class),
-            $c->get(LocaleContext::class),
             $c->get(WeatherService::class),
             $c->get(IsModuleVisibleUseCase::class),
             $c->get(TramService::class),
@@ -358,14 +377,12 @@ $container->set(DisplayController::class, function (Container $c) {
 // PanelController
     $container->set(PanelController::class, function (Container $c) {
         return new PanelController(
-            $c->get(AuthenticationService::class),
-            $c->get(CsrfTokenService::class),
+            $c->get(RequestContext::class),
+            $c->get(TwigRenderer::class),
+            $c->get(FlashMessengerService::class),
             $c->get(LoggerInterface::class),
-            $c->get(LanguageTranslator::class),
-            $c->get(LocaleContext::class),
             $c->get(GetAllModulesUseCase::class),
             $c->get(GetAllUsersUseCase::class),
-            $c->get(GetUserByIdUseCase::class),
             $c->get(GetAllCountdownsUseCase::class),
             $c->get(GetAllAnnouncementsUseCase::class),
         );

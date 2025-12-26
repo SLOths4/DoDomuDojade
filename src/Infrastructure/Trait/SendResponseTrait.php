@@ -16,8 +16,8 @@ trait SendResponseTrait {
                 'status' => 'success',
                 'data' => $data,
                 'message' => $message
-            ]);
-        exit;
+            ]
+        );
     }
 
     #[NoReturn]
@@ -32,7 +32,7 @@ trait SendResponseTrait {
                 'message' => $message,
                 'code' => $code,
                 'data' => $data
-            ]);
-        exit;
+            ]
+        );
     }
 }

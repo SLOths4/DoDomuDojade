@@ -2,8 +2,18 @@
 
 namespace App\Http\Controller;
 
-class HomeController extends BaseController
+use App\Http\Context\RequestContext;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\View\ViewRendererInterface;
+
+final class HomeController extends BaseController
 {
+    public function __construct(
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+    ){}
+
     public function index(): void
     {
         $this->render('pages/index');

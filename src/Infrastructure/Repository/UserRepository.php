@@ -64,17 +64,34 @@ readonly class UserRepository
     }
 
     /**
-     * Returns users by username (partial match).
-     * @param string $username
-     * @return User[]
+     * Find the exact user by username.
      * @throws Exception
      */
-    public function findByUsername(string $username): array
+    public function findByUsername(string $username): ?User
+    {
+        $rows = $this->dbHelper->getAll(
+            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username = :username LIMIT 1",
+            [':username' => [$username, PDO::PARAM_STR]]
+        );
+
+        if (empty($rows)) {
+            return null;
+        }
+
+        return $this->mapRow($rows[0]);
+    }
+
+    /**
+     * Find users by partial username.
+     * @throws Exception
+     */
+    public function findByUsernamePartial(string $username): array
     {
         $rows = $this->dbHelper->getAll(
             "SELECT * FROM \"$this->TABLE_NAME\" WHERE username LIKE :username",
             [':username' => ["%$username%", PDO::PARAM_STR]]
         );
+
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 

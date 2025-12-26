@@ -10,12 +10,15 @@ use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\User\GetUserByIdUseCase;
 use App\Domain\Exception\DisplayException;
 use App\Http\Context\LocaleContext;
+use App\Http\Context\RequestContext;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\Service\TramService;
 use App\Infrastructure\Service\WeatherService;
 use App\Infrastructure\Trait\SendResponseTrait;
 use App\Infrastructure\Translation\LanguageTranslator;
+use App\Infrastructure\View\ViewRendererInterface;
 use DateTimeZone;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
@@ -25,16 +28,15 @@ use Psr\Log\LoggerInterface;
  * Display controller - handles public display API endpoints
  * Returns JSON responses for frontend display module
  */
-class DisplayController extends BaseController
+final class DisplayController extends BaseController
 {
     use SendResponseTrait;
 
     public function __construct(
-        AuthenticationService                           $authenticationService,
-        CsrfTokenService                                $csrfTokenService,
-        LoggerInterface                                 $logger,
-        LanguageTranslator                              $translator,
-        LocaleContext                                   $localeContext,
+        readonly RequestContext $requestContext,
+        readonly ViewRendererInterface $renderer,
+        readonly FlashMessengerInterface $flash,
+        private readonly LoggerInterface                $logger,
         private readonly WeatherService                 $weatherService,
         private readonly IsModuleVisibleUseCase         $isModuleVisibleUseCase,
         private readonly TramService                    $tramService,
@@ -44,10 +46,7 @@ class DisplayController extends BaseController
         private readonly FetchActiveQuoteUseCase        $fetchActiveQuoteUseCase,
         private readonly FetchActiveWordUseCase         $fetchActiveWordUseCase,
         private readonly array                          $StopIDs,
-    )
-    {
-        parent::__construct($authenticationService, $csrfTokenService, $logger, $translator, $localeContext);
-    }
+    ){}
 
     /**
      * Render public display page
@@ -177,6 +176,7 @@ class DisplayController extends BaseController
             'is_active' => true,
             'announcements' => $response
         ]);
+        exit;
     }
 
     /**

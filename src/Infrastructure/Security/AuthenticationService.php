@@ -2,10 +2,16 @@
 
 namespace App\Infrastructure\Security;
 
+use App\Domain\Entity\User;
 use App\Infrastructure\Helper\SessionHelper;
+use App\Infrastructure\Repository\UserRepository;
+use Exception;
 
-class AuthenticationService
+readonly class AuthenticationService
 {
+    public function __construct(
+        private UserRepository $userRepository
+    ) {}
 
     public function isUserLoggedIn(): bool {
         if (!SessionHelper::has('user_id')) {
@@ -18,6 +24,20 @@ class AuthenticationService
         }
 
         return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getCurrentUser(): ?User
+    {
+        $userId = $this->getCurrentUserId();
+
+        if (!$userId) {
+            return null;
+        }
+
+        return $this->userRepository->findById($userId);
     }
 
     public function getCurrentUserId(): ?int {

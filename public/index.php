@@ -64,25 +64,25 @@ try {
 
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika
-        $r->addRoute('POST', '/panel/authenticate', [LoginController::class, 'authenticate', 'middleware' => [CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/authenticate', [LoginController::class, 'authenticate']);
+        $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.2. Akcje ogłoszeń
-        $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
 
         // 2.3. Akcje powiązane z modułami
-        $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.4. Akcje licznika
-        $r->addRoute('POST', '/panel/add_countdown', [CountdownController::class, 'addCountdown', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_countdown', [CountdownController::class, 'deleteCountdown', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_countdown', [CountdownController::class, 'editCountdown', 'middleware' => [AuthMiddleware::class, CsrfMiddleware::class]]);
+        $r->addRoute('POST', '/panel/add_countdown', [CountdownController::class, 'addCountdown', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/delete_countdown', [CountdownController::class, 'deleteCountdown', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/panel/edit_countdown', [CountdownController::class, 'editCountdown', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.5. Wyświetlenie stron panelu
         $r->addRoute('GET', '/panel/users', [PanelController::class, 'users', 'middleware' => [AuthMiddleware::class]]);
@@ -142,6 +142,7 @@ switch ($routeInfo[0]) {
             $pipeline->add($container->get(RequestContextMiddleware::class));
             $pipeline->add($container->get(ExceptionMiddleware::class));
             $pipeline->add($container->get(LocaleMiddleware::class));
+            $pipeline->add($container->get(CsrfMiddleware::class));
 
             foreach ($middlewares as $mwClass) {
                 $pipeline->add($container->get($mwClass));
