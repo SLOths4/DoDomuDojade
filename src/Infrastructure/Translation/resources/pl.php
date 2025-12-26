@@ -1,4 +1,4 @@
-<?php
+ <?php
 return [
     'error.user_not_found' => 'Użytkownik nie znaleziony',
 

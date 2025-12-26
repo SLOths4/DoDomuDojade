@@ -29,6 +29,7 @@ use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
 use App\Infrastructure\Translation\LanguageTranslator;
+use App\Infrastructure\Translation\Translator;
 use App\Infrastructure\View\TwigRenderer;
 use App\Infrastructure\View\ViewRendererInterface;
 use Psr\Log\LoggerInterface;
@@ -109,7 +110,7 @@ $container->set(LocaleContext::class, function () {
     return new LocaleContext();
 });
 
-$container->set(LanguageTranslator::class, function ($c) {
+$container->set(Translator::class, function ($c) {
     return new LanguageTranslator(
         $c->get(LocaleContext::class),
     );

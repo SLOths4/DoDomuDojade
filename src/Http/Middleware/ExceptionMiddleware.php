@@ -6,8 +6,8 @@ namespace App\Http\Middleware;
 use App\Domain\Exception\DomainException;
 use App\Http\Context\RequestContext;
 use App\Http\ExceptionTranslator;
-use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\Translation\Translator;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -15,9 +15,10 @@ use Throwable;
 final readonly class ExceptionMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private ExceptionTranslator     $translator,
+        private ExceptionTranslator     $exceptionTranslator,
         private LoggerInterface         $logger,
         private FlashMessengerInterface $flashMessengerService,
+        private Translator              $languageTranslator,
     ){}
 
     public function handle(Request $request, callable $next): void
@@ -35,10 +36,11 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
                 $e->getTrace()
             );
 
-            $this->flashMessengerService->flash('error', $e->getMessage());
+            $translatedMessage = $this->languageTranslator->translate($e->getMessage());
+            $this->flashMessengerService->flash('error', $translatedMessage);
 
             $currentPath = $request->getUri()->getPath();
-            $redirectPath = $this->translator->getRedirectPath($e, $currentPath);
+            $redirectPath = $this->exceptionTranslator->getRedirectPath($e, $currentPath);
 
             $this->logger->info("Redirecting from $currentPath to $redirectPath");
 
