@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 
 use GuzzleHttp\Psr7\Request;
 
-class MiddlewarePipeline
+final class MiddlewarePipeline
 {
     /** @var MiddlewareInterface[] */
     private array $middlewares = [];

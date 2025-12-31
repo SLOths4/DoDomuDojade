@@ -5,6 +5,7 @@ namespace App\Infrastructure\View;
 use App\Http\Context\LocaleContext;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerService;
+use App\Infrastructure\Translation\Translator;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -17,6 +18,7 @@ readonly class TwigRenderer implements ViewRendererInterface
      private RequestContext $requestContext,
      private LocaleContext $localeContext,
      private FlashMessengerService $flashMessengerService,
+     private Translator $translator,
     ){}
 
     /**
@@ -36,10 +38,14 @@ readonly class TwigRenderer implements ViewRendererInterface
 
     private function getGlobals(): array
     {
-        $token = $this->requestContext->get('csrf_token') ?? '';
-        error_log("RequestContext csrf_token: " . $token);
-
-        $flash = $this->flashMessengerService->all();
+        $token = $this->requestContext->get('csrf_token');
+        $flash = $this->flashMessengerService->getAll();
+        if ($flash['error']) {
+            $flash['error'] = $this->translator->translate($flash['error']);
+        }
+        if ($flash['success']) {
+            $flash['success'] = $this->translator->translate($flash['success']);
+        }
         $this->flashMessengerService->clearAll();
 
         return [

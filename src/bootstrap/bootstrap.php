@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../Infrastructure/Helper/functions.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__. '/../../../'));
 $dotenv->load();
@@ -22,6 +21,7 @@ use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Repository\QuoteRepository;
+use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\Service\FlashMessengerService;
 use App\Infrastructure\Service\QuoteApiService;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
@@ -136,12 +136,13 @@ $container->set(ViewRendererInterface::class, function (Container $c) {
     return new TwigRenderer(
       $c->get(Environment::class),
       $c->get(RequestContext::class),
-        $c->get(LocaleContext::class),
-        $c->get(FlashMessengerService::class),
+      $c->get(LocaleContext::class),
+      $c->get(FlashMessengerService::class),
+      $c->get(Translator::class),
     );
 });
 
-$container->set(\App\Infrastructure\Service\FlashMessengerInterface::class, function (Container $c) {
+$container->set(FlashMessengerInterface::class, function (Container $c) {
     return new FlashMessengerService();
 });
 
@@ -222,7 +223,6 @@ $container->set(ModuleRepository::class, function (Container $c): ModuleReposito
 $container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class) ));
 $container->set(IsModuleVisibleUseCase::class, function(Container $c) {
-    $cfg = $c->get(Config::class);
     return new IsModuleVisibleUseCase(
         $c->get(ModuleRepository::class),
         $c->get(LoggerInterface::class),

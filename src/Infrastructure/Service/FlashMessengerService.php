@@ -5,7 +5,7 @@ use App\Infrastructure\Helper\SessionHelper;
 
 class FlashMessengerService implements FlashMessengerInterface
 {
-    private const string PREFIX = 'flash.';
+    private const string PREFIX = 'flash';
 
     public function flash(string $key, string $message): void
     {
@@ -26,12 +26,17 @@ class FlashMessengerService implements FlashMessengerInterface
         }
     }
 
-    public function all(): array
+    /**
+     * @return array{
+     *      success?: string,
+     *      error?: string,
+     *  }
+     */
+    public function getAll(): array
     {
         return [
             'success' => $this->get('success'),
             'error' => $this->get('error'),
-            'info' => $this->get('info'),
         ];
     }
 }
