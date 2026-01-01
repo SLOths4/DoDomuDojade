@@ -14,6 +14,7 @@ use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
+use App\Infrastructure\Service\CalendarService;
 use Psr\Log\LoggerInterface;
 use App\Application\UseCase\AnnouncementService;
 use App\Application\UseCase\CountdownService;
@@ -77,6 +78,7 @@ $container->set(DisplayController::class, function (Container $c) {
         $c->get(AnnouncementService::class),
         $c->get(UserService::class),
         $c->get(CountdownService::class),
+        $c->get(CalendarService::class),
         $c->get(FetchActiveQuoteUseCase::class),
         $c->get(FetchActiveWordUseCase::class),
         $cfg->stopsIDs,
@@ -255,6 +257,15 @@ $container->set(FetchWordUseCase::class, function (Container $c): FetchWordUseCa
         $c->get(LoggerInterface::class),
         $c->get(WordApiService::class),
         $c->get(WordRepository::class),
+    );
+});
+
+$container->set(CalendarService::class, function (Container $c): CalendarService {
+    $cfg = $c->get(Config::class);
+    return new CalendarService(
+        $c->get(LoggerInterface::class),
+        $cfg->googlecalendarApiKey,
+        $cfg->googlecalendarId,
     );
 });
 

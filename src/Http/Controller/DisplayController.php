@@ -10,11 +10,14 @@ use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\UserService;
 use App\infrastructure\Security\AuthenticationService;
 use App\infrastructure\Security\CsrfService;
+use App\Infrastructure\Service\CalendarService;
 use App\Infrastructure\Service\TramService;
 use App\Infrastructure\Service\WeatherService;
 use App\infrastructure\Trait\SendResponseTrait;
+use DateTime;
 use DateTimeZone;
 use Exception;
+use Google\Service\Calendar\EventDateTime;
 use Psr\Log\LoggerInterface;
 
 class DisplayController extends BaseController
@@ -30,6 +33,7 @@ class DisplayController extends BaseController
         private readonly AnnouncementService     $announcementsService,
         private readonly UserService             $userService,
         private readonly CountdownService        $countdownService,
+        private readonly CalendarService         $calendarService,
         private readonly FetchActiveQuoteUseCase $fetchActiveQuoteUseCase,
         private readonly FetchActiveWordUseCase  $fetchActiveWordUseCase,
         private readonly array                   $StopIDs,
@@ -229,6 +233,50 @@ class DisplayController extends BaseController
                 500,
                     []
             );
+        }
+    }
+
+    public function getEvents(): void
+    {
+        try {
+            if (!$this->isModuleVisible('calendar')) {
+                $this->sendSuccess([
+                    'is_active' => false,
+                    'events' => null
+                    ]);
+            }
+
+            $events = $this->calendarService->getEvents();
+
+            $eventsArray = [];
+
+            foreach ($events->getItems() as $event) {
+                $eventsArray[] = [
+                    'summary' => $event->getSummary() === null ? "Wydarzenie bez tytułu" : $event->getSummary(),
+                    'description' => $event->getDescription() === null ? "Wydarzenie bez opisu" : $event->getDescription(),
+                    'start' => isset($event->getStart()->dateTime) === true ? new DateTime(($event->getStart()->dateTime))->format('H:i') : "Wydarzenie całodniowe",
+                    'end' => isset($event->getEnd()->dateTime) === true ? new DateTime(($event->getEnd()->dateTime))->format('H:i') : null,
+                ];
+            }
+
+            $this->logger->info('niggas need events' . print_r($eventsArray, true));
+
+            if (!empty($eventsArray)) {
+                $this->logger->info('event shit went through');
+                $this->sendSuccess([
+                    'is_active' => true,
+                    'events' => $eventsArray
+                ]);
+            } else {
+                $this->logger->warning("event shit did not went through");
+                $this->sendSuccess([
+                    'success' => false,
+                    'is_active' => true
+                ], 'No events found for provided today');
+
+            }
+        } catch (Exception) {
+            $this->sendError('Error processing calendar data', 500, []);
         }
     }
 

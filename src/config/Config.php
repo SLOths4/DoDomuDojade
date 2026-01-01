@@ -29,7 +29,8 @@ final readonly class Config
         public int $minPasswordLength,
         public string $tramUrl,
         public array  $stopsIDs,
-        public string $icalUrl,
+        public string $googlecalendarApiKey,
+        public string $googlecalendarId,
         public string $quoteApiUrl,
         public string $quoteDateFormat,
         public string $quoteTableName,
@@ -79,7 +80,8 @@ final readonly class Config
             $stopsIDs = self::env('STOPS_IDS');
 
             // Calendar
-            $icalUrl = self::env('ICAL_URL', '');
+            $googlecalendarApiKey = self::env('CALENDAR_API_KEY');
+            $googlecalendarId = self::env('CALENDAR_ID');
 
             // Quote
             $quoteApiUrl = self::env('QUOTE_API_URL');
@@ -116,7 +118,8 @@ final readonly class Config
                 $minPasswordLength,
                 $tramUrl,
                 explode(',', (string)$stopsIDs),
-                $icalUrl,
+                $googlecalendarApiKey,
+                $googlecalendarId,
                 $quoteApiUrl,
                 $quoteDateFormat,
                 $quoteTableName,
