@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\config;
 
 use App\Domain\Exception\ConfigException;
+use App\Infrastructure\Exception\ConfigException;
 use Exception;
-
 /**
  * Class with configuration variables fetched from .env
  */
@@ -17,7 +17,7 @@ final readonly class Config
      * @param string $loggingLevel
      * @param string $viewPath
      * @param string $twigCachePath
-     * @param bool   $twigDebug
+     * @param bool $twigDebug
      * @param string $imgwWeatherUrl
      * @param string $airlyEndpoint
      * @param string $airlyApiKey
@@ -41,7 +41,8 @@ final readonly class Config
      * @param int $minPasswordLength
      * @param string $tramUrl
      * @param array $stopID
-     * @param string $icalUrl
+     * @param string $googlecalendarApiKey
+     * @param string $googlecalendarId
      * @param string $quoteApiUrl
      * @param string $quoteDateFormat
      * @param string $quoteTableName
@@ -82,7 +83,8 @@ final readonly class Config
         public int    $minPasswordLength,
         public string $tramUrl,
         public array  $stopID,
-        public string $icalUrl,
+        public string $googlecalendarApiKey,
+        public string $googlecalendarId,
         public string $quoteApiUrl,
         public string  $quoteDateFormat,
         public string  $quoteTableName,
@@ -146,7 +148,8 @@ final readonly class Config
             $stopID = self::env('STOP_ID', '');
 
             // Calendar
-            $icalUrl = self::env('ICAL_URL', '');
+            $googlecalendarApiKey = self::env('CALENDAR_API_KEY');
+            $googlecalendarId = self::env('CALENDAR_ID');
 
             // Quote
             $quoteApiUrl = self::env('QUOTE_API_URL');
@@ -193,7 +196,8 @@ final readonly class Config
                 minPasswordLength: $minPasswordLength,
                 tramUrl: $tramUrl,
                 stopID: array_values(array_filter(array_map('trim', explode(',', $stopID)), static fn(string $v): bool => $v !== '')),
-                icalUrl: $icalUrl,
+                googlecalendarApiKey: $googlecalendarApiKey,
+                googlecalendarId: $googlecalendarId,
                 quoteApiUrl: $quoteApiUrl,
                 quoteDateFormat: $quoteDateFormat,
                 quoteTableName: $quoteTableName,

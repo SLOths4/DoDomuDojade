@@ -28,6 +28,7 @@ use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\Word\FetchWordUseCase;
 use App\Infrastructure\Repository\WordRepository;
 use App\Infrastructure\Service\WordApiService;
+use App\Infrastructure\Service\CalendarService;
 use App\Infrastructure\Translation\LanguageTranslator;
 use App\Infrastructure\Translation\Translator;
 use App\Infrastructure\View\TwigRenderer;
@@ -113,6 +114,23 @@ $container->set(LocaleContext::class, function () {
 $container->set(Translator::class, function ($c) {
     return new LanguageTranslator(
         $c->get(LocaleContext::class),
+//DisplayController
+$container->set(DisplayController::class, function (Container $c) {
+    $cfg = $c->get(Config::class);
+    return new DisplayController(
+        $c->get(AuthenticationService::class),
+        $c->get(CsrfService::class),
+        $c->get(LoggerInterface::class),
+        $c->get(WeatherService::class),
+        $c->get(ModuleService::class),
+        $c->get(TramService::class),
+        $c->get(AnnouncementService::class),
+        $c->get(UserService::class),
+        $c->get(CountdownService::class),
+        $c->get(CalendarService::class),
+        $c->get(FetchActiveQuoteUseCase::class),
+        $c->get(FetchActiveWordUseCase::class),
+        $cfg->stopsIDs,
     );
 });
 
@@ -388,5 +406,14 @@ $container->set(DisplayController::class, function (Container $c) {
             $c->get(GetAllAnnouncementsUseCase::class),
         );
     });
+
+$container->set(CalendarService::class, function (Container $c): CalendarService {
+    $cfg = $c->get(Config::class);
+    return new CalendarService(
+        $c->get(LoggerInterface::class),
+        $cfg->googlecalendarApiKey,
+        $cfg->googlecalendarId,
+    );
+});
 
 return $container;
