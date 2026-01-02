@@ -291,16 +291,12 @@ final class DisplayController extends BaseController
                 ];
             }
 
-            $this->logger->info('niggas need events' . print_r($eventsArray, true));
-
             if (!empty($eventsArray)) {
-                $this->logger->info('event shit went through');
                 $this->sendSuccess([
                     'is_active' => true,
                     'events' => $eventsArray
                 ]);
             } else {
-                $this->logger->warning("event shit did not went through");
                 $this->sendSuccess([
                     'success' => false,
                     'is_active' => true
