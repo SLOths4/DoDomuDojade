@@ -37,7 +37,7 @@ final class ModuleController extends BaseController
 
         $this->toggleModuleUseCase->execute($moduleId);
 
-        $this->flash('success', 'announcement.toggled_successfully');
+        $this->flash('success', 'module.toggled_successfully');
         $this->redirect('/panel/modules');
     }
 
@@ -55,7 +55,7 @@ final class ModuleController extends BaseController
 
         $this->updateModuleUseCase->execute($moduleId, $dto);
 
-        $this->flash('success', 'announcement.updated_successfully');
+        $this->flash('success', 'module.updated_successfully');
         $this->redirect('/panel/modules');
     }
 }
