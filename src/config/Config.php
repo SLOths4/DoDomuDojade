@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\config;
 
 use App\Domain\Exception\ConfigException;
-use App\Infrastructure\Exception\ConfigException;
 use Exception;
 /**
  * Class with configuration variables fetched from .env

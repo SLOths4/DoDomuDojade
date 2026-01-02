@@ -114,23 +114,6 @@ $container->set(LocaleContext::class, function () {
 $container->set(Translator::class, function ($c) {
     return new LanguageTranslator(
         $c->get(LocaleContext::class),
-//DisplayController
-$container->set(DisplayController::class, function (Container $c) {
-    $cfg = $c->get(Config::class);
-    return new DisplayController(
-        $c->get(AuthenticationService::class),
-        $c->get(CsrfService::class),
-        $c->get(LoggerInterface::class),
-        $c->get(WeatherService::class),
-        $c->get(ModuleService::class),
-        $c->get(TramService::class),
-        $c->get(AnnouncementService::class),
-        $c->get(UserService::class),
-        $c->get(CountdownService::class),
-        $c->get(CalendarService::class),
-        $c->get(FetchActiveQuoteUseCase::class),
-        $c->get(FetchActiveWordUseCase::class),
-        $cfg->stopsIDs,
     );
 });
 
@@ -384,6 +367,7 @@ $container->set(DisplayController::class, function (Container $c) {
             $c->get(WeatherService::class),
             $c->get(IsModuleVisibleUseCase::class),
             $c->get(TramService::class),
+            $c->get(CalendarService::class),
             $c->get(GetValidAnnouncementsUseCase::class),
             $c->get(GetUserByIdUseCase::class),
             $c->get(GetCurrentCountdownUseCase::class),

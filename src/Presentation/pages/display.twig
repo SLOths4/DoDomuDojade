@@ -198,14 +198,14 @@
 
                 <div x-data="events()" x-init="load()">
 
-                    <div class="rounded-2xl m-2 p-4">
+                    <div class="rounded-2xl m-2">
                         <p x-show="loading" class="bg-beige shadow-custom text-center text-gray-500">Ładowanie...</p>
                         <div x-show="!loading && data.length" class="space-y-2">
                             <template x-for="(eventvar, index) in data" :key="`${eventvar.start}-${index}`">
-                                <div class="my-2 py-2 bg-beige shadow-custom">
-                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.summary"></p>
-                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.end ? `${eventvar.start} - ${eventvar.end}` : `${eventvar.start}`"></p>
-                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.description"></p>
+                                <div class="my-2 py-2 bg-beige shadow-custom text-center rounded-2xl">
+                                    <p><i class="fa-solid fa-calendar"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.summary"></span></p>
+                                    <p><i class="fa-solid fa-clock"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.end ? `${eventvar.start} - ${eventvar.end}` : `${eventvar.start}`"></span></p>
+                                    <p><i class="fa-solid fa-align-justify"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.description"></span></p>
                                 </div>
                             </template>
                         </div>

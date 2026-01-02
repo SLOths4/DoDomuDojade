@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Factory;
 
 use App\config\Config;
+use DateTimeImmutable;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Extension\DebugExtension;
@@ -20,13 +21,13 @@ final class TwigFactory
     {
         $viewsPath = $config->viewPath;
         $cachePath = $config->twigCachePath;
-        $debug = true;//$config->twigDebug;
+        $debug = $config->twigDebug;
 
         $loader = new FilesystemLoader($viewsPath, $viewsPath . '/..');
         $loader->addPath($viewsPath . '/components', '@components');
 
         $twig = new Environment($loader, [
-            'cache' => false,//$cachePath,
+            'cache' => $cachePath,
             'debug' => $debug,
             'auto_reload' => $debug,
             'charset' => 'UTF-8',
@@ -38,7 +39,7 @@ final class TwigFactory
             $twig->addExtension(new DebugExtension());
         }
 
-        $twig->addFilter(new TwigFilter('formatDate', fn($date) => $date instanceof \DateTimeImmutable ? $date->format('d.m.Y H:i') : $date
+        $twig->addFilter(new TwigFilter('formatDate', fn($date) => $date instanceof DateTimeImmutable ? $date->format('d.m.Y H:i') : $date
         ));
 
         $twig->addGlobal('siteName', 'DoDomuDojadę');
