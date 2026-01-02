@@ -4,6 +4,9 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * Countdown entity
+ */
 readonly class Countdown
 {
     public function __construct(

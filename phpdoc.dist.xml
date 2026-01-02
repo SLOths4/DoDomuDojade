@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+        configVersion="3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://www.phpdoc.org"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/phpDocumentor/phpDocumentor/master/data/xsd/phpdoc.xsd"
+>
+    <title>DoDomuDojade Documentation</title>
+
+    <paths>
+        <output>build/docs</output>
+        <cache>build/cache</cache>
+    </paths>
+
+    <version number="latest">
+        <folder>latest</folder>
+
+        <api format="php">
+            <source dsn=".">
+                <paths>src</paths>
+            </source>
+            <output>api</output>
+            <extensions>
+                <extension>php</extension>
+            </extensions>
+        </api>
+
+        <guide format="md">
+            <source dsn=".">
+                <path>docs</path>
+            </source>
+            <output>guides</output>
+        </guide>
+    </version>
+
+    <setting name="template.color" value="light-blue"/>
+
+</phpdocumentor>

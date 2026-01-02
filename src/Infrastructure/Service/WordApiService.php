@@ -13,6 +13,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use DateTimeImmutable;
 use DateTimeZone;
 
+/**
+ * Fetches word from an external provider
+ */
 readonly class WordApiService
 {
     public function __construct(
@@ -20,7 +23,9 @@ readonly class WordApiService
         private HttpClientInterface          $httpClient,
         private string                       $wordApiUrl
     ) {}
+
     /**
+     * Returns today's date
      * @throws Exception
      */
     static function todayIs(): string
@@ -28,7 +33,10 @@ readonly class WordApiService
         $dateNow = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         return $dateNow->format('Y-m-d');
     }
+
     /**
+     * Fetches raw data
+     * @return array
      * @throws Exception
      */
     private function fetchData(): array
@@ -55,6 +63,8 @@ readonly class WordApiService
     }
 
     /**
+     * Formats data into app readable format
+     * @return array
      * @throws Exception
      */
     public function getWord(): array

@@ -6,6 +6,9 @@ namespace App\Console;
 
 use Throwable;
 
+/**
+ * Class responsible for executing commands
+ */
 final class Kernel
 {
     private ConsoleOutput $output;
@@ -16,6 +19,11 @@ final class Kernel
         $this->output = new ConsoleOutput();
     }
 
+    /**
+     * Executes a command with given arguments
+     * @param array $argv
+     * @return int
+     */
     public function execute(array $argv): int
     {
         if (count($argv) < 2) {
@@ -55,6 +63,10 @@ final class Kernel
         }
     }
 
+    /**
+     * Outputs to console all available commands
+     * @return void
+     */
     private function showHelp(): void
     {
         $this->output->info("Available commands:");

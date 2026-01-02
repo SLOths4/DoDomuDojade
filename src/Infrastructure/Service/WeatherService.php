@@ -12,6 +12,9 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Fetches and merges weather data from Airly and IMGW
+ */
 readonly class WeatherService {
     public function __construct(
         private LoggerInterface     $logger,

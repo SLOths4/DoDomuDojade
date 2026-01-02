@@ -40,8 +40,8 @@ final readonly class Config
      * @param int $minPasswordLength
      * @param string $tramUrl
      * @param array $stopID
-     * @param string $googlecalendarApiKey
-     * @param string $googlecalendarId
+     * @param string $googleCalendarApiKey
+     * @param string $googleCalendarId
      * @param string $quoteApiUrl
      * @param string $quoteDateFormat
      * @param string $quoteTableName
@@ -72,19 +72,19 @@ final readonly class Config
         public int    $announcementMaxTextLength,
         public int    $announcementMinTextLength,
         public string $moduleTableName,
-        public string $moduleDateFormat,
-        public string $countdownTableName,
-        public int    $countdownMaxTitleLength,
-        public string $countdownDateFormat,
-        public string $userTableName,
-        public string $userDateFormat,
-        public int    $maxUsernameLength,
-        public int    $minPasswordLength,
-        public string $tramUrl,
-        public array  $stopID,
-        public string $googlecalendarApiKey,
-        public string $googlecalendarId,
-        public string $quoteApiUrl,
+        public string  $moduleDateFormat,
+        public string  $countdownTableName,
+        public int     $countdownMaxTitleLength,
+        public string  $countdownDateFormat,
+        public string  $userTableName,
+        public string  $userDateFormat,
+        public int     $maxUsernameLength,
+        public int     $minPasswordLength,
+        public string  $tramUrl,
+        public array   $stopID,
+        public string  $googleCalendarApiKey,
+        public string  $googleCalendarId,
+        public string  $quoteApiUrl,
         public string  $quoteDateFormat,
         public string  $quoteTableName,
         public string  $wordApiUrl,
@@ -112,10 +112,10 @@ final readonly class Config
             $twigDebug = (bool)self::env('TWIG_DEBUG');
 
             // Weather
-            $imgw = self::env('IMGW_WEATHER_URL');
-            $airly = self::env('AIRLY_ENDPOINT');
-            $key = self::env('AIRLY_API_KEY');
-            $loc = ltrim(self::env('AIRLY_LOCATION_ID', ''), '/');
+            $imgwWeatherUrl = self::env('IMGW_WEATHER_URL');
+            $airlyEndpoint = self::env('AIRLY_ENDPOINT');
+            $airlyApiKey = self::env('AIRLY_API_KEY');
+            $airlyLocationId = ltrim(self::env('AIRLY_LOCATION_ID', ''), '/');
 
             // Announcements
             $announcementTableName = self::env('ANNOUNCEMENT_TABLE_NAME', 'announcement');
@@ -123,7 +123,7 @@ final readonly class Config
             $announcementMaxValidDate = self::env('ANNOUNCEMENT_MAX_VALID_DATE', '+1 year') ;
             $announcementDefaultValidDate = self::env('ANNOUNCEMENT_DEFAULT_VALID_DATE', '+30 days') ;
             $announcementMaxTitleLength = (int)self::env('ANNOUNCEMENT_MAX_TITLE_LENGTH', 255);
-            $announcementMinTitleLength = (int)self::env('ANNOUNCEMENT_MIN_TEXT_LENGTH', 5);
+            $announcementMinTitleLength = (int)self::env('ANNOUNCEMENT_MIN_TITLE_LENGTH', 5);
             $announcementMaxTextLength = (int)self::env('ANNOUNCEMENT_MAX_TEXT_LENGTH', 65535);
             $announcementMinTextLength = (int)self::env('ANNOUNCEMENT_MIN_TEXT_LENGTH', 10);
 
@@ -134,7 +134,7 @@ final readonly class Config
 
             // Modules
             $moduleTableName = self::env('MODULE_TABLE_NAME', 'module');
-            static $moduleDateformat = 'H:i:s';
+            $moduleDateFormat = self::env('MODULE_DATE_FORMAT', 'H:i:s');
 
             // Users
             $userTableName = self::env('USER_TABLE_NAME', 'user');
@@ -147,8 +147,8 @@ final readonly class Config
             $stopID = self::env('STOP_ID', '');
 
             // Calendar
-            $googlecalendarApiKey = self::env('CALENDAR_API_KEY');
-            $googlecalendarId = self::env('CALENDAR_ID');
+            $googleCalendarApiKey = self::env('CALENDAR_API_KEY_PATH');
+            $googleCalendarId = self::env('CALENDAR_ID');
 
             // Quote
             $quoteApiUrl = self::env('QUOTE_API_URL');
@@ -172,10 +172,10 @@ final readonly class Config
                 viewPath: $viewPath,
                 twigCachePath: $twigCachePath,
                 twigDebug: $twigDebug,
-                imgwWeatherUrl: $imgw,
-                airlyEndpoint: $airly,
-                airlyApiKey: $key,
-                airlyLocationId: $loc,
+                imgwWeatherUrl: $imgwWeatherUrl,
+                airlyEndpoint: $airlyEndpoint,
+                airlyApiKey: $airlyApiKey,
+                airlyLocationId: $airlyLocationId,
                 announcementTableName: $announcementTableName,
                 announcementDateFormat: $announcementDateFormat,
                 announcementMaxValidDate: $announcementMaxValidDate,
@@ -185,7 +185,7 @@ final readonly class Config
                 announcementMaxTextLength: $announcementMaxTextLength,
                 announcementMinTextLength: $announcementMinTextLength,
                 moduleTableName: $moduleTableName,
-                moduleDateFormat: $moduleDateformat,
+                moduleDateFormat: $moduleDateFormat,
                 countdownTableName: $countdownTableName,
                 countdownMaxTitleLength: $countdownMaxTitleLength,
                 countdownDateFormat: $countdownDateFormat,
@@ -195,8 +195,8 @@ final readonly class Config
                 minPasswordLength: $minPasswordLength,
                 tramUrl: $tramUrl,
                 stopID: array_values(array_filter(array_map('trim', explode(',', $stopID)), static fn(string $v): bool => $v !== '')),
-                googlecalendarApiKey: $googlecalendarApiKey,
-                googlecalendarId: $googlecalendarId,
+                googleCalendarApiKey: $googleCalendarApiKey,
+                googleCalendarId: $googleCalendarId,
                 quoteApiUrl: $quoteApiUrl,
                 quoteDateFormat: $quoteDateFormat,
                 quoteTableName: $quoteTableName,
@@ -215,7 +215,13 @@ final readonly class Config
     }
 
     /**
-     * @throws Exception
+     * Fetch environment variable with fallback chain: getenv() → $_ENV → $_SERVER → apache_getenv()
+     * Throws ConfigException if variable is empty string and no default provided.
+     *
+     * @param string $key Environment variable key
+     * @param mixed $default Default value if not found (null = required)
+     * @return mixed Trimmed string value or default
+     * @throws ConfigException If required variable missing
      */
     private static function env(string $key, mixed $default = null): mixed
     {

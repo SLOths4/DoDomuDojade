@@ -7,12 +7,19 @@ use App\Infrastructure\Helper\SessionHelper;
 use App\Infrastructure\Repository\UserRepository;
 use Exception;
 
+/**
+ * AuthenticationService used for user authentication
+ */
 readonly class AuthenticationService
 {
     public function __construct(
         private UserRepository $userRepository
     ) {}
 
+    /**
+     * Checks if there is a user logged in the session
+     * @return bool
+     */
     public function isUserLoggedIn(): bool {
         if (!SessionHelper::has('user_id')) {
             return false;
@@ -27,6 +34,8 @@ readonly class AuthenticationService
     }
 
     /**
+     * Returns currently logged user
+     * @return User|null
      * @throws Exception
      */
     public function getCurrentUser(): ?User
@@ -40,10 +49,18 @@ readonly class AuthenticationService
         return $this->userRepository->findById($userId);
     }
 
+    /**
+     * Returns current users id
+     * @return int|null
+     */
     public function getCurrentUserId(): ?int {
         return SessionHelper::get('user_id');
     }
 
+    /**
+     * Logs out current user
+     * @return void
+     */
     public function logout(): void {
         SessionHelper::destroy();
     }

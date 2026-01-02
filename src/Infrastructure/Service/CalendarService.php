@@ -10,15 +10,18 @@ use Google_Client;
 use Google_Service_Calendar;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Integrates Google calendar API with the app
+ */
 readonly class CalendarService
 {
     public function __construct(
         private LoggerInterface              $logger,
-        private string                       $googlecalendarApiKey,
-        private string                       $googlecalendarId
+        private string                       $googleCalendarApiKey,
+        private string                       $googleCalendarId
     ) {}
 
-    private function googleclientSetup(): ?Google_Client
+    private function googleClientSetup(): ?Google_Client
     {
         try {
             $client = new Google_Client();
@@ -33,10 +36,10 @@ readonly class CalendarService
 
     }
 
-    private function googlecalendarAuth(Google_Client $client): ?Google_Client
+    private function googleCalendarAuth(Google_Client $client): ?Google_Client
     {
         try {
-            $client->setAuthConfig(__DIR__ . '/../../../' . $this->googlecalendarApiKey);
+            $client->setAuthConfig($this->googleCalendarApiKey);
             $this->logger->debug('Google API authenticated successfully');
             return $client;
         } catch (Exception $e) {
@@ -51,7 +54,7 @@ readonly class CalendarService
      */
     public function getEvents(): Events
     {
-        $clientfin = $this->googlecalendarAuth($this->googleclientSetup());
+        $clientfin = $this->googleCalendarAuth($this->googleClientSetup());
         $clientfin->setScopes(Google_Service_Calendar::CALENDAR_READONLY);
         $service = new Google_Service_Calendar($clientfin);
         $this->logger->info('google cal service in getEvents method complete');
@@ -62,6 +65,6 @@ readonly class CalendarService
             'orderBy' => 'startTime',
             'singleEvents' => true,
         ];
-        return $service->events->listEvents($this->googlecalendarId, $params);
+        return $service->events->listEvents($this->googleCalendarId, $params);
     }
 }

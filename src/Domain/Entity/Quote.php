@@ -4,6 +4,9 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * Quote entity
+ */
 readonly class Quote
 {
     public function __construct(

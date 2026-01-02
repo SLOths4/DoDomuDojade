@@ -4,6 +4,9 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * User entity
+ */
 readonly class User {
     public function __construct(
         public ?int              $id,

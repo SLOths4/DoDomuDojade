@@ -8,6 +8,9 @@ use App\Domain\Exception\DatabaseException;
 use Exception;
 use PDO;
 
+/**
+ * PDO factory
+ */
 final class PDOFactory
 {
     /**

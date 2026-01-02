@@ -11,9 +11,17 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * Logger factory
+ */
 final class LoggerFactory
 {
     /**
+     * Creates LoggerInterface compatible logger instance
+     * @param string $logsDirectory
+     * @param string $channel
+     * @param string $level
+     * @return LoggerInterface
      * @throws LoggerException
      */
     public static function create(
@@ -55,6 +63,11 @@ final class LoggerFactory
         }
     }
 
+    /**
+     * Checks if the provided log directory is writable
+     * @param string $directory
+     * @return bool
+     */
     private static function ensureLogsDirectory(string $directory): bool
     {
         try {
@@ -67,6 +80,11 @@ final class LoggerFactory
         }
     }
 
+    /**
+     * Resolves given log level string into valid level
+     * @param string $value
+     * @return Level
+     */
     private static function resolveLogLevel(string $value): Level
     {
         return match (strtolower(trim($value))) {

@@ -5,9 +5,14 @@ namespace App\Infrastructure\Service;
 use App\Infrastructure\Helper\SessionHelper;
 use Random\RandomException;
 
+/**
+ * Helps with managing csrf token
+ */
 readonly class CsrfTokenService
 {
+    /** @var string csrf token key in arrays and HTML forms */
     private const string TOKEN_KEY = 'csrf_token';
+    /** @var int used token lenght */
     private const int TOKEN_LENGTH = 32;
 
     /**
@@ -53,6 +58,7 @@ readonly class CsrfTokenService
     }
 
     /**
+     * Generates token with set length
      * @return string
      * @throws RandomException
      */

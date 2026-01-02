@@ -116,12 +116,22 @@ Uruchom backend lokalnie (przykłady):
 php -S localhost:8080 -t public/ public/router.php
 ```
 Skonfiguruj zmienne środowiskowe:
-```
+```shell script
 cp .env.example .env
 ```
 Zbuduj frontend:
-```
+```shell script
 npm run dev
+```
+
+Jeżeli chcesz przeglądać dokumentację kodu, uruchom php Documentator za pomocą:
+```shell script
+vendor/bin/phpdoc run
+```
+
+Jeżeli chcesz zobaczyć dokumentację architektury etc.
+```shell script
+ mkdocs serve
 ```
 
 ### Szybki start (produkcja)

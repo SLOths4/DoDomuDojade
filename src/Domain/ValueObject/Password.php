@@ -5,11 +5,16 @@ namespace App\Domain\ValueObject;
 
 use App\Domain\Exception\ValidationException;
 
+/**
+ * Password value object
+ */
 final readonly class Password
 {
     private string $hash;
 
     /**
+     * @param string $plainPassword
+     * @param int $minLength
      * @throws ValidationException
      */
     public function __construct(
@@ -32,11 +37,20 @@ final readonly class Password
         return $instance;
     }
 
+    /**
+     * Returns hash of a password
+     * @return string
+     */
     public function getHash(): string
     {
         return $this->hash;
     }
 
+    /**
+     * Verifies plain password against this password hash
+     * @param string $plainPassword
+     * @return bool match
+     */
     public function verify(string $plainPassword): bool
     {
         return password_verify($plainPassword, $this->hash);

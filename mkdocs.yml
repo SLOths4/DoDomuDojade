@@ -1,0 +1,10 @@
+site_name: DoDomuDojade Docs
+
+nav:
+  - Home: index.md
+  - Architecture: architecture/ddd.md
+  - Examples: examples/practical_examples.md
+  - Layers:
+      - Application: layers/appliacation.md
+      - Domain: layers/domain.md
+      - Infrastructure: layers/infrastructure.md

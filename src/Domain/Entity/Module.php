@@ -4,6 +4,9 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * Module entity
+ */
 class Module {
     public function __construct(
         public ?int              $id,
@@ -13,6 +16,10 @@ class Module {
         public DateTimeImmutable $endTime,
     ){}
 
+    /**
+     * Changes isActive field
+     * @return void
+     */
     public function toggle(): void
     {
         $this->isActive = !$this->isActive;

@@ -12,9 +12,15 @@ use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
 
+/**
+ * Twig factory
+ */
 final class TwigFactory
 {
     /**
+     * Creates Twig environment
+     * @param Config $config
+     * @return Environment
      * @throws LoaderError
      */
     public static function create(Config $config): Environment

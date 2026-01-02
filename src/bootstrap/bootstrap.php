@@ -395,8 +395,8 @@ $container->set(CalendarService::class, function (Container $c): CalendarService
     $cfg = $c->get(Config::class);
     return new CalendarService(
         $c->get(LoggerInterface::class),
-        $cfg->googlecalendarApiKey,
-        $cfg->googlecalendarId,
+        $cfg->googleCalendarApiKey,
+        $cfg->googleCalendarId,
     );
 });
 

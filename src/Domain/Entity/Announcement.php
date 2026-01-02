@@ -5,6 +5,9 @@ namespace App\Domain\Entity;
 use App\Domain\Enum\AnnouncementStatus;
 use DateTimeImmutable;
 
+/**
+ * Announcement entity
+ */
 final class Announcement {
     public function __construct(
         public ?int               $id,
@@ -18,6 +21,15 @@ final class Announcement {
         public ?int               $decidedBy = null,
     ){}
 
+    /**
+     * Creates a new announcement <br>
+     * Announcement is approved by default
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     * @param int $userId
+     * @return self
+     */
     public static function createNew(
         string            $title,
         string            $text,
@@ -38,6 +50,13 @@ final class Announcement {
         );
     }
 
+    /**
+     * Proposes a new announcement
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     * @return self
+     */
     public static function proposeNew(
         string $title, string $text,
         DateTimeImmutable $validUntil
@@ -56,6 +75,11 @@ final class Announcement {
         );
     }
 
+    /**
+     * Changest status of an announcements entity to approved
+     * @param int $decidedBy
+     * @return void
+     */
     public function approve(int $decidedBy): void
     {
         $this->status = AnnouncementStatus::APPROVED;
@@ -70,6 +94,10 @@ final class Announcement {
         $this->decidedBy = $decidedBy;
     }
 
+    /**
+     * Checks if an announcement has been approved and if valid until date is not in the past
+     * @return bool
+     */
     public function isValid(): bool
     {
         return $this->status === AnnouncementStatus::APPROVED

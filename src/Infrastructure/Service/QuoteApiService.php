@@ -11,8 +11,16 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Fetches quote from an external provider
+ */
 readonly class QuoteApiService
 {
+    /**
+     * @param LoggerInterface $logger
+     * @param HttpClientInterface $httpClient
+     * @param string $quoteApiUrl
+     */
     public function __construct(
         private LoggerInterface              $logger,
         private HttpClientInterface          $httpClient,
@@ -20,6 +28,7 @@ readonly class QuoteApiService
     ) {}
 
     /**
+     * Fetches raw data from API
      * @throws Exception
      */
     private function fetchData(): array
@@ -46,6 +55,7 @@ readonly class QuoteApiService
     }
 
     /**
+     * Formats data into app readable format
      * @throws Exception
      */
     public function getQuote(): array

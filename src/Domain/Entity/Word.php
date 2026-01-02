@@ -4,6 +4,9 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * Word entity
+ */
 readonly class Word {
     public function __construct(
         public ?int $id,
