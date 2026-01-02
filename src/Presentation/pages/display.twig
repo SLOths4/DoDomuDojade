@@ -132,7 +132,7 @@
                     <template x-if="info">
                         <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p>
+                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
                         </div>
                     </template>
                 </div>
@@ -178,6 +178,38 @@
                             </div>
                         </div>
                     </template>
+
+                    <!-- Error -->
+                    <template x-if="error">
+                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
+                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
+                        </div>
+                    </template>
+
+                    <!-- Info -->
+                    <template x-if="info">
+                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-data="events()" x-init="load()">
+
+                    <div class="rounded-2xl m-2 p-4">
+                        <p x-show="loading" class="bg-beige shadow-custom text-center text-gray-500">Ładowanie...</p>
+                        <div x-show="!loading && data.length" class="space-y-2">
+                            <template x-for="(eventvar, index) in data" :key="`${eventvar.start}-${index}`">
+                                <div class="my-2 py-2 bg-beige shadow-custom">
+                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.summary"></p>
+                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.end ? `${eventvar.start} - ${eventvar.end}` : `${eventvar.start}`"></p>
+                                    <p class="font-mono text-lg italic text-center" x-text="eventvar.description"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
 
                     <!-- Error -->
                     <template x-if="error">
@@ -682,6 +714,59 @@
                             this.error = 'Błąd ładowania słowa';
                             this.loading = false;
                             console.error('Fetch error:', e);
+                        }
+                        setTimeout(() => this.load(), 60000);
+                    }
+                }
+            }
+
+            function events() {
+                return {
+                    data: [],
+                    error: null,
+                    loading: true,
+                    info: null,
+                    async load() {
+                        try {
+                            const res = await fetch('/display/get_events', {
+                                method: 'GET',
+                                headers: { 'Content-Type': 'application/json' },
+                            });
+                            const json = await res.json();
+
+                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                                this.loading = false;
+                                this.error = 'Błąd ładowania wydarzeń';
+                                this.info = null;
+                                this.data = null;
+                            } else if (json.data.is_active === false) {
+                                this.loading = false;
+                                this.error = null;
+                                this.info = null;
+                                this.data = null;
+                            } else if (!json.data.events || !json.data.events.length) {
+                                this.loading = false;
+                                this.info = 'Brak dostępnego wydarzenia';
+                                this.error = null;
+                                this.data = null;
+                            } else {
+                                if (this.error || this.info) {
+                                    this.error = null;
+                                    this.info = null;
+                                }
+                                if (json.status === 'success' && Array.isArray(json.data.events)) {
+                                    const newData = json.data.events;
+                                    if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
+                                        this.data = newData;
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            this.error = 'Błąd ładowania wydarzeń';
+                            this.loading = false;
+                            console.error('Fetch error:', e);
+                        } finally {
+                        this.loading = false;
                         }
                         setTimeout(() => this.load(), 60000);
                     }
