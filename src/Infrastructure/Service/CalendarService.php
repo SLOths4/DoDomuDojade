@@ -51,9 +51,8 @@ readonly class CalendarService
      */
     public function getEvents(): Events
     {
-        $gsetup = $this->googleclientSetup();
-        $clientfin = $this->googlecalendarAuth($gsetup);
-        $clientfin->setScopes(Google_Service_Calendar::CALENDAR);
+        $clientfin = $this->googlecalendarAuth($this->googleclientSetup());
+        $clientfin->setScopes(Google_Service_Calendar::CALENDAR_READONLY);
         $service = new Google_Service_Calendar($clientfin);
         $this->logger->info('google cal service in getEvents method complete');
 
@@ -63,7 +62,6 @@ readonly class CalendarService
             'orderBy' => 'startTime',
             'singleEvents' => true,
         ];
-        $result = $service->events->listEvents($this->googlecalendarId, $params);
-        return $result;
+        return $service->events->listEvents($this->googlecalendarId, $params);
     }
 }
