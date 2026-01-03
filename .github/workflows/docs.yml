@@ -14,6 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install MkDocs
+        run: pip install mkdocs mkdocs-material
+
+      - name: Build MkDocs
+        run: mkdocs build
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -34,20 +46,19 @@ jobs:
             iconv,
             filter
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Install PHP deps
         run: composer install --prefer-dist
 
       - name: Generate API docs
         run: vendor/bin/phpdoc run
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-
-      - name: Install MkDocs
-        run: pip install mkdocs mkdocs-material
-
-      - name: Build MkDocs
-        run: mkdocs build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
