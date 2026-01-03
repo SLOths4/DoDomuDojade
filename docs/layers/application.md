@@ -1,6 +1,6 @@
 # Application Layer - API Reference
 
-Warstwa Application orkiestruje logikę biznesową, koordinując interakcje między Presentation a Domain Layer.
+Warstwa Application orkiestruje logikę biznesową, koordynując interakcje między Presentation a Domain Layer.
 
 ## 📍 Struktura Application Layer
 
@@ -39,216 +39,7 @@ src/Application/
 
 ## 🎬 Use Cases
 
-Use Case reprezentuje pojedynczy, znaczący scenariusz użytkownika.
-
-### Announcement Use Cases
-
-#### CreateAnnouncementUseCase
-
-**Lokalizacja**: `src/Application/UseCase/Announcement/CreateAnnouncementUseCase.php`
-
-**Odpowiedzialność**: Obsługa tworzenia nowego ogłoszenia
-
-**Zależności**:
-```php
-public function __construct(
-    private AnnouncementRepository $announcementRepository,
-    private LoggerInterface $logger
-)
-```
-
-**Metoda Execute**:
-```php
-public function execute(CreateAnnouncementRequest $request): AnnouncementDTO
-```
-
-**Parametry**: `CreateAnnouncementRequest`
-- `string $title` - Tytuł ogłoszenia
-- `string $text` - Treść ogłoszenia
-- `string $validUntil` - Data wygaśnięcia (ISO 8601)
-- `int $userId` - ID twórcy (opcjonalnie)
-
-**Zwraca**: `AnnouncementDTO` - Nowe ogłoszenie
-
-**Flow**:
-1. Waliduje request (tytuł, tekst nie puste, validUntil w przyszłości)
-2. Tworzy Domain Entity (Announcement)
-3. Zapisuje w Repository
-4. Zwraca DTO dla front-endu
-
-**Wyjątki**:
-- `AnnouncementException` - Błąd biznesowy
-- `ValidationException` - Błąd walidacji
-
-**Użycie w Controller**:
-```php
-class AnnouncementController {
-    public function __construct(
-        private CreateAnnouncementUseCase $useCase
-    ) {}
-    
-    public function create(Request $request): Response {
-        try {
-            $dto = new CreateAnnouncementRequest(
-                title: $request->input('title'),
-                text: $request->input('text'),
-                validUntil: $request->input('valid_until'),
-                userId: $request->userId // from auth
-            );
-            
-            $result = $this->useCase->execute($dto);
-            return Response::created($result);
-        } catch (ValidationException $e) {
-            return Response::badRequest($e->getMessage());
-        }
-    }
-}
-```
-
----
-
-#### ApproveAnnouncementUseCase
-
-**Lokalizacja**: `src/Application/UseCase/Announcement/ApproveAnnouncementUseCase.php`
-
-**Odpowiedzialność**: Zatwierdzenie ogłoszenia oczekującego
-
-**Metoda Execute**:
-```php
-public function execute(int $announcementId, int $adminId): AnnouncementDTO
-```
-
-**Parametry**:
-- `int $announcementId` - ID ogłoszenia do zatwierdzenia
-- `int $adminId` - ID admina zatwierdzającego
-
-**Zwraca**: `AnnouncementDTO` - Zatwierdzone ogłoszenie
-
-**Flow**:
-1. Pobiera Announcement z Repository
-2. Sprawdza czy istnieje i ma status PENDING
-3. Wywoła `$announcement->approve($adminId)` (logika domenowa)
-4. Zapisuje w Repository
-5. Zwraca DTO
-
-**Wyjątki**:
-- `AnnouncementNotFoundException`
-- `AnnouncementException` - Jeśli status nie PENDING
-
----
-
-#### RejectAnnouncementUseCase
-
-**Lokalizacja**: `src/Application/UseCase/Announcement/RejectAnnouncementUseCase.php`
-
-**Odpowiedzialność**: Odrzucenie ogłoszenia oczekującego
-
-**Metoda Execute**:
-```php
-public function execute(int $announcementId, int $adminId, string $reason): AnnouncementDTO
-```
-
-**Parametry**:
-- `int $announcementId` - ID ogłoszenia do odrzucenia
-- `int $adminId` - ID admina odrzucającego
-- `string $reason` - Powód odrzucenia (dla archiwum)
-
-**Zwraca**: `AnnouncementDTO` - Odrzucone ogłoszenie
-
----
-
-#### ListAnnouncementsUseCase
-
-**Lokalizacja**: `src/Application/UseCase/Announcement/ListAnnouncementsUseCase.php`
-
-**Odpowiedzialność**: Pobranie listy aktualnych ogłoszeń
-
-**Metoda Execute**:
-```php
-public function execute(ListAnnouncementsRequest $request): array
-```
-
-**Parametry**: `ListAnnouncementsRequest`
-- `int $page = 1` - Numer strony
-- `int $perPage = 10` - Ilość na stronę
-- `string $status = 'approved'` - Filtr po statusie
-- `bool $validOnly = true` - Czy tylko ważne
-
-**Zwraca**: `array<AnnouncementDTO>` - Lista ogłoszeń
-
-**Flow**:
-1. Buduje query z filtrami
-2. Stosuje paginację
-3. Pobiera z Repository
-4. Transformuje do DTOs
-5. Zwraca wraz z metadanymi
-
----
-
-### User Use Cases
-
-#### RegisterUserUseCase
-
-**Lokalizacja**: `src/Application/UseCase/User/RegisterUserUseCase.php`
-
-**Odpowiedzialność**: Rejestracja nowego użytkownika
-
-**Metoda Execute**:
-```php
-public function execute(RegisterUserRequest $request): UserDTO
-```
-
-**Parametry**: `RegisterUserRequest`
-- `string $email` - Email użytkownika
-- `string $password` - Hasło (raw)
-- `string $name` - Nazwa użytkownika
-- `?string $phoneNumber` - Numer telefonu
-
-**Zwraca**: `UserDTO` - Nowy użytkownik (bez hasła!)
-
-**Walidacja**:
-- Email nie może istnieć
-- Hasło musi spełniać wymagania
-- Email musi być ważny
-
-**Bezpieczeństwo**:
-- Hasło zahaszowane na level Infra (SecurityService)
-- Brak hasła w response
-
----
-
-#### LoginUserUseCase
-
-**Lokalizacja**: `src/Application/UseCase/User/LoginUserUseCase.php`
-
-**Odpowiedzialność**: Logowanie użytkownika
-
-**Metoda Execute**:
-```php
-public function execute(LoginUserRequest $request): LoginResponse
-```
-
-**Parametry**: `LoginUserRequest`
-- `string $email` - Email
-- `string $password` - Hasło (raw)
-
-**Zwraca**: `LoginResponse`
-- `UserDTO $user`
-- `string $token` - JWT lub session token
-
----
-
-### Word Use Cases
-
-#### CreateWordUseCase
-
-**Lokalizacja**: `src/Application/UseCase/Word/CreateWordUseCase.php`
-
-Tworzy nowe słowo dnia.
-
-#### ListWordsUseCase
-
-Pobiera słowa z paginacją.
+Use Case reprezentuje pojedynczy, znaczący scenariusz działania aplikacji.
 
 ---
 
@@ -256,139 +47,8 @@ Pobiera słowa z paginacją.
 
 DTOs transportują dane między warstwami bez logiki biznesowej.
 
-### AnnouncementDTO
-
-**Lokalizacja**: `src/Application/DataTransferObject/AnnouncementDTO.php`
-
-```php
-final class AnnouncementDTO {
-    public function __construct(
-        public int     $id,
-        public string  $title,
-        public string  $text,
-        public string  $createdAt,      // ISO 8601
-        public string  $validUntil,     // ISO 8601
-        public ?int    $userId,
-        public string  $status,         // 'pending', 'approved', 'rejected'
-        public ?string $decidedAt,      // ISO 8601
-        public ?int    $decidedBy,
-    ) {}
-    
-    public static function fromEntity(Announcement $entity): self {
-        return new self(
-            id: $entity->id,
-            title: $entity->title,
-            text: $entity->text,
-            createdAt: $entity->createdAt->format('c'),
-            validUntil: $entity->validUntil->format('c'),
-            userId: $entity->userId,
-            status: $entity->status->name,
-            decidedAt: $entity->decidedAt?->format('c'),
-            decidedBy: $entity->decidedBy,
-        );
-    }
-}
-```
-
-**Użycie**: Transformacja Entity → JSON Response
-```php
-return [
-    'data' => AnnouncementDTO::fromEntity($announcement)
-];
-```
-
-### UserDTO
-
-**Lokalizacja**: `src/Application/DataTransferObject/UserDTO.php`
-
-```php
-final class UserDTO {
-    public function __construct(
-        public int    $id,
-        public string $email,
-        public string $name,
-        public ?string $phoneNumber,
-        public string $role,
-        // UWAGA: Nigdy nie include password!
-    ) {}
-    
-    public static function fromEntity(User $entity): self {
-        return new self(
-            id: $entity->id,
-            email: $entity->email,
-            name: $entity->name,
-            phoneNumber: $entity->phoneNumber,
-            role: $entity->role,
-        );
-    }
-}
-```
 
 ---
-
-## 🏗️ Request Objects (Request DTOs)
-
-Request objects enkapsulują dane wejściowe.
-
-### CreateAnnouncementRequest
-
-```php
-final class CreateAnnouncementRequest {
-    public function __construct(
-        public string $title,
-        public string $text,
-        public string $validUntil,     // ISO 8601
-        public ?int   $userId = null,
-    ) {}
-    
-    public function validate(): array {
-        $errors = [];
-        
-        if (empty($this->title)) {
-            $errors[] = "Title is required";
-        }
-        
-        if (strlen($this->title) > 200) {
-            $errors[] = "Title is too long";
-        }
-        
-        if (empty($this->text)) {
-            $errors[] = "Text is required";
-        }
-        
-        if (strlen($this->text) > 5000) {
-            $errors[] = "Text is too long";
-        }
-        
-        try {
-            $date = new DateTimeImmutable($this->validUntil);
-            if ($date <= new DateTimeImmutable()) {
-                $errors[] = "Valid until must be in the future";
-            }
-        } catch (Exception $e) {
-            $errors[] = "Invalid date format";
-        }
-        
-        return $errors;
-    }
-    
-    public function isValid(): bool {
-        return empty($this->validate());
-    }
-}
-```
-
-**Użycie w Use Case**:
-```php
-public function execute(CreateAnnouncementRequest $request): AnnouncementDTO {
-    $errors = $request->validate();
-    if (!empty($errors)) {
-        throw new ValidationException($errors);
-    }
-    
-    // ... proceed
-}
-```
 
 ---
 
@@ -398,27 +58,24 @@ public function execute(CreateAnnouncementRequest $request): AnnouncementDTO {
 HTTP Request
     ↓
 Controller
-├─ 1. Parse request → CreateAnnouncementRequest
-├─ 2. Get UseCase from DI Container
-├─ 3. Call useCase->execute($request)
+├─ 1. Parse request → AnnouncementDTO
+├─ 2. Call useCase->execute($dto)
     ↓
 UseCase
 ├─ 1. Validate request ($request->validate())
 ├─ 2. Create Domain Entity (Announcement::createNew())
 ├─ 3. Save via Repository
-├─ 4. Transform to DTO
-├─ 5. Return DTO
+├─ 4. Return success
     ↓
 Controller
-├─ 1. Format DTO to JSON
-├─ 2. Return HTTP Response
+├─ 1. Return HTTP Response
     ↓
 HTTP Response (JSON)
 ```
 
 ```mermaid
 graph TB
-    A["HTTP Request<br/>(POST /announcements)"] -->|Parse| B["Controller"]
+    A["HTTP Request<br/>(POST /panel/add_announcement)"] -->|Parse| B["Controller"]
     B -->|Extract Data| C["Request Object"]
     C -->|Pass to| D["UseCase"]
     D -->|Validate| C
@@ -471,13 +128,13 @@ try {
 
 ## 📊 Request → UseCase → Response Pattern
 
-| Etap | Komponenta | Format |
-|------|-----------|--------|
-| 1 | HTTP Body | JSON |
-| 2 | Controller | Array |
-| 3 | Request Object | Typed Object |
-| 4 | UseCase | DTO |
-| 5 | Response | JSON |
+| Etap | Komponent      | Format       |
+|------|----------------|--------------|
+| 1    | HTTP Body      | JSON         |
+| 2    | Controller     | Array        |
+| 3    | Request Object | Typed Object |
+| 4    | UseCase        | DTO          |
+| 5    | Response       | JSON         |
 
 ---
 
@@ -567,7 +224,7 @@ try {
 
 ## 📚 Use Case Checklist
 
-Przy tworzeniu nowego Use Case pamiętaj aby:
+Przy tworzeniu nowego Use Case pamiętaj, aby:
 
 - [ ] Unikalny scenariusz (jedna odpowiedzialność)
 - [ ] Request object z walidacją

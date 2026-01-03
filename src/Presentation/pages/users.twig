@@ -2,28 +2,9 @@
 
 {% block content %}
     <main class="flex-grow">
-        {# Error Modal #}
-        {% if flash.error %}
-            <div id="errorModal" class="fixed inset-0 flex items-center justify-center z-50">
-                <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
-                <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
-                    <h2 class="text-xl font-semibold text-red-700 mb-4">Wystąpił błąd</h2>
-                    <p class="text-gray-700 mb-6 dark:text-gray-300">{{ flash.error }}</p>
-                    <div class="flex justify-end">
-                        <button id="closeErrorModal" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400">
-                            Zamknij
-                        </button>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {# Success Message #}
-        {% if flash.success %}
-            <div class="mb-4 p-2 bg-green-100 text-green-700 rounded">
-                {{ flash.success }}
-            </div>
-        {% endif %}
+        {# Flash messages #}
+        {% include 'components/error.twig' with { error: flash.error} %}
+        {% include 'components/success.twig' with { success: flash.success} %}
 
         {# Add User Form #}
         <form method="POST" action="/panel/add_user" class="mb-6 p-4 bg-white rounded-2xl shadow-custom mx-1 dark:bg-gray-900 dark:text-white">

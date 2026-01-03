@@ -2,33 +2,18 @@
 
 ## Wstęp do DDD
 
-**Domain-Driven Design (DDD)** to metodologia projektowania software'u, która kładzie nacisk na głębokie zrozumienie domeny biznesowej i odzwierciedlenie tej wiedzy w kodzie. Projekt DoDomuDojadę implementuje czysty DDD z wyraźnym podziałem na warstwy architektoniczne.
+**Domain-Driven Design (DDD)** to metodologia projektowania software'u, która kładzie nacisk na głębokie zrozumienie domeny biznesowej i odzwierciedlenie tej wiedzy w kodzie. Projekt DoDomuDojade implementuje DDD i clean architecture z wyraźnym podziałem na warstwy.
 
 ## 🎯 Główne Zasady DDD w Projekcie
 
 ### 1. Ubiquity of Language (Wszechobecność Języka)
 Kod i dokumentacja używają jednolitego słownika biznesowego:
-- **Announcement** - Ogłoszenie
-- **Countdown** - Odliczanie
-- **Quote** - Cytat
-- **Word** - Słowo
-- **Status** - Stan (PENDING, APPROVED, REJECTED)
+- **Announcement** — Ogłoszenie
+- **Countdown** — Odliczanie
+- **Quote** — Cytat
+- **Word** — Słowo
 
-### 2. Bounded Contexts (Ograniczone Konteksty)
-Każdy moduł funkcjonalny operuje w swoim kontekście:
-- **Announcement Context** - Zarządzanie ogłoszeniami
-- **Word Context** - Słownik słów
-- **Quote Context** - Baza cytatów
-- **User Context** - Zarządzanie użytkownikami
-
-### 3. Aggregate Roots (Pierwotne Agregaty)
-Kluczowe jednostki, które koordynują zmiany:
-- `Announcement` - Główny agregat dla ogłoszeń
-- `User` - Główny agregat dla użytkowników
-- `Word` - Główny agregat dla słów
-- `Quote` - Główny agregat dla cytatów
-
-## 🏗️ Warstwy Architektoniczne
+## 🏗️ Warstwy Oprogramowania
 
 ### Warstwa Domain (src/Domain)
 **Odpowiedzialność**: Zawiera czystą logikę biznesową niezależną od technologii
@@ -91,11 +76,27 @@ Value Objects reprezentują wartości, które nie zmieniają się i nie mają to
 
 ```php
 // Będą w src/Domain/ValueObject/ gdy zostaną wprowadzone
-// Przykłady:
-// - Email
-// - PhoneNumber
-// - DateRange
-// - Status
+// Przykład: Password
+final readonly class Password
+{
+    private string $hash;
+
+    public function __construct(
+        string $plainPassword,
+        int $minLength = 8
+    ) {
+        if (mb_strlen($plainPassword) < $minLength) {
+            throw ValidationException::invalidInput(['password' => ["Password too short (min $minLength)"]]);
+        }
+        $this->hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+    }
+    
+    // Getter
+    public function getHash(): string {}
+
+    // Business logic
+    public function verify(string $plainPassword): bool { }
+}
 ```
 
 **Cechy Value Object:**
@@ -105,9 +106,10 @@ Value Objects reprezentują wartości, które nie zmieniają się i nie mają to
 - Samodzielna walidacja
 
 #### Enums
-Wyliczenia dla typów i statusów domeny.
+Typy i statusy domeny.
 
 ```php
+// Przykład: Announcement Status
 enum AnnouncementStatus {
     case PENDING;
     case APPROVED;
@@ -125,7 +127,7 @@ class InvalidAnnouncementStatusException extends AnnouncementException { }
 ```
 
 ### Warstwa Application (src/Application)
-**Odpowiedzialność**: Orkiestracja logiki biznesowej, przypadki użycia
+**Odpowiedzialność**: Orkiestracja logiki biznesowej, UseCase-y
 
 ```
 src/Application/
@@ -141,7 +143,7 @@ src/Application/
 ```
 
 #### Use Cases
-Use Case opisuje pojedynczy, znaczący scenariusz użytkownika.
+Use Case opisuje pojedynczy, znaczący scenariusz użytkowania aplikacji.
 
 ```php
 // Struktura Use Case
@@ -167,7 +169,7 @@ class CreateAnnouncementUseCase {
 - Obsługuje zdarzenia i błędy
 
 #### Data Transfer Objects (DTOs)
-DTOs transportują dane między warstwami bez logiki biznesowej.
+DTO-s transportują dane między warstwami bez logiki biznesowej.
 
 ```php
 class AnnouncementDTO {
@@ -181,7 +183,7 @@ class AnnouncementDTO {
 }
 ```
 
-**Kiedy używać DTOs:**
+**Kiedy używać DTO-s:**
 - Transfer danych z HTTP Request/Response
 - Komunikacja między Use Cases
 - Serializacja/deserializacja
@@ -199,8 +201,7 @@ src/Infrastructure/
 │   └── EmailService.php
 ├── Factory/           # Fabryki do tworzenia obiektów
 ├── Security/          # Komponenty bezpieczeństwa
-│   ├── AuthenticationService.php
-│   └── PasswordHasher.php
+│   └── AuthenticationService.php
 ├── Helper/            # Funkcje pomocnicze
 ├── Translation/       # Tłumaczenia
 ├── Trait/             # Traity wspólne
@@ -212,7 +213,7 @@ src/Infrastructure/
 Repository abstrahuje dostęp do danych (patrz: Repository Pattern).
 
 ```php
-// Interface w Domain (nie istnieje tu, ale powinien)
+// Interface w Domain
 interface AnnouncementRepository {
     public function save(Announcement $announcement): void;
     public function findById(int $id): ?Announcement;
@@ -303,19 +304,17 @@ src/Console/
 ### Typowy Scenariusz: Tworzenie Ogłoszenia
 
 ```
-1. HTTP Request (POST /announcements)
+1. HTTP Request (POST /panel/add_anndouncement)
         ↓
 2. Controller (AnnouncementController)
    - Parsuje request
-   - Waliduje wejście
+   - Tworzy DTO
         ↓
 3. Use Case (CreateAnnouncementUseCase)
-   - Tworzy DTO
-   - Wywoła Domain Entity
+   - Tworzy Domain Entity
         ↓
 4. Domain Entity (Announcement)
    - Aplikuje reguły biznesowe
-   - Tworzy nowy agregat
         ↓
 5. Repository Interface
         ↓
@@ -327,14 +326,14 @@ src/Console/
    - Zwraca success
         ↓
 8. Controller
-   - Formatuje response (JSON)
+   - Formatuje response
         ↓
 9. HTTP Response (201 Created)
 ```
 
 ```mermaid
 graph TB
-    A["HTTP Request<br/>(POST /announcements)"] -->|Parse & Validate| B["Controller"]
+    A["HTTP Request<br/>(POST /panel/add_announcement)"] -->|Parse | B["Controller"]
     B -->|Execute| C["Use Case"]
     C -->|Create| D["Domain Entity"]
     D -->|Follow Business Rules| E["Entity Created"]
@@ -348,7 +347,7 @@ graph TB
     B -->|Format Response| I["HTTP Response<br/>(201 Created)"]
 ```
 
-## 🛡️ Invariants (Niezminiki Biznesowe)
+## 🛡️ Invariants
 
 Invariants to reguły biznesowe, które muszą być spełnione.
 
@@ -357,9 +356,9 @@ Invariants to reguły biznesowe, które muszą być spełnione.
 2. Announcement musi mieć `validUntil` >= `createdAt`
 3. Zatwierdzenie zmienia status z PENDING na APPROVED
 4. Odrzucenie zmienia status z PENDING na REJECTED
-5. Ogłoszenie jest ważne tylko jeśli status=APPROVED i teraz < validUntil
+5. Ogłoszenie jest ważne, tylko jeśli status = APPROVED i teraz < validUntil
 
-```php
+``` php
 public function isValid(): bool {
     return $this->status === AnnouncementStatus::APPROVED
         && new DateTimeImmutable() <= $this->validUntil;
@@ -368,7 +367,7 @@ public function isValid(): bool {
 
 ## 📦 Dependency Injection
 
-Projekt używa DIY DI Container (`src/Infrastructure/Container.php`).
+Projekt używa DI Container (`src/Infrastructure/Container.php`) zgodny z psr-11 `ContainerInterface`.
 
 ```php
 // Container Registration
@@ -404,10 +403,9 @@ $container->get(AnnouncementRepository::class);
 
 ### Application Layer
 ✅ DO:
-- Orkiestruj przypadki użycia
-- Waliduj DTOs
+- Orkiestruj UseCase
+- Waliduj DTO-s
 - Transformuj między Domain a Presentation
-- Obsługuj transakcje
 
 ❌ DON'T:
 - Nie implementuj reguł biznesowych
@@ -462,12 +460,12 @@ Domain Layer (interfaces only)
 
 ## 📚 Namespace Mapping
 
-| Warstwa | Namespace | Przykład |
-|---------|-----------|---------|
-| Domain | `App\Domain\` | `App\Domain\Entity\Announcement` |
-| Application | `App\Application\` | `App\Application\UseCase\CreateAnnouncementUseCase` |
-| Infrastructure | `App\Infrastructure\` | `App\Infrastructure\Repository\DatabaseAnnouncementRepository` |
-| Presentation | `App\Http\` / `App\Console\` | `App\Http\Controller\AnnouncementController` |
+| Warstwa        | Namespace                    | Przykład                                                       |
+|----------------|------------------------------|----------------------------------------------------------------|
+| Domain         | `App\Domain\`                | `App\Domain\Entity\Announcement`                               |
+| Application    | `App\Application\`           | `App\Application\UseCase\CreateAnnouncementUseCase`            |
+| Infrastructure | `App\Infrastructure\`        | `App\Infrastructure\Repository\DatabaseAnnouncementRepository` |
+| Presentation   | `App\Http\` / `App\Console\` | `App\Http\Controller\AnnouncementController`                   |
 
 ## 🚀 Rozszerzanie Projektu
 
@@ -479,7 +477,7 @@ Aby dodać nową funkcjonalność (np. nowy moduł):
    final class NewEntity { }
    ```
 
-2. **Zdefiniuj Enums jeśli potrzebne**
+2. **Zdefiniuj Enums (jeśli potrzebne)**
    ```php
    // src/Domain/Enum/NewEntityStatus.php
    enum NewEntityStatus { }
@@ -491,19 +489,13 @@ Aby dodać nową funkcjonalność (np. nowy moduł):
    class CreateNewEntityUseCase { }
    ```
 
-4. **Implementuj Repository w Infrastructure**
+4. **Implementuj Repository w Infrastructure (jeśli potrzebne)**
    ```php
    // src/Infrastructure/Repository/DatabaseNewEntityRepository.php
    class DatabaseNewEntityRepository { }
    ```
 
-5. **Stwórz Controller w Presentation**
-   ```php
-   // src/Http/Controller/NewEntityController.php
-   class NewEntityController { }
-   ```
-
-6. **Zarejestruj w DI Container**
+5. **Zarejestruj w DI Container**
    ```php
    // src/Infrastructure/Container.php
    $container->register(NewEntityRepository::class, $implementation);

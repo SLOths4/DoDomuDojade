@@ -24,13 +24,6 @@
                 <extension>php</extension>
             </extensions>
         </api>
-
-        <guide format="md">
-            <source dsn=".">
-                <path>docs</path>
-            </source>
-            <output>guides</output>
-        </guide>
     </version>
 
     <setting name="template.color" value="light-blue"/>
