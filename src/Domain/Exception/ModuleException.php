@@ -3,6 +3,7 @@ namespace App\Domain\Exception;
 
 use App\Domain\Enum\ExceptionCodes;
 use DateTimeImmutable;
+use phpseclib3\Crypt\EC\Curves\secp112r1;
 
 /**
  * Module domain exceptions - contains translation KEYS
@@ -86,6 +87,17 @@ final class ModuleException extends DomainException
             [
                 'start_time' => $startTime,
                 'end_time' => $endTime
+            ]
+        );
+    }
+
+    public static function invalidName(string $name): self
+    {
+        return new self(
+            'module.invalid_name',
+            ExceptionCodes::MODULE_INVALID_NAME->value,
+            [
+                'name' => $name
             ]
         );
     }

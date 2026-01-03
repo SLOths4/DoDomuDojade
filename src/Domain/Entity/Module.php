@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\Enum\ModuleName;
 use DateTimeImmutable;
 
 /**
@@ -10,7 +11,7 @@ use DateTimeImmutable;
 class Module {
     public function __construct(
         public ?int              $id,
-        public string            $moduleName,
+        public ModuleName        $moduleName,
         public bool              $isActive,
         public DateTimeImmutable $startTime,
         public DateTimeImmutable $endTime,

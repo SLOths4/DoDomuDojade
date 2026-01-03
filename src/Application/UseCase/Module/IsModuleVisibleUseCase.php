@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase\Module;
 
+use App\Domain\Enum\ModuleName;
 use App\Domain\Exception\ModuleException;
 use App\Infrastructure\Repository\ModuleRepository;
 use Psr\Log\LoggerInterface;
@@ -19,7 +20,7 @@ readonly class IsModuleVisibleUseCase
     /**
      * @throws Exception
      */
-    public function execute(string $moduleName): bool
+    public function execute(ModuleName $moduleName): bool
     {
         $this->logger->debug('Checking if module is visible', ['module_name' => $moduleName]);
 

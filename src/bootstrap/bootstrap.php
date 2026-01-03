@@ -388,6 +388,7 @@ $container->set(DisplayController::class, function (Container $c) {
             $c->get(GetAllUsersUseCase::class),
             $c->get(GetAllCountdownsUseCase::class),
             $c->get(GetAllAnnouncementsUseCase::class),
+            $c->get(Translator::class),
         );
     });
 

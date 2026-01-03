@@ -3,9 +3,12 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Module;
+use App\Domain\Enum\ModuleName;
+use App\Domain\Exception\ModuleException;
 use App\Infrastructure\Helper\DatabaseHelper;
 use DateTimeImmutable;
 use Exception;
+use Google\Service\Spanner\Mod;
 use PDO;
 
 readonly class ModuleRepository
@@ -20,7 +23,10 @@ readonly class ModuleRepository
     ) {}
 
     /**
-     * @throws Exception
+     * Maps array from database to entity
+     * @param array $row
+     * @return Module
+     * @throws ModuleException
      */
     private function mapRow(array $row): Module
     {
@@ -29,7 +35,7 @@ readonly class ModuleRepository
 
         return new Module(
             (int)$row['id'],
-            (string)$row['module_name'],
+            ModuleName::fromString((string)$row['module_name']),
             (bool)$row['is_active'],
             $startTime,
             $endTime
@@ -38,6 +44,8 @@ readonly class ModuleRepository
 
     /**
      * Finds module by ID and returns Module entity or null
+     * @param int $id
+     * @return Module|null
      * @throws Exception
      */
     public function findById(int $id): ?Module
@@ -65,7 +73,7 @@ readonly class ModuleRepository
         $affected = $this->dbHelper->update(
             $this->TABLE_NAME,
             [
-                'module_name' => [$module->moduleName, PDO::PARAM_STR],
+                'module_name' => [$module->moduleName->value, PDO::PARAM_STR],
                 'is_active'   => [$module->isActive, PDO::PARAM_BOOL],
                 'start_time'  => [$module->startTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
                 'end_time'    => [$module->endTime->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -80,6 +88,7 @@ readonly class ModuleRepository
 
     /**
      * Finds all modules
+     * @return Module[]
      * @throws Exception
      */
     public function findAll(): array
@@ -90,22 +99,12 @@ readonly class ModuleRepository
     }
 
     /**
-     * Finds all active modules
+     * Finds module by the provided name
+     * @param ModuleName $moduleName
+     * @return Module|null
      * @throws Exception
      */
-    public function findActive(): array
-    {
-        $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE is_active = true"
-        );
-
-        return array_map(fn(array $row) => $this->mapRow($row), $rows);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function findByName(string $moduleName): ?Module
+    public function findByName(ModuleName $moduleName): ?Module
     {
         $row = $this->dbHelper->getOne(
             "SELECT * FROM $this->TABLE_NAME WHERE module_name = :module_name LIMIT 1",

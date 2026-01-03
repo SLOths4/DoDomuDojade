@@ -7,6 +7,16 @@ return [
         'missing' => 'Csrf token missing',
     ],
 
+    'module_names' => [
+        'announcement' => 'announcements',
+        'calendar' => 'calendar',
+        'countdown' => 'countdown',
+        'tram' => 'tram departures',
+        'weather' => 'weather',
+        'quote' => 'quote of the day',
+        'word' => 'word of the day',
+    ],
+
     // Auth
     'auth' => [
         'invalid_credentials' => 'Invalid credentials',

@@ -2,6 +2,16 @@
 return [
     'error.user_not_found' => 'Użytkownik nie znaleziony',
 
+    'module_name' => [
+        'announcement' => 'ogłoszenia',
+        'calendar' => 'kalendarz',
+        'countdown' => 'odliczanie',
+        'tram' => 'tramwaje',
+        'weather' => 'pogoda',
+        'quote' => 'cytat dnia',
+        'word' => 'słowo dnia',
+    ],
+
     'csrf' => [
         'invalid' => 'Nieprawidłowy token csrf'
     ],

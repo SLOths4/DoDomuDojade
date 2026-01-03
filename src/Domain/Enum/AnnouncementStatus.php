@@ -7,7 +7,8 @@ use App\Domain\Exception\AnnouncementException;
 /**
  * Available announcement statuses
  */
-enum AnnouncementStatus: string {
+enum AnnouncementStatus: string
+{
     case PENDING = 'PENDING';
     case APPROVED = 'APPROVED';
     case REJECTED = 'REJECTED';

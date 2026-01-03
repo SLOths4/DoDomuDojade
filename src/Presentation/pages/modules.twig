@@ -23,7 +23,7 @@
                     <tbody>
                     {% for module in modules %}
                         <tr x-data="{ isActive: {{ module.isActive ? 'true' : 'false' }} }">
-                            <td class="px-4 py-2 border">{{ module.moduleName }}</td>
+                            <td class="px-4 py-2 border">{{ module.moduleNameLabel }}</td>
                             <td class="px-4 py-2 border">{{ module.startTime.format('H:i') }}</td>
                             <td class="px-4 py-2 border">{{ module.endTime.format('H:i') }}</td>
                             <td class="px-4 py-2 border space-x-2">
@@ -56,7 +56,7 @@
                 </table>
             </div>
         {% else %}
-            {% include 'components/error.twig' with { error: "Brak modułów do wyświetlenia."r} %}
+            {% include 'components/error.twig' with { error: "Brak modułów do wyświetlenia." } %}
         {% endif %}
 
         {# Edit modal #}

@@ -8,6 +8,7 @@ use App\Application\UseCase\Module\IsModuleVisibleUseCase;
 use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
 use App\Application\UseCase\Word\FetchActiveWordUseCase;
 use App\Application\UseCase\User\GetUserByIdUseCase;
+use App\Domain\Enum\ModuleName;
 use App\Domain\Exception\DisplayException;
 use App\Http\Context\LocaleContext;
 use App\Http\Context\RequestContext;
@@ -66,7 +67,7 @@ final class DisplayController extends BaseController
      * @throws DisplayException
      * @throws Exception
      */
-    private function isModuleVisible(string $module): bool
+    private function isModuleVisible(ModuleName $module): bool
     {
         return $this->isModuleVisibleUseCase->execute($module);
     }
@@ -79,7 +80,7 @@ final class DisplayController extends BaseController
     #[NoReturn]
     public function getDepartures(): void
     {
-        if (!$this->isModuleVisible('tram')) {
+        if (!$this->isModuleVisible(ModuleName::tram)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'departures' => null
@@ -132,11 +133,12 @@ final class DisplayController extends BaseController
      * Get valid announcements for display
      *
      * @throws DisplayException
+     * @throws Exception
      */
     #[NoReturn]
     public function getAnnouncements(): void
     {
-        if (!$this->isModuleVisible('announcements')) {
+        if (!$this->isModuleVisible(ModuleName::announcement)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'announcements' => null
@@ -192,7 +194,7 @@ final class DisplayController extends BaseController
     #[NoReturn]
     public function getCountdown(): void
     {
-        if (!$this->isModuleVisible('countdown')) {
+        if (!$this->isModuleVisible(ModuleName::countdown)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'title' => null,
@@ -231,7 +233,7 @@ final class DisplayController extends BaseController
     #[NoReturn]
     public function getWeather(): void
     {
-        if (!$this->isModuleVisible('weather')) {
+        if (!$this->isModuleVisible(ModuleName::weather)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'weather' => null
@@ -271,7 +273,7 @@ final class DisplayController extends BaseController
     public function getEvents(): void
     {
         try {
-            if (!$this->isModuleVisible('calendar')) {
+            if (!$this->isModuleVisible(ModuleName::calendar)) {
                 $this->sendSuccess([
                     'is_active' => false,
                     'events' => null
@@ -316,7 +318,7 @@ final class DisplayController extends BaseController
     #[NoReturn]
     public function getQuote(): void
     {
-        if (!$this->isModuleVisible('quote')) {
+        if (!$this->isModuleVisible(ModuleName::quote)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'quote' => null
@@ -357,7 +359,7 @@ final class DisplayController extends BaseController
     #[NoReturn]
     public function getWord(): void
     {
-        if (!$this->isModuleVisible('word')) {
+        if (!$this->isModuleVisible(ModuleName::word)) {
             $this->sendSuccess([
                 'is_active' => false,
                 'word' => null

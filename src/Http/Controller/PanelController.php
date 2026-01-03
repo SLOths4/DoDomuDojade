@@ -6,11 +6,15 @@ use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
 use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
 use App\Application\UseCase\Module\GetAllModulesUseCase;
 use App\Application\UseCase\User\GetAllUsersUseCase;
+use App\Domain\Entity\Module;
 use App\Domain\Enum\AnnouncementStatus;
+use App\Domain\Enum\ModuleName;
 use App\Domain\Exception\ViewException;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\Translation\Translator;
 use App\Infrastructure\View\ViewRendererInterface;
+use App\Presentation\DataTransferObject\ModuleViewDTO;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -23,14 +27,15 @@ use Psr\Log\LoggerInterface;
 class PanelController extends BaseController
 {
     public function __construct(
-        readonly RequestContext $requestContext,
-        readonly ViewRendererInterface $renderer,
-        readonly FlashMessengerInterface $flash,
-        private readonly LoggerInterface $logger,
-        private readonly GetAllModulesUseCase $getAllModulesUseCase,
-        private readonly GetAllUsersUseCase $getAllUsersUseCase,
-        private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
+        readonly RequestContext                     $requestContext,
+        readonly ViewRendererInterface              $renderer,
+        readonly FlashMessengerInterface            $flash,
+        private readonly LoggerInterface            $logger,
+        private readonly GetAllModulesUseCase       $getAllModulesUseCase,
+        private readonly GetAllUsersUseCase         $getAllUsersUseCase,
+        private readonly GetAllCountdownsUseCase    $getAllCountdownsUseCase,
         private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
+        private readonly Translator                 $translator,
     ){}
 
     /**
@@ -142,10 +147,22 @@ class PanelController extends BaseController
     {
         $modules = $this->getAllModulesUseCase->execute();
 
+        $translatedModules = array_map(
+            fn(Module $module) => new ModuleViewDTO(
+                id: $module->id,
+                moduleName: $module->moduleName->value,
+                moduleNameLabel: $this->translator->translate('module_name.' . $module->moduleName->value),
+                isActive: $module->isActive,
+                startTime: $module->startTime,
+                endTime: $module->endTime,
+            ),
+            $modules
+        );
+
         $this->logger->info("Modules page loaded");
 
         $this->render('pages/modules', [
-            'modules' => $modules,
+            'modules' => $translatedModules,
         ]);
     }
 
@@ -162,11 +179,7 @@ class PanelController extends BaseController
 
         $this->logger->info("Panel index loaded");
 
-        $this->render('pages/panel', [
-            'announcements' => $announcements,
-            'users' => $users,
-            'modules' => $modules,
-        ]);
+        $this->render('pages/panel');
     }
 
     /**
