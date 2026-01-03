@@ -7,7 +7,6 @@
     "ext-mbstring": "*",
     "ext-simplexml": "*",
     "ext-libxml": "*",
-    "ext-sqlite3": "*",
     "ext-readline": "*",
     "google/apiclient": "^2.18",
     "guzzlehttp/psr7": "^2.6",
