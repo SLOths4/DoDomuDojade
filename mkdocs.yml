@@ -1,5 +1,7 @@
 site_name: DoDomuDojade Docs
 site_dir: build
+site_url: https://sloths4.github.io/DoDomuDojade/
+use_directory_urls: true
 nav:
   - Home: index.md
   - Architecture: architecture/ddd.md
@@ -8,3 +10,4 @@ nav:
       - Application: layers/appliacation.md
       - Domain: layers/domain.md
       - Infrastructure: layers/infrastructure.md
+  - API Reference: /api
