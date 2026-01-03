@@ -20,7 +20,7 @@ jobs:
           php-version: 8.3
 
       - name: Install PHP deps
-        run: composer install --no-dev --prefer-dist
+        run: composer install --prefer-dist
 
       - name: Generate API docs
         run: vendor/bin/phpdoc run
