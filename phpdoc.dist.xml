@@ -8,7 +8,7 @@
     <title>DoDomuDojade Documentation</title>
 
     <paths>
-        <output>build/docs</output>
+        <output>build/api</output>
         <cache>build/cache</cache>
     </paths>
 
