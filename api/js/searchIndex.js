@@ -2151,6 +2151,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Enum-ExceptionCodes.html#enumcase_MODULE_TOGGLE_FAILED"
         },                {
+            "fqsen": "\\App\\Domain\\Enum\\ExceptionCodes\u003A\u003AMODULE_INVALID_NAME",
+            "name": "MODULE_INVALID_NAME",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ExceptionCodes.html#enumcase_MODULE_INVALID_NAME"
+        },                {
             "fqsen": "\\App\\Domain\\Enum\\ExceptionCodes\u003A\u003AVIEW_USER_NOT_AUTHENTICATED",
             "name": "VIEW_USER_NOT_AUTHENTICATED",
             "summary": "",
@@ -2200,6 +2205,51 @@ Search.appendIndex(
             "name": "DISPLAY_FETCH_WORD_FAILED",
             "summary": "",
             "url": "classes/App-Domain-Enum-ExceptionCodes.html#enumcase_DISPLAY_FETCH_WORD_FAILED"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName",
+            "name": "ModuleName",
+            "summary": "Stores\u0020available\u0020modules\u0020and\u0020their\u0020names",
+            "url": "classes/App-Domain-Enum-ModuleName.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003AfromString\u0028\u0029",
+            "name": "fromString",
+            "summary": "Maps\u0020a\u0020given\u0020string\u0020to\u0020a\u0020module\u0020name",
+            "url": "classes/App-Domain-Enum-ModuleName.html#method_fromString"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Aannouncement",
+            "name": "announcement",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_announcement"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Acalendar",
+            "name": "calendar",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_calendar"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Acountdown",
+            "name": "countdown",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_countdown"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Atram",
+            "name": "tram",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_tram"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Aweather",
+            "name": "weather",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_weather"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Aquote",
+            "name": "quote",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_quote"
+        },                {
+            "fqsen": "\\App\\Domain\\Enum\\ModuleName\u003A\u003Aword",
+            "name": "word",
+            "summary": "",
+            "url": "classes/App-Domain-Enum-ModuleName.html#enumcase_word"
         },                {
             "fqsen": "\\App\\Domain\\Exception\\AnnouncementException",
             "name": "AnnouncementException",
@@ -2550,6 +2600,11 @@ Search.appendIndex(
             "name": "startTimeGreaterThanEndTime",
             "summary": "",
             "url": "classes/App-Domain-Exception-ModuleException.html#method_startTimeGreaterThanEndTime"
+        },                {
+            "fqsen": "\\App\\Domain\\Exception\\ModuleException\u003A\u003AinvalidName\u0028\u0029",
+            "name": "invalidName",
+            "summary": "",
+            "url": "classes/App-Domain-Exception-ModuleException.html#method_invalidName"
         },                {
             "fqsen": "\\App\\Domain\\Exception\\UserException",
             "name": "UserException",
@@ -3310,6 +3365,11 @@ Search.appendIndex(
             "name": "getAllAnnouncementsUseCase",
             "summary": "",
             "url": "classes/App-Http-Controller-PanelController.html#property_getAllAnnouncementsUseCase"
+        },                {
+            "fqsen": "\\App\\Http\\Controller\\PanelController\u003A\u003A\u0024translator",
+            "name": "translator",
+            "summary": "",
+            "url": "classes/App-Http-Controller-PanelController.html#property_translator"
         },                {
             "fqsen": "\\App\\Http\\Controller\\UserController",
             "name": "UserController",
@@ -4083,7 +4143,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Infrastructure\\Repository\\ModuleRepository\u003A\u003AmapRow\u0028\u0029",
             "name": "mapRow",
-            "summary": "",
+            "summary": "Maps\u0020array\u0020from\u0020database\u0020to\u0020entity",
             "url": "classes/App-Infrastructure-Repository-ModuleRepository.html#method_mapRow"
         },                {
             "fqsen": "\\App\\Infrastructure\\Repository\\ModuleRepository\u003A\u003AfindById\u0028\u0029",
@@ -4101,14 +4161,9 @@ Search.appendIndex(
             "summary": "Finds\u0020all\u0020modules",
             "url": "classes/App-Infrastructure-Repository-ModuleRepository.html#method_findAll"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Repository\\ModuleRepository\u003A\u003AfindActive\u0028\u0029",
-            "name": "findActive",
-            "summary": "Finds\u0020all\u0020active\u0020modules",
-            "url": "classes/App-Infrastructure-Repository-ModuleRepository.html#method_findActive"
-        },                {
             "fqsen": "\\App\\Infrastructure\\Repository\\ModuleRepository\u003A\u003AfindByName\u0028\u0029",
             "name": "findByName",
-            "summary": "",
+            "summary": "Finds\u0020module\u0020by\u0020the\u0020provided\u0020name",
             "url": "classes/App-Infrastructure-Repository-ModuleRepository.html#method_findByName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Repository\\ModuleRepository\u003A\u003ADEFAULT_START_TIME",
@@ -4791,6 +4846,46 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-View-ViewRendererInterface.html#method_render"
         },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO",
+            "name": "ModuleViewDTO",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024id",
+            "name": "id",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_id"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024moduleName",
+            "name": "moduleName",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_moduleName"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024moduleNameLabel",
+            "name": "moduleNameLabel",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_moduleNameLabel"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024isActive",
+            "name": "isActive",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_isActive"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024startTime",
+            "name": "startTime",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_startTime"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject\\ModuleViewDTO\u003A\u003A\u0024endTime",
+            "name": "endTime",
+            "summary": "",
+            "url": "classes/App-Presentation-DataTransferObject-ModuleViewDTO.html#property_endTime"
+        },                {
             "fqsen": "\\",
             "name": "\\",
             "summary": "",
@@ -4950,5 +5045,15 @@ Search.appendIndex(
             "name": "View",
             "summary": "",
             "url": "namespaces/app-infrastructure-view.html"
+        },                {
+            "fqsen": "\\App\\Presentation\\DataTransferObject",
+            "name": "DataTransferObject",
+            "summary": "",
+            "url": "namespaces/app-presentation-datatransferobject.html"
+        },                {
+            "fqsen": "\\App\\Presentation",
+            "name": "Presentation",
+            "summary": "",
+            "url": "namespaces/app-presentation.html"
         }            ]
 );
