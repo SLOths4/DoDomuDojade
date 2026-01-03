@@ -1,161 +1,1875 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
         <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/layers/infrastructure/">
-        <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Infrastructure - DoDomuDojade Docs</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/fontawesome.min.css" rel="stylesheet">
-        <link href="../../css/brands.min.css" rel="stylesheet">
-        <link href="../../css/solid.min.css" rel="stylesheet">
-        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
-        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
-        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script> 
-    </head>
+      
+      
+        <link rel="prev" href="../domain/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Infrastruktury - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="nav-item">
-                                <a href="../.." class="nav-link">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="../../architecture/ddd/" class="nav-link">Architecture</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="../../examples/practical_examples/" class="nav-link">Examples</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../appliacation.md" class="dropdown-item">Application</a>
-</li>
-                                    
-<li>
-    <a href="../domain/" class="dropdown-item">Domain</a>
-</li>
-                                    
-<li>
-    <a href="./" class="dropdown-item active" aria-current="page">Infrastructure</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/api" class="nav-link">API Reference</a>
-                            </li>
-                        </ul>
-
-                    <ul class="nav navbar-nav ms-md-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                            <li class="nav-item">
-                                <a rel="prev" href="../domain/" class="nav-link">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" class="nav-link disabled">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
 
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-bs-level="1"><a href="#infrastructure-layer-api-reference" class="nav-link">Infrastructure Layer - API Reference</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#struktura-infrastructure-layer" class="nav-link">📍 Struktura Infrastructure Layer</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#repositories" class="nav-link">🔌 Repositories</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#external-services" class="nav-link">🔗 External Services</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#factories" class="nav-link">🏭 Factories</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#security-components" class="nav-link">🔐 Security Components</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#helpers" class="nav-link">🛠️ Helpers</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#translation-service" class="nav-link">🌐 Translation Service</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#dependency-injection-container" class="nav-link">🚚 Dependency Injection Container</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#architektura-warstwowa" class="nav-link">📊 Architektura Warstwowa</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#best-practices" class="nav-link">🎓 Best Practices</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#mapowanie-warstw" class="nav-link">📊 Mapowanie Warstw</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
-        </ul>
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="light" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#infrastructure-layer-api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Infrastruktury
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="light" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="dark" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Przykłady
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warstwy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Warstwy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aplikacji
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domeny
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastruktury
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastruktury
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-infrastructure-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Struktura Infrastructure Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repositories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔌 Repositories
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔌 Repositories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databaseannouncementrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseAnnouncementRepository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseAnnouncementRepository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saveannouncement-announcement-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save(Announcement $announcement): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyidint-id-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findById(int $id): ?Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findall-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findAll(): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbystatusstring-status-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findByStatus(string $status): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findvalid-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findValid(): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleteint-id-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delete(int $id): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databaseuserrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseUserRepository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseUserRepository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saveuser-user-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save(User $user): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyidint-id-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findById(int $id): ?User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyemailstring-email-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findByEmail(string $email): ?User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#existsemailstring-email-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        existsEmail(string $email): bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databasewordrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseWordRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databasequoterepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseQuoteRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 External Services
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔗 External Services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#externalwordapiservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalWordApiService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExternalWordApiService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetchdailyword-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetchDailyWord(): Word
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externalquoteapiservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalQuoteApiService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExternalQuoteApiService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetchdailyquote-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetchDailyQuote(): Quote
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emailservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EmailService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EmailService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sendstring-to-string-subject-string-body-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        send(string $to, string $subject, string $body): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏭 Factories
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏭 Factories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcementfactory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementFactory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AnnouncementFactory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createfromrequestcreateannouncementrequest-request-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        createFromRequest(CreateAnnouncementRequest $request): Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#createfromdatabaserowarray-row-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        createFromDatabaseRow(array $row): Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔐 Security Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔐 Security Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passwordhasher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PasswordHasher
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PasswordHasher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hashstring-password-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hash(string $password): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifystring-password-string-hash-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        verify(string $password, string $hash): bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokengenerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TokenGenerator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TokenGenerator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generatejwtuser-user-int-expiresin-3600-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generateJWT(User $user, int $expiresIn = 3600): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generaterefreshtokenuser-user-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generateRefreshToken(User $user): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticationservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AuthenticationService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthenticationService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authenticatestring-email-string-password-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        authenticate(string $email, string $password): User
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ Helpers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datehelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DateHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stringhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StringHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validationhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ValidationHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#translation-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌐 Translation Service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌐 Translation Service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#translationservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TranslationService
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-injection-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚚 Dependency Injection Container
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚚 Dependency Injection Container">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#containerphp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container.php
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Container.php">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rejestracja-serwisow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rejestracja Serwisów
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uzycie-w-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Użycie w Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architektura-warstwowa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Architektura Warstwowa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎓 Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎓 Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ DO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ DON'T
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapowanie-warstw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Mapowanie Warstw
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-infrastructure-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Struktura Infrastructure Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repositories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔌 Repositories
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔌 Repositories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databaseannouncementrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseAnnouncementRepository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseAnnouncementRepository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saveannouncement-announcement-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save(Announcement $announcement): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyidint-id-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findById(int $id): ?Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findall-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findAll(): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbystatusstring-status-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findByStatus(string $status): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findvalid-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findValid(): array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleteint-id-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delete(int $id): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databaseuserrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseUserRepository
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseUserRepository">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saveuser-user-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save(User $user): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyidint-id-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findById(int $id): ?User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findbyemailstring-email-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findByEmail(string $email): ?User
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#existsemailstring-email-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        existsEmail(string $email): bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databasewordrepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseWordRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databasequoterepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DatabaseQuoteRepository
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 External Services
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔗 External Services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#externalwordapiservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalWordApiService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExternalWordApiService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetchdailyword-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetchDailyWord(): Word
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externalquoteapiservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalQuoteApiService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExternalQuoteApiService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fetchdailyquote-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetchDailyQuote(): Quote
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emailservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EmailService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EmailService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sendstring-to-string-subject-string-body-void" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        send(string $to, string $subject, string $body): void
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏭 Factories
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏭 Factories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcementfactory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementFactory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AnnouncementFactory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createfromrequestcreateannouncementrequest-request-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        createFromRequest(CreateAnnouncementRequest $request): Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#createfromdatabaserowarray-row-announcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        createFromDatabaseRow(array $row): Announcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔐 Security Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔐 Security Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passwordhasher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PasswordHasher
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PasswordHasher">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hashstring-password-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hash(string $password): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifystring-password-string-hash-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        verify(string $password, string $hash): bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokengenerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TokenGenerator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TokenGenerator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generatejwtuser-user-int-expiresin-3600-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generateJWT(User $user, int $expiresIn = 3600): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generaterefreshtokenuser-user-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generateRefreshToken(User $user): string
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticationservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AuthenticationService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthenticationService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authenticatestring-email-string-password-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        authenticate(string $email, string $password): User
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠️ Helpers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datehelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DateHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stringhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StringHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validationhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ValidationHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#translation-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌐 Translation Service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌐 Translation Service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#translationservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TranslationService
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-injection-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚚 Dependency Injection Container
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚚 Dependency Injection Container">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#containerphp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container.php
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Container.php">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rejestracja-serwisow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rejestracja Serwisów
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uzycie-w-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Użycie w Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architektura-warstwowa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Architektura Warstwowa
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎓 Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎓 Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ DO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ DON'T
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapowanie-warstw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Mapowanie Warstw
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
 
 <h1 id="infrastructure-layer-api-reference">Infrastructure Layer - API Reference</h1>
 <p>Warstwa Infrastructure zawiera implementację technicznych szczegółów, integracje z zewnętrznymi serwisami i zarządzaniem danymi.</p>
 <h2 id="struktura-infrastructure-layer">📍 Struktura Infrastructure Layer</h2>
-<pre><code>src/Infrastructure/
+<div class="highlight"><pre><span></span><code>src/Infrastructure/
 ├── Container.php                # Dependency Injection Container
 ├── Repository/                  # Data Access Layer
 │   ├── DatabaseAnnouncementRepository.php
@@ -186,7 +1900,7 @@
 │   └── TimestampableTrait.php
 └── View/                        # View Helpers
     └── TemplateRenderer.php
-</code></pre>
+</code></pre></div>
 <p><strong>Namespace</strong>: <code>App\Infrastructure\</code></p>
 <hr />
 <h2 id="repositories">🔌 Repositories</h2>
@@ -195,11 +1909,11 @@
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Repository/DatabaseAnnouncementRepository.php</code></p>
 <p><strong>Odpowiedzialność</strong>: Persystencja danych Announcement w bazie danych</p>
 <p><strong>Implementuje</strong>: <code>AnnouncementRepositoryInterface</code> (Future)</p>
-<p><strong>Zależności</strong>:</p>
-<pre><code class="language-php">public function __construct(
-    private PDO $pdo
-)
-</code></pre>
+<p><strong>Zależności</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">public function __construct(</span>
+<span class="x">    private PDO $pdo</span>
+<span class="x">)</span>
+</code></pre></div></p>
 <h4 id="saveannouncement-announcement-void">save(Announcement $announcement): void</h4>
 <p>Zapisz (lub zaktualizuj) ogłoszenie w bazie.</p>
 <p><strong>Parametry</strong>:
@@ -207,24 +1921,24 @@
 <p><strong>Efekty</strong>:
 - INSERT jeśli <code>$announcement-&gt;id === null</code>
 - UPDATE jeśli <code>$announcement-&gt;id !== null</code></p>
-<p><strong>SQL</strong>:</p>
-<pre><code class="language-sql">-- INSERT
-INSERT INTO announcements (
-    title, text, created_at, valid_until, user_id, status, decided_at, decided_by
-) VALUES (...)
+<p><strong>SQL</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1">-- INSERT</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">announcements</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">valid_until</span><span class="p">,</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">decided_at</span><span class="p">,</span><span class="w"> </span><span class="n">decided_by</span>
+<span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(...)</span>
 
--- UPDATE
-UPDATE announcements SET 
-    title = ?, text = ?, status = ?, decided_at = ?, decided_by = ?
-WHERE id = ?
-</code></pre>
+<span class="c1">-- UPDATE</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">announcements</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">decided_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="n">decided_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span>
+</code></pre></div></p>
 <p><strong>Wyjątki</strong>:
 - <code>DatabaseException</code> - Błąd SQL
 - <code>ConstraintViolationException</code> - Naruszenie constraint'a</p>
-<p><strong>Użycie</strong>:</p>
-<pre><code class="language-php">$announcement = Announcement::createNew(...);
-$repository-&gt;save($announcement);
-</code></pre>
+<p><strong>Użycie</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">$announcement = Announcement::createNew(...);</span>
+<span class="x">$repository-&gt;save($announcement);</span>
+</code></pre></div></p>
 <hr />
 <h4 id="findbyidint-id-announcement">findById(int $id): ?Announcement</h4>
 <p>Pobierz ogłoszenie po ID.</p>
@@ -233,9 +1947,9 @@ $repository-&gt;save($announcement);
 <p><strong>Zwraca</strong>: 
 - <code>Announcement</code> - Znalezione ogłoszenie
 - <code>null</code> - Jeśli nie znalezione</p>
-<p><strong>SQL</strong>:</p>
-<pre><code class="language-sql">SELECT * FROM announcements WHERE id = ? LIMIT 1
-</code></pre>
+<p><strong>SQL</strong>:
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">announcements</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span>
+</code></pre></div></p>
 <hr />
 <h4 id="findall-array">findAll(): array</h4>
 <p>Pobierz wszystkie ogłoszenia.</p>
@@ -250,12 +1964,12 @@ $repository-&gt;save($announcement);
 <h4 id="findvalid-array">findValid(): array</h4>
 <p>Pobierz tylko ważne ogłoszenia (approved i jeszcze nieugasłe).</p>
 <p><strong>Zwraca</strong>: <code>array&lt;Announcement&gt;</code> - Aktualnie widoczne</p>
-<p><strong>SQL</strong>:</p>
-<pre><code class="language-sql">SELECT * FROM announcements 
-WHERE status = 'approved' 
-AND valid_until &gt;= NOW()
-ORDER BY created_at DESC
-</code></pre>
+<p><strong>SQL</strong>:
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">announcements</span><span class="w"> </span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;approved&#39;</span><span class="w"> </span>
+<span class="k">AND</span><span class="w"> </span><span class="n">valid_until</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span>
+</code></pre></div></p>
 <hr />
 <h4 id="deleteint-id-void">delete(int $id): void</h4>
 <p>Usuń ogłoszenie.</p>
@@ -284,12 +1998,12 @@ ORDER BY created_at DESC
 <h3 id="externalwordapiservice">ExternalWordApiService</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/ExternalWordApiService.php</code></p>
 <p><strong>Odpowiedzialność</strong>: Pobieranie słów z zewnętrznego API</p>
-<p><strong>Zależności</strong>:</p>
-<pre><code class="language-php">public function __construct(
-    private HttpClient $httpClient,
-    private ConfigService $config
-)
-</code></pre>
+<p><strong>Zależności</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">public function __construct(</span>
+<span class="x">    private HttpClient $httpClient,</span>
+<span class="x">    private ConfigService $config</span>
+<span class="x">)</span>
+</code></pre></div></p>
 <h4 id="fetchdailyword-word">fetchDailyWord(): Word</h4>
 <p>Pobierz słowo dnia z zewnętrznego API.</p>
 <p><strong>Zwraca</strong>: <code>Word</code> - Transformowane do Domain Entity</p>
@@ -303,24 +2017,24 @@ ORDER BY created_at DESC
 - <code>ExternalServiceException</code> - Problem z API
 - <code>HttpException</code> - Błąd HTTP
 - <code>InvalidResponseException</code> - Błędna struktura danych</p>
-<p><strong>HTTP</strong>:</p>
-<pre><code>GET https://api.external.com/word/daily
+<p><strong>HTTP</strong>:
+<div class="highlight"><pre><span></span><code>GET https://api.external.com/word/daily
 Accept: application/json
 Authorization: Bearer {token}
-</code></pre>
-<p><strong>Response</strong>:</p>
-<pre><code class="language-json">{
-  &quot;word&quot;: &quot;ephemeral&quot;,
-  &quot;definition&quot;: &quot;Lasting for a very short time&quot;,
-  &quot;example&quot;: &quot;The beauty of cherry blossoms is ephemeral&quot;,
-  &quot;language&quot;: &quot;en&quot;
-}
-</code></pre>
-<p><strong>Użycie</strong>:</p>
-<pre><code class="language-php">// W CLI Command lub UseCase
-$word = $this-&gt;wordService-&gt;fetchDailyWord();
-$this-&gt;wordRepository-&gt;save($word);
-</code></pre>
+</code></pre></div></p>
+<p><strong>Response</strong>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;word&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ephemeral&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lasting for a very short time&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;example&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The beauty of cherry blossoms is ephemeral&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Użycie</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">// W CLI Command lub UseCase</span>
+<span class="x">$word = $this-&gt;wordService-&gt;fetchDailyWord();</span>
+<span class="x">$this-&gt;wordRepository-&gt;save($word);</span>
+</code></pre></div></p>
 <hr />
 <h3 id="externalquoteapiservice">ExternalQuoteApiService</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/ExternalQuoteApiService.php</code></p>
@@ -330,12 +2044,12 @@ $this-&gt;wordRepository-&gt;save($word);
 <h3 id="emailservice">EmailService</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/EmailService.php</code></p>
 <p><strong>Odpowiedzialność</strong>: Wysyłanie emaili</p>
-<p><strong>Zależności</strong>:</p>
-<pre><code class="language-php">public function __construct(
-    private SmtpClient $smtpClient,
-    private ConfigService $config
-)
-</code></pre>
+<p><strong>Zależności</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">public function __construct(</span>
+<span class="x">    private SmtpClient $smtpClient,</span>
+<span class="x">    private ConfigService $config</span>
+<span class="x">)</span>
+</code></pre></div></p>
 <h4 id="sendstring-to-string-subject-string-body-void">send(string $to, string $subject, string $body): void</h4>
 <p>Wyślij email.</p>
 <p><strong>Parametry</strong>:
@@ -352,34 +2066,34 @@ $this-&gt;wordRepository-&gt;save($word);
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Factory/AnnouncementFactory.php</code></p>
 <h4 id="createfromrequestcreateannouncementrequest-request-announcement">createFromRequest(CreateAnnouncementRequest $request): Announcement</h4>
 <p>Utwórz Announcement Entity z Request.</p>
-<pre><code class="language-php">public static function createFromRequest(
-    CreateAnnouncementRequest $request,
-    ?int $userId = null
-): Announcement {
-    return Announcement::createNew(
-        title: $request-&gt;title,
-        text: $request-&gt;text,
-        validUntil: new DateTimeImmutable($request-&gt;validUntil),
-        userId: $userId ?? $request-&gt;userId,
-    );
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">public static function createFromRequest(</span>
+<span class="x">    CreateAnnouncementRequest $request,</span>
+<span class="x">    ?int $userId = null</span>
+<span class="x">): Announcement {</span>
+<span class="x">    return Announcement::createNew(</span>
+<span class="x">        title: $request-&gt;title,</span>
+<span class="x">        text: $request-&gt;text,</span>
+<span class="x">        validUntil: new DateTimeImmutable($request-&gt;validUntil),</span>
+<span class="x">        userId: $userId ?? $request-&gt;userId,</span>
+<span class="x">    );</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="createfromdatabaserowarray-row-announcement">createFromDatabaseRow(array $row): Announcement</h4>
 <p>Utwórz Announcement Entity z rekordu bazy.</p>
-<pre><code class="language-php">public static function createFromDatabaseRow(array $row): Announcement {
-    return new Announcement(
-        id: (int) $row['id'],
-        title: $row['title'],
-        text: $row['text'],
-        createdAt: new DateTimeImmutable($row['created_at']),
-        validUntil: new DateTimeImmutable($row['valid_until']),
-        userId: $row['user_id'] ? (int) $row['user_id'] : null,
-        status: AnnouncementStatus::from($row['status']),
-        decidedAt: $row['decided_at'] ? new DateTimeImmutable($row['decided_at']) : null,
-        decidedBy: $row['decided_by'] ? (int) $row['decided_by'] : null,
-    );
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">public static function createFromDatabaseRow(array $row): Announcement {</span>
+<span class="x">    return new Announcement(</span>
+<span class="x">        id: (int) $row[&#39;id&#39;],</span>
+<span class="x">        title: $row[&#39;title&#39;],</span>
+<span class="x">        text: $row[&#39;text&#39;],</span>
+<span class="x">        createdAt: new DateTimeImmutable($row[&#39;created_at&#39;]),</span>
+<span class="x">        validUntil: new DateTimeImmutable($row[&#39;valid_until&#39;]),</span>
+<span class="x">        userId: $row[&#39;user_id&#39;] ? (int) $row[&#39;user_id&#39;] : null,</span>
+<span class="x">        status: AnnouncementStatus::from($row[&#39;status&#39;]),</span>
+<span class="x">        decidedAt: $row[&#39;decided_at&#39;] ? new DateTimeImmutable($row[&#39;decided_at&#39;]) : null,</span>
+<span class="x">        decidedBy: $row[&#39;decided_by&#39;] ? (int) $row[&#39;decided_by&#39;] : null,</span>
+<span class="x">    );</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="security-components">🔐 Security Components</h2>
 <p>Komponenty bezpieczeństwa i autentykacji.</p>
@@ -387,35 +2101,35 @@ $this-&gt;wordRepository-&gt;save($word);
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/PasswordHasher.php</code></p>
 <h4 id="hashstring-password-string">hash(string $password): string</h4>
 <p>Zahaszuj hasło.</p>
-<pre><code class="language-php">public function hash(string $password): string {
-    return password_hash($password, PASSWORD_BCRYPT, [
-        'cost' =&gt; 12
-    ]);
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">public function hash(string $password): string {</span>
+<span class="x">    return password_hash($password, PASSWORD_BCRYPT, [</span>
+<span class="x">        &#39;cost&#39; =&gt; 12</span>
+<span class="x">    ]);</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="verifystring-password-string-hash-bool">verify(string $password, string $hash): bool</h4>
 <p>Sprawdź hasło.</p>
-<pre><code class="language-php">public function verify(string $password, string $hash): bool {
-    return password_verify($password, $hash);
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">public function verify(string $password, string $hash): bool {</span>
+<span class="x">    return password_verify($password, $hash);</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h3 id="tokengenerator">TokenGenerator</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/TokenGenerator.php</code></p>
 <h4 id="generatejwtuser-user-int-expiresin-3600-string">generateJWT(User $user, int $expiresIn = 3600): string</h4>
 <p>Wygeneruj JWT token dla użytkownika.</p>
-<pre><code class="language-php">public function generateJWT(User $user, int $expiresIn = 3600): string {
-    $payload = [
-        'user_id' =&gt; $user-&gt;id,
-        'email' =&gt; $user-&gt;email,
-        'role' =&gt; $user-&gt;role,
-        'iat' =&gt; time(),
-        'exp' =&gt; time() + $expiresIn
-    ];
+<div class="highlight"><pre><span></span><code><span class="x">public function generateJWT(User $user, int $expiresIn = 3600): string {</span>
+<span class="x">    $payload = [</span>
+<span class="x">        &#39;user_id&#39; =&gt; $user-&gt;id,</span>
+<span class="x">        &#39;email&#39; =&gt; $user-&gt;email,</span>
+<span class="x">        &#39;role&#39; =&gt; $user-&gt;role,</span>
+<span class="x">        &#39;iat&#39; =&gt; time(),</span>
+<span class="x">        &#39;exp&#39; =&gt; time() + $expiresIn</span>
+<span class="x">    ];</span>
 
-    return JWT::encode($payload, $this-&gt;secret, 'HS256');
-}
-</code></pre>
+<span class="x">    return JWT::encode($payload, $this-&gt;secret, &#39;HS256&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="generaterefreshtokenuser-user-string">generateRefreshToken(User $user): string</h4>
 <p>Wygeneruj refresh token.</p>
 <hr />
@@ -423,151 +2137,151 @@ $this-&gt;wordRepository-&gt;save($word);
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/AuthenticationService.php</code></p>
 <h4 id="authenticatestring-email-string-password-user">authenticate(string $email, string $password): User</h4>
 <p>Uwierzytelnij użytkownika.</p>
-<pre><code class="language-php">public function authenticate(string $email, string $password): User {
-    $user = $this-&gt;userRepository-&gt;findByEmail($email);
+<div class="highlight"><pre><span></span><code><span class="x">public function authenticate(string $email, string $password): User {</span>
+<span class="x">    $user = $this-&gt;userRepository-&gt;findByEmail($email);</span>
 
-    if (!$user || !$this-&gt;passwordHasher-&gt;verify($password, $user-&gt;passwordHash)) {
-        throw new InvalidCredentialsException();
-    }
+<span class="x">    if (!$user || !$this-&gt;passwordHasher-&gt;verify($password, $user-&gt;passwordHash)) {</span>
+<span class="x">        throw new InvalidCredentialsException();</span>
+<span class="x">    }</span>
 
-    return $user;
-}
-</code></pre>
+<span class="x">    return $user;</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="helpers">🛠️ Helpers</h2>
 <p>Funkcje pomocnicze.</p>
 <h3 id="datehelper">DateHelper</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Helper/DateHelper.php</code></p>
-<pre><code class="language-php">class DateHelper {
-    public static function now(): DateTimeImmutable {
-        return new DateTimeImmutable();
-    }
+<div class="highlight"><pre><span></span><code><span class="x">class DateHelper {</span>
+<span class="x">    public static function now(): DateTimeImmutable {</span>
+<span class="x">        return new DateTimeImmutable();</span>
+<span class="x">    }</span>
 
-    public static function tomorrow(): DateTimeImmutable {
-        return self::now()-&gt;modify('+1 day');
-    }
+<span class="x">    public static function tomorrow(): DateTimeImmutable {</span>
+<span class="x">        return self::now()-&gt;modify(&#39;+1 day&#39;);</span>
+<span class="x">    }</span>
 
-    public static function addDays(DateTimeImmutable $date, int $days): DateTimeImmutable {
-        return $date-&gt;modify(&quot;+{$days} days&quot;);
-    }
+<span class="x">    public static function addDays(DateTimeImmutable $date, int $days): DateTimeImmutable {</span>
+<span class="x">        return $date-&gt;modify(&quot;+{$days} days&quot;);</span>
+<span class="x">    }</span>
 
-    public static function isExpired(DateTimeImmutable $date): bool {
-        return $date &lt; self::now();
-    }
-}
-</code></pre>
+<span class="x">    public static function isExpired(DateTimeImmutable $date): bool {</span>
+<span class="x">        return $date &lt; self::now();</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <h3 id="stringhelper">StringHelper</h3>
-<pre><code class="language-php">class StringHelper {
-    public static function slugify(string $text): string {
-        return strtolower(preg_replace('/[^a-z0-9]+/', '-', trim($text)));
-    }
+<div class="highlight"><pre><span></span><code><span class="x">class StringHelper {</span>
+<span class="x">    public static function slugify(string $text): string {</span>
+<span class="x">        return strtolower(preg_replace(&#39;/[^a-z0-9]+/&#39;, &#39;-&#39;, trim($text)));</span>
+<span class="x">    }</span>
 
-    public static function truncate(string $text, int $length = 100): string {
-        if (strlen($text) &lt;= $length) return $text;
-        return substr($text, 0, $length) . '...';
-    }
-}
-</code></pre>
+<span class="x">    public static function truncate(string $text, int $length = 100): string {</span>
+<span class="x">        if (strlen($text) &lt;= $length) return $text;</span>
+<span class="x">        return substr($text, 0, $length) . &#39;...&#39;;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <h3 id="validationhelper">ValidationHelper</h3>
-<pre><code class="language-php">class ValidationHelper {
-    public static function isValidEmail(string $email): bool {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-    }
+<div class="highlight"><pre><span></span><code><span class="x">class ValidationHelper {</span>
+<span class="x">    public static function isValidEmail(string $email): bool {</span>
+<span class="x">        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;</span>
+<span class="x">    }</span>
 
-    public static function isValidUrl(string $url): bool {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
-    }
-}
-</code></pre>
+<span class="x">    public static function isValidUrl(string $url): bool {</span>
+<span class="x">        return filter_var($url, FILTER_VALIDATE_URL) !== false;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="translation-service">🌐 Translation Service</h2>
 <p>Obsługa wielojęzyczności.</p>
 <h3 id="translationservice">TranslationService</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Translation/TranslationService.php</code></p>
-<pre><code class="language-php">public function translate(string $key, string $locale = 'pl'): string {
-    $messages = $this-&gt;loadMessages($locale);
-    return $messages[$key] ?? $key;
-}
+<div class="highlight"><pre><span></span><code><span class="x">public function translate(string $key, string $locale = &#39;pl&#39;): string {</span>
+<span class="x">    $messages = $this-&gt;loadMessages($locale);</span>
+<span class="x">    return $messages[$key] ?? $key;</span>
+<span class="x">}</span>
 
-public function t(string $key, array $params = [], string $locale = 'pl'): string {
-    $message = $this-&gt;translate($key, $locale);
-    foreach ($params as $key =&gt; $value) {
-        $message = str_replace(&quot;:$key&quot;, $value, $message);
-    }
-    return $message;
-}
-</code></pre>
-<p><strong>Użycie</strong>:</p>
-<pre><code class="language-php">$this-&gt;translator-&gt;t('announcement.created', ['title' =&gt; $announcement-&gt;title]);
-// &quot;Ogłoszenie 'Nowa promocja' zostało utworzone&quot;
-</code></pre>
+<span class="x">public function t(string $key, array $params = [], string $locale = &#39;pl&#39;): string {</span>
+<span class="x">    $message = $this-&gt;translate($key, $locale);</span>
+<span class="x">    foreach ($params as $key =&gt; $value) {</span>
+<span class="x">        $message = str_replace(&quot;:$key&quot;, $value, $message);</span>
+<span class="x">    }</span>
+<span class="x">    return $message;</span>
+<span class="x">}</span>
+</code></pre></div>
+<p><strong>Użycie</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">$this-&gt;translator-&gt;t(&#39;announcement.created&#39;, [&#39;title&#39; =&gt; $announcement-&gt;title]);</span>
+<span class="x">// &quot;Ogłoszenie &#39;Nowa promocja&#39; zostało utworzone&quot;</span>
+</code></pre></div></p>
 <hr />
 <h2 id="dependency-injection-container">🚚 Dependency Injection Container</h2>
 <h3 id="containerphp">Container.php</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Container.php</code></p>
 <p>Zarządzanie zależnościami i lifecycle'em obiektów.</p>
-<pre><code class="language-php">class Container {
-    private array $services = [];
-    private array $singletons = [];
+<div class="highlight"><pre><span></span><code><span class="x">class Container {</span>
+<span class="x">    private array $services = [];</span>
+<span class="x">    private array $singletons = [];</span>
 
-    public function register(string $id, mixed $definition): void {
-        $this-&gt;services[$id] = $definition;
-    }
+<span class="x">    public function register(string $id, mixed $definition): void {</span>
+<span class="x">        $this-&gt;services[$id] = $definition;</span>
+<span class="x">    }</span>
 
-    public function singleton(string $id, callable $definition): void {
-        $this-&gt;singletons[$id] = $definition;
-    }
+<span class="x">    public function singleton(string $id, callable $definition): void {</span>
+<span class="x">        $this-&gt;singletons[$id] = $definition;</span>
+<span class="x">    }</span>
 
-    public function get(string $id): mixed {
-        if (isset($this-&gt;singletons[$id])) {
-            // Zwróć ten sam instancję
-            return $this-&gt;singletons[$id]($this);
-        }
+<span class="x">    public function get(string $id): mixed {</span>
+<span class="x">        if (isset($this-&gt;singletons[$id])) {</span>
+<span class="x">            // Zwróć ten sam instancję</span>
+<span class="x">            return $this-&gt;singletons[$id]($this);</span>
+<span class="x">        }</span>
 
-        if (isset($this-&gt;services[$id])) {
-            return $this-&gt;services[$id]($this);
-        }
+<span class="x">        if (isset($this-&gt;services[$id])) {</span>
+<span class="x">            return $this-&gt;services[$id]($this);</span>
+<span class="x">        }</span>
 
-        throw new ServiceNotFoundException($id);
-    }
-}
-</code></pre>
+<span class="x">        throw new ServiceNotFoundException($id);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="rejestracja-serwisow">Rejestracja Serwisów</h4>
-<pre><code class="language-php">// src/bootstrap/services.php
-$container-&gt;singleton(PDO::class, function(Container $c) {
-    return new PDO(
-        'pgsql:host=localhost;dbname=dodomudojade',
-        'ddd',
-        $_ENV['DB_PASSWORD']
-    );
-});
+<div class="highlight"><pre><span></span><code><span class="x">// src/bootstrap/services.php</span>
+<span class="x">$container-&gt;singleton(PDO::class, function(Container $c) {</span>
+<span class="x">    return new PDO(</span>
+<span class="x">        &#39;pgsql:host=localhost;dbname=dodomudojade&#39;,</span>
+<span class="x">        &#39;ddd&#39;,</span>
+<span class="x">        $_ENV[&#39;DB_PASSWORD&#39;]</span>
+<span class="x">    );</span>
+<span class="x">});</span>
 
-$container-&gt;singleton(AnnouncementRepository::class, function(Container $c) {
-    return new DatabaseAnnouncementRepository($c-&gt;get(PDO::class));
-});
+<span class="x">$container-&gt;singleton(AnnouncementRepository::class, function(Container $c) {</span>
+<span class="x">    return new DatabaseAnnouncementRepository($c-&gt;get(PDO::class));</span>
+<span class="x">});</span>
 
-$container-&gt;singleton(CreateAnnouncementUseCase::class, function(Container $c) {
-    return new CreateAnnouncementUseCase(
-        $c-&gt;get(AnnouncementRepository::class),
-    );
-});
-</code></pre>
+<span class="x">$container-&gt;singleton(CreateAnnouncementUseCase::class, function(Container $c) {</span>
+<span class="x">    return new CreateAnnouncementUseCase(</span>
+<span class="x">        $c-&gt;get(AnnouncementRepository::class),</span>
+<span class="x">    );</span>
+<span class="x">});</span>
+</code></pre></div>
 <h4 id="uzycie-w-controller">Użycie w Controller</h4>
-<pre><code class="language-php">class AnnouncementController {
-    public function __construct(
-        private Container $container
-    ) {}
+<div class="highlight"><pre><span></span><code><span class="x">class AnnouncementController {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        private Container $container</span>
+<span class="x">    ) {}</span>
 
-    public function create(Request $request): Response {
-        $useCase = $this-&gt;container-&gt;get(CreateAnnouncementUseCase::class);
-        $dto = $useCase-&gt;execute($request);
-        return Response::created($dto);
-    }
-}
-</code></pre>
+<span class="x">    public function create(Request $request): Response {</span>
+<span class="x">        $useCase = $this-&gt;container-&gt;get(CreateAnnouncementUseCase::class);</span>
+<span class="x">        $dto = $useCase-&gt;execute($request);</span>
+<span class="x">        return Response::created($dto);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="architektura-warstwowa">📊 Architektura Warstwowa</h2>
-<pre><code>Presentation (Http, Console)
+<div class="highlight"><pre><span></span><code>Presentation (Http, Console)
         ↓
     (uses)
         ↓
@@ -581,76 +2295,76 @@ Domain (Entity, ValueObject, Enum)
 (implements)
    |    |
 Infrastructure (Repository, Service)
-</code></pre>
+</code></pre></div>
 <hr />
 <h2 id="best-practices">🎓 Best Practices</h2>
 <h3 id="do">✅ DO</h3>
 <ol>
 <li>
 <p><strong>Implementuj Repository interfaces (Future)</strong>
-   <code>php
-   interface AnnouncementRepository {
-       public function save(Announcement $announcement): void;
-       public function findById(int $id): ?Announcement;
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">interface AnnouncementRepository {</span>
+<span class="x">    public function save(Announcement $announcement): void;</span>
+<span class="x">    public function findById(int $id): ?Announcement;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Użyj Factories dla kompleksowych obiektów</strong>
-   <code>php
-   $entity = AnnouncementFactory::createFromDatabaseRow($row);</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">$entity = AnnouncementFactory::createFromDatabaseRow($row);</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Abstrakcjonuj external API calls</strong>
-   <code>php
-   interface WordApiService {
-       public function fetchDailyWord(): Word;
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">interface WordApiService {</span>
+<span class="x">    public function fetchDailyWord(): Word;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Zarządzaj transakcjami</strong>
-   <code>php
-   $this-&gt;pdo-&gt;beginTransaction();
-   try {
-       $this-&gt;repository-&gt;save($entity);
-       $this-&gt;pdo-&gt;commit();
-   } catch (Exception $e) {
-       $this-&gt;pdo-&gt;rollBack();
-       throw $e;
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">$this-&gt;pdo-&gt;beginTransaction();</span>
+<span class="x">try {</span>
+<span class="x">    $this-&gt;repository-&gt;save($entity);</span>
+<span class="x">    $this-&gt;pdo-&gt;commit();</span>
+<span class="x">} catch (Exception $e) {</span>
+<span class="x">    $this-&gt;pdo-&gt;rollBack();</span>
+<span class="x">    throw $e;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Loguj ważne operacje</strong>
-   <code>php
-   $this-&gt;logger-&gt;info("Announcement approved", ['id' =&gt; $announcement-&gt;id]);</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">$this-&gt;logger-&gt;info(&quot;Announcement approved&quot;, [&#39;id&#39; =&gt; $announcement-&gt;id]);</span>
+</code></pre></div></p>
 </li>
 </ol>
 <h3 id="dont">❌ DON'T</h3>
 <ol>
 <li>
 <p><strong>Nie rób logiki biznesowej w Repository</strong>
-   <code>php
-   // ❌ WRONG
-   public function save(Announcement $announcement): void {
-       if ($announcement-&gt;title == '') throw new Exception();
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">public function save(Announcement $announcement): void {</span>
+<span class="x">    if ($announcement-&gt;title == &#39;&#39;) throw new Exception();</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie korzystaj z SQL w Service</strong>
-   <code>php
-   // ❌ WRONG - Use Repository
-   $this-&gt;pdo-&gt;query("SELECT...");</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG - Use Repository</span>
+<span class="x">$this-&gt;pdo-&gt;query(&quot;SELECT...&quot;);</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie importuj Application w Infrastructure</strong>
-   <code>php
-   // ❌ WRONG
-   use App\Application\UseCase\CreateAnnouncementUseCase;</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">use App\Application\UseCase\CreateAnnouncementUseCase;</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie cache'uj obiekty bez namysłu</strong>
-   <code>php
-   // ⚠️ CAREFUL - Use singleton pattern
-   private $announcement; // Will be stale!</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ⚠️ CAREFUL - Use singleton pattern</span>
+<span class="x">private $announcement; // Will be stale!</span>
+</code></pre></div></p>
 </li>
 </ol>
 <hr />
@@ -685,82 +2399,67 @@ Infrastructure (Repository, Service)
 <td>Interfejsy użytkownika</td>
 </tr>
 </tbody>
-</table></div>
-            </div>
-        </div>
+</table>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="../../js/bootstrap.bundle.min.js"></script>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js"></script>
-        <script src="../../search/main.js"></script>
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
             </div>
-            <div class="modal-body">
-                <p>From here you can search these documents. Enter your search terms below.</p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-
-    </body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
 </html>

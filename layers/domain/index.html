@@ -1,149 +1,1431 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
         <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/layers/domain/">
-        <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Domain - DoDomuDojade Docs</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/fontawesome.min.css" rel="stylesheet">
-        <link href="../../css/brands.min.css" rel="stylesheet">
-        <link href="../../css/solid.min.css" rel="stylesheet">
-        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
-        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
-        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script> 
-    </head>
+      
+      
+        <link rel="prev" href="../application/">
+      
+      
+        <link rel="next" href="../infrastructure/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Domeny - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="nav-item">
-                                <a href="../.." class="nav-link">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="../../architecture/ddd/" class="nav-link">Architecture</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="../../examples/practical_examples/" class="nav-link">Examples</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../appliacation.md" class="dropdown-item">Application</a>
-</li>
-                                    
-<li>
-    <a href="./" class="dropdown-item active" aria-current="page">Domain</a>
-</li>
-                                    
-<li>
-    <a href="../infrastructure/" class="dropdown-item">Infrastructure</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/api" class="nav-link">API Reference</a>
-                            </li>
-                        </ul>
-
-                    <ul class="nav navbar-nav ms-md-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                            <li class="nav-item">
-                                <a rel="prev" href="../../examples/practical_examples/" class="nav-link">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" href="../infrastructure/" class="nav-link">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
 
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-bs-level="1"><a href="#domain-layer-api-reference" class="nav-link">Domain Layer - API Reference</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#struktura-domain-layer" class="nav-link">📍 Struktura Domain Layer</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#entities-agregaty" class="nav-link">🎯 Entities (Agregaty)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#enums-enumeracje" class="nav-link">🏷️ Enums (Enumeracje)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#exceptions-wyjatki-domenowe" class="nav-link">⚠️ Exceptions (Wyjątki Domenowe)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#value-objects-przyszosc" class="nav-link">📋 Value Objects (Przyszłość)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#best-practices-w-domain-layer" class="nav-link">🎓 Best Practices w Domain Layer</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#relacje-miedzy-entities" class="nav-link">🔗 Relacje Między Entities</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#complete-domain-namespace-reference" class="nav-link">📊 Complete Domain Namespace Reference</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
-        </ul>
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="light" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#domain-layer-api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Domeny
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="light" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="dark" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Przykłady
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warstwy
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Warstwy
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aplikacji
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domeny
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domeny
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Struktura Domain Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entities-agregaty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Entities (Agregaty)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Entities (Agregaty)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcement-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Announcement Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcement Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charakterystyka" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charakterystyka
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konstruktor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konstruktor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#factory-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factory Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#business-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Business Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Word Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Word Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quote-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quote Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quote Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#module-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Module Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Module Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#countdown-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Countdown Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Countdown Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums-enumeracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏷️ Enums (Enumeracje)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏷️ Enums (Enumeracje)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcementstatus-enum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementStatus Enum
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AnnouncementStatus Enum">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stany-transitional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stany Transitional
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uzycie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Użycie
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions-wyjatki-domenowe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ Exceptions (Wyjątki Domenowe)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ Exceptions (Wyjątki Domenowe)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainexception-abstract-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainException (Abstract Base)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#announcementexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementException
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-objects-przyszosc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Value Objects (Przyszłość)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Value Objects (Przyszłość)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#email-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phonenumber-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhoneNumber Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daterange-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DateRange Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-w-domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎓 Best Practices w Domain Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎓 Best Practices w Domain Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ DO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ DON'T
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacje-miedzy-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Relacje Między Entities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-domain-namespace-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Complete Domain Namespace Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../infrastructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastruktury
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📍 Struktura Domain Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entities-agregaty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Entities (Agregaty)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Entities (Agregaty)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcement-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Announcement Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Announcement Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charakterystyka" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charakterystyka
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konstruktor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konstruktor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#factory-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factory Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#business-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Business Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Word Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Word Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quote-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quote Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quote Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#module-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Module Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Module Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#countdown-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Countdown Entity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Countdown Entity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasciwosci_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Właściwości
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums-enumeracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏷️ Enums (Enumeracje)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏷️ Enums (Enumeracje)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#announcementstatus-enum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementStatus Enum
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AnnouncementStatus Enum">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stany-transitional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stany Transitional
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uzycie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Użycie
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions-wyjatki-domenowe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ Exceptions (Wyjątki Domenowe)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ Exceptions (Wyjątki Domenowe)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#domainexception-abstract-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DomainException (Abstract Base)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#announcementexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AnnouncementException
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-objects-przyszosc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Value Objects (Przyszłość)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Value Objects (Przyszłość)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#email-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phonenumber-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhoneNumber Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daterange-value-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DateRange Value Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-w-domain-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎓 Best Practices w Domain Layer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎓 Best Practices w Domain Layer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ DO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ DON'T
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacje-miedzy-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Relacje Między Entities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-domain-namespace-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Complete Domain Namespace Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
 
 <h1 id="domain-layer-api-reference">Domain Layer - API Reference</h1>
 <p>Warstwa Domain zawiera czystą logikę biznesową projektu DoDomuDojadę, niezależną od technicznych szczegółów implementacji.</p>
 <h2 id="struktura-domain-layer">📍 Struktura Domain Layer</h2>
-<pre><code>src/Domain/
+<div class="highlight"><pre><span></span><code>src/Domain/
 ├── Entity/               # Główne agregaty i entity
 │   ├── Announcement.php  # Ogłoszenia
 │   ├── User.php          # Użytkownicy
@@ -161,7 +1443,7 @@
     ├── DomainException.php
     ├── AnnouncementException.php
     └── ...
-</code></pre>
+</code></pre></div>
 <p><strong>Namespace</strong>: <code>App\Domain\</code></p>
 <hr />
 <h2 id="entities-agregaty">🎯 Entities (Agregaty)</h2>
@@ -176,18 +1458,18 @@
 <li><strong>Lifecycle</strong>: Od stworzenia do wygaśnięcia</li>
 </ul>
 <h4 id="konstruktor">Konstruktor</h4>
-<pre><code class="language-php">public function __construct(
-    public ?int               $id,
-    public string             $title,
-    public string             $text,
-    public DateTimeImmutable  $createdAt,
-    public DateTimeImmutable  $validUntil,
-    public ?int               $userId,
-    public AnnouncementStatus $status = AnnouncementStatus::PENDING,
-    public ?DateTimeImmutable $decidedAt = null,
-    public ?int               $decidedBy = null,
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">public function __construct(</span>
+<span class="x">    public ?int               $id,</span>
+<span class="x">    public string             $title,</span>
+<span class="x">    public string             $text,</span>
+<span class="x">    public DateTimeImmutable  $createdAt,</span>
+<span class="x">    public DateTimeImmutable  $validUntil,</span>
+<span class="x">    public ?int               $userId,</span>
+<span class="x">    public AnnouncementStatus $status = AnnouncementStatus::PENDING,</span>
+<span class="x">    public ?DateTimeImmutable $decidedAt = null,</span>
+<span class="x">    public ?int               $decidedBy = null,</span>
+<span class="x">)</span>
+</code></pre></div>
 <h4 id="wasciwosci">Właściwości</h4>
 <table>
 <thead>
@@ -246,52 +1528,52 @@
 </tbody>
 </table>
 <h4 id="factory-methods">Factory Methods</h4>
-<p><strong>createNew()</strong> - Stwórz nowe ogłoszenie od razu zatwierdzone</p>
-<pre><code class="language-php">public static function createNew(
-    string            $title,
-    string            $text,
-    DateTimeImmutable $validUntil,
-    int               $userId,
-): self
-</code></pre>
-<p>Parametry:
+<p><strong>createNew()</strong> - Stwórz nowe ogłoszenie od razu zatwierdzone
+<div class="highlight"><pre><span></span><code><span class="x">public static function createNew(</span>
+<span class="x">    string            $title,</span>
+<span class="x">    string            $text,</span>
+<span class="x">    DateTimeImmutable $validUntil,</span>
+<span class="x">    int               $userId,</span>
+<span class="x">): self</span>
+</code></pre></div>
+Parametry:
 - <code>$title</code>: Tytuł ogłoszenia
 - <code>$text</code>: Treść ogłoszenia
 - <code>$validUntil</code>: Data wygaśnięcia
 - <code>$userId</code>: ID użytkownika tworzącego</p>
 <p>Zwraca: Nowy agregat z statusem APPROVED</p>
-<p>Użycie:</p>
-<pre><code class="language-php">$announcement = Announcement::createNew(
-    title: &quot;Nowe godziny otwarcia&quot;,
-    text: &quot;Od poniedziałku zmieniamy godziny...&quot;,
-    validUntil: new DateTimeImmutable('2026-02-01'),
-    userId: 1
-);
-</code></pre>
-<p><strong>proposeNew()</strong> - Stwórz nowe ogłoszenie czekające na zatwierdzenie</p>
-<pre><code class="language-php">public static function proposeNew(
-    string $title,
-    string $text,
-    DateTimeImmutable $validUntil
-): self
-</code></pre>
-<p>Parametry:
+<p>Użycie:
+<div class="highlight"><pre><span></span><code><span class="x">$announcement = Announcement::createNew(</span>
+<span class="x">    title: &quot;Nowe godziny otwarcia&quot;,</span>
+<span class="x">    text: &quot;Od poniedziałku zmieniamy godziny...&quot;,</span>
+<span class="x">    validUntil: new DateTimeImmutable(&#39;2026-02-01&#39;),</span>
+<span class="x">    userId: 1</span>
+<span class="x">);</span>
+</code></pre></div></p>
+<p><strong>proposeNew()</strong> - Stwórz nowe ogłoszenie czekające na zatwierdzenie
+<div class="highlight"><pre><span></span><code><span class="x">public static function proposeNew(</span>
+<span class="x">    string $title,</span>
+<span class="x">    string $text,</span>
+<span class="x">    DateTimeImmutable $validUntil</span>
+<span class="x">): self</span>
+</code></pre></div>
+Parametry:
 - <code>$title</code>: Tytuł ogłoszenia
 - <code>$text</code>: Treść ogłoszenia
 - <code>$validUntil</code>: Data wygaśnięcia</p>
 <p>Zwraca: Nowy agregat z statusem PENDING</p>
-<p>Użycie:</p>
-<pre><code class="language-php">$announcement = Announcement::proposeNew(
-    title: &quot;Propozycja nowego ogłoszenia&quot;,
-    text: &quot;To jest propozycja którą admin będzie recenzować&quot;,
-    validUntil: new DateTimeImmutable('+1 month')
-);
-</code></pre>
+<p>Użycie:
+<div class="highlight"><pre><span></span><code><span class="x">$announcement = Announcement::proposeNew(</span>
+<span class="x">    title: &quot;Propozycja nowego ogłoszenia&quot;,</span>
+<span class="x">    text: &quot;To jest propozycja którą admin będzie recenzować&quot;,</span>
+<span class="x">    validUntil: new DateTimeImmutable(&#39;+1 month&#39;)</span>
+<span class="x">);</span>
+</code></pre></div></p>
 <h4 id="business-methods">Business Methods</h4>
-<p><strong>approve()</strong> - Zatwierdź ogłoszenie</p>
-<pre><code class="language-php">public function approve(int $decidedBy): void
-</code></pre>
-<p>Parametry:
+<p><strong>approve()</strong> - Zatwierdź ogłoszenie
+<div class="highlight"><pre><span></span><code><span class="x">public function approve(int $decidedBy): void</span>
+</code></pre></div>
+Parametry:
 - <code>$decidedBy</code>: ID użytkownika zatwierdzającego (admina)</p>
 <p>Efekty:
 - Zmienia status na APPROVED
@@ -300,15 +1582,15 @@
 <p>Invariants:
 - Status musi być PENDING
 - <code>$decidedBy</code> musi być ważnym ID użytkownika</p>
-<p>Użycie:</p>
-<pre><code class="language-php">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
-    $announcement-&gt;approve(adminId: 2);
-}
-</code></pre>
-<p><strong>reject()</strong> - Odrzuć ogłoszenie</p>
-<pre><code class="language-php">public function reject(int $decidedBy): void
-</code></pre>
-<p>Parametry:
+<p>Użycie:
+<div class="highlight"><pre><span></span><code><span class="x">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {</span>
+<span class="x">    $announcement-&gt;approve(adminId: 2);</span>
+<span class="x">}</span>
+</code></pre></div></p>
+<p><strong>reject()</strong> - Odrzuć ogłoszenie
+<div class="highlight"><pre><span></span><code><span class="x">public function reject(int $decidedBy): void</span>
+</code></pre></div>
+Parametry:
 - <code>$decidedBy</code>: ID użytkownika odrzucającego (admina)</p>
 <p>Efekty:
 - Zmienia status na REJECTED
@@ -317,38 +1599,38 @@
 <p>Invariants:
 - Status musi być PENDING
 - <code>$decidedBy</code> musi być ważnym ID użytkownika</p>
-<p>Użycie:</p>
-<pre><code class="language-php">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
-    $announcement-&gt;reject(adminId: 2);
-}
-</code></pre>
-<p><strong>isValid()</strong> - Sprawdź czy ogłoszenie jest ważne (aktualnie widoczne)</p>
-<pre><code class="language-php">public function isValid(): bool
-</code></pre>
+<p>Użycie:
+<div class="highlight"><pre><span></span><code><span class="x">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {</span>
+<span class="x">    $announcement-&gt;reject(adminId: 2);</span>
+<span class="x">}</span>
+</code></pre></div></p>
+<p><strong>isValid()</strong> - Sprawdź czy ogłoszenie jest ważne (aktualnie widoczne)
+<div class="highlight"><pre><span></span><code><span class="x">public function isValid(): bool</span>
+</code></pre></div></p>
 <p>Zwraca: <code>true</code> jeśli:
 - Status = APPROVED
 - Bieżący czas &lt;= validUntil</p>
-<p>Użycie:</p>
-<pre><code class="language-php">if ($announcement-&gt;isValid()) {
-    // Wyświetl ogłoszenie użytkownikowi
-    displayAnnouncement($announcement);
-}
-</code></pre>
+<p>Użycie:
+<div class="highlight"><pre><span></span><code><span class="x">if ($announcement-&gt;isValid()) {</span>
+<span class="x">    // Wyświetl ogłoszenie użytkownikowi</span>
+<span class="x">    displayAnnouncement($announcement);</span>
+<span class="x">}</span>
+</code></pre></div></p>
 <hr />
 <h3 id="user-entity">User Entity</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/User.php</code></p>
 <p>Entity reprezentująca użytkownika systemu.</p>
-<pre><code class="language-php">final class User {
-    public function __construct(
-        public ?int    $id,
-        public string  $email,
-        public string  $passwordHash,
-        public string  $name,
-        public ?string $phoneNumber = null,
-        public string  $role = 'user'
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class User {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public ?int    $id,</span>
+<span class="x">        public string  $email,</span>
+<span class="x">        public string  $passwordHash,</span>
+<span class="x">        public string  $name,</span>
+<span class="x">        public ?string $phoneNumber = null,</span>
+<span class="x">        public string  $role = &#39;user&#39;</span>
+<span class="x">    )</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="wasciwosci_1">Właściwości</h4>
 <table>
 <thead>
@@ -395,16 +1677,16 @@
 <h3 id="word-entity">Word Entity</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Word.php</code></p>
 <p>Entity reprezentująca słowo dnia.</p>
-<pre><code class="language-php">final class Word {
-    public function __construct(
-        public ?int    $id,
-        public string  $word,
-        public string  $definition,
-        public string  $example,
-        public string  $language = 'pl'
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class Word {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public ?int    $id,</span>
+<span class="x">        public string  $word,</span>
+<span class="x">        public string  $definition,</span>
+<span class="x">        public string  $example,</span>
+<span class="x">        public string  $language = &#39;pl&#39;</span>
+<span class="x">    )</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="wasciwosci_2">Właściwości</h4>
 <table>
 <thead>
@@ -446,15 +1728,15 @@
 <h3 id="quote-entity">Quote Entity</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Quote.php</code></p>
 <p>Entity reprezentująca cytat inspirujący.</p>
-<pre><code class="language-php">final class Quote {
-    public function __construct(
-        public ?int    $id,
-        public string  $text,
-        public string  $author,
-        public string  $category = 'general'
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class Quote {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public ?int    $id,</span>
+<span class="x">        public string  $text,</span>
+<span class="x">        public string  $author,</span>
+<span class="x">        public string  $category = &#39;general&#39;</span>
+<span class="x">    )</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="wasciwosci_3">Właściwości</h4>
 <table>
 <thead>
@@ -491,15 +1773,15 @@
 <h3 id="module-entity">Module Entity</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Module.php</code></p>
 <p>Entity reprezentująca moduł funkcjonalny aplikacji.</p>
-<pre><code class="language-php">final class Module {
-    public function __construct(
-        public ?int    $id,
-        public string  $name,
-        public string  $description,
-        public bool    $enabled = true
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class Module {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public ?int    $id,</span>
+<span class="x">        public string  $name,</span>
+<span class="x">        public string  $description,</span>
+<span class="x">        public bool    $enabled = true</span>
+<span class="x">    )</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="wasciwosci_4">Właściwości</h4>
 <table>
 <thead>
@@ -536,15 +1818,15 @@
 <h3 id="countdown-entity">Countdown Entity</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Countdown.php</code></p>
 <p>Entity reprezentująca odliczanie do ważnego zdarzenia.</p>
-<pre><code class="language-php">final class Countdown {
-    public function __construct(
-        public ?int              $id,
-        public string            $title,
-        public DateTimeImmutable $targetDate,
-        public string            $description = ''
-    )
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class Countdown {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public ?int              $id,</span>
+<span class="x">        public string            $title,</span>
+<span class="x">        public DateTimeImmutable $targetDate,</span>
+<span class="x">        public string            $description = &#39;&#39;</span>
+<span class="x">    )</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="wasciwosci_5">Właściwości</h4>
 <table>
 <thead>
@@ -582,184 +1864,184 @@
 <h3 id="announcementstatus-enum">AnnouncementStatus Enum</h3>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Enum/AnnouncementStatus.php</code></p>
 <p>Status ogłoszenia w workflow.</p>
-<pre><code class="language-php">enum AnnouncementStatus {
-    case PENDING;      // Oczekuje na zatwierdzenie
-    case APPROVED;     // Zatwierdzone i widoczne
-    case REJECTED;     // Odrzucone
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">enum AnnouncementStatus {</span>
+<span class="x">    case PENDING;      // Oczekuje na zatwierdzenie</span>
+<span class="x">    case APPROVED;     // Zatwierdzone i widoczne</span>
+<span class="x">    case REJECTED;     // Odrzucone</span>
+<span class="x">}</span>
+</code></pre></div>
 <h4 id="stany-transitional">Stany Transitional</h4>
-<pre><code>┌─────────┐
+<div class="highlight"><pre><span></span><code>┌─────────┐
 │ PENDING │
 ├────┬────┤
 │    │    │
 ▼    ▼    │
 APPROVED  REJECTED
-</code></pre>
+</code></pre></div>
 <p><strong>Przejścia</strong>:
 - PENDING → APPROVED (approve)
 - PENDING → REJECTED (reject)
 - APPROVED ↛ (terminal state)
 - REJECTED ↛ (terminal state)</p>
 <h4 id="uzycie">Użycie</h4>
-<pre><code class="language-php">// Sprawdzenie statusu
-if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
-    // Czeka na zatwierdzenie
-}
+<div class="highlight"><pre><span></span><code><span class="x">// Sprawdzenie statusu</span>
+<span class="x">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {</span>
+<span class="x">    // Czeka na zatwierdzenie</span>
+<span class="x">}</span>
 
-// Walidacja przejścia
-if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
-    $announcement-&gt;approve($userId);
-}
-</code></pre>
+<span class="x">// Walidacja przejścia</span>
+<span class="x">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {</span>
+<span class="x">    $announcement-&gt;approve($userId);</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="exceptions-wyjatki-domenowe">⚠️ Exceptions (Wyjątki Domenowe)</h2>
 <p><strong>Lokalizacja</strong>: <code>src/Domain/Exception/</code></p>
 <h3 id="domainexception-abstract-base">DomainException (Abstract Base)</h3>
-<pre><code class="language-php">abstract class DomainException extends Exception
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">abstract class DomainException extends Exception</span>
+</code></pre></div>
 <p>Bazowa klasa dla wszystkich wyjątków domenowych.</p>
 <p><strong>Charakterystyka</strong>:
 - Reprezentuje błędy biznesowe, nie techniczne
 - Powinna być obsługiwana na poziomie Application
 - Zawiera informacje dla użytkownika</p>
 <h3 id="announcementexception">AnnouncementException</h3>
-<pre><code class="language-php">class AnnouncementException extends DomainException
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">class AnnouncementException extends DomainException</span>
+</code></pre></div>
 <p>Wyjątek dla błędów związanych z Announcement.</p>
-<p><strong>Przykłady</strong>:</p>
-<pre><code class="language-php">throw new AnnouncementException(
-    &quot;Nie można zatwierdzić ogłoszenia które nie jest w stanie PENDING&quot;
-);
-</code></pre>
+<p><strong>Przykłady</strong>:
+<div class="highlight"><pre><span></span><code><span class="x">throw new AnnouncementException(</span>
+<span class="x">    &quot;Nie można zatwierdzić ogłoszenia które nie jest w stanie PENDING&quot;</span>
+<span class="x">);</span>
+</code></pre></div></p>
 <hr />
 <h2 id="value-objects-przyszosc">📋 Value Objects (Przyszłość)</h2>
 <p>Value Objects będą wprowadzane w przyszłości dla:</p>
 <h3 id="email-value-object">Email Value Object</h3>
-<pre><code class="language-php">final class Email {
-    private function __construct(
-        public readonly string $value
-    ) {
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidEmailException();
-        }
-    }
+<div class="highlight"><pre><span></span><code><span class="x">final class Email {</span>
+<span class="x">    private function __construct(</span>
+<span class="x">        public readonly string $value</span>
+<span class="x">    ) {</span>
+<span class="x">        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {</span>
+<span class="x">            throw new InvalidEmailException();</span>
+<span class="x">        }</span>
+<span class="x">    }</span>
 
-    public static function create(string $value): self {
-        return new self($value);
-    }
+<span class="x">    public static function create(string $value): self {</span>
+<span class="x">        return new self($value);</span>
+<span class="x">    }</span>
 
-    public function equals(Email $other): bool {
-        return $this-&gt;value === $other-&gt;value;
-    }
-}
-</code></pre>
+<span class="x">    public function equals(Email $other): bool {</span>
+<span class="x">        return $this-&gt;value === $other-&gt;value;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <h3 id="phonenumber-value-object">PhoneNumber Value Object</h3>
-<pre><code class="language-php">final class PhoneNumber {
-    private function __construct(
-        public readonly string $value
-    ) {
-        // Walidacja formatu telefonu
-    }
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="x">final class PhoneNumber {</span>
+<span class="x">    private function __construct(</span>
+<span class="x">        public readonly string $value</span>
+<span class="x">    ) {</span>
+<span class="x">        // Walidacja formatu telefonu</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <h3 id="daterange-value-object">DateRange Value Object</h3>
-<pre><code class="language-php">final class DateRange {
-    public function __construct(
-        public readonly DateTimeImmutable $startDate,
-        public readonly DateTimeImmutable $endDate
-    ) {
-        if ($startDate &gt; $endDate) {
-            throw new InvalidDateRangeException();
-        }
-    }
+<div class="highlight"><pre><span></span><code><span class="x">final class DateRange {</span>
+<span class="x">    public function __construct(</span>
+<span class="x">        public readonly DateTimeImmutable $startDate,</span>
+<span class="x">        public readonly DateTimeImmutable $endDate</span>
+<span class="x">    ) {</span>
+<span class="x">        if ($startDate &gt; $endDate) {</span>
+<span class="x">            throw new InvalidDateRangeException();</span>
+<span class="x">        }</span>
+<span class="x">    }</span>
 
-    public function contains(DateTimeImmutable $date): bool {
-        return $date &gt;= $this-&gt;startDate &amp;&amp; $date &lt;= $this-&gt;endDate;
-    }
-}
-</code></pre>
+<span class="x">    public function contains(DateTimeImmutable $date): bool {</span>
+<span class="x">        return $date &gt;= $this-&gt;startDate &amp;&amp; $date &lt;= $this-&gt;endDate;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
 <hr />
 <h2 id="best-practices-w-domain-layer">🎓 Best Practices w Domain Layer</h2>
 <h3 id="do">✅ DO</h3>
 <ol>
 <li>
 <p><strong>Umieszczaj logikę biznesową w Entity</strong>
-   <code>php
-   public function isValid(): bool {
-       return $this-&gt;status === AnnouncementStatus::APPROVED
-           &amp;&amp; new DateTimeImmutable() &lt;= $this-&gt;validUntil;
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">public function isValid(): bool {</span>
+<span class="x">    return $this-&gt;status === AnnouncementStatus::APPROVED</span>
+<span class="x">        &amp;&amp; new DateTimeImmutable() &lt;= $this-&gt;validUntil;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Używaj Value Objects do walidacji</strong>
-   <code>php
-   public function __construct(
-       public Email $email,
-       public PhoneNumber $phone
-   )</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">public function __construct(</span>
+<span class="x">    public Email $email,</span>
+<span class="x">    public PhoneNumber $phone</span>
+<span class="x">)</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Definiuj invariants explicite</strong>
-   <code>php
-   // Og łoszenie może być zatwierdzone tylko jeśli było w stanie PENDING
-   public function approve(int $decidedBy): void {
-       // implicit invariant check
-       $this-&gt;status = AnnouncementStatus::APPROVED;
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// Og łoszenie może być zatwierdzone tylko jeśli było w stanie PENDING</span>
+<span class="x">public function approve(int $decidedBy): void {</span>
+<span class="x">    // implicit invariant check</span>
+<span class="x">    $this-&gt;status = AnnouncementStatus::APPROVED;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Zwracaj Entity ze statycznych metod</strong>
-   <code>php
-   public static function createNew(...): self {
-       return new self(...);
-   }</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">public static function createNew(...): self {</span>
+<span class="x">    return new self(...);</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 </ol>
 <h3 id="dont">❌ DON'T</h3>
 <ol>
 <li>
 <p><strong>Nie importuj Infrastructure w Domain</strong>
-   <code>php
-   // ❌ WRONG
-   use App\Infrastructure\Repository\AnnouncementRepository;</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">use App\Infrastructure\Repository\AnnouncementRepository;</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie rób SQL queries w Entity</strong>
-   <code>php
-   // ❌ WRONG
-   $result = $this-&gt;pdo-&gt;query("SELECT...");</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">$result = $this-&gt;pdo-&gt;query(&quot;SELECT...&quot;);</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie parsuj JSON/XML w Entity</strong>
-   <code>php
-   // ❌ WRONG
-   $data = json_decode($request-&gt;getBody());</code></p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">$data = json_decode($request-&gt;getBody());</span>
+</code></pre></div></p>
 </li>
 <li>
 <p><strong>Nie używaj getters/setters dla wszystkiego</strong>
-   ```php
-   // ❌ WRONG
-   public function getStatus() { return $this-&gt;status; }
-   public function setStatus($status) { $this-&gt;status = $status; }</p>
+   <div class="highlight"><pre><span></span><code><span class="x">// ❌ WRONG</span>
+<span class="x">public function getStatus() { return $this-&gt;status; }</span>
+<span class="x">public function setStatus($status) { $this-&gt;status = $status; }</span>
+
+<span class="x">// ✅ RIGHT</span>
+<span class="x">public function approve($userId) { </span>
+<span class="x">    // apply business rules</span>
+<span class="x">    $this-&gt;status = AnnouncementStatus::APPROVED;</span>
+<span class="x">}</span>
+</code></pre></div></p>
 </li>
 </ol>
-<p>// ✅ RIGHT
-   public function approve($userId) { 
-       // apply business rules
-       $this-&gt;status = AnnouncementStatus::APPROVED;
-   }
-   ```</p>
 <hr />
 <h2 id="relacje-miedzy-entities">🔗 Relacje Między Entities</h2>
-<pre><code class="language-mermaid">graph TB
+<div class="highlight"><pre><span></span><code>graph TB
     A[&quot;Announcement&quot;] --&gt;|userId| B[&quot;User&quot;]
     B --&gt;|has many| A
     C[&quot;Module&quot;] --&gt;|has many| D[&quot;Items&quot;]
     E[&quot;Word&quot;] --&gt;|created by| B
     F[&quot;Quote&quot;] --&gt;|created by| B
     G[&quot;Countdown&quot;] --&gt;|tracked by| B
-</code></pre>
+</code></pre></div>
 <hr />
 <h2 id="complete-domain-namespace-reference">📊 Complete Domain Namespace Reference</h2>
 <table>
@@ -827,82 +2109,67 @@ if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
 <td>Wyjątek dla Announcement</td>
 </tr>
 </tbody>
-</table></div>
-            </div>
-        </div>
+</table>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="../../js/bootstrap.bundle.min.js"></script>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js"></script>
-        <script src="../../search/main.js"></script>
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
             </div>
-            <div class="modal-body">
-                <p>From here you can search these documents. Enter your search terms below.</p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-
-    </body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
 </html>
