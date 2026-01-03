@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Examples - DoDomuDojade Docs</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../architecture/ddd/" class="nav-link">Architecture</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Examples</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../layers/appliacation.md" class="dropdown-item">Application</a>
+</li>
+                                    
+<li>
+    <a href="../../layers/domain/" class="dropdown-item">Domain</a>
+</li>
+                                    
+<li>
+    <a href="../../layers/infrastructure/" class="dropdown-item">Infrastructure</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../../architecture/ddd/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../layers/domain/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#praktyczne-przykady-i-wzorce" class="nav-link">Praktyczne Przykłady i Wzorce</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#przykad-1-tworzenie-ogoszenia" class="nav-link">📝 Przykład 1: Tworzenie Ogłoszenia</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#przykad-2-zatwierdzanie-ogoszenia" class="nav-link">🔄 Przykład 2: Zatwierdzanie Ogłoszenia</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#przykad-3-rejestracja-uzytkownika" class="nav-link">🔐 Przykład 3: Rejestracja Użytkownika</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#przykad-4-integracja-z-external-api" class="nav-link">📝 Przykład 4: Integracja z External API</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#przykad-5-error-handling" class="nav-link">🛡️ Przykład 5: Error Handling</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#diagram-flow-kompletny-scenariusz" class="nav-link">📊 Diagram Flow - Kompletny Scenariusz</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#szybka-referencja-patternow" class="nav-link">🎯 Szybka Referencja Patternów</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="praktyczne-przykady-i-wzorce">Praktyczne Przykłady i Wzorce</h1>
+<p>Rzeczywiste przykłady kodu pokazujące jak używać architekturę DDD w DoDomuDojadę.</p>
+<h2 id="przykad-1-tworzenie-ogoszenia">📝 Przykład 1: Tworzenie Ogłoszenia</h2>
+<h3 id="scenariusz-nowy-admin-chce-stworzyc-ogoszenie">Scenariusz: Nowy admin chce stworzyć ogłoszenie</h3>
+<pre><code>HTTP POST /api/announcements
+{
+  &quot;title&quot;: &quot;Nowe godziny otwarcia&quot;,
+  &quot;text&quot;: &quot;Od poniedziałku będziemy otwarci od 8:00 do 18:00&quot;,
+  &quot;valid_until&quot;: &quot;2026-02-01T23:59:59Z&quot;
+}
+</code></pre>
+<h3 id="krok-1-controller-presentation-layer">Krok 1: Controller (Presentation Layer)</h3>
+<pre><code class="language-php">// src/Http/Controller/AnnouncementController.php
+class AnnouncementController {
+    public function __construct(
+        private Container $container,
+        private LoggerInterface $logger
+    ) {}
+
+    public function create(Request $request): Response {
+        try {
+            // Parse JSON body
+            $data = $request-&gt;json();
+
+            // Create Request object
+            $createRequest = new CreateAnnouncementRequest(
+                title: $data['title'] ?? '',
+                text: $data['text'] ?? '',
+                validUntil: $data['valid_until'] ?? '',
+                userId: $request-&gt;userId() // from JWT token
+            );
+
+            // Validate request
+            $errors = $createRequest-&gt;validate();
+            if (!empty($errors)) {
+                return Response::unprocessableEntity(['errors' =&gt; $errors]);
+            }
+
+            // Get UseCase from DI Container
+            $useCase = $this-&gt;container-&gt;get(CreateAnnouncementUseCase::class);
+
+            // Execute
+            $announcementDTO = $useCase-&gt;execute($createRequest);
+
+            return Response::created([
+                'id' =&gt; $announcementDTO-&gt;id,
+                'title' =&gt; $announcementDTO-&gt;title,
+                'status' =&gt; $announcementDTO-&gt;status,
+                'created_at' =&gt; $announcementDTO-&gt;createdAt
+            ]);
+
+        } catch (ValidationException $e) {
+            return Response::unprocessableEntity(['errors' =&gt; $e-&gt;getErrors()]);
+        } catch (AnnouncementException $e) {
+            return Response::badRequest(['error' =&gt; $e-&gt;getMessage()]);
+        } catch (Exception $e) {
+            $this-&gt;logger-&gt;error(&quot;Failed to create announcement&quot;, ['error' =&gt; $e]);
+            return Response::internalServerError();
+        }
+    }
+}
+</code></pre>
+<h3 id="krok-2-use-case-application-layer">Krok 2: Use Case (Application Layer)</h3>
+<pre><code class="language-php">// src/Application/UseCase/Announcement/CreateAnnouncementUseCase.php
+class CreateAnnouncementUseCase {
+    public function __construct(
+        private AnnouncementRepository $announcementRepository,
+        private LoggerInterface $logger
+    ) {}
+
+    public function execute(CreateAnnouncementRequest $request): AnnouncementDTO {
+        // Step 1: Validate request
+        $errors = $request-&gt;validate();
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+
+        // Step 2: Create Domain Entity using factory
+        $announcement = AnnouncementFactory::createFromRequest(
+            $request,
+            userId: $request-&gt;userId
+        );
+
+        // Step 3: Save to repository
+        $this-&gt;announcementRepository-&gt;save($announcement);
+
+        // Step 4: Log
+        $this-&gt;logger-&gt;info(&quot;Announcement created&quot;, [
+            'id' =&gt; $announcement-&gt;id,
+            'title' =&gt; $announcement-&gt;title,
+            'userId' =&gt; $request-&gt;userId
+        ]);
+
+        // Step 5: Transform to DTO
+        return AnnouncementDTO::fromEntity($announcement);
+    }
+}
+</code></pre>
+<h3 id="krok-3-factory-infrastructure-layer">Krok 3: Factory (Infrastructure Layer)</h3>
+<pre><code class="language-php">// src/Infrastructure/Factory/AnnouncementFactory.php
+class AnnouncementFactory {
+    public static function createFromRequest(
+        CreateAnnouncementRequest $request,
+        int $userId = null
+    ): Announcement {
+        return Announcement::createNew(
+            title: $request-&gt;title,
+            text: $request-&gt;text,
+            validUntil: new DateTimeImmutable($request-&gt;validUntil),
+            userId: $userId ?? $request-&gt;userId,
+        );
+    }
+}
+</code></pre>
+<h3 id="krok-4-domain-entity-domain-layer">Krok 4: Domain Entity (Domain Layer)</h3>
+<pre><code class="language-php">// src/Domain/Entity/Announcement.php
+final class Announcement {
+    public function __construct(
+        public ?int               $id,
+        public string             $title,
+        public string             $text,
+        public DateTimeImmutable  $createdAt,
+        public DateTimeImmutable  $validUntil,
+        public ?int               $userId,
+        public AnnouncementStatus $status = AnnouncementStatus::PENDING,
+        public ?DateTimeImmutable $decidedAt = null,
+        public ?int               $decidedBy = null,
+    ){}
+
+    // Factory method - tworzy już zatwierdzone ogłoszenie
+    public static function createNew(
+        string            $title,
+        string            $text,
+        DateTimeImmutable $validUntil,
+        int               $userId,
+    ): self {
+        return new self(
+            id: null, // Still null, will be set by DB
+            title: $title,
+            text: $text,
+            createdAt: new DateTimeImmutable(),
+            validUntil: $validUntil,
+            userId: $userId,
+            status: AnnouncementStatus::APPROVED,
+            decidedAt: new DateTimeImmutable(),
+            decidedBy: $userId // Admin who created it
+        );
+    }
+}
+</code></pre>
+<h3 id="krok-5-repository-infrastructure-layer">Krok 5: Repository (Infrastructure Layer)</h3>
+<pre><code class="language-php">// src/Infrastructure/Repository/DatabaseAnnouncementRepository.php
+class DatabaseAnnouncementRepository {
+    public function __construct(private PDO $pdo) {}
+
+    public function save(Announcement $announcement): void {
+        if ($announcement-&gt;id === null) {
+            // INSERT
+            $stmt = $this-&gt;pdo-&gt;prepare(
+                'INSERT INTO announcements (
+                    title, text, created_at, valid_until, user_id, status, decided_at, decided_by
+                ) VALUES (
+                    :title, :text, :created_at, :valid_until, :user_id, :status, :decided_at, :decided_by
+                )'
+            );
+
+            $stmt-&gt;execute([
+                ':title' =&gt; $announcement-&gt;title,
+                ':text' =&gt; $announcement-&gt;text,
+                ':created_at' =&gt; $announcement-&gt;createdAt-&gt;format('c'),
+                ':valid_until' =&gt; $announcement-&gt;validUntil-&gt;format('c'),
+                ':user_id' =&gt; $announcement-&gt;userId,
+                ':status' =&gt; $announcement-&gt;status-&gt;name,
+                ':decided_at' =&gt; $announcement-&gt;decidedAt?-&gt;format('c'),
+                ':decided_by' =&gt; $announcement-&gt;decidedBy,
+            ]);
+
+            // Get inserted ID and update entity
+            $announcement-&gt;id = (int) $this-&gt;pdo-&gt;lastInsertId();
+        } else {
+            // UPDATE
+            $stmt = $this-&gt;pdo-&gt;prepare(
+                'UPDATE announcements SET 
+                    title = :title, 
+                    text = :text, 
+                    status = :status, 
+                    decided_at = :decided_at, 
+                    decided_by = :decided_by 
+                WHERE id = :id'
+            );
+
+            $stmt-&gt;execute([
+                ':id' =&gt; $announcement-&gt;id,
+                ':title' =&gt; $announcement-&gt;title,
+                ':text' =&gt; $announcement-&gt;text,
+                ':status' =&gt; $announcement-&gt;status-&gt;name,
+                ':decided_at' =&gt; $announcement-&gt;decidedAt?-&gt;format('c'),
+                ':decided_by' =&gt; $announcement-&gt;decidedBy,
+            ]);
+        }
+    }
+}
+</code></pre>
+<h3 id="krok-6-dto-application-layer">Krok 6: DTO (Application Layer)</h3>
+<pre><code class="language-php">// src/Application/DataTransferObject/AnnouncementDTO.php
+final class AnnouncementDTO {
+    public function __construct(
+        public int     $id,
+        public string  $title,
+        public string  $text,
+        public string  $createdAt,
+        public string  $validUntil,
+        public ?int    $userId,
+        public string  $status,
+        public ?string $decidedAt,
+        public ?int    $decidedBy,
+    ) {}
+
+    public static function fromEntity(Announcement $entity): self {
+        return new self(
+            id: $entity-&gt;id,
+            title: $entity-&gt;title,
+            text: $entity-&gt;text,
+            createdAt: $entity-&gt;createdAt-&gt;format('c'),
+            validUntil: $entity-&gt;validUntil-&gt;format('c'),
+            userId: $entity-&gt;userId,
+            status: $entity-&gt;status-&gt;name,
+            decidedAt: $entity-&gt;decidedAt?-&gt;format('c'),
+            decidedBy: $entity-&gt;decidedBy,
+        );
+    }
+}
+</code></pre>
+<h3 id="http-response">HTTP Response</h3>
+<pre><code class="language-json">HTTP 201 Created
+
+{
+  &quot;id&quot;: 42,
+  &quot;title&quot;: &quot;Nowe godziny otwarcia&quot;,
+  &quot;status&quot;: &quot;approved&quot;,
+  &quot;created_at&quot;: &quot;2026-01-02T10:42:00Z&quot;
+}
+</code></pre>
+<hr />
+<h2 id="przykad-2-zatwierdzanie-ogoszenia">🔄 Przykład 2: Zatwierdzanie Ogłoszenia</h2>
+<h3 id="scenariusz-admin-zatwierdza-oczekujace-ogoszenie">Scenariusz: Admin zatwierdza oczekujące ogłoszenie</h3>
+<pre><code>HTTP POST /api/announcements/{id}/approve
+</code></pre>
+<h3 id="controller">Controller</h3>
+<pre><code class="language-php">public function approve(Request $request, int $id): Response {
+    try {
+        $useCase = $this-&gt;container-&gt;get(ApproveAnnouncementUseCase::class);
+        $announcementDTO = $useCase-&gt;execute(
+            announcementId: $id,
+            adminId: $request-&gt;userId()
+        );
+
+        return Response::ok([
+            'message' =&gt; 'Announcement approved',
+            'announcement' =&gt; $announcementDTO
+        ]);
+    } catch (AnnouncementNotFoundException $e) {
+        return Response::notFound(['error' =&gt; 'Announcement not found']);
+    } catch (AnnouncementException $e) {
+        return Response::badRequest(['error' =&gt; $e-&gt;getMessage()]);
+    }
+}
+</code></pre>
+<h3 id="use-case">Use Case</h3>
+<pre><code class="language-php">class ApproveAnnouncementUseCase {
+    public function __construct(
+        private AnnouncementRepository $repository
+    ) {}
+
+    public function execute(int $announcementId, int $adminId): AnnouncementDTO {
+        // Pobierz z bazy
+        $announcement = $this-&gt;repository-&gt;findById($announcementId);
+
+        if (!$announcement) {
+            throw new AnnouncementNotFoundException();
+        }
+
+        if ($announcement-&gt;status !== AnnouncementStatus::PENDING) {
+            throw new AnnouncementException(
+                &quot;Cannot approve announcement that is not pending&quot;
+            );
+        }
+
+        // Aplikuj reguły biznesowe (logika w Domain!)
+        $announcement-&gt;approve($adminId);
+
+        // Zapisz
+        $this-&gt;repository-&gt;save($announcement);
+
+        // Zwróć DTO
+        return AnnouncementDTO::fromEntity($announcement);
+    }
+}
+</code></pre>
+<h3 id="domain-entity-business-logic">Domain Entity (Business Logic!)</h3>
+<pre><code class="language-php">public function approve(int $decidedBy): void {
+    // Business rule: Only PENDING can be approved
+    // (implicit invariant, enforced by UseCase)
+
+    $this-&gt;status = AnnouncementStatus::APPROVED;
+    $this-&gt;decidedAt = new DateTimeImmutable();
+    $this-&gt;decidedBy = $decidedBy;
+}
+</code></pre>
+<hr />
+<h2 id="przykad-3-rejestracja-uzytkownika">🔐 Przykład 3: Rejestracja Użytkownika</h2>
+<h3 id="controller_1">Controller</h3>
+<pre><code class="language-php">public function register(Request $request): Response {
+    try {
+        $registerRequest = new RegisterUserRequest(
+            email: $request-&gt;input('email'),
+            password: $request-&gt;input('password'),
+            name: $request-&gt;input('name'),
+            phoneNumber: $request-&gt;input('phone_number')
+        );
+
+        $useCase = $this-&gt;container-&gt;get(RegisterUserUseCase::class);
+        $userDTO = $useCase-&gt;execute($registerRequest);
+
+        return Response::created(['user' =&gt; $userDTO]);
+
+    } catch (ValidationException $e) {
+        return Response::unprocessableEntity(['errors' =&gt; $e-&gt;getErrors()]);
+    } catch (UserException $e) {
+        return Response::badRequest(['error' =&gt; $e-&gt;getMessage()]);
+    }
+}
+</code></pre>
+<h3 id="use-case_1">Use Case</h3>
+<pre><code class="language-php">class RegisterUserUseCase {
+    public function __construct(
+        private UserRepository $userRepository,
+        private PasswordHasher $passwordHasher
+    ) {}
+
+    public function execute(RegisterUserRequest $request): UserDTO {
+        // Waliduj
+        $errors = $request-&gt;validate();
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
+        }
+
+        // Sprawdź czy email już istnieje
+        if ($this-&gt;userRepository-&gt;existsByEmail($request-&gt;email)) {
+            throw new UserException(&quot;Email already registered&quot;);
+        }
+
+        // Zahaszuj hasło (Infrastructure concern)
+        $passwordHash = $this-&gt;passwordHasher-&gt;hash($request-&gt;password);
+
+        // Stwórz Entity
+        $user = new User(
+            id: null,
+            email: $request-&gt;email,
+            passwordHash: $passwordHash,
+            name: $request-&gt;name,
+            phoneNumber: $request-&gt;phoneNumber,
+            role: 'user' // Default role
+        );
+
+        // Zapisz
+        $this-&gt;userRepository-&gt;save($user);
+
+        // Zwróć DTO (bez hasła!)
+        return UserDTO::fromEntity($user);
+    }
+}
+</code></pre>
+<h3 id="request-object-z-walidacja">Request Object z Walidacją</h3>
+<pre><code class="language-php">class RegisterUserRequest {
+    public function __construct(
+        public string  $email,
+        public string  $password,
+        public string  $name,
+        public ?string $phoneNumber = null
+    ) {}
+
+    public function validate(): array {
+        $errors = [];
+
+        if (empty($this-&gt;email) || !filter_var($this-&gt;email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Valid email is required';
+        }
+
+        if (strlen($this-&gt;password) &lt; 8) {
+            $errors['password'] = 'Password must be at least 8 characters';
+        }
+
+        if (empty($this-&gt;name) || strlen($this-&gt;name) &lt; 2) {
+            $errors['name'] = 'Name must be at least 2 characters';
+        }
+
+        if ($this-&gt;phoneNumber &amp;&amp; !preg_match('/^\d{9,}$/', $this-&gt;phoneNumber)) {
+            $errors['phone'] = 'Invalid phone number format';
+        }
+
+        return $errors;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="przykad-4-integracja-z-external-api">📝 Przykład 4: Integracja z External API</h2>
+<h3 id="scenariusz-cli-command-pobiera-sowo-dnia">Scenariusz: CLI Command pobiera słowo dnia</h3>
+<h3 id="cli-command-presentation-layer">CLI Command (Presentation Layer)</h3>
+<pre><code class="language-php">// src/Console/Command/FetchDailyWordCommand.php
+class FetchDailyWordCommand {
+    public function __construct(
+        private Container $container,
+        private LoggerInterface $logger
+    ) {}
+
+    public function execute(): void {
+        try {
+            $useCase = $this-&gt;container-&gt;get(FetchAndSaveWordUseCase::class);
+            $wordDTO = $useCase-&gt;execute();
+
+            echo &quot;✓ Word of the day saved: {$wordDTO-&gt;word}\n&quot;;
+            $this-&gt;logger-&gt;info(&quot;Daily word fetched&quot;, ['word' =&gt; $wordDTO-&gt;word]);
+
+        } catch (ExternalServiceException $e) {
+            echo &quot;✗ Failed to fetch word: {$e-&gt;getMessage()}\n&quot;;
+            $this-&gt;logger-&gt;error(&quot;Failed to fetch daily word&quot;, ['error' =&gt; $e]);
+            exit(1);
+        }
+    }
+}
+</code></pre>
+<h3 id="use-case_2">Use Case</h3>
+<pre><code class="language-php">class FetchAndSaveWordUseCase {
+    public function __construct(
+        private ExternalWordApiService $wordService,
+        private WordRepository $wordRepository
+    ) {}
+
+    public function execute(): WordDTO {
+        // Get from external API (Infrastructure)
+        $word = $this-&gt;wordService-&gt;fetchDailyWord();
+
+        // Save to DB (Infrastructure)
+        $this-&gt;wordRepository-&gt;save($word);
+
+        // Return DTO
+        return WordDTO::fromEntity($word);
+    }
+}
+</code></pre>
+<h3 id="external-service">External Service</h3>
+<pre><code class="language-php">class ExternalWordApiService {
+    public function __construct(
+        private HttpClient $client,
+        private string $apiKey
+    ) {}
+
+    public function fetchDailyWord(): Word {
+        try {
+            // HTTP Call
+            $response = $this-&gt;client-&gt;get(
+                'https://api.wordapi.com/daily',
+                ['Authorization' =&gt; &quot;Bearer {$this-&gt;apiKey}&quot;]
+            );
+
+            if ($response-&gt;status() !== 200) {
+                throw new ExternalServiceException(
+                    &quot;API returned status {$response-&gt;status()}&quot;
+                );
+            }
+
+            $data = json_decode($response-&gt;body(), assoc: true);
+
+            // Validate response structure
+            if (!isset($data['word']) || !isset($data['definition'])) {
+                throw new InvalidResponseException(&quot;Missing required fields&quot;);
+            }
+
+            // Transform to Domain Entity
+            return new Word(
+                id: null,
+                word: $data['word'],
+                definition: $data['definition'],
+                example: $data['example'] ?? '',
+                language: $data['language'] ?? 'en'
+            );
+
+        } catch (HttpException $e) {
+            throw new ExternalServiceException(&quot;Failed to fetch word&quot;, cause: $e);
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2 id="przykad-5-error-handling">🛡️ Przykład 5: Error Handling</h2>
+<h3 id="hierarchia-wyjatkow">Hierarchia Wyjątków</h3>
+<pre><code class="language-php">// Domain Layer
+namespace App\Domain\Exception;
+
+abstract class DomainException extends Exception {}
+class AnnouncementException extends DomainException {}
+class UserException extends DomainException {}
+
+// Application Layer
+namespace App\Application\Exception;
+
+class ValidationException extends Exception {
+    public function __construct(
+        private array $errors
+    ) {}
+
+    public function getErrors(): array {
+        return $this-&gt;errors;
+    }
+}
+
+// Infrastructure Layer
+namespace App\Infrastructure\Exception;
+
+class DatabaseException extends Exception {}
+class ExternalServiceException extends Exception {}
+</code></pre>
+<h3 id="controller-comprehensive-error-handling">Controller - Comprehensive Error Handling</h3>
+<pre><code class="language-php">public function create(Request $request): Response {
+    try {
+        // Happy path
+        $request = new CreateAnnouncementRequest(...);
+        $useCase = $this-&gt;container-&gt;get(CreateAnnouncementUseCase::class);
+        $dto = $useCase-&gt;execute($request);
+
+        return Response::created(['data' =&gt; $dto]);
+
+    } catch (ValidationException $e) {
+        // Client error - bad input
+        return Response::unprocessableEntity([
+            'error' =&gt; 'Validation failed',
+            'errors' =&gt; $e-&gt;getErrors()
+        ]);
+
+    } catch (AnnouncementException | UserException $e) {
+        // Business logic error
+        return Response::badRequest([
+            'error' =&gt; $e-&gt;getMessage()
+        ]);
+
+    } catch (DatabaseException $e) {
+        // Infrastructure error
+        $this-&gt;logger-&gt;error(&quot;Database error&quot;, ['error' =&gt; $e]);
+        return Response::internalServerError([
+            'error' =&gt; 'Failed to save announcement'
+        ]);
+
+    } catch (Exception $e) {
+        // Unexpected error
+        $this-&gt;logger-&gt;critical(&quot;Unexpected error&quot;, ['error' =&gt; $e]);
+        return Response::internalServerError([
+            'error' =&gt; 'Internal server error'
+        ]);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="diagram-flow-kompletny-scenariusz">📊 Diagram Flow - Kompletny Scenariusz</h2>
+<pre><code>USER
+  ↓
+HTTP POST /api/announcements
+  ↓
+┌──────────────────────────────┐
+│   PRESENTATION LAYER         │
+│  (AnnouncementController)    │
+├──────────────────────────────┤
+│ 1. Parse JSON                │
+│ 2. Create Request object     │
+│ 3. Validate request          │
+│ 4. Get UseCase from DI       │
+│ 5. Execute UseCase           │
+│ 6. Format Response           │
+└──────────────┬───────────────┘
+               ↓
+┌──────────────────────────────┐
+│   APPLICATION LAYER          │
+│ (CreateAnnouncementUseCase)  │
+├──────────────────────────────┤
+│ 1. Validate request          │
+│ 2. Call factory to create    │
+│    domain entity             │
+│ 3. Call repository.save()    │
+│ 4. Call DTO.fromEntity()     │
+└──────────────┬───────────────┘
+               ↓
+┌──────────────────────────────┐
+│   DOMAIN LAYER               │
+│   (Announcement Entity)       │
+├──────────────────────────────┤
+│ - Apply business rules       │
+│ - Ensure invariants          │
+│ - Return to UseCase          │
+└──────────────┬───────────────┘
+               ↓
+┌──────────────────────────────┐
+│ INFRASTRUCTURE LAYER         │
+│ (DatabaseAnnouncementRepository)
+├──────────────────────────────┤
+│ 1. SQL INSERT                │
+│ 2. Update ID                 │
+│ 3. Return to UseCase         │
+│                              │
+│ (Database)                   │
+│ announcements table          │
+└──────────────┬───────────────┘
+               ↓
+           HTTP 201
+         (JSON DTO)
+             ↓
+           USER
+</code></pre>
+<hr />
+<h2 id="szybka-referencja-patternow">🎯 Szybka Referencja Patternów</h2>
+<h3 id="tworzenie-entity">Tworzenie Entity</h3>
+<pre><code class="language-php">// Factory method w Entity
+$entity = Announcement::createNew(...);
+
+// Lub Factory pattern
+$entity = AnnouncementFactory::createFromRequest($request);
+</code></pre>
+<h3 id="zapisanie-entity">Zapisanie Entity</h3>
+<pre><code class="language-php">$repository-&gt;save($entity); // INSERT lub UPDATE
+</code></pre>
+<h3 id="pobranie-entity">Pobranie Entity</h3>
+<pre><code class="language-php">$entity = $repository-&gt;findById($id);     // Jedno
+$entities = $repository-&gt;findAll();       // Wiele
+$entities = $repository-&gt;findByStatus(); // Filtr
+</code></pre>
+<h3 id="transformacja-do-dto">Transformacja do DTO</h3>
+<pre><code class="language-php">$dto = AnnouncementDTO::fromEntity($entity);
+</code></pre>
+<h3 id="obsuga-bedow">Obsługa Błędów</h3>
+<pre><code class="language-php">if ($errors = $request-&gt;validate()) {
+    throw new ValidationException($errors);
+}
+
+if (!$entity) {
+    throw new EntityNotFoundException();
+}
+
+$entity-&gt;businessMethod(); // Rzuca DomainException jeśli invariant naruszony
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

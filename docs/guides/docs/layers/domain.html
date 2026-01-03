@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>DoDomuDojade Documentation</title>
+    
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../../../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">DoDomuDojade Documentation</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/app.html" class="">App</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/app-application.html" class="">Application</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-config.html" class="">config</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-console.html" class="">Console</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-domain.html" class="">Domain</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-http.html" class="">Http</a>
+                
+            </li>
+                    <li>
+                <a href="namespaces/app-infrastructure.html" class="">Infrastructure</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                        
+<section class="section " id="domain-layer-api-reference">
+            <h1>Domain Layer - API Reference</h1>
+
+            
+    <p>Warstwa Domain zawiera czystą logikę biznesową projektu DoDomuDojadę, niezależną od technicznych szczegółów implementacji.</p>
+
+            <section class="section " id="struktura-domain-layer">
+            <h2>📍 Struktura Domain Layer</h2>
+
+            <pre><code class="language-">src/Domain/
+├── Entity/               # Główne agregaty i entity
+│   ├── Announcement.php  # Ogłoszenia
+│   ├── User.php          # Użytkownicy
+│   ├── Word.php          # Słowa dnia
+│   ├── Quote.php         # Cytaty
+│   ├── Module.php        # Moduły
+│   └── Countdown.php     # Odliczanie
+├── Enum/                 # Enumeracje
+│   ├── AnnouncementStatus.php
+│   ├── UserRole.php
+│   └── ...
+├── ValueObject/          # Niezmienne obiekty wartości
+│   └── (będą rozwijane w przyszłości)
+└── Exception/            # Wyjątki domenowe
+    ├── DomainException.php
+    ├── AnnouncementException.php
+    └── ...
+</code></pre>
+
+            
+    <p><strong>Namespace</strong>
+: <code>App\Domain\</code>
+</p>
+
+            <hr />
+
+    </section>
+
+            <section class="section " id="entities-agregaty">
+            <h2>🎯 Entities (Agregaty)</h2>
+
+            <section class="section " id="announcement-entity">
+            <h3>Announcement Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/Announcement.php</code>
+</p>
+
+            
+    <p>Główny agregat zarządzający ogłoszeniami w aplikacji.</p>
+
+            <section class="section " id="charakterystyka">
+            <h4>Charakterystyka</h4>
+
+            
+
+<ul>
+    <li class="dash"><strong>ID</strong>
+: Unikalne w systemie</li>
+
+    <li class="dash"><strong>Status</strong>
+: PENDING, APPROVED, REJECTED</li>
+
+    <li class="dash"><strong>Workflow</strong>
+: Proposal → Review → Approval/Rejection</li>
+
+    <li class="dash"><strong>Lifecycle</strong>
+: Od stworzenia do wygaśnięcia</li>
+
+</ul>
+
+    </section>
+
+            <section class="section " id="konstruktor">
+            <h4>Konstruktor</h4>
+
+            <pre><code class="language-">public function __construct(
+    public ?int               $id,
+    public string             $title,
+    public string             $text,
+    public DateTimeImmutable  $createdAt,
+    public DateTimeImmutable  $validUntil,
+    public ?int               $userId,
+    public AnnouncementStatus $status = AnnouncementStatus::PENDING,
+    public ?DateTimeImmutable $decidedAt = null,
+    public ?int               $decidedBy = null,
+)
+</code></pre>
+
+    </section>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator (null dla nowych)</td>
+    </tr>
+    <tr>
+            <td><code>$title</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Tytuł ogłoszenia</td>
+    </tr>
+    <tr>
+            <td><code>$text</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Treść ogłoszenia</td>
+    </tr>
+    <tr>
+            <td><code>$createdAt</code>
+</td>
+            <td><code>DateTimeImmutable</code>
+</td>
+            <td>Data utworzenia</td>
+    </tr>
+    <tr>
+            <td><code>$validUntil</code>
+</td>
+            <td><code>DateTimeImmutable</code>
+</td>
+            <td>Data wygaśnięcia</td>
+    </tr>
+    <tr>
+            <td><code>$userId</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>ID twórcy/zatwierdzającego</td>
+    </tr>
+    <tr>
+            <td><code>$status</code>
+</td>
+            <td><code>AnnouncementStatus</code>
+</td>
+            <td>Status (PENDING/APPROVED/REJECTED)</td>
+    </tr>
+    <tr>
+            <td><code>$decidedAt</code>
+</td>
+            <td><code>?DateTimeImmutable</code>
+</td>
+            <td>Data zatwierdzenia/odrzucenia</td>
+    </tr>
+    <tr>
+            <td><code>$decidedBy</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>ID osoby zatwierdzającej</td>
+    </tr>
+</tbody>
+</table>
+
+    </section>
+
+            <section class="section " id="factory-methods">
+            <h4>Factory Methods</h4>
+
+            
+    <p><strong>createNew()</strong>
+ - Stwórz nowe ogłoszenie od razu zatwierdzone</p>
+
+            <pre><code class="language-">public static function createNew(
+    string            $title,
+    string            $text,
+    DateTimeImmutable $validUntil,
+    int               $userId,
+): self
+</code></pre>
+
+            
+    <p>Parametry:</p>
+
+            
+
+<ul>
+    <li class="dash"><code>$title</code>
+: Tytuł ogłoszenia</li>
+
+    <li class="dash"><code>$text</code>
+: Treść ogłoszenia</li>
+
+    <li class="dash"><code>$validUntil</code>
+: Data wygaśnięcia</li>
+
+    <li class="dash"><code>$userId</code>
+: ID użytkownika tworzącego</li>
+
+</ul>
+
+            
+    <p>Zwraca: Nowy agregat z statusem APPROVED</p>
+
+            
+    <p>Użycie:</p>
+
+            <pre><code class="language-">$announcement = Announcement::createNew(
+    title: &quot;Nowe godziny otwarcia&quot;,
+    text: &quot;Od poniedziałku zmieniamy godziny...&quot;,
+    validUntil: new DateTimeImmutable(&#039;2026-02-01&#039;),
+    userId: 1
+);
+</code></pre>
+
+            
+    <p><strong>proposeNew()</strong>
+ - Stwórz nowe ogłoszenie czekające na zatwierdzenie</p>
+
+            <pre><code class="language-">public static function proposeNew(
+    string $title,
+    string $text,
+    DateTimeImmutable $validUntil
+): self
+</code></pre>
+
+            
+    <p>Parametry:</p>
+
+            
+
+<ul>
+    <li class="dash"><code>$title</code>
+: Tytuł ogłoszenia</li>
+
+    <li class="dash"><code>$text</code>
+: Treść ogłoszenia</li>
+
+    <li class="dash"><code>$validUntil</code>
+: Data wygaśnięcia</li>
+
+</ul>
+
+            
+    <p>Zwraca: Nowy agregat z statusem PENDING</p>
+
+            
+    <p>Użycie:</p>
+
+            <pre><code class="language-">$announcement = Announcement::proposeNew(
+    title: &quot;Propozycja nowego ogłoszenia&quot;,
+    text: &quot;To jest propozycja którą admin będzie recenzować&quot;,
+    validUntil: new DateTimeImmutable(&#039;+1 month&#039;)
+);
+</code></pre>
+
+    </section>
+
+            <section class="section " id="business-methods">
+            <h4>Business Methods</h4>
+
+            
+    <p><strong>approve()</strong>
+ - Zatwierdź ogłoszenie</p>
+
+            <pre><code class="language-">public function approve(int $decidedBy): void
+</code></pre>
+
+            
+    <p>Parametry:</p>
+
+            
+
+<ul>
+    <li class="dash"><code>$decidedBy</code>
+: ID użytkownika zatwierdzającego (admina)</li>
+
+</ul>
+
+            
+    <p>Efekty:</p>
+
+            
+
+<ul>
+    <li class="dash">Zmienia status na APPROVED</li>
+
+    <li class="dash">Ustawia <code>$decidedAt</code>
+ na bieżący czas</li>
+
+    <li class="dash">Ustawia <code>$decidedBy</code>
+ na ID zatwierdzającego</li>
+
+</ul>
+
+            
+    <p>Invariants:</p>
+
+            
+
+<ul>
+    <li class="dash">Status musi być PENDING</li>
+
+    <li class="dash"><code>$decidedBy</code>
+ musi być ważnym ID użytkownika</li>
+
+</ul>
+
+            
+    <p>Użycie:</p>
+
+            <pre><code class="language-">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;approve(adminId: 2);
+}
+</code></pre>
+
+            
+    <p><strong>reject()</strong>
+ - Odrzuć ogłoszenie</p>
+
+            <pre><code class="language-">public function reject(int $decidedBy): void
+</code></pre>
+
+            
+    <p>Parametry:</p>
+
+            
+
+<ul>
+    <li class="dash"><code>$decidedBy</code>
+: ID użytkownika odrzucającego (admina)</li>
+
+</ul>
+
+            
+    <p>Efekty:</p>
+
+            
+
+<ul>
+    <li class="dash">Zmienia status na REJECTED</li>
+
+    <li class="dash">Ustawia <code>$decidedAt</code>
+ na bieżący czas</li>
+
+    <li class="dash">Ustawia <code>$decidedBy</code>
+ na ID odrzucającego</li>
+
+</ul>
+
+            
+    <p>Invariants:</p>
+
+            
+
+<ul>
+    <li class="dash">Status musi być PENDING</li>
+
+    <li class="dash"><code>$decidedBy</code>
+ musi być ważnym ID użytkownika</li>
+
+</ul>
+
+            
+    <p>Użycie:</p>
+
+            <pre><code class="language-">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;reject(adminId: 2);
+}
+</code></pre>
+
+            
+    <p><strong>isValid()</strong>
+ - Sprawdź czy ogłoszenie jest ważne (aktualnie widoczne)</p>
+
+            <pre><code class="language-">public function isValid(): bool
+</code></pre>
+
+            
+    <p>Zwraca: <code>true</code>
+ jeśli:</p>
+
+            
+
+<ul>
+    <li class="dash">Status = APPROVED</li>
+
+    <li class="dash">Bieżący czas &lt;= validUntil</li>
+
+</ul>
+
+            
+    <p>Użycie:</p>
+
+            <pre><code class="language-">if ($announcement-&gt;isValid()) {
+    // Wyświetl ogłoszenie użytkownikowi
+    displayAnnouncement($announcement);
+}
+</code></pre>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="user-entity">
+            <h3>User Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/User.php</code>
+</p>
+
+            
+    <p>Entity reprezentująca użytkownika systemu.</p>
+
+            <pre><code class="language-">final class User {
+    public function __construct(
+        public ?int    $id,
+        public string  $email,
+        public string  $passwordHash,
+        public string  $name,
+        public ?string $phoneNumber = null,
+        public string  $role = &#039;user&#039;
+    )
+}
+</code></pre>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator</td>
+    </tr>
+    <tr>
+            <td><code>$email</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Email użytkownika</td>
+    </tr>
+    <tr>
+            <td><code>$passwordHash</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Zahaszowane hasło</td>
+    </tr>
+    <tr>
+            <td><code>$name</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Nazwa użytkownika</td>
+    </tr>
+    <tr>
+            <td><code>$phoneNumber</code>
+</td>
+            <td><code>?string</code>
+</td>
+            <td>Numer telefonu (opcjonalnie)</td>
+    </tr>
+    <tr>
+            <td><code>$role</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Rola (user, admin, moderator)</td>
+    </tr>
+</tbody>
+</table>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="word-entity">
+            <h3>Word Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/Word.php</code>
+</p>
+
+            
+    <p>Entity reprezentująca słowo dnia.</p>
+
+            <pre><code class="language-">final class Word {
+    public function __construct(
+        public ?int    $id,
+        public string  $word,
+        public string  $definition,
+        public string  $example,
+        public string  $language = &#039;pl&#039;
+    )
+}
+</code></pre>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator</td>
+    </tr>
+    <tr>
+            <td><code>$word</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Słowo</td>
+    </tr>
+    <tr>
+            <td><code>$definition</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Definicja</td>
+    </tr>
+    <tr>
+            <td><code>$example</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Przykład użycia</td>
+    </tr>
+    <tr>
+            <td><code>$language</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Język (domyślnie polski)</td>
+    </tr>
+</tbody>
+</table>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="quote-entity">
+            <h3>Quote Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/Quote.php</code>
+</p>
+
+            
+    <p>Entity reprezentująca cytat inspirujący.</p>
+
+            <pre><code class="language-">final class Quote {
+    public function __construct(
+        public ?int    $id,
+        public string  $text,
+        public string  $author,
+        public string  $category = &#039;general&#039;
+    )
+}
+</code></pre>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator</td>
+    </tr>
+    <tr>
+            <td><code>$text</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Tekst cytatu</td>
+    </tr>
+    <tr>
+            <td><code>$author</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Autor cytatu</td>
+    </tr>
+    <tr>
+            <td><code>$category</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Kategoria cytatu</td>
+    </tr>
+</tbody>
+</table>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="module-entity">
+            <h3>Module Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/Module.php</code>
+</p>
+
+            
+    <p>Entity reprezentująca moduł funkcjonalny aplikacji.</p>
+
+            <pre><code class="language-">final class Module {
+    public function __construct(
+        public ?int    $id,
+        public string  $name,
+        public string  $description,
+        public bool    $enabled = true
+    )
+}
+</code></pre>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator</td>
+    </tr>
+    <tr>
+            <td><code>$name</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Nazwa modułu</td>
+    </tr>
+    <tr>
+            <td><code>$description</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Opis modułu</td>
+    </tr>
+    <tr>
+            <td><code>$enabled</code>
+</td>
+            <td><code>bool</code>
+</td>
+            <td>Czy moduł jest włączony</td>
+    </tr>
+</tbody>
+</table>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="countdown-entity">
+            <h3>Countdown Entity</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Entity/Countdown.php</code>
+</p>
+
+            
+    <p>Entity reprezentująca odliczanie do ważnego zdarzenia.</p>
+
+            <pre><code class="language-">final class Countdown {
+    public function __construct(
+        public ?int              $id,
+        public string            $title,
+        public DateTimeImmutable $targetDate,
+        public string            $description = &#039;&#039;
+    )
+}
+</code></pre>
+
+            <section class="section " id="wlasciwosci">
+            <h4>Właściwości</h4>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Właściwość</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td><code>$id</code>
+</td>
+            <td><code>?int</code>
+</td>
+            <td>Unikalny identyfikator</td>
+    </tr>
+    <tr>
+            <td><code>$title</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Tytuł odliczania</td>
+    </tr>
+    <tr>
+            <td><code>$targetDate</code>
+</td>
+            <td><code>DateTimeImmutable</code>
+</td>
+            <td>Data docelowa</td>
+    </tr>
+    <tr>
+            <td><code>$description</code>
+</td>
+            <td><code>string</code>
+</td>
+            <td>Opis zdarzenia</td>
+    </tr>
+</tbody>
+</table>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+    </section>
+
+            <section class="section " id="enums-enumeracje">
+            <h2>🏷️ Enums (Enumeracje)</h2>
+
+            <section class="section " id="announcementstatus-enum">
+            <h3>AnnouncementStatus Enum</h3>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Enum/AnnouncementStatus.php</code>
+</p>
+
+            
+    <p>Status ogłoszenia w workflow.</p>
+
+            <pre><code class="language-">enum AnnouncementStatus {
+    case PENDING;      // Oczekuje na zatwierdzenie
+    case APPROVED;     // Zatwierdzone i widoczne
+    case REJECTED;     // Odrzucone
+}
+</code></pre>
+
+            <section class="section " id="stany-transitional">
+            <h4>Stany Transitional</h4>
+
+            <pre><code class="language-">┌─────────┐
+│ PENDING │
+├────┬────┤
+│    │    │
+▼    ▼    │
+APPROVED  REJECTED
+</code></pre>
+
+            
+    <p><strong>Przejścia</strong>
+:</p>
+
+            
+
+<ul>
+    <li class="dash">PENDING → APPROVED (approve)</li>
+
+    <li class="dash">PENDING → REJECTED (reject)</li>
+
+    <li class="dash">APPROVED ↛ (terminal state)</li>
+
+    <li class="dash">REJECTED ↛ (terminal state)</li>
+
+</ul>
+
+    </section>
+
+            <section class="section " id="uzycie">
+            <h4>Użycie</h4>
+
+            <pre><code class="language-">// Sprawdzenie statusu
+if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    // Czeka na zatwierdzenie
+}
+
+// Walidacja przejścia
+if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;approve($userId);
+}
+</code></pre>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+    </section>
+
+            <section class="section " id="exceptions-wyjatki-domenowe">
+            <h2>⚠️ Exceptions (Wyjątki Domenowe)</h2>
+
+            
+    <p><strong>Lokalizacja</strong>
+: <code>src/Domain/Exception/</code>
+</p>
+
+            <section class="section " id="domainexception-abstract-base">
+            <h3>DomainException (Abstract Base)</h3>
+
+            <pre><code class="language-">abstract class DomainException extends Exception
+</code></pre>
+
+            
+    <p>Bazowa klasa dla wszystkich wyjątków domenowych.</p>
+
+            
+    <p><strong>Charakterystyka</strong>
+:</p>
+
+            
+
+<ul>
+    <li class="dash">Reprezentuje błędy biznesowe, nie techniczne</li>
+
+    <li class="dash">Powinna być obsługiwana na poziomie Application</li>
+
+    <li class="dash">Zawiera informacje dla użytkownika</li>
+
+</ul>
+
+    </section>
+
+            <section class="section " id="announcementexception">
+            <h3>AnnouncementException</h3>
+
+            <pre><code class="language-">class AnnouncementException extends DomainException
+</code></pre>
+
+            
+    <p>Wyjątek dla błędów związanych z Announcement.</p>
+
+            
+    <p><strong>Przykłady</strong>
+:</p>
+
+            <pre><code class="language-">throw new AnnouncementException(
+    &quot;Nie można zatwierdzić ogłoszenia które nie jest w stanie PENDING&quot;
+);
+</code></pre>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="value-objects-przyszlosc">
+            <h2>📋 Value Objects (Przyszłość)</h2>
+
+            
+    <p>Value Objects będą wprowadzane w przyszłości dla:</p>
+
+            <section class="section " id="email-value-object">
+            <h3>Email Value Object</h3>
+
+            <pre><code class="language-">final class Email {
+    private function __construct(
+        public readonly string $value
+    ) {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException();
+        }
+    }
+    
+    public static function create(string $value): self {
+        return new self($value);
+    }
+    
+    public function equals(Email $other): bool {
+        return $this-&gt;value === $other-&gt;value;
+    }
+}
+</code></pre>
+
+    </section>
+
+            <section class="section " id="phonenumber-value-object">
+            <h3>PhoneNumber Value Object</h3>
+
+            <pre><code class="language-">final class PhoneNumber {
+    private function __construct(
+        public readonly string $value
+    ) {
+        // Walidacja formatu telefonu
+    }
+}
+</code></pre>
+
+    </section>
+
+            <section class="section " id="daterange-value-object">
+            <h3>DateRange Value Object</h3>
+
+            <pre><code class="language-">final class DateRange {
+    public function __construct(
+        public readonly DateTimeImmutable $startDate,
+        public readonly DateTimeImmutable $endDate
+    ) {
+        if ($startDate &gt; $endDate) {
+            throw new InvalidDateRangeException();
+        }
+    }
+    
+    public function contains(DateTimeImmutable $date): bool {
+        return $date &gt;= $this-&gt;startDate &amp;&amp; $date &lt;= $this-&gt;endDate;
+    }
+}
+</code></pre>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="best-practices-w-domain-layer">
+            <h2>🎓 Best Practices w Domain Layer</h2>
+
+            <section class="section " id="do">
+            <h3>✅ DO</h3>
+
+            
+    
+<ol>
+    <li>
+    <p><strong>Umieszczaj logikę biznesową w Entity</strong>
+</p>
+<pre><code class="language-">public function isValid(): bool {
+    return $this-&gt;status === AnnouncementStatus::APPROVED
+        &amp;&amp; new DateTimeImmutable() &lt;= $this-&gt;validUntil;
+}
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Używaj Value Objects do walidacji</strong>
+</p>
+<pre><code class="language-">public function __construct(
+    public Email $email,
+    public PhoneNumber $phone
+)
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Definiuj invariants explicite</strong>
+</p>
+<pre><code class="language-">// Og łoszenie może być zatwierdzone tylko jeśli było w stanie PENDING
+public function approve(int $decidedBy): void {
+    // implicit invariant check
+    $this-&gt;status = AnnouncementStatus::APPROVED;
+}
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Zwracaj Entity ze statycznych metod</strong>
+</p>
+<pre><code class="language-">public static function createNew(...): self {
+    return new self(...);
+}
+</code></pre>
+</li>
+
+</ol>
+
+    </section>
+
+            <section class="section " id="don-t">
+            <h3>❌ DON&#039;T</h3>
+
+            
+    
+<ol>
+    <li>
+    <p><strong>Nie importuj Infrastructure w Domain</strong>
+</p>
+<pre><code class="language-">// ❌ WRONG
+use App\Infrastructure\Repository\AnnouncementRepository;
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Nie rób SQL queries w Entity</strong>
+</p>
+<pre><code class="language-">// ❌ WRONG
+$result = $this-&gt;pdo-&gt;query(&quot;SELECT...&quot;);
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Nie parsuj JSON/XML w Entity</strong>
+</p>
+<pre><code class="language-">// ❌ WRONG
+$data = json_decode($request-&gt;getBody());
+</code></pre>
+</li>
+
+    <li>
+    <p><strong>Nie używaj getters/setters dla wszystkiego</strong>
+</p>
+<pre><code class="language-">// ❌ WRONG
+public function getStatus() { return $this-&gt;status; }
+public function setStatus($status) { $this-&gt;status = $status; }
+
+// ✅ RIGHT
+public function approve($userId) { 
+    // apply business rules
+    $this-&gt;status = AnnouncementStatus::APPROVED;
+}
+</code></pre>
+</li>
+
+</ol>
+
+            <hr />
+
+    </section>
+
+    </section>
+
+            <section class="section " id="relacje-miedzy-entities">
+            <h2>🔗 Relacje Między Entities</h2>
+
+            <pre><code class="language-">graph TB
+    A[&quot;Announcement&quot;] --&gt;|userId| B[&quot;User&quot;]
+    B --&gt;|has many| A
+    C[&quot;Module&quot;] --&gt;|has many| D[&quot;Items&quot;]
+    E[&quot;Word&quot;] --&gt;|created by| B
+    F[&quot;Quote&quot;] --&gt;|created by| B
+    G[&quot;Countdown&quot;] --&gt;|tracked by| B
+</code></pre>
+
+            <hr />
+
+    </section>
+
+            <section class="section " id="complete-domain-namespace-reference">
+            <h2>📊 Complete Domain Namespace Reference</h2>
+
+            <table>
+                <thead>
+            <tr>
+                            <th>Klasa</th>
+                            <th>Lokalizacja</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                    </tr>
+        </thead>
+    <tbody>
+    <tr>
+            <td>Announcement</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Ogłoszenie</td>
+    </tr>
+    <tr>
+            <td>User</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Użytkownik</td>
+    </tr>
+    <tr>
+            <td>Word</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Słowo dnia</td>
+    </tr>
+    <tr>
+            <td>Quote</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Cytat</td>
+    </tr>
+    <tr>
+            <td>Module</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Moduł</td>
+    </tr>
+    <tr>
+            <td>Countdown</td>
+            <td>Entity/</td>
+            <td>Entity</td>
+            <td>Odliczanie</td>
+    </tr>
+    <tr>
+            <td>AnnouncementStatus</td>
+            <td>Enum/</td>
+            <td>Enum</td>
+            <td>Status ogłoszenia</td>
+    </tr>
+    <tr>
+            <td>DomainException</td>
+            <td>Exception/</td>
+            <td>Abstract</td>
+            <td>Bazowy wyjątek</td>
+    </tr>
+    <tr>
+            <td>AnnouncementException</td>
+            <td>Exception/</td>
+            <td>Exception</td>
+            <td>Wyjątek dla Announcement</td>
+    </tr>
+</tbody>
+</table>
+
+    </section>
+
+    </section>
+
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

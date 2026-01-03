@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Domain - DoDomuDojade Docs</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../architecture/ddd/" class="nav-link">Architecture</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/practical_examples/" class="nav-link">Examples</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../appliacation.md" class="dropdown-item">Application</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Domain</a>
+</li>
+                                    
+<li>
+    <a href="../infrastructure/" class="dropdown-item">Infrastructure</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../../examples/practical_examples/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../infrastructure/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#domain-layer-api-reference" class="nav-link">Domain Layer - API Reference</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#struktura-domain-layer" class="nav-link">📍 Struktura Domain Layer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#entities-agregaty" class="nav-link">🎯 Entities (Agregaty)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#enums-enumeracje" class="nav-link">🏷️ Enums (Enumeracje)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exceptions-wyjatki-domenowe" class="nav-link">⚠️ Exceptions (Wyjątki Domenowe)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#value-objects-przyszosc" class="nav-link">📋 Value Objects (Przyszłość)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#best-practices-w-domain-layer" class="nav-link">🎓 Best Practices w Domain Layer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#relacje-miedzy-entities" class="nav-link">🔗 Relacje Między Entities</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#complete-domain-namespace-reference" class="nav-link">📊 Complete Domain Namespace Reference</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="domain-layer-api-reference">Domain Layer - API Reference</h1>
+<p>Warstwa Domain zawiera czystą logikę biznesową projektu DoDomuDojadę, niezależną od technicznych szczegółów implementacji.</p>
+<h2 id="struktura-domain-layer">📍 Struktura Domain Layer</h2>
+<pre><code>src/Domain/
+├── Entity/               # Główne agregaty i entity
+│   ├── Announcement.php  # Ogłoszenia
+│   ├── User.php          # Użytkownicy
+│   ├── Word.php          # Słowa dnia
+│   ├── Quote.php         # Cytaty
+│   ├── Module.php        # Moduły
+│   └── Countdown.php     # Odliczanie
+├── Enum/                 # Enumeracje
+│   ├── AnnouncementStatus.php
+│   ├── UserRole.php
+│   └── ...
+├── ValueObject/          # Niezmienne obiekty wartości
+│   └── (będą rozwijane w przyszłości)
+└── Exception/            # Wyjątki domenowe
+    ├── DomainException.php
+    ├── AnnouncementException.php
+    └── ...
+</code></pre>
+<p><strong>Namespace</strong>: <code>App\Domain\</code></p>
+<hr />
+<h2 id="entities-agregaty">🎯 Entities (Agregaty)</h2>
+<h3 id="announcement-entity">Announcement Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Announcement.php</code></p>
+<p>Główny agregat zarządzający ogłoszeniami w aplikacji.</p>
+<h4 id="charakterystyka">Charakterystyka</h4>
+<ul>
+<li><strong>ID</strong>: Unikalne w systemie</li>
+<li><strong>Status</strong>: PENDING, APPROVED, REJECTED</li>
+<li><strong>Workflow</strong>: Proposal → Review → Approval/Rejection</li>
+<li><strong>Lifecycle</strong>: Od stworzenia do wygaśnięcia</li>
+</ul>
+<h4 id="konstruktor">Konstruktor</h4>
+<pre><code class="language-php">public function __construct(
+    public ?int               $id,
+    public string             $title,
+    public string             $text,
+    public DateTimeImmutable  $createdAt,
+    public DateTimeImmutable  $validUntil,
+    public ?int               $userId,
+    public AnnouncementStatus $status = AnnouncementStatus::PENDING,
+    public ?DateTimeImmutable $decidedAt = null,
+    public ?int               $decidedBy = null,
+)
+</code></pre>
+<h4 id="wasciwosci">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator (null dla nowych)</td>
+</tr>
+<tr>
+<td><code>$title</code></td>
+<td><code>string</code></td>
+<td>Tytuł ogłoszenia</td>
+</tr>
+<tr>
+<td><code>$text</code></td>
+<td><code>string</code></td>
+<td>Treść ogłoszenia</td>
+</tr>
+<tr>
+<td><code>$createdAt</code></td>
+<td><code>DateTimeImmutable</code></td>
+<td>Data utworzenia</td>
+</tr>
+<tr>
+<td><code>$validUntil</code></td>
+<td><code>DateTimeImmutable</code></td>
+<td>Data wygaśnięcia</td>
+</tr>
+<tr>
+<td><code>$userId</code></td>
+<td><code>?int</code></td>
+<td>ID twórcy/zatwierdzającego</td>
+</tr>
+<tr>
+<td><code>$status</code></td>
+<td><code>AnnouncementStatus</code></td>
+<td>Status (PENDING/APPROVED/REJECTED)</td>
+</tr>
+<tr>
+<td><code>$decidedAt</code></td>
+<td><code>?DateTimeImmutable</code></td>
+<td>Data zatwierdzenia/odrzucenia</td>
+</tr>
+<tr>
+<td><code>$decidedBy</code></td>
+<td><code>?int</code></td>
+<td>ID osoby zatwierdzającej</td>
+</tr>
+</tbody>
+</table>
+<h4 id="factory-methods">Factory Methods</h4>
+<p><strong>createNew()</strong> - Stwórz nowe ogłoszenie od razu zatwierdzone</p>
+<pre><code class="language-php">public static function createNew(
+    string            $title,
+    string            $text,
+    DateTimeImmutable $validUntil,
+    int               $userId,
+): self
+</code></pre>
+<p>Parametry:
+- <code>$title</code>: Tytuł ogłoszenia
+- <code>$text</code>: Treść ogłoszenia
+- <code>$validUntil</code>: Data wygaśnięcia
+- <code>$userId</code>: ID użytkownika tworzącego</p>
+<p>Zwraca: Nowy agregat z statusem APPROVED</p>
+<p>Użycie:</p>
+<pre><code class="language-php">$announcement = Announcement::createNew(
+    title: &quot;Nowe godziny otwarcia&quot;,
+    text: &quot;Od poniedziałku zmieniamy godziny...&quot;,
+    validUntil: new DateTimeImmutable('2026-02-01'),
+    userId: 1
+);
+</code></pre>
+<p><strong>proposeNew()</strong> - Stwórz nowe ogłoszenie czekające na zatwierdzenie</p>
+<pre><code class="language-php">public static function proposeNew(
+    string $title,
+    string $text,
+    DateTimeImmutable $validUntil
+): self
+</code></pre>
+<p>Parametry:
+- <code>$title</code>: Tytuł ogłoszenia
+- <code>$text</code>: Treść ogłoszenia
+- <code>$validUntil</code>: Data wygaśnięcia</p>
+<p>Zwraca: Nowy agregat z statusem PENDING</p>
+<p>Użycie:</p>
+<pre><code class="language-php">$announcement = Announcement::proposeNew(
+    title: &quot;Propozycja nowego ogłoszenia&quot;,
+    text: &quot;To jest propozycja którą admin będzie recenzować&quot;,
+    validUntil: new DateTimeImmutable('+1 month')
+);
+</code></pre>
+<h4 id="business-methods">Business Methods</h4>
+<p><strong>approve()</strong> - Zatwierdź ogłoszenie</p>
+<pre><code class="language-php">public function approve(int $decidedBy): void
+</code></pre>
+<p>Parametry:
+- <code>$decidedBy</code>: ID użytkownika zatwierdzającego (admina)</p>
+<p>Efekty:
+- Zmienia status na APPROVED
+- Ustawia <code>$decidedAt</code> na bieżący czas
+- Ustawia <code>$decidedBy</code> na ID zatwierdzającego</p>
+<p>Invariants:
+- Status musi być PENDING
+- <code>$decidedBy</code> musi być ważnym ID użytkownika</p>
+<p>Użycie:</p>
+<pre><code class="language-php">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;approve(adminId: 2);
+}
+</code></pre>
+<p><strong>reject()</strong> - Odrzuć ogłoszenie</p>
+<pre><code class="language-php">public function reject(int $decidedBy): void
+</code></pre>
+<p>Parametry:
+- <code>$decidedBy</code>: ID użytkownika odrzucającego (admina)</p>
+<p>Efekty:
+- Zmienia status na REJECTED
+- Ustawia <code>$decidedAt</code> na bieżący czas
+- Ustawia <code>$decidedBy</code> na ID odrzucającego</p>
+<p>Invariants:
+- Status musi być PENDING
+- <code>$decidedBy</code> musi być ważnym ID użytkownika</p>
+<p>Użycie:</p>
+<pre><code class="language-php">if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;reject(adminId: 2);
+}
+</code></pre>
+<p><strong>isValid()</strong> - Sprawdź czy ogłoszenie jest ważne (aktualnie widoczne)</p>
+<pre><code class="language-php">public function isValid(): bool
+</code></pre>
+<p>Zwraca: <code>true</code> jeśli:
+- Status = APPROVED
+- Bieżący czas &lt;= validUntil</p>
+<p>Użycie:</p>
+<pre><code class="language-php">if ($announcement-&gt;isValid()) {
+    // Wyświetl ogłoszenie użytkownikowi
+    displayAnnouncement($announcement);
+}
+</code></pre>
+<hr />
+<h3 id="user-entity">User Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/User.php</code></p>
+<p>Entity reprezentująca użytkownika systemu.</p>
+<pre><code class="language-php">final class User {
+    public function __construct(
+        public ?int    $id,
+        public string  $email,
+        public string  $passwordHash,
+        public string  $name,
+        public ?string $phoneNumber = null,
+        public string  $role = 'user'
+    )
+}
+</code></pre>
+<h4 id="wasciwosci_1">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator</td>
+</tr>
+<tr>
+<td><code>$email</code></td>
+<td><code>string</code></td>
+<td>Email użytkownika</td>
+</tr>
+<tr>
+<td><code>$passwordHash</code></td>
+<td><code>string</code></td>
+<td>Zahaszowane hasło</td>
+</tr>
+<tr>
+<td><code>$name</code></td>
+<td><code>string</code></td>
+<td>Nazwa użytkownika</td>
+</tr>
+<tr>
+<td><code>$phoneNumber</code></td>
+<td><code>?string</code></td>
+<td>Numer telefonu (opcjonalnie)</td>
+</tr>
+<tr>
+<td><code>$role</code></td>
+<td><code>string</code></td>
+<td>Rola (user, admin, moderator)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="word-entity">Word Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Word.php</code></p>
+<p>Entity reprezentująca słowo dnia.</p>
+<pre><code class="language-php">final class Word {
+    public function __construct(
+        public ?int    $id,
+        public string  $word,
+        public string  $definition,
+        public string  $example,
+        public string  $language = 'pl'
+    )
+}
+</code></pre>
+<h4 id="wasciwosci_2">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator</td>
+</tr>
+<tr>
+<td><code>$word</code></td>
+<td><code>string</code></td>
+<td>Słowo</td>
+</tr>
+<tr>
+<td><code>$definition</code></td>
+<td><code>string</code></td>
+<td>Definicja</td>
+</tr>
+<tr>
+<td><code>$example</code></td>
+<td><code>string</code></td>
+<td>Przykład użycia</td>
+</tr>
+<tr>
+<td><code>$language</code></td>
+<td><code>string</code></td>
+<td>Język (domyślnie polski)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="quote-entity">Quote Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Quote.php</code></p>
+<p>Entity reprezentująca cytat inspirujący.</p>
+<pre><code class="language-php">final class Quote {
+    public function __construct(
+        public ?int    $id,
+        public string  $text,
+        public string  $author,
+        public string  $category = 'general'
+    )
+}
+</code></pre>
+<h4 id="wasciwosci_3">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator</td>
+</tr>
+<tr>
+<td><code>$text</code></td>
+<td><code>string</code></td>
+<td>Tekst cytatu</td>
+</tr>
+<tr>
+<td><code>$author</code></td>
+<td><code>string</code></td>
+<td>Autor cytatu</td>
+</tr>
+<tr>
+<td><code>$category</code></td>
+<td><code>string</code></td>
+<td>Kategoria cytatu</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="module-entity">Module Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Module.php</code></p>
+<p>Entity reprezentująca moduł funkcjonalny aplikacji.</p>
+<pre><code class="language-php">final class Module {
+    public function __construct(
+        public ?int    $id,
+        public string  $name,
+        public string  $description,
+        public bool    $enabled = true
+    )
+}
+</code></pre>
+<h4 id="wasciwosci_4">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator</td>
+</tr>
+<tr>
+<td><code>$name</code></td>
+<td><code>string</code></td>
+<td>Nazwa modułu</td>
+</tr>
+<tr>
+<td><code>$description</code></td>
+<td><code>string</code></td>
+<td>Opis modułu</td>
+</tr>
+<tr>
+<td><code>$enabled</code></td>
+<td><code>bool</code></td>
+<td>Czy moduł jest włączony</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="countdown-entity">Countdown Entity</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Entity/Countdown.php</code></p>
+<p>Entity reprezentująca odliczanie do ważnego zdarzenia.</p>
+<pre><code class="language-php">final class Countdown {
+    public function __construct(
+        public ?int              $id,
+        public string            $title,
+        public DateTimeImmutable $targetDate,
+        public string            $description = ''
+    )
+}
+</code></pre>
+<h4 id="wasciwosci_5">Właściwości</h4>
+<table>
+<thead>
+<tr>
+<th>Właściwość</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td><code>?int</code></td>
+<td>Unikalny identyfikator</td>
+</tr>
+<tr>
+<td><code>$title</code></td>
+<td><code>string</code></td>
+<td>Tytuł odliczania</td>
+</tr>
+<tr>
+<td><code>$targetDate</code></td>
+<td><code>DateTimeImmutable</code></td>
+<td>Data docelowa</td>
+</tr>
+<tr>
+<td><code>$description</code></td>
+<td><code>string</code></td>
+<td>Opis zdarzenia</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="enums-enumeracje">🏷️ Enums (Enumeracje)</h2>
+<h3 id="announcementstatus-enum">AnnouncementStatus Enum</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Enum/AnnouncementStatus.php</code></p>
+<p>Status ogłoszenia w workflow.</p>
+<pre><code class="language-php">enum AnnouncementStatus {
+    case PENDING;      // Oczekuje na zatwierdzenie
+    case APPROVED;     // Zatwierdzone i widoczne
+    case REJECTED;     // Odrzucone
+}
+</code></pre>
+<h4 id="stany-transitional">Stany Transitional</h4>
+<pre><code>┌─────────┐
+│ PENDING │
+├────┬────┤
+│    │    │
+▼    ▼    │
+APPROVED  REJECTED
+</code></pre>
+<p><strong>Przejścia</strong>:
+- PENDING → APPROVED (approve)
+- PENDING → REJECTED (reject)
+- APPROVED ↛ (terminal state)
+- REJECTED ↛ (terminal state)</p>
+<h4 id="uzycie">Użycie</h4>
+<pre><code class="language-php">// Sprawdzenie statusu
+if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    // Czeka na zatwierdzenie
+}
+
+// Walidacja przejścia
+if ($announcement-&gt;status === AnnouncementStatus::PENDING) {
+    $announcement-&gt;approve($userId);
+}
+</code></pre>
+<hr />
+<h2 id="exceptions-wyjatki-domenowe">⚠️ Exceptions (Wyjątki Domenowe)</h2>
+<p><strong>Lokalizacja</strong>: <code>src/Domain/Exception/</code></p>
+<h3 id="domainexception-abstract-base">DomainException (Abstract Base)</h3>
+<pre><code class="language-php">abstract class DomainException extends Exception
+</code></pre>
+<p>Bazowa klasa dla wszystkich wyjątków domenowych.</p>
+<p><strong>Charakterystyka</strong>:
+- Reprezentuje błędy biznesowe, nie techniczne
+- Powinna być obsługiwana na poziomie Application
+- Zawiera informacje dla użytkownika</p>
+<h3 id="announcementexception">AnnouncementException</h3>
+<pre><code class="language-php">class AnnouncementException extends DomainException
+</code></pre>
+<p>Wyjątek dla błędów związanych z Announcement.</p>
+<p><strong>Przykłady</strong>:</p>
+<pre><code class="language-php">throw new AnnouncementException(
+    &quot;Nie można zatwierdzić ogłoszenia które nie jest w stanie PENDING&quot;
+);
+</code></pre>
+<hr />
+<h2 id="value-objects-przyszosc">📋 Value Objects (Przyszłość)</h2>
+<p>Value Objects będą wprowadzane w przyszłości dla:</p>
+<h3 id="email-value-object">Email Value Object</h3>
+<pre><code class="language-php">final class Email {
+    private function __construct(
+        public readonly string $value
+    ) {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException();
+        }
+    }
+
+    public static function create(string $value): self {
+        return new self($value);
+    }
+
+    public function equals(Email $other): bool {
+        return $this-&gt;value === $other-&gt;value;
+    }
+}
+</code></pre>
+<h3 id="phonenumber-value-object">PhoneNumber Value Object</h3>
+<pre><code class="language-php">final class PhoneNumber {
+    private function __construct(
+        public readonly string $value
+    ) {
+        // Walidacja formatu telefonu
+    }
+}
+</code></pre>
+<h3 id="daterange-value-object">DateRange Value Object</h3>
+<pre><code class="language-php">final class DateRange {
+    public function __construct(
+        public readonly DateTimeImmutable $startDate,
+        public readonly DateTimeImmutable $endDate
+    ) {
+        if ($startDate &gt; $endDate) {
+            throw new InvalidDateRangeException();
+        }
+    }
+
+    public function contains(DateTimeImmutable $date): bool {
+        return $date &gt;= $this-&gt;startDate &amp;&amp; $date &lt;= $this-&gt;endDate;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="best-practices-w-domain-layer">🎓 Best Practices w Domain Layer</h2>
+<h3 id="do">✅ DO</h3>
+<ol>
+<li>
+<p><strong>Umieszczaj logikę biznesową w Entity</strong>
+   <code>php
+   public function isValid(): bool {
+       return $this-&gt;status === AnnouncementStatus::APPROVED
+           &amp;&amp; new DateTimeImmutable() &lt;= $this-&gt;validUntil;
+   }</code></p>
+</li>
+<li>
+<p><strong>Używaj Value Objects do walidacji</strong>
+   <code>php
+   public function __construct(
+       public Email $email,
+       public PhoneNumber $phone
+   )</code></p>
+</li>
+<li>
+<p><strong>Definiuj invariants explicite</strong>
+   <code>php
+   // Og łoszenie może być zatwierdzone tylko jeśli było w stanie PENDING
+   public function approve(int $decidedBy): void {
+       // implicit invariant check
+       $this-&gt;status = AnnouncementStatus::APPROVED;
+   }</code></p>
+</li>
+<li>
+<p><strong>Zwracaj Entity ze statycznych metod</strong>
+   <code>php
+   public static function createNew(...): self {
+       return new self(...);
+   }</code></p>
+</li>
+</ol>
+<h3 id="dont">❌ DON'T</h3>
+<ol>
+<li>
+<p><strong>Nie importuj Infrastructure w Domain</strong>
+   <code>php
+   // ❌ WRONG
+   use App\Infrastructure\Repository\AnnouncementRepository;</code></p>
+</li>
+<li>
+<p><strong>Nie rób SQL queries w Entity</strong>
+   <code>php
+   // ❌ WRONG
+   $result = $this-&gt;pdo-&gt;query("SELECT...");</code></p>
+</li>
+<li>
+<p><strong>Nie parsuj JSON/XML w Entity</strong>
+   <code>php
+   // ❌ WRONG
+   $data = json_decode($request-&gt;getBody());</code></p>
+</li>
+<li>
+<p><strong>Nie używaj getters/setters dla wszystkiego</strong>
+   ```php
+   // ❌ WRONG
+   public function getStatus() { return $this-&gt;status; }
+   public function setStatus($status) { $this-&gt;status = $status; }</p>
+</li>
+</ol>
+<p>// ✅ RIGHT
+   public function approve($userId) { 
+       // apply business rules
+       $this-&gt;status = AnnouncementStatus::APPROVED;
+   }
+   ```</p>
+<hr />
+<h2 id="relacje-miedzy-entities">🔗 Relacje Między Entities</h2>
+<pre><code class="language-mermaid">graph TB
+    A[&quot;Announcement&quot;] --&gt;|userId| B[&quot;User&quot;]
+    B --&gt;|has many| A
+    C[&quot;Module&quot;] --&gt;|has many| D[&quot;Items&quot;]
+    E[&quot;Word&quot;] --&gt;|created by| B
+    F[&quot;Quote&quot;] --&gt;|created by| B
+    G[&quot;Countdown&quot;] --&gt;|tracked by| B
+</code></pre>
+<hr />
+<h2 id="complete-domain-namespace-reference">📊 Complete Domain Namespace Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Klasa</th>
+<th>Lokalizacja</th>
+<th>Typ</th>
+<th>Opis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Announcement</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Ogłoszenie</td>
+</tr>
+<tr>
+<td>User</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Użytkownik</td>
+</tr>
+<tr>
+<td>Word</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Słowo dnia</td>
+</tr>
+<tr>
+<td>Quote</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Cytat</td>
+</tr>
+<tr>
+<td>Module</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Moduł</td>
+</tr>
+<tr>
+<td>Countdown</td>
+<td>Entity/</td>
+<td>Entity</td>
+<td>Odliczanie</td>
+</tr>
+<tr>
+<td>AnnouncementStatus</td>
+<td>Enum/</td>
+<td>Enum</td>
+<td>Status ogłoszenia</td>
+</tr>
+<tr>
+<td>DomainException</td>
+<td>Exception/</td>
+<td>Abstract</td>
+<td>Bazowy wyjątek</td>
+</tr>
+<tr>
+<td>AnnouncementException</td>
+<td>Exception/</td>
+<td>Exception</td>
+<td>Wyjątek dla Announcement</td>
+</tr>
+</tbody>
+</table></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Infrastructure - DoDomuDojade Docs</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../architecture/ddd/" class="nav-link">Architecture</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/practical_examples/" class="nav-link">Examples</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../appliacation.md" class="dropdown-item">Application</a>
+</li>
+                                    
+<li>
+    <a href="../domain/" class="dropdown-item">Domain</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Infrastructure</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../domain/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#infrastructure-layer-api-reference" class="nav-link">Infrastructure Layer - API Reference</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#struktura-infrastructure-layer" class="nav-link">📍 Struktura Infrastructure Layer</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#repositories" class="nav-link">🔌 Repositories</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#external-services" class="nav-link">🔗 External Services</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#factories" class="nav-link">🏭 Factories</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#security-components" class="nav-link">🔐 Security Components</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#helpers" class="nav-link">🛠️ Helpers</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#translation-service" class="nav-link">🌐 Translation Service</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#dependency-injection-container" class="nav-link">🚚 Dependency Injection Container</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#architektura-warstwowa" class="nav-link">📊 Architektura Warstwowa</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#best-practices" class="nav-link">🎓 Best Practices</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#mapowanie-warstw" class="nav-link">📊 Mapowanie Warstw</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="infrastructure-layer-api-reference">Infrastructure Layer - API Reference</h1>
+<p>Warstwa Infrastructure zawiera implementację technicznych szczegółów, integracje z zewnętrznymi serwisami i zarządzaniem danymi.</p>
+<h2 id="struktura-infrastructure-layer">📍 Struktura Infrastructure Layer</h2>
+<pre><code>src/Infrastructure/
+├── Container.php                # Dependency Injection Container
+├── Repository/                  # Data Access Layer
+│   ├── DatabaseAnnouncementRepository.php
+│   ├── DatabaseUserRepository.php
+│   ├── DatabaseWordRepository.php
+│   ├── DatabaseQuoteRepository.php
+│   └── DatabaseCountdownRepository.php
+├── Service/                     # External Services
+│   ├── ExternalWordApiService.php
+│   ├── ExternalQuoteApiService.php
+│   ├── EmailService.php
+│   └── LoggerService.php
+├── Factory/                     # Object Creation
+│   ├── AnnouncementFactory.php
+│   ├── UserFactory.php
+│   └── ...
+├── Security/                    # Security &amp; Auth
+│   ├── PasswordHasher.php
+│   ├── TokenGenerator.php
+│   └── AuthenticationService.php
+├── Helper/                      # Utility Functions
+│   ├── DateHelper.php
+│   ├── StringHelper.php
+│   └── ValidationHelper.php
+├── Translation/                 # Internationalization
+│   └── TranslationService.php
+├── Trait/                       # Shared Traits
+│   └── TimestampableTrait.php
+└── View/                        # View Helpers
+    └── TemplateRenderer.php
+</code></pre>
+<p><strong>Namespace</strong>: <code>App\Infrastructure\</code></p>
+<hr />
+<h2 id="repositories">🔌 Repositories</h2>
+<p>Repositories implementują abstrakcję dostępu do danych (patrz: Repository Pattern).</p>
+<h3 id="databaseannouncementrepository">DatabaseAnnouncementRepository</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Repository/DatabaseAnnouncementRepository.php</code></p>
+<p><strong>Odpowiedzialność</strong>: Persystencja danych Announcement w bazie danych</p>
+<p><strong>Implementuje</strong>: <code>AnnouncementRepositoryInterface</code> (Future)</p>
+<p><strong>Zależności</strong>:</p>
+<pre><code class="language-php">public function __construct(
+    private PDO $pdo
+)
+</code></pre>
+<h4 id="saveannouncement-announcement-void">save(Announcement $announcement): void</h4>
+<p>Zapisz (lub zaktualizuj) ogłoszenie w bazie.</p>
+<p><strong>Parametry</strong>:
+- <code>Announcement $announcement</code> - Agregat do zapisania</p>
+<p><strong>Efekty</strong>:
+- INSERT jeśli <code>$announcement-&gt;id === null</code>
+- UPDATE jeśli <code>$announcement-&gt;id !== null</code></p>
+<p><strong>SQL</strong>:</p>
+<pre><code class="language-sql">-- INSERT
+INSERT INTO announcements (
+    title, text, created_at, valid_until, user_id, status, decided_at, decided_by
+) VALUES (...)
+
+-- UPDATE
+UPDATE announcements SET 
+    title = ?, text = ?, status = ?, decided_at = ?, decided_by = ?
+WHERE id = ?
+</code></pre>
+<p><strong>Wyjątki</strong>:
+- <code>DatabaseException</code> - Błąd SQL
+- <code>ConstraintViolationException</code> - Naruszenie constraint'a</p>
+<p><strong>Użycie</strong>:</p>
+<pre><code class="language-php">$announcement = Announcement::createNew(...);
+$repository-&gt;save($announcement);
+</code></pre>
+<hr />
+<h4 id="findbyidint-id-announcement">findById(int $id): ?Announcement</h4>
+<p>Pobierz ogłoszenie po ID.</p>
+<p><strong>Parametry</strong>:
+- <code>int $id</code> - ID ogłoszenia</p>
+<p><strong>Zwraca</strong>: 
+- <code>Announcement</code> - Znalezione ogłoszenie
+- <code>null</code> - Jeśli nie znalezione</p>
+<p><strong>SQL</strong>:</p>
+<pre><code class="language-sql">SELECT * FROM announcements WHERE id = ? LIMIT 1
+</code></pre>
+<hr />
+<h4 id="findall-array">findAll(): array</h4>
+<p>Pobierz wszystkie ogłoszenia.</p>
+<p><strong>Zwraca</strong>: <code>array&lt;Announcement&gt;</code></p>
+<hr />
+<h4 id="findbystatusstring-status-array">findByStatus(string $status): array</h4>
+<p>Pobierz ogłoszenia o określonym statusie.</p>
+<p><strong>Parametry</strong>:
+- <code>string $status</code> - Status (pending/approved/rejected)</p>
+<p><strong>Zwraca</strong>: <code>array&lt;Announcement&gt;</code></p>
+<hr />
+<h4 id="findvalid-array">findValid(): array</h4>
+<p>Pobierz tylko ważne ogłoszenia (approved i jeszcze nieugasłe).</p>
+<p><strong>Zwraca</strong>: <code>array&lt;Announcement&gt;</code> - Aktualnie widoczne</p>
+<p><strong>SQL</strong>:</p>
+<pre><code class="language-sql">SELECT * FROM announcements 
+WHERE status = 'approved' 
+AND valid_until &gt;= NOW()
+ORDER BY created_at DESC
+</code></pre>
+<hr />
+<h4 id="deleteint-id-void">delete(int $id): void</h4>
+<p>Usuń ogłoszenie.</p>
+<p><strong>Parametry</strong>:
+- <code>int $id</code> - ID do usunięcia</p>
+<hr />
+<h3 id="databaseuserrepository">DatabaseUserRepository</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Repository/DatabaseUserRepository.php</code></p>
+<p>Zarządza persystencją użytkowników.</p>
+<h4 id="saveuser-user-void">save(User $user): void</h4>
+<p>Zapisz użytkownika.</p>
+<h4 id="findbyidint-id-user">findById(int $id): ?User</h4>
+<p>Pobierz po ID.</p>
+<h4 id="findbyemailstring-email-user">findByEmail(string $email): ?User</h4>
+<p>Pobierz po email.</p>
+<h4 id="existsemailstring-email-bool">existsEmail(string $email): bool</h4>
+<p>Sprawdź czy email istnieje.</p>
+<hr />
+<h3 id="databasewordrepository">DatabaseWordRepository</h3>
+<p>Zarządza słowami dnia.</p>
+<h3 id="databasequoterepository">DatabaseQuoteRepository</h3>
+<p>Zarządza cytatami.</p>
+<hr />
+<h2 id="external-services">🔗 External Services</h2>
+<p>Serwisy integrujące się z zewnętrznymi API.</p>
+<h3 id="externalwordapiservice">ExternalWordApiService</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/ExternalWordApiService.php</code></p>
+<p><strong>Odpowiedzialność</strong>: Pobieranie słów z zewnętrznego API</p>
+<p><strong>Zależności</strong>:</p>
+<pre><code class="language-php">public function __construct(
+    private HttpClient $httpClient,
+    private ConfigService $config
+)
+</code></pre>
+<h4 id="fetchdailyword-word">fetchDailyWord(): Word</h4>
+<p>Pobierz słowo dnia z zewnętrznego API.</p>
+<p><strong>Zwraca</strong>: <code>Word</code> - Transformowane do Domain Entity</p>
+<p><strong>Flow</strong>:
+1. HTTP GET do external API
+2. Parse response
+3. Walidacja
+4. Transformacja do Word Entity
+5. Return</p>
+<p><strong>Wyjątki</strong>:
+- <code>ExternalServiceException</code> - Problem z API
+- <code>HttpException</code> - Błąd HTTP
+- <code>InvalidResponseException</code> - Błędna struktura danych</p>
+<p><strong>HTTP</strong>:</p>
+<pre><code>GET https://api.external.com/word/daily
+Accept: application/json
+Authorization: Bearer {token}
+</code></pre>
+<p><strong>Response</strong>:</p>
+<pre><code class="language-json">{
+  &quot;word&quot;: &quot;ephemeral&quot;,
+  &quot;definition&quot;: &quot;Lasting for a very short time&quot;,
+  &quot;example&quot;: &quot;The beauty of cherry blossoms is ephemeral&quot;,
+  &quot;language&quot;: &quot;en&quot;
+}
+</code></pre>
+<p><strong>Użycie</strong>:</p>
+<pre><code class="language-php">// W CLI Command lub UseCase
+$word = $this-&gt;wordService-&gt;fetchDailyWord();
+$this-&gt;wordRepository-&gt;save($word);
+</code></pre>
+<hr />
+<h3 id="externalquoteapiservice">ExternalQuoteApiService</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/ExternalQuoteApiService.php</code></p>
+<p>Pobieranie cytatów z zewnętrznego API.</p>
+<h4 id="fetchdailyquote-quote">fetchDailyQuote(): Quote</h4>
+<hr />
+<h3 id="emailservice">EmailService</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Service/EmailService.php</code></p>
+<p><strong>Odpowiedzialność</strong>: Wysyłanie emaili</p>
+<p><strong>Zależności</strong>:</p>
+<pre><code class="language-php">public function __construct(
+    private SmtpClient $smtpClient,
+    private ConfigService $config
+)
+</code></pre>
+<h4 id="sendstring-to-string-subject-string-body-void">send(string $to, string $subject, string $body): void</h4>
+<p>Wyślij email.</p>
+<p><strong>Parametry</strong>:
+- <code>string $to</code> - Adres email odbiorcy
+- <code>string $subject</code> - Temat
+- <code>string $body</code> - Treść (HTML/Plain)</p>
+<p><strong>Efekty</strong>: Email wysłany via SMTP</p>
+<p><strong>Wyjątki</strong>:
+- <code>EmailException</code> - Błąd wysyłki</p>
+<hr />
+<h2 id="factories">🏭 Factories</h2>
+<p>Fabryki tworzą kompleksowe obiekty z różnych źródeł.</p>
+<h3 id="announcementfactory">AnnouncementFactory</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Factory/AnnouncementFactory.php</code></p>
+<h4 id="createfromrequestcreateannouncementrequest-request-announcement">createFromRequest(CreateAnnouncementRequest $request): Announcement</h4>
+<p>Utwórz Announcement Entity z Request.</p>
+<pre><code class="language-php">public static function createFromRequest(
+    CreateAnnouncementRequest $request,
+    ?int $userId = null
+): Announcement {
+    return Announcement::createNew(
+        title: $request-&gt;title,
+        text: $request-&gt;text,
+        validUntil: new DateTimeImmutable($request-&gt;validUntil),
+        userId: $userId ?? $request-&gt;userId,
+    );
+}
+</code></pre>
+<h4 id="createfromdatabaserowarray-row-announcement">createFromDatabaseRow(array $row): Announcement</h4>
+<p>Utwórz Announcement Entity z rekordu bazy.</p>
+<pre><code class="language-php">public static function createFromDatabaseRow(array $row): Announcement {
+    return new Announcement(
+        id: (int) $row['id'],
+        title: $row['title'],
+        text: $row['text'],
+        createdAt: new DateTimeImmutable($row['created_at']),
+        validUntil: new DateTimeImmutable($row['valid_until']),
+        userId: $row['user_id'] ? (int) $row['user_id'] : null,
+        status: AnnouncementStatus::from($row['status']),
+        decidedAt: $row['decided_at'] ? new DateTimeImmutable($row['decided_at']) : null,
+        decidedBy: $row['decided_by'] ? (int) $row['decided_by'] : null,
+    );
+}
+</code></pre>
+<hr />
+<h2 id="security-components">🔐 Security Components</h2>
+<p>Komponenty bezpieczeństwa i autentykacji.</p>
+<h3 id="passwordhasher">PasswordHasher</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/PasswordHasher.php</code></p>
+<h4 id="hashstring-password-string">hash(string $password): string</h4>
+<p>Zahaszuj hasło.</p>
+<pre><code class="language-php">public function hash(string $password): string {
+    return password_hash($password, PASSWORD_BCRYPT, [
+        'cost' =&gt; 12
+    ]);
+}
+</code></pre>
+<h4 id="verifystring-password-string-hash-bool">verify(string $password, string $hash): bool</h4>
+<p>Sprawdź hasło.</p>
+<pre><code class="language-php">public function verify(string $password, string $hash): bool {
+    return password_verify($password, $hash);
+}
+</code></pre>
+<hr />
+<h3 id="tokengenerator">TokenGenerator</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/TokenGenerator.php</code></p>
+<h4 id="generatejwtuser-user-int-expiresin-3600-string">generateJWT(User $user, int $expiresIn = 3600): string</h4>
+<p>Wygeneruj JWT token dla użytkownika.</p>
+<pre><code class="language-php">public function generateJWT(User $user, int $expiresIn = 3600): string {
+    $payload = [
+        'user_id' =&gt; $user-&gt;id,
+        'email' =&gt; $user-&gt;email,
+        'role' =&gt; $user-&gt;role,
+        'iat' =&gt; time(),
+        'exp' =&gt; time() + $expiresIn
+    ];
+
+    return JWT::encode($payload, $this-&gt;secret, 'HS256');
+}
+</code></pre>
+<h4 id="generaterefreshtokenuser-user-string">generateRefreshToken(User $user): string</h4>
+<p>Wygeneruj refresh token.</p>
+<hr />
+<h3 id="authenticationservice">AuthenticationService</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Security/AuthenticationService.php</code></p>
+<h4 id="authenticatestring-email-string-password-user">authenticate(string $email, string $password): User</h4>
+<p>Uwierzytelnij użytkownika.</p>
+<pre><code class="language-php">public function authenticate(string $email, string $password): User {
+    $user = $this-&gt;userRepository-&gt;findByEmail($email);
+
+    if (!$user || !$this-&gt;passwordHasher-&gt;verify($password, $user-&gt;passwordHash)) {
+        throw new InvalidCredentialsException();
+    }
+
+    return $user;
+}
+</code></pre>
+<hr />
+<h2 id="helpers">🛠️ Helpers</h2>
+<p>Funkcje pomocnicze.</p>
+<h3 id="datehelper">DateHelper</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Helper/DateHelper.php</code></p>
+<pre><code class="language-php">class DateHelper {
+    public static function now(): DateTimeImmutable {
+        return new DateTimeImmutable();
+    }
+
+    public static function tomorrow(): DateTimeImmutable {
+        return self::now()-&gt;modify('+1 day');
+    }
+
+    public static function addDays(DateTimeImmutable $date, int $days): DateTimeImmutable {
+        return $date-&gt;modify(&quot;+{$days} days&quot;);
+    }
+
+    public static function isExpired(DateTimeImmutable $date): bool {
+        return $date &lt; self::now();
+    }
+}
+</code></pre>
+<h3 id="stringhelper">StringHelper</h3>
+<pre><code class="language-php">class StringHelper {
+    public static function slugify(string $text): string {
+        return strtolower(preg_replace('/[^a-z0-9]+/', '-', trim($text)));
+    }
+
+    public static function truncate(string $text, int $length = 100): string {
+        if (strlen($text) &lt;= $length) return $text;
+        return substr($text, 0, $length) . '...';
+    }
+}
+</code></pre>
+<h3 id="validationhelper">ValidationHelper</h3>
+<pre><code class="language-php">class ValidationHelper {
+    public static function isValidEmail(string $email): bool {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    public static function isValidUrl(string $url): bool {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="translation-service">🌐 Translation Service</h2>
+<p>Obsługa wielojęzyczności.</p>
+<h3 id="translationservice">TranslationService</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Translation/TranslationService.php</code></p>
+<pre><code class="language-php">public function translate(string $key, string $locale = 'pl'): string {
+    $messages = $this-&gt;loadMessages($locale);
+    return $messages[$key] ?? $key;
+}
+
+public function t(string $key, array $params = [], string $locale = 'pl'): string {
+    $message = $this-&gt;translate($key, $locale);
+    foreach ($params as $key =&gt; $value) {
+        $message = str_replace(&quot;:$key&quot;, $value, $message);
+    }
+    return $message;
+}
+</code></pre>
+<p><strong>Użycie</strong>:</p>
+<pre><code class="language-php">$this-&gt;translator-&gt;t('announcement.created', ['title' =&gt; $announcement-&gt;title]);
+// &quot;Ogłoszenie 'Nowa promocja' zostało utworzone&quot;
+</code></pre>
+<hr />
+<h2 id="dependency-injection-container">🚚 Dependency Injection Container</h2>
+<h3 id="containerphp">Container.php</h3>
+<p><strong>Lokalizacja</strong>: <code>src/Infrastructure/Container.php</code></p>
+<p>Zarządzanie zależnościami i lifecycle'em obiektów.</p>
+<pre><code class="language-php">class Container {
+    private array $services = [];
+    private array $singletons = [];
+
+    public function register(string $id, mixed $definition): void {
+        $this-&gt;services[$id] = $definition;
+    }
+
+    public function singleton(string $id, callable $definition): void {
+        $this-&gt;singletons[$id] = $definition;
+    }
+
+    public function get(string $id): mixed {
+        if (isset($this-&gt;singletons[$id])) {
+            // Zwróć ten sam instancję
+            return $this-&gt;singletons[$id]($this);
+        }
+
+        if (isset($this-&gt;services[$id])) {
+            return $this-&gt;services[$id]($this);
+        }
+
+        throw new ServiceNotFoundException($id);
+    }
+}
+</code></pre>
+<h4 id="rejestracja-serwisow">Rejestracja Serwisów</h4>
+<pre><code class="language-php">// src/bootstrap/services.php
+$container-&gt;singleton(PDO::class, function(Container $c) {
+    return new PDO(
+        'pgsql:host=localhost;dbname=dodomudojade',
+        'ddd',
+        $_ENV['DB_PASSWORD']
+    );
+});
+
+$container-&gt;singleton(AnnouncementRepository::class, function(Container $c) {
+    return new DatabaseAnnouncementRepository($c-&gt;get(PDO::class));
+});
+
+$container-&gt;singleton(CreateAnnouncementUseCase::class, function(Container $c) {
+    return new CreateAnnouncementUseCase(
+        $c-&gt;get(AnnouncementRepository::class),
+    );
+});
+</code></pre>
+<h4 id="uzycie-w-controller">Użycie w Controller</h4>
+<pre><code class="language-php">class AnnouncementController {
+    public function __construct(
+        private Container $container
+    ) {}
+
+    public function create(Request $request): Response {
+        $useCase = $this-&gt;container-&gt;get(CreateAnnouncementUseCase::class);
+        $dto = $useCase-&gt;execute($request);
+        return Response::created($dto);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="architektura-warstwowa">📊 Architektura Warstwowa</h2>
+<pre><code>Presentation (Http, Console)
+        ↓
+    (uses)
+        ↓
+Application (UseCase, DTO)
+        ↓
+    (uses)
+        ↓
+Domain (Entity, ValueObject, Enum)
+   ↑    ↑
+   |    |
+(implements)
+   |    |
+Infrastructure (Repository, Service)
+</code></pre>
+<hr />
+<h2 id="best-practices">🎓 Best Practices</h2>
+<h3 id="do">✅ DO</h3>
+<ol>
+<li>
+<p><strong>Implementuj Repository interfaces (Future)</strong>
+   <code>php
+   interface AnnouncementRepository {
+       public function save(Announcement $announcement): void;
+       public function findById(int $id): ?Announcement;
+   }</code></p>
+</li>
+<li>
+<p><strong>Użyj Factories dla kompleksowych obiektów</strong>
+   <code>php
+   $entity = AnnouncementFactory::createFromDatabaseRow($row);</code></p>
+</li>
+<li>
+<p><strong>Abstrakcjonuj external API calls</strong>
+   <code>php
+   interface WordApiService {
+       public function fetchDailyWord(): Word;
+   }</code></p>
+</li>
+<li>
+<p><strong>Zarządzaj transakcjami</strong>
+   <code>php
+   $this-&gt;pdo-&gt;beginTransaction();
+   try {
+       $this-&gt;repository-&gt;save($entity);
+       $this-&gt;pdo-&gt;commit();
+   } catch (Exception $e) {
+       $this-&gt;pdo-&gt;rollBack();
+       throw $e;
+   }</code></p>
+</li>
+<li>
+<p><strong>Loguj ważne operacje</strong>
+   <code>php
+   $this-&gt;logger-&gt;info("Announcement approved", ['id' =&gt; $announcement-&gt;id]);</code></p>
+</li>
+</ol>
+<h3 id="dont">❌ DON'T</h3>
+<ol>
+<li>
+<p><strong>Nie rób logiki biznesowej w Repository</strong>
+   <code>php
+   // ❌ WRONG
+   public function save(Announcement $announcement): void {
+       if ($announcement-&gt;title == '') throw new Exception();
+   }</code></p>
+</li>
+<li>
+<p><strong>Nie korzystaj z SQL w Service</strong>
+   <code>php
+   // ❌ WRONG - Use Repository
+   $this-&gt;pdo-&gt;query("SELECT...");</code></p>
+</li>
+<li>
+<p><strong>Nie importuj Application w Infrastructure</strong>
+   <code>php
+   // ❌ WRONG
+   use App\Application\UseCase\CreateAnnouncementUseCase;</code></p>
+</li>
+<li>
+<p><strong>Nie cache'uj obiekty bez namysłu</strong>
+   <code>php
+   // ⚠️ CAREFUL - Use singleton pattern
+   private $announcement; // Will be stale!</code></p>
+</li>
+</ol>
+<hr />
+<h2 id="mapowanie-warstw">📊 Mapowanie Warstw</h2>
+<table>
+<thead>
+<tr>
+<th>Warstwa</th>
+<th>Komponenty</th>
+<th>Odpowiedzialność</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Domain</td>
+<td>Entity, ValueObject</td>
+<td>Logika biznesowa</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>UseCase, DTO</td>
+<td>Orkiestracja</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>Repository, Service</td>
+<td>Techniczne szczegóły</td>
+</tr>
+<tr>
+<td>Presentation</td>
+<td>Controller, Command</td>
+<td>Interfejsy użytkownika</td>
+</tr>
+</tbody>
+</table></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

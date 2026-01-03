@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Architecture - DoDomuDojade Docs</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">DoDomuDojade Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Architecture</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/practical_examples/" class="nav-link">Examples</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Layers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../layers/appliacation.md" class="dropdown-item">Application</a>
+</li>
+                                    
+<li>
+    <a href="../../layers/domain/" class="dropdown-item">Domain</a>
+</li>
+                                    
+<li>
+    <a href="../../layers/infrastructure/" class="dropdown-item">Infrastructure</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../.." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../examples/practical_examples/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#architektura-domain-driven-design" class="nav-link">Architektura Domain-Driven Design</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#wstep-do-ddd" class="nav-link">Wstęp do DDD</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#gowne-zasady-ddd-w-projekcie" class="nav-link">🎯 Główne Zasady DDD w Projekcie</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#warstwy-architektoniczne" class="nav-link">🏗️ Warstwy Architektoniczne</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#przepyw-danych" class="nav-link">🔄 Przepływ Danych</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#invariants-niezminiki-biznesowe" class="nav-link">🛡️ Invariants (Niezminiki Biznesowe)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#dependency-injection" class="nav-link">📦 Dependency Injection</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#best-practices" class="nav-link">🎓 Best Practices</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#relacje-miedzy-warstwami" class="nav-link">🔗 Relacje Między Warstwami</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#namespace-mapping" class="nav-link">📚 Namespace Mapping</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#rozszerzanie-projektu" class="nav-link">🚀 Rozszerzanie Projektu</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="architektura-domain-driven-design">Architektura Domain-Driven Design</h1>
+<h2 id="wstep-do-ddd">Wstęp do DDD</h2>
+<p><strong>Domain-Driven Design (DDD)</strong> to metodologia projektowania software'u, która kładzie nacisk na głębokie zrozumienie domeny biznesowej i odzwierciedlenie tej wiedzy w kodzie. Projekt DoDomuDojadę implementuje czysty DDD z wyraźnym podziałem na warstwy architektoniczne.</p>
+<h2 id="gowne-zasady-ddd-w-projekcie">🎯 Główne Zasady DDD w Projekcie</h2>
+<h3 id="1-ubiquity-of-language-wszechobecnosc-jezyka">1. Ubiquity of Language (Wszechobecność Języka)</h3>
+<p>Kod i dokumentacja używają jednolitego słownika biznesowego:
+- <strong>Announcement</strong> - Ogłoszenie
+- <strong>Countdown</strong> - Odliczanie
+- <strong>Quote</strong> - Cytat
+- <strong>Word</strong> - Słowo
+- <strong>Status</strong> - Stan (PENDING, APPROVED, REJECTED)</p>
+<h3 id="2-bounded-contexts-ograniczone-konteksty">2. Bounded Contexts (Ograniczone Konteksty)</h3>
+<p>Każdy moduł funkcjonalny operuje w swoim kontekście:
+- <strong>Announcement Context</strong> - Zarządzanie ogłoszeniami
+- <strong>Word Context</strong> - Słownik słów
+- <strong>Quote Context</strong> - Baza cytatów
+- <strong>User Context</strong> - Zarządzanie użytkownikami</p>
+<h3 id="3-aggregate-roots-pierwotne-agregaty">3. Aggregate Roots (Pierwotne Agregaty)</h3>
+<p>Kluczowe jednostki, które koordynują zmiany:
+- <code>Announcement</code> - Główny agregat dla ogłoszeń
+- <code>User</code> - Główny agregat dla użytkowników
+- <code>Word</code> - Główny agregat dla słów
+- <code>Quote</code> - Główny agregat dla cytatów</p>
+<h2 id="warstwy-architektoniczne">🏗️ Warstwy Architektoniczne</h2>
+<h3 id="warstwa-domain-srcdomain">Warstwa Domain (src/Domain)</h3>
+<p><strong>Odpowiedzialność</strong>: Zawiera czystą logikę biznesową niezależną od technologii</p>
+<pre><code>src/Domain/
+├── Entity/           # Agregaty i Entity
+│   ├── Announcement.php
+│   ├── User.php
+│   ├── Word.php
+│   ├── Quote.php
+│   ├── Module.php
+│   └── Countdown.php
+├── ValueObject/      # Niezmienne obiekty wartości
+├── Enum/             # Enumeracje dla typów i statusów
+│   ├── AnnouncementStatus.php
+│   └── ...
+└── Exception/        # Wyjątki domenowe
+    ├── AnnouncementException.php
+    └── ...
+</code></pre>
+<h4 id="entities">Entities</h4>
+<p>Entity reprezentuje obiekt z unikalną tożsamością (ID), który zmienia się w czasie.</p>
+<pre><code class="language-php">// Przykład: Announcement Entity
+final class Announcement {
+    public function __construct(
+        public ?int               $id,
+        public string             $title,
+        public string             $text,
+        public DateTimeImmutable  $createdAt,
+        public DateTimeImmutable  $validUntil,
+        public ?int               $userId,
+        public AnnouncementStatus $status = AnnouncementStatus::PENDING,
+        public ?DateTimeImmutable $decidedAt = null,
+        public ?int               $decidedBy = null,
+    ){}
+
+    // Factory methods
+    public static function createNew(...): self { }
+    public static function proposeNew(...): self { }
+
+    // Business methods
+    public function approve(int $decidedBy): void { }
+    public function reject(int $decidedBy): void { }
+    public function isValid(): bool { }
+}
+</code></pre>
+<p><strong>Cechy Entity:</strong>
+- Ma identyfikator (ID)
+- Może być modyfikowana
+- Zawiera zachowanie biznesowe (metody)
+- Definiuje reguły biznesowe (invariants)</p>
+<h4 id="value-objects">Value Objects</h4>
+<p>Value Objects reprezentują wartości, które nie zmieniają się i nie mają tożsamości.</p>
+<pre><code class="language-php">// Będą w src/Domain/ValueObject/ gdy zostaną wprowadzone
+// Przykłady:
+// - Email
+// - PhoneNumber
+// - DateRange
+// - Status
+</code></pre>
+<p><strong>Cechy Value Object:</strong>
+- Niezmienność (immutable)
+- Brak ID
+- Porównanie po wartości, nie po referencji
+- Samodzielna walidacja</p>
+<h4 id="enums">Enums</h4>
+<p>Wyliczenia dla typów i statusów domeny.</p>
+<pre><code class="language-php">enum AnnouncementStatus {
+    case PENDING;
+    case APPROVED;
+    case REJECTED;
+}
+</code></pre>
+<h4 id="exceptions">Exceptions</h4>
+<p>Wyjątki domenowe reprezentujące błędy biznesowe.</p>
+<pre><code class="language-php">// W src/Domain/Exception/
+class AnnouncementException extends DomainException { }
+class InvalidAnnouncementStatusException extends AnnouncementException { }
+</code></pre>
+<h3 id="warstwa-application-srcapplication">Warstwa Application (src/Application)</h3>
+<p><strong>Odpowiedzialność</strong>: Orkiestracja logiki biznesowej, przypadki użycia</p>
+<pre><code>src/Application/
+├── UseCase/              # Główne scenariusze użytkownika
+│   ├── Announcement/
+│   │   ├── CreateAnnouncementUseCase.php
+│   │   ├── ApproveAnnouncementUseCase.php
+│   │   └── RejectAnnouncementUseCase.php
+│   └── ...
+└── DataTransferObject/   # Obiekty transferu danych
+    ├── AnnouncementDTO.php
+    └── ...
+</code></pre>
+<h4 id="use-cases">Use Cases</h4>
+<p>Use Case opisuje pojedynczy, znaczący scenariusz użytkownika.</p>
+<pre><code class="language-php">// Struktura Use Case
+class CreateAnnouncementUseCase {
+    public function __construct(
+        private AnnouncementRepository $repository,
+        // inne zależności
+    ) {}
+
+    public function execute(CreateAnnouncementRequest $request): void {
+        // 1. Validate request
+        // 2. Create domain entity
+        // 3. Call repository to save
+        // 4. Trigger domain events (future)
+    }
+}
+</code></pre>
+<p><strong>Charakterystyka Use Case:</strong>
+- Jedna odpowiedzialność
+- Orkiestracja między Domain a Infrastructure
+- Brak logiki biznesowej (deleguje do Domain)
+- Obsługuje zdarzenia i błędy</p>
+<h4 id="data-transfer-objects-dtos">Data Transfer Objects (DTOs)</h4>
+<p>DTOs transportują dane między warstwami bez logiki biznesowej.</p>
+<pre><code class="language-php">class AnnouncementDTO {
+    public function __construct(
+        public int    $id,
+        public string $title,
+        public string $text,
+        public string $status,
+        // ... inne pola
+    ) {}
+}
+</code></pre>
+<p><strong>Kiedy używać DTOs:</strong>
+- Transfer danych z HTTP Request/Response
+- Komunikacja między Use Cases
+- Serializacja/deserializacja</p>
+<h3 id="warstwa-infrastructure-srcinfrastructure">Warstwa Infrastructure (src/Infrastructure)</h3>
+<p><strong>Odpowiedzialność</strong>: Implementacja technicznych szczegółów</p>
+<pre><code>src/Infrastructure/
+├── Repository/        # Implementacja repozytoriów
+│   ├── AnnouncementRepository.php
+│   └── UserRepository.php
+├── Service/           # Serwisy zewnętrzne
+│   ├── ExternalApiService.php
+│   └── EmailService.php
+├── Factory/           # Fabryki do tworzenia obiektów
+├── Security/          # Komponenty bezpieczeństwa
+│   ├── AuthenticationService.php
+│   └── PasswordHasher.php
+├── Helper/            # Funkcje pomocnicze
+├── Translation/       # Tłumaczenia
+├── Trait/             # Traity wspólne
+├── View/              # View helpers
+└── Container.php      # DI Container
+</code></pre>
+<h4 id="repositories">Repositories</h4>
+<p>Repository abstrahuje dostęp do danych (patrz: Repository Pattern).</p>
+<pre><code class="language-php">// Interface w Domain (nie istnieje tu, ale powinien)
+interface AnnouncementRepository {
+    public function save(Announcement $announcement): void;
+    public function findById(int $id): ?Announcement;
+    public function findAll(): array;
+    public function delete(Announcement $announcement): void;
+}
+
+// Implementacja w Infrastructure
+class DatabaseAnnouncementRepository implements AnnouncementRepository {
+    public function save(Announcement $announcement): void {
+        // SQL INSERT/UPDATE
+    }
+
+    public function findById(int $id): ?Announcement {
+        // SQL SELECT
+    }
+}
+</code></pre>
+<p><strong>Rola Repository:</strong>
+- Abstrakcja dostępu do danych
+- Brak SQL w Domain Layer
+- Łatwa zamiana implementacji (np. mock w testach)
+- Zgodność z DIP (Dependency Inversion Principle)</p>
+<h4 id="external-services">External Services</h4>
+<p>Serwisy integrujące się z zewnętrznymi API.</p>
+<pre><code class="language-php">class ExternalWordService {
+    public function fetchDailyWord(): Word {
+        // HTTP call do external API
+        // Transformacja do Domain Entity
+    }
+}
+
+class EmailService {
+    public function send(string $email, string $message): void {
+        // Sending email via SMTP/external service
+    }
+}
+</code></pre>
+<h4 id="factories">Factories</h4>
+<p>Fabryki tworzą kompleksowe obiekty.</p>
+<pre><code class="language-php">class AnnouncementFactory {
+    public static function createFromRequest(
+        CreateAnnouncementRequest $request
+    ): Announcement {
+        return Announcement::createNew(
+            title: $request-&gt;title,
+            text: $request-&gt;text,
+            validUntil: $request-&gt;validUntil,
+            userId: $request-&gt;userId,
+        );
+    }
+}
+</code></pre>
+<h3 id="warstwa-presentation-srchttp-srcconsole">Warstwa Presentation (src/Http, src/Console)</h3>
+<p><strong>Odpowiedzialność</strong>: Interfejsy użytkownika (HTTP, CLI)</p>
+<pre><code>src/Http/
+├── Controller/      # HTTP Controllers
+│   ├── AnnouncementController.php
+│   ├── UserController.php
+│   └── ...
+└── Response/        # Response helpers
+
+src/Console/
+└── Command/         # CLI Commands
+    ├── FetchDailyWordCommand.php
+    ├── FetchDailyQuoteCommand.php
+    └── ...
+</code></pre>
+<p><strong>Charakterystyka Controllers:</strong>
+- Parsowanie HTTP Request
+- Delegowanie do Use Case
+- Formatowanie Response
+- Obsługa HTTP specific logic (routing, auth, validation)</p>
+<h2 id="przepyw-danych">🔄 Przepływ Danych</h2>
+<h3 id="typowy-scenariusz-tworzenie-ogoszenia">Typowy Scenariusz: Tworzenie Ogłoszenia</h3>
+<pre><code>1. HTTP Request (POST /announcements)
+        ↓
+2. Controller (AnnouncementController)
+   - Parsuje request
+   - Waliduje wejście
+        ↓
+3. Use Case (CreateAnnouncementUseCase)
+   - Tworzy DTO
+   - Wywoła Domain Entity
+        ↓
+4. Domain Entity (Announcement)
+   - Aplikuje reguły biznesowe
+   - Tworzy nowy agregat
+        ↓
+5. Repository Interface
+        ↓
+6. Repository Implementation (DatabaseAnnouncementRepository)
+   - Wykonuje SQL INSERT
+   - Zwraca entity z ID
+        ↓
+7. Use Case
+   - Zwraca success
+        ↓
+8. Controller
+   - Formatuje response (JSON)
+        ↓
+9. HTTP Response (201 Created)
+</code></pre>
+<pre><code class="language-mermaid">graph TB
+    A[&quot;HTTP Request&lt;br/&gt;(POST /announcements)&quot;] --&gt;|Parse &amp; Validate| B[&quot;Controller&quot;]
+    B --&gt;|Execute| C[&quot;Use Case&quot;]
+    C --&gt;|Create| D[&quot;Domain Entity&quot;]
+    D --&gt;|Follow Business Rules| E[&quot;Entity Created&quot;]
+    C --&gt;|Save| F[&quot;Repository Interface&quot;]
+    F --&gt;|Implement| G[&quot;Database&lt;br/&gt;Implementation&quot;]
+    G --&gt;|SQL INSERT| H[&quot;Database&quot;]
+    H --&gt;|Return Entity| G
+    G --&gt;|Return to UseCase| F
+    F --&gt;|Return to UseCase| C
+    C --&gt;|Return to Controller| B
+    B --&gt;|Format Response| I[&quot;HTTP Response&lt;br/&gt;(201 Created)&quot;]
+</code></pre>
+<h2 id="invariants-niezminiki-biznesowe">🛡️ Invariants (Niezminiki Biznesowe)</h2>
+<p>Invariants to reguły biznesowe, które muszą być spełnione.</p>
+<h3 id="announcement-invariants">Announcement Invariants</h3>
+<ol>
+<li>Announcement musi mieć unikalny tytuł (w kontekście)</li>
+<li>Announcement musi mieć <code>validUntil</code> &gt;= <code>createdAt</code></li>
+<li>Zatwierdzenie zmienia status z PENDING na APPROVED</li>
+<li>Odrzucenie zmienia status z PENDING na REJECTED</li>
+<li>Ogłoszenie jest ważne tylko jeśli status=APPROVED i teraz &lt; validUntil</li>
+</ol>
+<pre><code class="language-php">public function isValid(): bool {
+    return $this-&gt;status === AnnouncementStatus::APPROVED
+        &amp;&amp; new DateTimeImmutable() &lt;= $this-&gt;validUntil;
+}
+</code></pre>
+<h2 id="dependency-injection">📦 Dependency Injection</h2>
+<p>Projekt używa DIY DI Container (<code>src/Infrastructure/Container.php</code>).</p>
+<pre><code class="language-php">// Container Registration
+$container-&gt;register(
+    AnnouncementRepository::class,
+    new DatabaseAnnouncementRepository($pdo)
+);
+
+// Usage in Controller
+$container-&gt;get(AnnouncementRepository::class);
+</code></pre>
+<p><strong>Zasady:</strong>
+- Domain nie zależy od Infrastructure
+- Application zależy od Domain interfaces
+- Infrastructure implementuje Domain interfaces
+- Presentation zależy od Application i Domain</p>
+<h2 id="best-practices">🎓 Best Practices</h2>
+<h3 id="domain-layer">Domain Layer</h3>
+<p>✅ DO:
+- Implementuj reguły biznesowe
+- Używaj Value Objects
+- Zwracaj Entity z metodami
+- Definiuj wyjątki domenowe</p>
+<p>❌ DON'T:
+- Nie importuj Infrastructure
+- Nie rób SQL queries
+- Nie parsuj JSON/XML
+- Nie loguj (przynajmniej nie w core)</p>
+<h3 id="application-layer">Application Layer</h3>
+<p>✅ DO:
+- Orkiestruj przypadki użycia
+- Waliduj DTOs
+- Transformuj między Domain a Presentation
+- Obsługuj transakcje</p>
+<p>❌ DON'T:
+- Nie implementuj reguł biznesowych
+- Nie bezpośrednio korzystaj z bazy
+- Nie mieszaj logiki różnych Use Cases</p>
+<h3 id="infrastructure-layer">Infrastructure Layer</h3>
+<p>✅ DO:
+- Implementuj Repository interfaces
+- Integruj z zewnętrznymi serwisami
+- Zarządzaj baza danych
+- Konfiguruj zależności</p>
+<p>❌ DON'T:
+- Nie implementuj reguł biznesowych
+- Nie używaj Domain bezpośrednio w SQL
+- Nie twórz Service Locator (używaj DI)</p>
+<h3 id="presentation-layer">Presentation Layer</h3>
+<p>✅ DO:
+- Parsuj HTTP requests
+- Waliduj input
+- Deleguj do Use Cases
+- Formatuj responses</p>
+<p>❌ DON'T:
+- Nie implementuj logiki biznesowej
+- Nie dostępuj bezpośrednio do bazy
+- Nie rób żadnych transformacji Entity</p>
+<h2 id="relacje-miedzy-warstwami">🔗 Relacje Między Warstwami</h2>
+<pre><code>Domain Layer
+    ↑
+    │ depends on (implements interface)
+    │
+Application Layer
+    ↑
+    │ depends on (calls)
+    │
+Presentation Layer (Http, Console)
+
+
+Infrastructure Layer
+    │ implements
+    ↓
+Domain Layer (interfaces only)
+</code></pre>
+<p><strong>Kluczowa Reguła</strong>: Infrastructure NIGDY nie importuje Application, Application importuje Domain interfaces które są implementowane w Infrastructure.</p>
+<h2 id="namespace-mapping">📚 Namespace Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Warstwa</th>
+<th>Namespace</th>
+<th>Przykład</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Domain</td>
+<td><code>App\Domain\</code></td>
+<td><code>App\Domain\Entity\Announcement</code></td>
+</tr>
+<tr>
+<td>Application</td>
+<td><code>App\Application\</code></td>
+<td><code>App\Application\UseCase\CreateAnnouncementUseCase</code></td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td><code>App\Infrastructure\</code></td>
+<td><code>App\Infrastructure\Repository\DatabaseAnnouncementRepository</code></td>
+</tr>
+<tr>
+<td>Presentation</td>
+<td><code>App\Http\</code> / <code>App\Console\</code></td>
+<td><code>App\Http\Controller\AnnouncementController</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rozszerzanie-projektu">🚀 Rozszerzanie Projektu</h2>
+<p>Aby dodać nową funkcjonalność (np. nowy moduł):</p>
+<ol>
+<li>
+<p><strong>Stwórz Entity w Domain</strong>
+   <code>php
+   // src/Domain/Entity/NewEntity.php
+   final class NewEntity { }</code></p>
+</li>
+<li>
+<p><strong>Zdefiniuj Enums jeśli potrzebne</strong>
+   <code>php
+   // src/Domain/Enum/NewEntityStatus.php
+   enum NewEntityStatus { }</code></p>
+</li>
+<li>
+<p><strong>Stwórz Use Cases w Application</strong>
+   <code>php
+   // src/Application/UseCase/CreateNewEntityUseCase.php
+   class CreateNewEntityUseCase { }</code></p>
+</li>
+<li>
+<p><strong>Implementuj Repository w Infrastructure</strong>
+   <code>php
+   // src/Infrastructure/Repository/DatabaseNewEntityRepository.php
+   class DatabaseNewEntityRepository { }</code></p>
+</li>
+<li>
+<p><strong>Stwórz Controller w Presentation</strong>
+   <code>php
+   // src/Http/Controller/NewEntityController.php
+   class NewEntityController { }</code></p>
+</li>
+<li>
+<p><strong>Zarejestruj w DI Container</strong>
+   <code>php
+   // src/Infrastructure/Container.php
+   $container-&gt;register(NewEntityRepository::class, $implementation);</code></p>
+</li>
+</ol></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
