@@ -4,7 +4,7 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 
 ## 📚 Struktura Dokumentacji
 
-- **[Dokumentacja kodu](/api)** - autogenerowana przy użyciu phpDocumentator
+- **[Dokumentacja kodu](api/)** - autogenerowana przy użyciu phpDocumentator
 - **[Architektura](architecture.md)**
 - **[Warstwy w szczegółach](layers/application.md)**
 - **[Przykłady](examples/index.md)** - Przykłady
