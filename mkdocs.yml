@@ -1,5 +1,5 @@
 site_name: DoDomuDojade Docs
-site_dir: build/site
+site_dir: build
 nav:
   - Home: index.md
   - Architecture: architecture/ddd.md
