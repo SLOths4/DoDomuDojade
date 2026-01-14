@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Security;
 
-use App\Domain\Entity\User;
+use App\Domain\User\User;
 use App\Infrastructure\Helper\SessionHelper;
-use App\Infrastructure\Repository\UserRepository;
+use App\Infrastructure\Persistence\UserRepository;
 use Exception;
 
 /**

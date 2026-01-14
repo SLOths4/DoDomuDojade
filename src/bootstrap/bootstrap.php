@@ -6,73 +6,77 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__. '/../../../'));
 $dotenv->load();
 
-use App\Application\UseCase\Announcement\DeleteRejectedSinceAnnouncementUseCase;
-use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
-use App\Application\UseCase\Quote\FetchQuoteUseCase;
+use App\Application\Announcement\CreateAnnouncementUseCase;
+use App\Application\Announcement\DeleteAnnouncementUseCase;
+use App\Application\Announcement\DeleteRejectedSinceAnnouncementUseCase;
+use App\Application\Announcement\EditAnnouncementUseCase;
+use App\Application\Announcement\GetAllAnnouncementsUseCase;
+use App\Application\Announcement\GetValidAnnouncementsUseCase;
+use App\Application\Countdown\CreateCountdownUseCase;
+use App\Application\Countdown\DeleteCountdownUseCase;
+use App\Application\Countdown\GetAllCountdownsUseCase;
+use App\Application\Countdown\GetCountdownByIdUseCase;
+use App\Application\Countdown\GetCurrentCountdownUseCase;
+use App\Application\Countdown\UpdateCountdownUseCase;
+use App\Application\Module\GetAllModulesUseCase;
+use App\Application\Module\GetModuleByIdUseCase;
+use App\Application\Module\IsModuleVisibleUseCase;
+use App\Application\Module\ToggleModuleUseCase;
+use App\Application\Module\UpdateModuleUseCase;
+use App\Application\Quote\FetchActiveQuoteUseCase;
+use App\Application\Quote\FetchQuoteUseCase;
+use App\Application\User\ChangePasswordUseCase;
+use App\Application\User\CreateUserUseCase;
+use App\Application\User\DeleteUserUseCase;
+use App\Application\User\GetAllUsersUseCase;
+use App\Application\User\GetUserByIdUseCase;
+use App\Application\User\GetUserByUsernameUseCase;
+use App\Application\User\UpdateUserUseCase;
+use App\Application\Word\FetchActiveWordUseCase;
+use App\Application\Word\FetchWordUseCase;
+use App\config\Config;
 use App\Console\CommandRegistry;
 use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
+use App\Domain\Event\EventPublisher;
 use App\Http\Context\LocaleContext;
 use App\Http\Context\RequestContext;
-use App\Infrastructure\Factory\TwigFactory;
-use App\Infrastructure\Helper\AnnouncementValidationHelper;
-use App\Infrastructure\Helper\CountdownValidationHelper;
-use App\Infrastructure\Helper\ModuleValidationHelper;
-use App\Infrastructure\Repository\QuoteRepository;
-use App\Infrastructure\Service\FlashMessengerInterface;
-use App\Infrastructure\Service\FlashMessengerService;
-use App\Infrastructure\Service\QuoteApiService;
-use App\Application\UseCase\Word\FetchActiveWordUseCase;
-use App\Application\UseCase\Word\FetchWordUseCase;
-use App\Infrastructure\Repository\WordRepository;
-use App\Infrastructure\Service\WordApiService;
-use App\Infrastructure\Service\CalendarService;
-use App\Infrastructure\Translation\LanguageTranslator;
-use App\Infrastructure\Translation\Translator;
-use App\Infrastructure\View\TwigRenderer;
-use App\Infrastructure\View\ViewRendererInterface;
-use Psr\Log\LoggerInterface;
-use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
-use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
-use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
-use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
-use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
-use App\Application\UseCase\Countdown\CreateCountdownUseCase;
-use App\Application\UseCase\Countdown\DeleteCountdownUseCase;
-use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
-use App\Application\UseCase\Countdown\GetCountdownByIdUseCase;
-use App\Application\UseCase\Countdown\GetCurrentCountdownUseCase;
-use App\Application\UseCase\Countdown\UpdateCountdownUseCase;
-use App\Application\UseCase\Module\GetAllModulesUseCase;
-use App\Application\UseCase\Module\GetModuleByIdUseCase;
-use App\Application\UseCase\Module\IsModuleVisibleUseCase;
-use App\Application\UseCase\Module\ToggleModuleUseCase;
-use App\Application\UseCase\Module\UpdateModuleUseCase;
-use App\Infrastructure\Service\TramService;
-use App\Application\UseCase\User\CreateUserUseCase;
-use App\Application\UseCase\User\DeleteUserUseCase;
-use App\Application\UseCase\User\GetAllUsersUseCase;
-use App\Application\UseCase\User\GetUserByIdUseCase;
-use App\Application\UseCase\User\GetUserByUsernameUseCase;
-use App\Application\UseCase\User\UpdateUserUseCase;
-use App\Application\UseCase\User\ChangePasswordUseCase;
-use App\Infrastructure\Service\WeatherService;
-use App\config\Config;
 use App\Http\Controller\DisplayController;
 use App\Http\Controller\ErrorController;
 use App\Http\Controller\PanelController;
 use App\Infrastructure\Container;
+use App\Infrastructure\Event\RedisEventPublisher;
 use App\Infrastructure\Factory\LoggerFactory;
 use App\Infrastructure\Factory\PDOFactory;
+use App\Infrastructure\Factory\TwigFactory;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Helper\DatabaseHelper;
-use App\Infrastructure\Repository\AnnouncementRepository;
-use App\Infrastructure\Repository\CountdownRepository;
-use App\Infrastructure\Repository\ModuleRepository;
-use App\Infrastructure\Repository\UserRepository;
+use App\Infrastructure\Helper\ModuleValidationHelper;
+use App\Infrastructure\Persistence\CountdownRepository;
+use App\Infrastructure\Persistence\ModuleRepository;
+use App\Infrastructure\Persistence\PDOAnnouncementRepository;
+use App\Infrastructure\Persistence\PDOEventStore;
+use App\Infrastructure\Persistence\QuoteRepository;
+use App\Infrastructure\Persistence\UserRepository;
+use App\Infrastructure\Persistence\WordRepository;
 use App\Infrastructure\Security\AuthenticationService;
+use App\Infrastructure\Service\CalendarService;
 use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Service\FlashMessengerInterface;
+use App\Infrastructure\Service\FlashMessengerService;
+use App\Infrastructure\Service\QuoteApiService;
+use App\Infrastructure\Service\TramService;
+use App\Infrastructure\Service\WeatherService;
+use App\Infrastructure\Service\WordApiService;
+use App\Infrastructure\Translation\LanguageTranslator;
+use App\Infrastructure\Translation\Translator;
+use App\Infrastructure\View\TwigRenderer;
+use App\Infrastructure\View\ViewRendererInterface;
+use Predis\Client;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment;
@@ -93,7 +97,35 @@ $container->set(LoggerInterface::class, function(Container $c) {
 });
 
 // PDO
-$container->set(PDO::class, fn(Container $c) => $c->get(PDOFactory::class)->create($c->get(Config::class)));
+$container->set(PDO::class, function(Container $c): PDO {
+    $cfg = $c->get(Config::class);
+    return $c->get(PDOFactory::class)->create(
+        $cfg->dbDsn(),
+        $cfg->dbUsername(),
+        $cfg->dbPassword(),
+    );
+});
+
+// Redis
+$container->set(Client::class, function(Container $c): Client {
+    $cfg = $c->get(Config::class);
+    return new Client(
+        [
+            'scheme' => 'tcp',
+            'host' => $cfg->redisHost,
+            'port' => $cfg->redisPort
+        ]
+    );
+});
+
+$container->set(EventPublisher::class, function(Container $c): EventPublisher {
+    return new RedisEventPublisher(
+        $c->get(Client::class),
+        $c->get(PDOEventStore::class),
+        $c->get(LoggerInterface::class),
+    );
+});
+
 
 // DatabaseHelper
 $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->get(PDO::class), $container->get(LoggerInterface::class)));
@@ -131,7 +163,14 @@ $container->set(Kernel::class, function ($c) {
     return new Kernel($c->get(CommandRegistry::class));
 });
 
-$container->set(Environment::class, fn(Container $c) => $c->get(TwigFactory::class)->create($c->get(Config::class)));
+$container->set(Environment::class, function(Container $c): Environment {
+    $cfg = $c->get(Config::class);
+    return $c->get(TwigFactory::class)->create(
+            $cfg->viewPath,
+            $cfg->twigCachePath,
+            $cfg->twigDebug,
+        );
+});
 
 $container->set(ViewRendererInterface::class, function (Container $c) {
     return new TwigRenderer(
@@ -149,9 +188,9 @@ $container->set(FlashMessengerInterface::class, function (Container $c) {
 
 // ANNOUNCEMENTS
 // AnnouncementsRepository
-$container->set(AnnouncementRepository::class, function (Container $c): AnnouncementRepository {
+$container->set(PDOAnnouncementRepository::class, function (Container $c): PDOAnnouncementRepository {
     $cfg = $c->get(Config::class);
-    return new AnnouncementRepository(
+    return new PDOAnnouncementRepository(
         $c->get(DatabaseHelper::class),
         $cfg->announcementTableName,
         $cfg->announcementDateFormat,
@@ -159,12 +198,12 @@ $container->set(AnnouncementRepository::class, function (Container $c): Announce
 });
 
 // Announcement Use Cases
-$container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
-$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
-$container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
-$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
-$container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
-$container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(AnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class), $c->get(EventPublisher::class) ));
+$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
+$container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
+$container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
+$container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
 
 // USERS
 // UserRepository

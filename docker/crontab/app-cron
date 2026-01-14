@@ -1,0 +1,5 @@
+0 7 * * * cd /app && php bin/app quote:fetch >> /var/log/cron.log 2>&1
+
+0 7 * * * cd /app && php bin/app word:fetch >> /var/log/cron.log 2>&1
+
+0 0 2 * 0 cd /app && php bin/app announcement-rejected:delete >> /var/log/cron.log 2>&1

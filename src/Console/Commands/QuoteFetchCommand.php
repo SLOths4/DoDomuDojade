@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Application\UseCase\Quote\FetchQuoteUseCase;
+use App\Application\Quote\FetchQuoteUseCase;
 use App\Console\Command;
 use App\Console\ConsoleOutput;
 use Exception;

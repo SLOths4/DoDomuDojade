@@ -2,14 +2,13 @@
 
 namespace App\Http\Controller;
 
-use App\Application\UseCase\Announcement\GetAllAnnouncementsUseCase;
-use App\Application\UseCase\Countdown\GetAllCountdownsUseCase;
-use App\Application\UseCase\Module\GetAllModulesUseCase;
-use App\Application\UseCase\User\GetAllUsersUseCase;
-use App\Domain\Entity\Module;
-use App\Domain\Enum\AnnouncementStatus;
-use App\Domain\Enum\ModuleName;
+use App\Application\Announcement\GetAllAnnouncementsUseCase;
+use App\Application\Countdown\GetAllCountdownsUseCase;
+use App\Application\Module\GetAllModulesUseCase;
+use App\Application\User\GetAllUsersUseCase;
+use App\Domain\Announcement\AnnouncementStatus;
 use App\Domain\Exception\ViewException;
+use App\Domain\Module\Module;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\Translation\Translator;
@@ -79,21 +78,21 @@ class PanelController extends BaseController
         $formatted = [];
         foreach ($announcements as $announcement) {
             $formatted[] = (object)[
-                'id' => $announcement->id,
-                'title' => $announcement->title,
-                'text' => $announcement->text,
-                'userId' => $announcement->userId,
-                'createdAt' => $announcement->createdAt instanceof DateTimeImmutable
-                    ? $announcement->createdAt->format('Y-m-d H:i:s')
-                    : $announcement->createdAt,
-                'validUntil' => $announcement->validUntil instanceof DateTimeImmutable
-                    ? $announcement->validUntil->format('Y-m-d')
-                    : $announcement->validUntil,
-                'status' => $announcement->status->name,
-                'decidedAt' => $announcement->decidedAt instanceof DateTimeImmutable
-                    ? $announcement->decidedAt->format('Y-m-d H:i:s')
-                    : $announcement->decidedAt,
-                'decidedBy' => $announcement->decidedBy,
+                'id' => $announcement->getId(),
+                'title' => $announcement->getTitle(),
+                'text' => $announcement->getText(),
+                'userId' => $announcement->getUserId(),
+                'createdAt' => $announcement->getCreatedAt() instanceof DateTimeImmutable
+                    ? $announcement->getCreatedAt()->format('Y-m-d H:i:s')
+                    : $announcement->getCreatedAt(),
+                'validUntil' => $announcement->getValidUntil() instanceof DateTimeImmutable
+                    ? $announcement->getValidUntil()->format('Y-m-d')
+                    : $announcement->getValidUntil(),
+                'status' => $announcement->getStatus()->name,
+                'decidedAt' => $announcement->getDecidedAt() instanceof DateTimeImmutable
+                    ? $announcement->getDecidedAt()->format('Y-m-d H:i:s')
+                    : $announcement->getDecidedAt(),
+                'decidedBy' => $announcement->getDecidedBy(),
             ];
         }
         return $formatted;
@@ -212,5 +211,9 @@ class PanelController extends BaseController
             'announcements' => $decidedAnnouncements,
             'pendingAnnouncements' => $pendingAnnouncements,
         ]);
+    }
+
+    public function test(): void {
+        $this->render('pages/TEST');
     }
 }

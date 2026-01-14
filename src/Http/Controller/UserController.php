@@ -2,14 +2,14 @@
 
 namespace App\Http\Controller;
 
-use App\Domain\Exception\UserException;
+use App\Application\User\CreateUserUseCase;
+use App\Application\User\DeleteUserUseCase;
+use App\Domain\User\UserException;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\User\CreateUserUseCase;
-use App\Application\UseCase\User\DeleteUserUseCase;
 
 final class UserController extends BaseController
 {

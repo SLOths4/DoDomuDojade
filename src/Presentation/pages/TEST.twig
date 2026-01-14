@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Test</title>
+</head>
+<body>
+<h1>SSE Stream Test</h1>
+<div id="messages"></div>
+
+<script>
+    const clientId = Math.random().toString(36).substr(2, 9);
+    const eventSource = new EventSource(`/stream?clientId=${clientId}`);
+    const messagesDiv = document.getElementById('messages');
+
+    eventSource.onopen = () => {
+        console.log('✅ Connected to SSE stream');
+    };
+
+    eventSource.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            console.log('📨 Message:', data);
+
+            if (data.type === 'connected') {
+                messagesDiv.innerHTML += `<p>Connected as: ${data.clientId}</p>`;
+            } else if (data.type === 'heartbeat') {
+                console.log('💓 Heartbeat');
+            } else {
+                messagesDiv.innerHTML += `<p>${JSON.stringify(data)}</p>`;
+            }
+        } catch (e) {
+            console.error('Parse error:', e);
+        }
+    };
+
+    eventSource.onerror = (error) => {
+        console.error('❌ SSE error:', error);
+        eventSource.close();
+    };
+</script>
+
+<button onclick="publishTest()">Send Test Message</button>
+</body>
+</html>

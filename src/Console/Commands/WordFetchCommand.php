@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Application\UseCase\Word\FetchWordUseCase;
+use App\Application\Word\FetchWordUseCase;
 use App\Console\Command;
 use App\Console\ConsoleOutput;
 use Exception;

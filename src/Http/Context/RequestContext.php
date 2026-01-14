@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Context;
 
-use App\Domain\Entity\User;
+use App\Domain\User\User;
 
 final class RequestContext
 {

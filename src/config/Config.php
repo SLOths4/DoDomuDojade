@@ -51,6 +51,8 @@ final readonly class Config
      * @param string $dbDsn
      * @param string $dbUsername
      * @param string $dbPassword
+     * @param string $redisHost
+     * @param int $redisPort
      */
     public function __construct(
         public string $loggingDirectoryPath,
@@ -93,6 +95,8 @@ final readonly class Config
         private string $dbDsn,
         private string $dbUsername,
         private string $dbPassword,
+        public string $redisHost,
+        public int $redisPort,
     ) {}
 
     /**
@@ -165,6 +169,10 @@ final readonly class Config
             $dbUsername = self::env('DB_USERNAME', '');
             $dbPassword = self::env('DB_PASSWORD', '');
 
+            // Redis
+            $redisHost = self::env('REDIS_HostT', "127.0.0.1");
+            $redisPort = self::env('REDIS_PORT', 6379);
+
             return new self(
                 loggingDirectoryPath: $loggingDirectoryPath,
                 loggingChannelName: $loggingChannelName,
@@ -205,7 +213,9 @@ final readonly class Config
                 wordDateFormat: $wordDateFormat,
                 dbDsn: $dbDsn,
                 dbUsername: $dbUsername,
-                dbPassword: $dbPassword
+                dbPassword: $dbPassword,
+                redisHost: $redisHost,
+                redisPort: $redisPort,
             );
         } catch (ConfigException $e) {
             throw $e;

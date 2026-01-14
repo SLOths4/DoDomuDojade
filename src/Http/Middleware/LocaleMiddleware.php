@@ -3,6 +3,8 @@ namespace App\Http\Middleware;
 
 use App\Http\Context\LocaleContext;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 final readonly class LocaleMiddleware implements MiddlewareInterface
 {
@@ -13,11 +15,11 @@ final readonly class LocaleMiddleware implements MiddlewareInterface
         private LocaleContext $context
     ) {}
 
-    public function handle(Request $request, callable $next): void
+    public function handle(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         $locale = $this->detectLocale();
         $this->context->set($locale);
-        $next($request);
+        return $next($request);
     }
 
     private function detectLocale(): string

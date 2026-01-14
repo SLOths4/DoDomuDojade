@@ -6,6 +6,8 @@ use App\Http\Context\LocaleContext;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerService;
 use App\Infrastructure\Translation\Translator;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -14,12 +16,12 @@ use Twig\Error\SyntaxError;
 readonly class TwigRenderer implements ViewRendererInterface
 {
     public function __construct(
-     private Environment    $twig,
-     private RequestContext $requestContext,
-     private LocaleContext $localeContext,
-     private FlashMessengerService $flashMessengerService,
-     private Translator $translator,
-    ){}
+        private Environment    $twig,
+        private RequestContext $requestContext,
+        private LocaleContext $localeContext,
+        private FlashMessengerService $flashMessengerService,
+        private Translator $translator,
+    ) {}
 
     /**
      * @throws SyntaxError
@@ -34,6 +36,19 @@ readonly class TwigRenderer implements ViewRendererInterface
         }
 
         return $this->twig->render($template, $data);
+    }
+
+    /**
+     * Render and return as PSR-7 Response
+     */
+    public function renderResponse(string $template, array $data = []): ResponseInterface
+    {
+        $html = $this->render($template, $data);
+
+        $response = new Response(200, ['Content-Type' => 'text/html; charset=utf-8']);
+        $response->getBody()->write($html);
+
+        return $response;
     }
 
     private function getGlobals(): array

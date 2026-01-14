@@ -9,6 +9,7 @@ use App\Http\Controller\HomeController;
 use App\Http\Controller\LoginController;
 use App\Http\Controller\ModuleController;
 use App\Http\Controller\PanelController;
+use App\Http\Controller\SSEStreamController;
 use App\Http\Controller\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
@@ -18,7 +19,10 @@ use App\Http\Middleware\MiddlewarePipeline;
 use App\Http\Middleware\RequestContextMiddleware;
 use App\Infrastructure\Helper\StaticFileHandlingHelper;
 use FastRoute\RouteCollector;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use function FastRoute\simpleDispatcher;
 
 if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -29,7 +33,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/bootstrap/ErrorHandling.php';
 
 $container = require_once __DIR__ . '/../src/bootstrap/bootstrap.php';
-/** @noinspection PhpUnhandledExceptionInspection */
 registerErrorHandling($container);
 
 $request = ServerRequest::fromGlobals();
@@ -102,6 +105,10 @@ try {
         // 4. Trasy ogólnodostępne (public)
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
         $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
+
+        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream']);
+
+        $r->addRoute('GET', '/test', [PanelController::class, 'test']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
@@ -134,24 +141,51 @@ switch ($routeInfo[0]) {
             $controllerClass = $handlerData[0];
             $methodName = $handlerData[1];
             $middlewares = $handlerData['middleware'] ?? [];
+            $noMiddleware = $handlerData['no_middleware'] ?? false;
 
             $controller = $container->get($controllerClass);
 
-            $pipeline = new MiddlewarePipeline();
+            if ($noMiddleware) {
+                try {
+                    $response = $controller->$methodName($vars);
+                } catch (Throwable $e) {
+                    error_log("SSE Error: " . $e->getMessage());
+                    $response = new Response(500);
+                }
+            } else {
+                $pipeline = new MiddlewarePipeline();
+                $pipeline->add($container->get(RequestContextMiddleware::class));
+                $pipeline->add($container->get(ExceptionMiddleware::class));
+                $pipeline->add($container->get(LocaleMiddleware::class));
+                $pipeline->add($container->get(CsrfMiddleware::class));
 
-            $pipeline->add($container->get(RequestContextMiddleware::class));
-            $pipeline->add($container->get(ExceptionMiddleware::class));
-            $pipeline->add($container->get(LocaleMiddleware::class));
-            $pipeline->add($container->get(CsrfMiddleware::class));
+                foreach ($middlewares as $mwClass) {
+                    $pipeline->add($container->get($mwClass));
+                }
 
-            foreach ($middlewares as $mwClass) {
-                $pipeline->add($container->get($mwClass));
+                $response = $pipeline->run($request, function(ServerRequestInterface $req) use ($vars, $methodName, $controller) {
+                    $controller->$methodName($vars);
+                });
+
             }
 
-            $pipeline->run($request, fn() => $controller->$methodName($vars));
+            http_response_code($response->getStatusCode());
+            foreach ($response->getHeaders() as $name => $values) {
+                foreach ($values as $value) {
+                    header("$name: $value");
+                }
+            }
+            echo $response->getBody();
 
         } elseif (is_callable($handlerData)) {
-            $handlerData($vars);
+            $response = $handlerData($vars);
+            http_response_code($response->getStatusCode());
+            foreach ($response->getHeaders() as $name => $values) {
+                foreach ($values as $value) {
+                    header("$name: $value");
+                }
+            }
+            echo $response->getBody();
         } else {
             throw new RuntimeException('Handler must be array [class, method] or callable');
         }

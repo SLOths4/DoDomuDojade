@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Factory;
 
 use App\config\Config;
+use App\Domain\Shared\FactoryInterface;
 use DateTimeImmutable;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -19,15 +20,14 @@ final class TwigFactory
 {
     /**
      * Creates Twig environment
-     * @param Config $config
+     * @param string $viewsPath
+     * @param string $cachePath
+     * @param bool $debug
      * @return Environment
      * @throws LoaderError
      */
-    public static function create(Config $config): Environment
+    public static function create(string $viewsPath, string $cachePath, bool $debug): Environment
     {
-        $viewsPath = $config->viewPath;
-        $cachePath = $config->twigCachePath;
-        $debug = $config->twigDebug;
 
         $loader = new FilesystemLoader($viewsPath, $viewsPath . '/..');
         $loader->addPath($viewsPath . '/components', '@components');

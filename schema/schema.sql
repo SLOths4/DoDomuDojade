@@ -13,10 +13,11 @@ create table if not exists users (
 -- Announcements table
 -- user_id can be NULL for anonymous/free-form announcements
 create table if not exists announcement (
-    id          serial primary key,
+    id          varchar(255) primary key,
     title       text not null,
     text        text not null,
     date        date not null,
+    created_at  date not null,
     valid_until date not null,
     user_id     integer,
     decided_at  timestamp,

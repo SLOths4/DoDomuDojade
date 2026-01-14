@@ -2,7 +2,8 @@
 
 namespace App\Domain\Exception;
 
-use App\Domain\Enum\ExceptionCodes;
+use App\Domain\Shared\DomainException;
+use App\Domain\Shared\ExceptionCodes;
 use Throwable;
 
 class AuthenticationException extends DomainException
@@ -28,6 +29,7 @@ class AuthenticationException extends DomainException
         return new self(
             "auth.no_user_logged_in",
             ExceptionCodes::AUTH_USER_NOT_LOGGED_IN->value,
+            500,
             [],
             $previous
         );
@@ -46,6 +48,7 @@ class AuthenticationException extends DomainException
         return new self(
             "auth.unauthorized",
             ExceptionCodes::AUTH_USER_UNAUTHORIZED->value,
+            500,
             ['userId' => $userId],
             $previous
         );

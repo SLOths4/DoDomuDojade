@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use App\Domain\Exception\DomainException;
-use App\Http\Controller\ErrorController;
+use App\Domain\Shared\DomainException;
 use App\Infrastructure\Container;
 use Psr\Log\LoggerInterface;
 
@@ -15,56 +14,76 @@ function registerErrorHandling(Container $container): void
     $env = getenv('APP_ENV') ?: 'prod';
     $isDev = ($env === 'dev');
 
-    ini_set('display_errors', $isDev ? '1' : '0');
-    ini_set('display_startup_errors', $isDev ? '1' : '0');
+    ini_set('display_errors', '0');
+    ini_set('display_startup_errors', '0');
     error_reporting(E_ALL);
 
     $logger = $container->get(LoggerInterface::class);
 
-    $isJsonRequest = static function (): bool {
-        return (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'))
-            || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest')
-            || (isset($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json'));
+    // ✅ Określ content type raz
+    $detectContentType = static function (): string {
+        $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $xRequested = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+
+        if (str_contains($accept, 'application/json')
+            || str_contains($contentType, 'application/json')
+            || $xRequested === 'XMLHttpRequest'
+        ) {
+            return 'json';
+        }
+        return 'html';
     };
 
-    $renderError = static function (Throwable $e) use ($container, $isDev, $isJsonRequest) {
-        $httpCode = 500;
-        $errorCode = 'INTERNAL_SERVER_ERROR';
-        $message = $isDev ? $e->getMessage() : 'Unexpected error occurred.';
-        $data = [];
+    $renderJsonError = static function (
+        Throwable $e,
+        bool $isDev,
+        LoggerInterface $logger
+    ): void {
+        $statusCode = 500;
+        $responseBody = [
+            'type' => 'https://api.dodomudojade.local/errors/internal-error',
+            'title' => 'Internal Server Error',
+            'status' => 500,
+            'detail' => $isDev ? $e->getMessage() : 'An unexpected error occurred',
+        ];
 
         if ($e instanceof DomainException) {
-            $errorCode = $e->errorCode;
-            $data = $e->context;
+            $statusCode = $e->httpStatusCode;
+            $responseBody = $e->toArray();
         }
 
-        if ($isJsonRequest()) {
-            header('Content-Type: application/json');
-            http_response_code($httpCode);
-            echo json_encode([
-                'success' => false,
-                'message' => $message,
-                'code' => $errorCode,
-                'data' => $data,
-                'trace' => $isDev ? $e->getTrace() : null
-            ]);
-            exit;
-        }
+        header('Content-Type: application/problem+json');
+        http_response_code($statusCode);
+        echo json_encode($responseBody, JSON_THROW_ON_ERROR);
+    };
+
+    $renderHtmlError = static function (
+        Throwable $e,
+        bool $isDev,
+        Container $container
+    ): void {
+        $statusCode = $e instanceof DomainException ? $e->httpStatusCode : 500;
 
         try {
-            http_code: http_response_code($httpCode);
+            http_response_code($statusCode);
             $errorController = $container->get(ErrorController::class);
-            $errorController->internalServerError();
+
+            if ($statusCode === 404) {
+                $errorController->notFound();
+            } elseif ($statusCode === 403) {
+                $errorController->forbidden();
+            } else {
+                $errorController->internalServerError();
+            }
         } catch (Throwable) {
             header('Content-Type: text/plain; charset=utf-8');
             echo $isDev ? "Fatal Error: " . $e->getMessage() : "Internal Server Error";
         }
-        exit;
     };
 
-    set_error_handler(/**
-     * @throws ErrorException
-     */ static function (int $severity, string $message, string $file, int $line) use ($logger): bool {
+    // Error handler - konwertuje PHP errors na Exceptions
+    set_error_handler(static function (int $severity, string $message, string $file, int $line) use ($logger): bool {
         if (!(error_reporting() & $severity)) {
             return false;
         }
@@ -72,24 +91,52 @@ function registerErrorHandling(Container $container): void
         throw new ErrorException($message, 0, $severity, $file, $line);
     });
 
-    set_exception_handler(static function (Throwable $e) use ($logger, $renderError) {
-        $logger->critical('Uncaught Exception: ' . $e->getMessage(), [
+    // Exception handler
+    set_exception_handler(static function (Throwable $e) use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $container): void {
+        // Log zawsze
+        $context = [
             'exception' => get_class($e),
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
-            'context' => ($e instanceof DomainException) ? $e->context : []
-        ]);
+        ];
 
-        $renderError($e);
+        if ($e instanceof DomainException) {
+            $context['errorCode'] = $e->errorCode;
+            $context['statusCode'] = $e->httpStatusCode;
+            $context['context'] = $e->context;
+            $logger->warning('Domain Exception: ' . $e->getMessage(), $context);
+        } else {
+            $logger->critical('Uncaught Exception: ' . $e->getMessage(), $context);
+        }
+
+        // Renderuj w zależności od content type
+        $contentType = $detectContentType();
+
+        if ($contentType === 'json') {
+            $renderJsonError($e, $isDev, $logger);
+        } else {
+            $renderHtmlError($e, $isDev, $container);
+        }
+        exit;
     });
 
-    register_shutdown_function(static function () use ($logger, $renderError) {
+    // Fatal error handler
+    register_shutdown_function(static function () use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $container): void {
         $error = error_get_last();
-        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
-            $exception = new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
-            $logger->critical('Shutdown Fatal Error', $error);
-            $renderError($exception);
+
+        if ($error === null || !in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+            return;
+        }
+
+        $exception = new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+        $logger->critical('Fatal Error', $error);
+
+        $contentType = $detectContentType();
+        if ($contentType === 'json') {
+            $renderJsonError($exception, $isDev, $logger);
+        } else {
+            $renderHtmlError($exception, $isDev, $container);
         }
     });
 }

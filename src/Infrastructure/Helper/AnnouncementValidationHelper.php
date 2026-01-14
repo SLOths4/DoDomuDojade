@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Helper;
 
 use App\config\Config;
-use App\Domain\Exception\AnnouncementException;
+use App\Domain\Announcement\AnnouncementException;
 use DateMalformedStringException;
 use DateTimeImmutable;
 

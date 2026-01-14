@@ -2,7 +2,7 @@
 
 namespace App\Http\Controller;
 
-use App\Application\UseCase\User\AuthenticateUserUseCase;
+use App\Application\User\AuthenticateUserUseCase;
 use App\Domain\Exception\AuthenticationException;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Helper\SessionHelper;

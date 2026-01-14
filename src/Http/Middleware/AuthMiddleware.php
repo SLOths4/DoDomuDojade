@@ -8,6 +8,8 @@ use App\Http\Context\RequestContext;
 use App\Infrastructure\Security\AuthenticationService;
 use Exception;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * AuthMiddleware - Ensures only authenticated users can access protected routes.
@@ -28,12 +30,12 @@ final readonly class AuthMiddleware implements MiddlewareInterface
     /**
      * Validates user authentication before proceeding.
      *
-     * @param Request $request
+     * @param ServerRequestInterface $request
      * @param callable $next
+     * @return ResponseInterface
      * @throws AuthenticationException When a user is not authenticated
-     * @throws Exception
      */
-    public function handle(Request $request, callable $next): void
+    public function handle(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         if (!$this->authService->isUserLoggedIn()) {
             throw AuthenticationException::noUserLoggedIn();
@@ -42,6 +44,6 @@ final readonly class AuthMiddleware implements MiddlewareInterface
         $user = $this->authService->getCurrentUser();
         $this->requestContext->setCurrentUser($user);
 
-        $next($request);
+        return $next($request);
     }
 }

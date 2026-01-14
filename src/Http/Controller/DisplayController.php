@@ -2,30 +2,25 @@
 
 namespace App\Http\Controller;
 
-use App\Application\UseCase\Announcement\GetValidAnnouncementsUseCase;
-use App\Application\UseCase\Countdown\GetCurrentCountdownUseCase;
-use App\Application\UseCase\Module\IsModuleVisibleUseCase;
-use App\Application\UseCase\Quote\FetchActiveQuoteUseCase;
-use App\Application\UseCase\Word\FetchActiveWordUseCase;
-use App\Application\UseCase\User\GetUserByIdUseCase;
-use App\Domain\Enum\ModuleName;
+use App\Application\Announcement\GetValidAnnouncementsUseCase;
+use App\Application\Countdown\GetCurrentCountdownUseCase;
+use App\Application\Module\IsModuleVisibleUseCase;
+use App\Application\Quote\FetchActiveQuoteUseCase;
+use App\Application\User\GetUserByIdUseCase;
+use App\Application\Word\FetchActiveWordUseCase;
 use App\Domain\Exception\DisplayException;
-use App\Http\Context\LocaleContext;
+use App\Domain\Module\ModuleName;
 use App\Http\Context\RequestContext;
-use App\Infrastructure\Security\AuthenticationService;
-use App\Infrastructure\Service\CsrfTokenService;
+use App\Infrastructure\Service\CalendarService;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\Service\TramService;
 use App\Infrastructure\Service\WeatherService;
-use App\Infrastructure\Service\CalendarService;
 use App\Infrastructure\Trait\SendResponseTrait;
-use App\Infrastructure\Translation\LanguageTranslator;
 use App\Infrastructure\View\ViewRendererInterface;
 use DateTime;
 use DateTimeZone;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
-use Google\Service\Calendar\EventDateTime;
 use Psr\Log\LoggerInterface;
 
 /**

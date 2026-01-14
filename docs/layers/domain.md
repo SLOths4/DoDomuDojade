@@ -510,7 +510,7 @@ final class DateRange {
 1. **Nie importuj Infrastructure w Domain**
    ```php
    // ❌ WRONG
-   use App\Infrastructure\Repository\AnnouncementRepository;
+   use App\Infrastructure\Persistence\PDOAnnouncementRepository;
    ```
 
 2. **Nie rób SQL queries w Entity**

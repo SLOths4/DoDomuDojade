@@ -2,17 +2,17 @@
 
 namespace App\Http\Controller;
 
-use App\Application\DataTransferObject\AddAnnouncementDTO;
-use App\Application\DataTransferObject\EditAnnouncementDTO;
-use App\Application\DataTransferObject\ProposeAnnouncementDTO;
-use App\Application\UseCase\Announcement\ApproveRejectAnnouncementUseCase;
-use App\Application\UseCase\Announcement\CreateAnnouncementUseCase;
-use App\Application\UseCase\Announcement\DeleteAnnouncementUseCase;
-use App\Application\UseCase\Announcement\EditAnnouncementUseCase;
-use App\Application\UseCase\Announcement\ProposeAnnouncementUseCase;
+use App\Application\Announcement\AddAnnouncementDTO;
+use App\Application\Announcement\ApproveRejectAnnouncementUseCase;
+use App\Application\Announcement\CreateAnnouncementUseCase;
+use App\Application\Announcement\DeleteAnnouncementUseCase;
+use App\Application\Announcement\EditAnnouncementDTO;
+use App\Application\Announcement\EditAnnouncementUseCase;
+use App\Application\Announcement\ProposeAnnouncementDTO;
+use App\Application\Announcement\ProposeAnnouncementUseCase;
 use App\config\Config;
-use App\Domain\Enum\AnnouncementStatus;
-use App\Domain\Exception\AnnouncementException;
+use App\Domain\Announcement\AnnouncementException;
+use App\Domain\Announcement\AnnouncementStatus;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\View\ViewRendererInterface;

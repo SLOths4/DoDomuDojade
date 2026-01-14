@@ -2,13 +2,13 @@
 
 namespace App\Http;
 
-use App\Domain\Exception\AnnouncementException;
+use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Exception\AuthenticationException;
 use App\Domain\Exception\CountdownException;
-use App\Domain\Exception\DomainException;
-use App\Domain\Exception\ModuleException;
-use App\Domain\Exception\UserException;
 use App\Domain\Exception\ValidationException;
+use App\Domain\Module\ModuleException;
+use App\Domain\Shared\DomainException;
+use App\Domain\User\UserException;
 use App\Http\Context\RequestContext;
 
 final readonly class ExceptionTranslator

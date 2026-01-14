@@ -5,6 +5,7 @@ namespace App\Infrastructure\Factory;
 
 use App\config\Config;
 use App\Domain\Exception\DatabaseException;
+use App\Domain\Shared\FactoryInterface;
 use Exception;
 use PDO;
 
@@ -15,17 +16,15 @@ final class PDOFactory
 {
     /**
      * Creates PDO instance
-     * @param Config $cfg
+     * @param string $dbDsn
+     * @param string $dbUsername
+     * @param string $dbPassword
      * @return PDO
-     * @throws Exception
+     * @throws DatabaseException
      */
-    public function create(Config $cfg): PDO
+    public static function create(string $dbDsn, string $dbUsername = "", string $dbPassword = ""): PDO
     {
-        $dbDsn = $cfg->dbDsn();
         try {
-            $dbUsername = $cfg->dbUsername();
-            $dbPassword = $cfg->dbPassword();
-
             if (empty($dbDsn)) {
                 throw DatabaseException::invalidCredentials($dbDsn);
             }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controller;
 
-use App\Application\DataTransferObject\AddEditCountdownDTO;
+use App\Application\Countdown\AddEditCountdownDTO;
+use App\Application\Countdown\CreateCountdownUseCase;
+use App\Application\Countdown\DeleteCountdownUseCase;
+use App\Application\Countdown\UpdateCountdownUseCase;
 use App\Domain\Exception\CountdownException;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
@@ -10,9 +13,6 @@ use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\Countdown\CreateCountdownUseCase;
-use App\Application\UseCase\Countdown\DeleteCountdownUseCase;
-use App\Application\UseCase\Countdown\UpdateCountdownUseCase;
 
 final class CountdownController extends BaseController
 {

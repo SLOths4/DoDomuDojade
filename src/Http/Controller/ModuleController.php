@@ -2,16 +2,16 @@
 
 namespace App\Http\Controller;
 
-use App\Application\DataTransferObject\EditModuleDTO;
-use App\Domain\Exception\ModuleException;
+use App\Application\Module\EditModuleDTO;
+use App\Application\Module\ToggleModuleUseCase;
+use App\Application\Module\UpdateModuleUseCase;
+use App\Domain\Module\ModuleException;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
-use App\Application\UseCase\Module\ToggleModuleUseCase;
-use App\Application\UseCase\Module\UpdateModuleUseCase;
 
 final class ModuleController extends BaseController
 {

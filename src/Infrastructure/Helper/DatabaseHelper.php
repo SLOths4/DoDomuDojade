@@ -253,7 +253,7 @@ final readonly class DatabaseHelper
     }
 
     /**
-     * Inserts a single row and returns the last insert ID.
+     * Inserts a single row and returns the last insert ID or provided ID.
      *
      * Validation is enabled by default to check columns against the table schema.
      * Disable only for trusted, pre-validated data to improve performance.
@@ -263,7 +263,7 @@ final readonly class DatabaseHelper
      * @param string $table The table name.
      * @param array<string, mixed> $data The data to insert.
      * @param bool $validate Whether to validate columns (default true).
-     * @return string|int The last insert ID.
+     * @return string|int The last insert ID or the provided ID value.
      * @throws RuntimeException|Exception|InvalidArgumentException On failure.
      */
     public function insert(string $table, array $data, bool $validate = true): string|int
@@ -283,17 +283,30 @@ final readonly class DatabaseHelper
         );
 
         $params = [];
+        $idValue = null;
+
         foreach ($data as $key => $value) {
+            $actualValue = is_array($value) ? $value[0] : $value;
             $params[":$key"] = is_array($value) ? $value : [$value];
+
+            if ($key === 'id') {
+                $idValue = $actualValue;
+            }
         }
 
         $this->executeStatement($query, $params);
-        $lastId = $this->pdo->lastInsertId();
 
+        if ($idValue !== null) {
+            $this->logger->info("Row inserted", ['table' => $table, 'id' => $idValue]);
+            return $idValue;
+        }
+
+        $lastId = $this->pdo->lastInsertId();
         $this->logger->info("Row inserted", ['table' => $table, 'last_id' => $lastId]);
 
         return $lastId;
     }
+
 
     /**
      * Inserts multiple rows in a single query for efficiency.

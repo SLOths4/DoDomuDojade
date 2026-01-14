@@ -2,6 +2,7 @@
 
 namespace App\Domain\Exception;
 
+use App\Domain\Shared\DomainException;
 use Throwable;
 
 class ConfigException extends DomainException

@@ -1,7 +1,8 @@
 <?php
 namespace App\Domain\Exception;
 
-use App\Domain\Enum\ExceptionCodes;
+use App\Domain\Shared\DomainException;
+use App\Domain\Shared\ExceptionCodes;
 
 /**
  * Countdown domain exceptions - contains translation KEYS
