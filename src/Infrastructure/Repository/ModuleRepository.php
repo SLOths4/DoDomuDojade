@@ -108,7 +108,7 @@ readonly class ModuleRepository
     {
         $row = $this->dbHelper->getOne(
             "SELECT * FROM $this->TABLE_NAME WHERE module_name = :module_name LIMIT 1",
-            [':module_name' => [$moduleName, PDO::PARAM_STR]]
+            [':module_name' => [$moduleName->value, PDO::PARAM_STR]]
         );
 
         if ($row === null) {
