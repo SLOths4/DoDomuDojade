@@ -104,13 +104,13 @@ class PanelController extends BaseController
      * @throws ViewException
      * @throws Exception
      */
-    public function users(): void
+    public function users(): string
     {
         $users = $this->getAllUsersUseCase->execute();
 
         $this->logger->info("Users page loaded");
 
-        $this->render('pages/users', [
+        return $this->render('pages/users', [
             'users' => $users,
         ]);
     }
@@ -121,7 +121,7 @@ class PanelController extends BaseController
      * @throws ViewException
      * @throws Exception
      */
-    public function countdowns(): void
+    public function countdowns(): string
     {
         $users = $this->getAllUsersUseCase->execute();
         $countdowns = $this->getAllCountdownsUseCase->execute();
@@ -131,7 +131,7 @@ class PanelController extends BaseController
 
         $this->logger->info("Countdowns page loaded");
 
-        $this->render('pages/countdowns', [
+        return $this->render('pages/countdowns', [
             'usernames' => $usernames,
             'countdowns' => $formattedCountdowns,
         ]);
@@ -142,7 +142,7 @@ class PanelController extends BaseController
      *
      * @throws Exception
      */
-    public function modules(): void
+    public function modules(): string
     {
         $modules = $this->getAllModulesUseCase->execute();
 
@@ -160,7 +160,7 @@ class PanelController extends BaseController
 
         $this->logger->info("Modules page loaded");
 
-        $this->render('pages/modules', [
+        return $this->render('pages/modules', [
             'modules' => $translatedModules,
         ]);
     }
@@ -170,7 +170,7 @@ class PanelController extends BaseController
      *
      * @throws Exception
      */
-    public function index(): void
+    public function index(): string
     {
         $announcements = $this->getAllAnnouncementsUseCase->execute();
         $users = $this->getAllUsersUseCase->execute();
@@ -178,7 +178,7 @@ class PanelController extends BaseController
 
         $this->logger->info("Panel index loaded");
 
-        $this->render('pages/panel');
+        return $this->render('pages/panel');
     }
 
     /**
@@ -187,7 +187,7 @@ class PanelController extends BaseController
      *
      * @throws Exception
      */
-    public function announcements(): void
+    public function announcements(): string
     {
         $users = $this->getAllUsersUseCase->execute();
         $announcements = $this->getAllAnnouncementsUseCase->execute();
@@ -206,14 +206,14 @@ class PanelController extends BaseController
 
         $this->logger->info("Announcements page loaded");
 
-        $this->render('pages/announcements', [
+        return $this->render('pages/announcements', [
             'usernames' => $usernames,
             'announcements' => $decidedAnnouncements,
             'pendingAnnouncements' => $pendingAnnouncements,
         ]);
     }
 
-    public function test(): void {
-        $this->render('pages/TEST');
+    public function test(): string {
+        return $this->render('pages/TEST');
     }
 }

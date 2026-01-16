@@ -6,6 +6,7 @@ namespace App\Application\Announcement;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementStatus;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Exception;
@@ -18,6 +19,7 @@ readonly class ApproveRejectAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
+        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -52,6 +54,9 @@ readonly class ApproveRejectAnnouncementUseCase
         if (!$result) {
             throw AnnouncementException::failedToUpdateStatus();
         }
+
+        $this->publisher->publishAll($announcement->getDomainEvents());
+        $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement decision made', [
             'announcement_id' => $announcementId,

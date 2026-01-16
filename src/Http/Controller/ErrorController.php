@@ -14,18 +14,23 @@ final class ErrorController extends BaseController
         readonly FlashMessengerInterface $flash,
     ){}
 
-    public function notFound(): void
+    public function notFound(): string
     {
-        $this->render('errors/404');
+        return $this->render('errors/404');
     }
 
-    public function methodNotAllowed(): void
+    public function methodNotAllowed(): string
     {
-        $this->render('errors/405');
+        return $this->render('errors/405');
     }
 
-    public function internalServerError(): void
+    public function forbidden(): string
     {
-        $this->render('errors/500');
+        return $this->render('errors/403');
+    }
+
+    public function internalServerError(): string
+    {
+        return $this->render('errors/500');
     }
 }

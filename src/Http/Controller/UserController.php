@@ -11,6 +11,8 @@ use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+use Psr\Http\Message\ResponseInterface;
+
 final class UserController extends BaseController
 {
     public function __construct(
@@ -28,7 +30,7 @@ final class UserController extends BaseController
      * @throws UserException
      * @throws Exception
      */
-    public function addUser(): void
+    public function addUser(): ResponseInterface
     {
         $this->logger->debug("Received add user request");
         $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
@@ -41,7 +43,7 @@ final class UserController extends BaseController
         $this->createUserUseCase->execute($username, $password);
 
         $this->flash('success', 'user.created_successfully');
-        $this->redirect('/panel/users');
+        return $this->redirect('/panel/users');
     }
 
     /**
@@ -50,7 +52,7 @@ final class UserController extends BaseController
      * @throws UserException
      * @throws Exception
      */
-    public function deleteUser(): void
+    public function deleteUser(): ResponseInterface
     {
         $this->logger->debug("Received delete user request");
         $userToDeleteId = (int)filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
@@ -64,6 +66,6 @@ final class UserController extends BaseController
         $this->deleteUserUseCase->execute($currentUserId, $userToDeleteId);
 
         $this->flash('success', 'user.deleted_successfully');
-        $this->redirect('/panel/users');
+        return $this->redirect('/panel/users');
     }
 }

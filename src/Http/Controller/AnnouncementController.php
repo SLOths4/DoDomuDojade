@@ -20,6 +20,10 @@ use DateTimeImmutable;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
+use Predis\Client;
+
+
+use Psr\Http\Message\ResponseInterface;
 
 
 final class AnnouncementController extends BaseController
@@ -35,28 +39,27 @@ final class AnnouncementController extends BaseController
         private readonly EditAnnouncementUseCase            $editAnnouncementUseCase,
         private readonly ProposeAnnouncementUseCase         $proposeAnnouncementUseCase,
         private readonly ApproveRejectAnnouncementUseCase   $approveRejectAnnouncementUseCase,
+        private readonly Client                             $redis,
     ){}
 
     /**
      * @throws AnnouncementException
      * @throws Exception
      */
-    #[NoReturn]
-    public function deleteAnnouncement(): void
+    public function deleteAnnouncement(): ResponseInterface
     {
-        $this->logger->debug("Add announcement request received");
+        $this->logger->debug("Delete announcement request received");
         $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
         $this->deleteAnnouncementUseCase->execute($announcementId);
-        $this->logger->debug("Add announcement request received");
+
         $this->flash('success', 'announcement.deleted_successfully');
-        $this->redirect('/panel/announcements');
+        return $this->redirect('/panel/announcements');
     }
 
     /**
      * @throws Exception
      */
-    #[NoReturn]
-    public function addAnnouncement(): void
+    public function addAnnouncement(): ResponseInterface
     {
         $dto = AddAnnouncementDTO::fromHttpRequest($_POST);
         $userId = $this->getCurrentUserId();
@@ -67,15 +70,14 @@ final class AnnouncementController extends BaseController
         );
 
         $this->flash('success', 'announcement.created_successfully');
-        $this->redirect('/panel/announcements');
+        return $this->redirect('/panel/announcements');
     }
 
     /**
      * @throws AnnouncementException
      * @throws Exception
      */
-    #[NoReturn]
-    public function editAnnouncement(): void
+    public function editAnnouncement(): ResponseInterface
     {
         $id = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
@@ -89,14 +91,13 @@ final class AnnouncementController extends BaseController
         );
 
         $this->flash('success', 'announcement.updated_successfully');
-        $this->redirect('/panel/announcements');
+        return $this->redirect('/panel/announcements');
     }
 
     /**
      * @throws Exception
      */
-    #[NoReturn]
-    public function approveAnnouncement(): void
+    public function approveAnnouncement(): ResponseInterface
     {
         $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
@@ -109,14 +110,13 @@ final class AnnouncementController extends BaseController
         );
 
         $this->flash('success', 'announcement.approved_successfully');
-        $this->redirect('/panel/announcements');
+        return $this->redirect('/panel/announcements');
     }
 
     /**
      * @throws Exception
      */
-    #[NoReturn]
-    public function rejectAnnouncement(): void
+    public function rejectAnnouncement(): ResponseInterface
     {
         $announcementId = (int)filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
 
@@ -128,15 +128,14 @@ final class AnnouncementController extends BaseController
         );
 
         $this->flash('success', 'announcement.rejected_successfully');
-        $this->redirect('/panel/announcements');
+        return $this->redirect('/panel/announcements');
     }
 
 
     /**
      * @throws Exception
      */
-    #[NoReturn]
-    public function proposeAnnouncement(): void
+    public function proposeAnnouncement(): ResponseInterface
     {
         $today = new DateTimeImmutable();
         $modified = $today->modify($this->config->announcementDefaultValidDate);
@@ -146,6 +145,6 @@ final class AnnouncementController extends BaseController
         $this->proposeAnnouncementUseCase->execute($dto);
 
         $this->flash('success', 'announcement.proposed_successfully');
-        $this->redirect('/propose');
+        return $this->redirect('/propose');
     }
 }

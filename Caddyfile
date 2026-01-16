@@ -1,0 +1,32 @@
+http://localhost:8000 {
+	root * /Users/franek/Documents/GitHub/DoDomuDojade/public
+	file_server
+
+	php_fastcgi @not_sse 127.0.0.1:9000 {
+		header_up X-Accel-Buffering no
+	}
+
+	@not_sse {
+		not path /stream
+	}
+
+	handle /stream {
+		reverse_proxy 127.0.0.1:9000 {
+			transport fastcgi {
+				env SCRIPT_FILENAME {root}/index.php
+				env SCRIPT_NAME /index.php
+				read_timeout 1h
+			}
+		}
+	}
+
+	log {
+		output file ./logs/caddy-access.log
+	}
+
+	header {
+		@sse path /stream
+		header @sse Cache-Control "no-cache"
+		header @sse Connection "keep-alive"
+	}
+}

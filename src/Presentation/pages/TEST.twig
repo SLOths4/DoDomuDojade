@@ -1,44 +1,58 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SSE Test</title>
-</head>
-<body>
+{% extends "layouts/base.twig" %}
+
+{% block content %}
 <h1>SSE Stream Test</h1>
 <div id="messages"></div>
 
 <script>
-    const clientId = Math.random().toString(36).substr(2, 9);
-    const eventSource = new EventSource(`/stream?clientId=${clientId}`);
     const messagesDiv = document.getElementById('messages');
+    const clientId = Math.random().toString(36).substr(2, 9);
+    let eventSource;
 
-    eventSource.onopen = () => {
-        console.log('✅ Connected to SSE stream');
-    };
+    function connect() {
+        console.log('🔌 Connecting to SSE stream...');
+        eventSource = new EventSource(`/stream?clientId=${clientId}`);
 
-    eventSource.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            console.log('📨 Message:', data);
+        eventSource.onopen = () => {
+            console.log('✅ Connected to SSE stream');
+            messagesDiv.innerHTML += `<p style="color: green">Connected as: ${clientId}</p>`;
+        };
 
-            if (data.type === 'connected') {
-                messagesDiv.innerHTML += `<p>Connected as: ${data.clientId}</p>`;
-            } else if (data.type === 'heartbeat') {
-                console.log('💓 Heartbeat');
-            } else {
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('📨 Message:', data);
                 messagesDiv.innerHTML += `<p>${JSON.stringify(data)}</p>`;
+            } catch (e) {
+                console.error('Parse error:', e, event.data);
             }
-        } catch (e) {
-            console.error('Parse error:', e);
-        }
-    };
+        };
 
-    eventSource.onerror = (error) => {
-        console.error('❌ SSE error:', error);
-        eventSource.close();
-    };
+        eventSource.addEventListener('connected', (event) => {
+            const data = JSON.parse(event.data);
+            console.log('🔗 Connected event:', data);
+        });
+
+        eventSource.addEventListener('error', (event) => {
+            if (event.data) {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.error('❌ SSE Application Error:', data.message);
+                    messagesDiv.innerHTML += `<p style="color: red">Error: ${data.message}</p>`;
+                } catch (e) {
+                    console.error('❌ SSE Error (non-json):', event);
+                }
+            } else if (eventSource.readyState === EventSource.CLOSED) {
+                console.error('❌ SSE connection closed');
+                messagesDiv.innerHTML += `<p style="color: orange">Connection closed. Retrying...</p>`;
+            } else if (eventSource.readyState === EventSource.CONNECTING) {
+                console.warn('⚠️ SSE reconnecting...');
+            }
+        });
+    }
+
+    connect();
 </script>
 
 <button onclick="publishTest()">Send Test Message</button>
-</body>
-</html>
+{% endblock %}

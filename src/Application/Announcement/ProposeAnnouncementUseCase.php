@@ -5,6 +5,8 @@ namespace App\Application\Announcement;
 
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
+use App\Domain\Announcement\AnnouncementProposedEvent;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
@@ -16,7 +18,8 @@ readonly class ProposeAnnouncementUseCase
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private AnnouncementValidationHelper $validator,
-        private LoggerInterface              $logger
+        private LoggerInterface              $logger,
+        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -43,6 +46,8 @@ readonly class ProposeAnnouncementUseCase
         if (!$id) {
             throw AnnouncementException::failedToCreate();
         }
+
+        $this->publisher->publish(new AnnouncementProposedEvent((string)$id, $dto->title));
 
         $this->logger->info('Announcement proposed successfully', ['id' => $id]);
 

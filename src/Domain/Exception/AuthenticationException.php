@@ -12,7 +12,8 @@ class AuthenticationException extends DomainException
     {
         return new self(
             'auth.invalid_credentials',
-            ExceptionCodes::AUTH_INVALID_CREDENTIALS->value
+            ExceptionCodes::AUTH_INVALID_CREDENTIALS->value,
+            401
         );
     }
 
@@ -20,7 +21,8 @@ class AuthenticationException extends DomainException
     {
         return new self(
             'auth.empty_credentials',
-            ExceptionCodes::AUTH_EMPTY_CREDENTIALS->value
+            ExceptionCodes::AUTH_EMPTY_CREDENTIALS->value,
+            400
         );
     }
 
@@ -29,7 +31,7 @@ class AuthenticationException extends DomainException
         return new self(
             "auth.no_user_logged_in",
             ExceptionCodes::AUTH_USER_NOT_LOGGED_IN->value,
-            500,
+            401,
             [],
             $previous
         );
@@ -39,7 +41,8 @@ class AuthenticationException extends DomainException
     {
         return new self(
             'auth.user_not_found',
-            ExceptionCodes::AUTH_USER_NOT_FOUND->value
+            ExceptionCodes::AUTH_USER_NOT_FOUND->value,
+            401
         );
     }
 
@@ -48,7 +51,7 @@ class AuthenticationException extends DomainException
         return new self(
             "auth.unauthorized",
             ExceptionCodes::AUTH_USER_UNAUTHORIZED->value,
-            500,
+            403,
             ['userId' => $userId],
             $previous
         );

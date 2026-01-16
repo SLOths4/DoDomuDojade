@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Countdown;
 
 use App\Domain\Countdown\Countdown;
+use App\Domain\Countdown\CountdownUpdatedEvent;
+use App\Domain\Event\EventPublisher;
 use App\Domain\Exception\CountdownException;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\CountdownRepository;
@@ -16,6 +18,7 @@ readonly class UpdateCountdownUseCase
         private CountdownRepository $repository,
         private LoggerInterface $logger,
         private CountdownValidationHelper $validator,
+        private EventPublisher $publisher,
     ) {}
 
     /**
@@ -44,6 +47,8 @@ readonly class UpdateCountdownUseCase
         if (!$result){
             throw CountdownException::failedToUpdate();
         }
+
+        $this->publisher->publish(new CountdownUpdatedEvent((string)$id, $dto->title));
 
         $this->logger->info('Countdown update finished', [
             'countdown_id' => $id,

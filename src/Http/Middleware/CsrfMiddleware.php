@@ -39,9 +39,7 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
         } catch (RandomException $e) {
             error_log('CSRF token generation failed: ' . $e->getMessage());
 
-            $response = new Response(500);
-            $response->getBody()->write('Internal Server Error');
-            return $response;
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 

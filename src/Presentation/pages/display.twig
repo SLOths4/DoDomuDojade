@@ -11,7 +11,7 @@
         <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
-    <body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
+    <body x-data="{ ...layout(), ...sseHandler() }" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
         <!-- 🔹 GÓRNY PANEL: Data / Czas / Pogoda -->
         <div x-ref="header" class="flex mx-1 my-2">
@@ -269,6 +269,51 @@
 
         <!-- 🔹 KOMPONENTY ALPINE -->
         <script>
+            function sseHandler() {
+                return {
+                    clientId: Math.random().toString(36).substr(2, 9),
+                    eventSource: null,
+                    init() {
+                        this.connect();
+                    },
+                    connect() {
+                        console.log('🔌 Connecting to SSE stream...');
+                        this.eventSource = new EventSource(`/stream?clientId=${this.clientId}`);
+
+                        this.eventSource.onopen = () => {
+                            console.log('✅ Connected to SSE stream');
+                        };
+
+                        this.eventSource.addEventListener('announcements_updated', () => {
+                            console.log('📢 Announcements updated via SSE');
+                            window.dispatchEvent(new CustomEvent('refresh-announcements'));
+                        });
+
+                        this.eventSource.addEventListener('weather_updated', () => {
+                            console.log('⛅ Weather updated via SSE');
+                            window.dispatchEvent(new CustomEvent('refresh-weather'));
+                        });
+
+                        this.eventSource.addEventListener('countdown_updated', () => {
+                            console.log('⏲️ Countdown updated via SSE');
+                            window.dispatchEvent(new CustomEvent('refresh-countdown'));
+                        });
+
+                        this.eventSource.addEventListener('modules_updated', () => {
+                            console.log('⚙️ Modules updated via SSE');
+                            window.location.reload();
+                        });
+
+                        this.eventSource.onerror = (error) => {
+                            if (this.eventSource.readyState === EventSource.CLOSED) {
+                                console.log('❌ SSE connection closed, retrying...');
+                                setTimeout(() => this.connect(), 3000);
+                            }
+                        };
+                    }
+                }
+            }
+
             function layout() {
                 return {
                     gridHeight: 0,
@@ -313,6 +358,10 @@
                     error: null,
                     loading: true,
                     _firstLoadDone: false,
+                    init() {
+                        this.load();
+                        window.addEventListener('refresh-weather', () => this.load(true));
+                    },
                     _isDifferent(a, b) {
                         if (!a || !b) return true;
                         return (
@@ -329,8 +378,8 @@
                                     t <= 15 ? '#FFF9A6' :
                                         t <= 25 ? '#FFD1A4' : '#FFB3B3';
                     },
-                    async load() {
-                        if (!this._firstLoadDone) {
+                    async load(isManual = false) {
+                        if (!this._firstLoadDone && !isManual) {
                             this.loading = true;
                             this.error = null;
                         }
@@ -370,7 +419,11 @@
                             this.loading = false;
                             this._firstLoadDone = true;
                         }
-                        setTimeout(() => this.load(), 60000);
+                        
+                        if (!isManual) {
+                           if (this._weatherTimeout) clearTimeout(this._weatherTimeout);
+                           this._weatherTimeout = setTimeout(() => this.load(), 60000);
+                        }
                     }
                 }
             }
@@ -783,7 +836,11 @@
                     loading: true,
                     info: null,
                     rotateIntervalId: null,
-                    async load() {
+                    init() {
+                        this.load();
+                        window.addEventListener('refresh-announcements', () => this.load(true));
+                    },
+                    async load(isManual = false) {
                         try {
                             const res = await fetch('/display/get_announcements', {
                                 method: 'GET',
@@ -844,7 +901,11 @@
                             if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                             console.error(e);
                         }
-                        setTimeout(() => this.load(), 8000);
+                        
+                        if (!isManual) {
+                           if (this._announcementsTimeout) clearTimeout(this._announcementsTimeout);
+                           this._announcementsTimeout = setTimeout(() => this.load(), 300000); // 5 minut
+                        }
                     },
                     chunk(arr, size) {
                         return Array.from({ length: Math.ceil(arr.length / size) },

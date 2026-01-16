@@ -1,59 +1,53 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Http;
+namespace App\Http\Service;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Exception\AuthenticationException;
 use App\Domain\Exception\CountdownException;
 use App\Domain\Exception\ValidationException;
 use App\Domain\Module\ModuleException;
-use App\Domain\Shared\DomainException;
 use App\Domain\User\UserException;
 use App\Http\Context\RequestContext;
+use Throwable;
 
-final readonly class ExceptionTranslator
+final readonly class RedirectService
 {
-    /**
-     * POST routes → GET display routes (admin panel)
-     */
     private const array ADMIN_SCOPE_REDIRECTS = [
-        // Authentications
         AuthenticationException::class => '/login',
-
-        // Users: /panel/add_user, /panel/delete_user → /panel/users
         UserException::class => '/panel/users',
-
-        // Announcements: /panel/add_announcement, /panel/edit_announcement → /panel/announcements
         AnnouncementException::class => '/panel/announcements',
-
-        // Countdowns: /panel/add_countdown, /panel/edit_countdown → /panel/countdowns
         CountdownException::class => '/panel/countdowns',
-
-        // Modules: /panel/edit_module, /panel/toggle_module → /panel/modules
         ModuleException::class => '/panel/modules',
-
         ValidationException::class => '/panel',
     ];
 
-    /**
-     * User-facing pages
-     */
     private const array USER_SCOPE_REDIRECTS = [
         AuthenticationException::class => '/login',
         AnnouncementException::class => '/propose',
         ValidationException::class => '/propose',
     ];
 
+    public function __construct(
+        private RequestContext $requestContext
+    ) {}
 
-    public function getRedirectPath(DomainException $exception, string $currentPath): string
+    public function getRedirectPath(Throwable $exception, string $currentPath, ?string $referer = null): string
     {
-        $scope = RequestContext::getInstance()->get('scope', 'user');
+        $scope = $this->requestContext->get('scope', 'user');
 
         $redirectMap = match ($scope) {
             'admin' => self::ADMIN_SCOPE_REDIRECTS,
             default => self::USER_SCOPE_REDIRECTS,
         };
 
-        return $redirectMap[$exception::class] ?? $currentPath;
+        foreach ($redirectMap as $exceptionClass => $path) {
+            if ($exception instanceof $exceptionClass) {
+                return $path;
+            }
+        }
+
+        return $referer ?: ($currentPath ?: '/');
     }
 }

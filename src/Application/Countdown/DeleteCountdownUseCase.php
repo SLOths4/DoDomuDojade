@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Countdown;
 
+use App\Domain\Countdown\CountdownDeletedEvent;
+use App\Domain\Event\EventPublisher;
 use App\Domain\Exception\CountdownException;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\CountdownRepository;
@@ -18,6 +20,7 @@ readonly class DeleteCountdownUseCase
         private CountdownRepository $repository,
         private LoggerInterface $logger,
         private CountdownValidationHelper $validator,
+        private EventPublisher $publisher,
     ){}
 
     /**
@@ -38,6 +41,8 @@ readonly class DeleteCountdownUseCase
         if (!$result) {
             throw CountdownException::failedToDelete();
         }
+
+        $this->publisher->publish(new CountdownDeletedEvent((string)$id));
 
         $this->logger->info('Countdown delete finished',
             [

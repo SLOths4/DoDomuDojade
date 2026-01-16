@@ -37,21 +37,32 @@ readonly class RedisEventPublisher implements EventPublisher
 
             $this->eventStore->store($eventData);
 
-            $published = $this->redis->publish('sse:broadcast', $eventJson);
-            $this->logger->debug("Published to $published subscribers");
+            // Publikujemy pełne zdarzenie dla ewentualnych innych konsumentów
+            $this->redis->publish('sse:broadcast', $eventJson);
+
+            // Publikujemy uproszczony komunikat dla frontendu (kompatybilność wsteczna)
+            $sseType = $this->mapToSseType($event->getEventType());
+            if ($sseType) {
+                $this->redis->publish('sse:broadcast', json_encode(['type' => $sseType]));
+            }
 
             $this->logger->info(
-                sprintf('Event published: %s (%d subscribers)',
-                    $event->getEventType(),
-                    $published
-                )
+                sprintf('Event published: %s', $event->getEventType())
             );
 
         } catch (Exception $e) {
             error_log("❌ Publish error: " . $e->getMessage());
-            //$this->logger->error("Failed to publish event: " . $e->getMessage());
-            //throw $e;
         }
+    }
+
+    private function mapToSseType(string $eventType): ?string
+    {
+        return match ($eventType) {
+            'announcement.created', 'announcement.updated', 'announcement.deleted', 'announcement.approved', 'announcement.proposed' => 'announcements_updated',
+            'countdown.created', 'countdown.updated', 'countdown.deleted' => 'countdown_updated',
+            'module.updated', 'module.toggled' => 'modules_updated',
+            default => null,
+        };
     }
 
     private function serializeEvent(DomainEvent $event): array

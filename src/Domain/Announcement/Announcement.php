@@ -111,15 +111,26 @@ final class Announcement
     }
 
     /**
-     * Change status to rejected
-     *
-     * MUTABLE OPERATION - zmienia state entity
+     * Updates announcement data
      */
-    public function reject(int $decidedBy): void
+    public function update(string $title, string $text, DateTimeImmutable $validUntil, ?AnnouncementStatus $status = null, ?int $decidedBy = null): void
     {
-        $this->status = AnnouncementStatus::REJECTED;
-        $this->decidedAt = new DateTimeImmutable();
-        $this->decidedBy = $decidedBy;
+        $this->title = $title;
+        $this->text = $text;
+        $this->validUntil = $validUntil;
+
+        if ($status !== null && $status !== $this->status) {
+            $this->status = $status;
+            $this->decidedAt = new DateTimeImmutable();
+            $this->decidedBy = $decidedBy;
+        }
+
+        $this->recordEvent(
+            new AnnouncementUpdatedEvent(
+                announcementId: $this->id->getValue(),
+                title: $this->title,
+            )
+        );
     }
 
     /**

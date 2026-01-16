@@ -13,6 +13,9 @@ use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
+use Predis\Client;
+
+use Psr\Http\Message\ResponseInterface;
 
 final class CountdownController extends BaseController
 {
@@ -24,14 +27,14 @@ final class CountdownController extends BaseController
         private readonly CreateCountdownUseCase $createCountdownUseCase,
         private readonly DeleteCountdownUseCase $deleteCountdownUseCase,
         private readonly UpdateCountdownUseCase $updateCountdownUseCase,
+        private readonly Client $redis,
     ) {}
 
     /**
      * Create a new countdown
      * @throws Exception
      */
-    #[NoReturn]
-    public function addCountdown(): void
+    public function addCountdown(): ResponseInterface
     {
         $this->logger->debug("Received add countdown request");
         $dto = AddEditCountdownDTO::fromHttpRequest($_POST);
@@ -40,15 +43,14 @@ final class CountdownController extends BaseController
         $this->createCountdownUseCase->execute($dto, $userId);
 
         $this->flash('success', 'countdown.created_successfully');
-        $this->redirect('/panel/countdowns');
+        return $this->redirect('/panel/countdowns');
     }
 
     /**
      * Updates an existing countdown
      * @throws Exception
      */
-    #[NoReturn]
-    public function editCountdown(): void
+    public function editCountdown(): ResponseInterface
     {
         $this->logger->debug("Received edit countdown request");
         $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
@@ -59,7 +61,7 @@ final class CountdownController extends BaseController
         $this->updateCountdownUseCase->execute($countdownId, $dto, $userId);
 
         $this->flash('success', 'countdown.updated_successfully');
-        $this->redirect('/panel/countdowns');
+        return $this->redirect('/panel/countdowns');
     }
 
     /**
@@ -67,8 +69,7 @@ final class CountdownController extends BaseController
      * @throws CountdownException
      * @throws Exception
      */
-    #[NoReturn]
-    public function deleteCountdown(): void
+    public function deleteCountdown(): ResponseInterface
     {
         $this->logger->debug("Received delete countdown request");
         $countdownId = (int)filter_input(INPUT_POST, 'countdown_id', FILTER_VALIDATE_INT);
@@ -76,6 +77,6 @@ final class CountdownController extends BaseController
         $this->deleteCountdownUseCase->execute($countdownId);
 
         $this->flash('success', 'countdown.deleted_successfully');
-        $this->redirect('/panel/countdowns');
+        return $this->redirect('/panel/countdowns');
     }
 }

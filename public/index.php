@@ -42,12 +42,22 @@ if (!is_string($requestUri)) {
     $requestUri = '/';
 }
 
-$uri = $request->getUri()->getPath();
+$uri = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+// Debugging routing
+if ($uri === '/stream') {
+    error_log("Routing Debug - Request URI: " . $requestUri);
+    error_log("Routing Debug - Parsed URI: " . $uri);
+    error_log("Routing Debug - Method: " . $request->getMethod());
+}
+
 $HttpMethod = $request->getMethod();
 
 $validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
 if (!in_array($HttpMethod, $validMethods, true)) {
-    http_response_code(400);
+    if (!headers_sent()) {
+        http_response_code(400);
+    }
     die('Invalid HTTP method');
 }
 
@@ -106,13 +116,15 @@ try {
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
         $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
 
-        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream']);
+        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream', 'no_middleware' => true]);
 
         $r->addRoute('GET', '/test', [PanelController::class, 'test']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
-    http_response_code(500);
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
     die('Internal server error');
 }
 
@@ -147,10 +159,16 @@ switch ($routeInfo[0]) {
 
             if ($noMiddleware) {
                 try {
-                    $response = $controller->$methodName($vars);
+                    $result = $controller->$methodName($vars);
+                    
+                    if ($result instanceof ResponseInterface) {
+                        $response = $result;
+                    } else {
+                        return;
+                    }
                 } catch (Throwable $e) {
                     error_log("SSE Error: " . $e->getMessage());
-                    $response = new Response(500);
+                    throw $e; // Pozwól globalnemu handlerowi to obsłużyć
                 }
             } else {
                 $pipeline = new MiddlewarePipeline();
@@ -164,27 +182,42 @@ switch ($routeInfo[0]) {
                 }
 
                 $response = $pipeline->run($request, function(ServerRequestInterface $req) use ($vars, $methodName, $controller) {
-                    $controller->$methodName($vars);
+                    return $controller->$methodName($vars);
                 });
 
             }
 
-            http_response_code($response->getStatusCode());
-            foreach ($response->getHeaders() as $name => $values) {
-                foreach ($values as $value) {
-                    header("$name: $value");
+            if (!headers_sent()) {
+                http_response_code($response->getStatusCode());
+                foreach ($response->getHeaders() as $name => $values) {
+                    foreach ($values as $value) {
+                        header("$name: $value");
+                    }
                 }
             }
+            
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+            
             echo $response->getBody();
 
         } elseif (is_callable($handlerData)) {
             $response = $handlerData($vars);
-            http_response_code($response->getStatusCode());
-            foreach ($response->getHeaders() as $name => $values) {
-                foreach ($values as $value) {
-                    header("$name: $value");
+            
+            if (!headers_sent()) {
+                http_response_code($response->getStatusCode());
+                foreach ($response->getHeaders() as $name => $values) {
+                    foreach ($values as $value) {
+                        header("$name: $value");
+                    }
                 }
             }
+
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
             echo $response->getBody();
         } else {
             throw new RuntimeException('Handler must be array [class, method] or callable');

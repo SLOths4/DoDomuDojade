@@ -18,6 +18,9 @@ function registerErrorHandling(Container $container): void
     ini_set('display_startup_errors', '0');
     error_reporting(E_ALL);
 
+    // ✅ Start output buffering to prevent "headers already sent"
+    ob_start();
+
     $logger = $container->get(LoggerInterface::class);
 
     // ✅ Określ content type raz
@@ -25,6 +28,10 @@ function registerErrorHandling(Container $container): void
         $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         $xRequested = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+
+        if (str_contains($accept, 'text/event-stream')) {
+            return 'sse';
+        }
 
         if (str_contains($accept, 'application/json')
             || str_contains($contentType, 'application/json')
@@ -35,22 +42,86 @@ function registerErrorHandling(Container $container): void
         return 'html';
     };
 
+    $renderSseError = static function (
+        Throwable $e,
+        bool $isDev
+    ): void {
+        // SSE errors should NOT clean the buffer if we want to keep the connection open, 
+        // but here we are in the exception handler which will EXIT anyway.
+        // For SSE, we usually just want to send the error event.
+        if (!headers_sent()) {
+            header('Content-Type: text/event-stream');
+            header('Cache-Control: no-cache');
+            header('Connection: keep-alive');
+        }
+
+        $statusCode = 500;
+        if ($e instanceof DomainException) {
+            $statusCode = $e->httpStatusCode;
+        } elseif ($e instanceof \App\Application\Shared\ApplicationException) {
+            $statusCode = $e->getHttpStatusCode();
+        }
+
+        echo "event: error\n";
+        $data = [
+            'message' => ($isDev || $e instanceof DomainException || $e instanceof \App\Application\Shared\ApplicationException) 
+                ? $e->getMessage() 
+                : 'Internal stream error',
+            'code' => $e->getCode(),
+            'status' => $statusCode
+        ];
+
+        if ($isDev) {
+            $data['exception'] = get_class($e);
+            $data['file'] = $e->getFile();
+            $data['line'] = $e->getLine();
+            $data['trace'] = $e->getTraceAsString();
+        }
+
+        echo "data: " . json_encode($data) . "\n\n";
+        flush();
+    };
+
     $renderJsonError = static function (
         Throwable $e,
         bool $isDev,
         LoggerInterface $logger
     ): void {
+        if (ob_get_level()) {
+            ob_clean();
+        }
+
         $statusCode = 500;
-        $responseBody = [
-            'type' => 'https://api.dodomudojade.local/errors/internal-error',
-            'title' => 'Internal Server Error',
-            'status' => 500,
-            'detail' => $isDev ? $e->getMessage() : 'An unexpected error occurred',
-        ];
+        $title = 'Internal Server Error';
+        $detail = $isDev ? $e->getMessage() : 'An unexpected error occurred';
+        $errorCode = $e->getCode();
 
         if ($e instanceof DomainException) {
             $statusCode = $e->httpStatusCode;
-            $responseBody = $e->toArray();
+            $detail = $e->getMessage();
+            $title = 'Domain Error';
+            $errorCode = $e->errorCode;
+        } elseif ($e instanceof \App\Application\Shared\ApplicationException) {
+            $statusCode = $e->getHttpStatusCode();
+            $detail = $e->getMessage();
+            $title = 'Application Error';
+        }
+
+        $responseBody = [
+            'type' => 'https://api.dodomudojade.local/errors/' . ($statusCode === 500 ? 'internal-error' : 'error'),
+            'title' => $title,
+            'status' => $statusCode,
+            'detail' => $detail,
+            'code' => $errorCode,
+        ];
+
+        if ($isDev) {
+            $responseBody['debug'] = [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => explode("\n", $e->getTraceAsString()),
+            ];
         }
 
         header('Content-Type: application/problem+json');
@@ -63,22 +134,44 @@ function registerErrorHandling(Container $container): void
         bool $isDev,
         Container $container
     ): void {
-        $statusCode = $e instanceof DomainException ? $e->httpStatusCode : 500;
+        if (ob_get_level()) {
+            ob_clean();
+        }
+
+        $statusCode = 500;
+        if ($e instanceof DomainException) {
+            $statusCode = $e->httpStatusCode;
+        } elseif ($e instanceof \App\Application\Shared\ApplicationException) {
+            $statusCode = $e->getHttpStatusCode();
+        }
 
         try {
             http_response_code($statusCode);
-            $errorController = $container->get(ErrorController::class);
+            $errorController = $container->get(App\Http\Controller\ErrorController::class);
 
             if ($statusCode === 404) {
                 $errorController->notFound();
             } elseif ($statusCode === 403) {
                 $errorController->forbidden();
+            } elseif ($statusCode === 401) {
+                // Jeśli 401 w HTML, to pewnie sesja wygasła - przekieruj na login
+                header('Location: /login');
+                exit;
             } else {
                 $errorController->internalServerError();
+                if ($isDev) {
+                    echo "<div style='padding: 20px; background: #fee; border: 1px solid #f00; margin: 20px;'>";
+                    echo "<h3>Debug Info (isDev=true)</h3>";
+                    echo "<p><b>Exception:</b> " . get_class($e) . "</p>";
+                    echo "<p><b>Message:</b> " . $e->getMessage() . "</p>";
+                    echo "<p><b>File:</b> " . $e->getFile() . " on line " . $e->getLine() . "</p>";
+                    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+                    echo "</div>";
+                }
             }
         } catch (Throwable) {
             header('Content-Type: text/plain; charset=utf-8');
-            echo $isDev ? "Fatal Error: " . $e->getMessage() : "Internal Server Error";
+            echo $isDev ? "Fatal Error: " . $e->getMessage() . "\n\n" . $e->getTraceAsString() : "Internal Server Error";
         }
     };
 
@@ -92,7 +185,7 @@ function registerErrorHandling(Container $container): void
     });
 
     // Exception handler
-    set_exception_handler(static function (Throwable $e) use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $container): void {
+    set_exception_handler(static function (Throwable $e) use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $renderSseError, $container): void {
         // Log zawsze
         $context = [
             'exception' => get_class($e),
@@ -113,7 +206,9 @@ function registerErrorHandling(Container $container): void
         // Renderuj w zależności od content type
         $contentType = $detectContentType();
 
-        if ($contentType === 'json') {
+        if ($contentType === 'sse') {
+            $renderSseError($e, $isDev);
+        } elseif ($contentType === 'json') {
             $renderJsonError($e, $isDev, $logger);
         } else {
             $renderHtmlError($e, $isDev, $container);
@@ -122,7 +217,7 @@ function registerErrorHandling(Container $container): void
     });
 
     // Fatal error handler
-    register_shutdown_function(static function () use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $container): void {
+    register_shutdown_function(static function () use ($logger, $isDev, $detectContentType, $renderJsonError, $renderHtmlError, $renderSseError, $container): void {
         $error = error_get_last();
 
         if ($error === null || !in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
@@ -133,7 +228,9 @@ function registerErrorHandling(Container $container): void
         $logger->critical('Fatal Error', $error);
 
         $contentType = $detectContentType();
-        if ($contentType === 'json') {
+        if ($contentType === 'sse') {
+            $renderSseError($exception, $isDev);
+        } elseif ($contentType === 'json') {
             $renderJsonError($exception, $isDev, $logger);
         } else {
             $renderHtmlError($exception, $isDev, $container);

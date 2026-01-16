@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Countdown;
 
 use App\Domain\Countdown\Countdown;
+use App\Domain\Countdown\CountdownCreatedEvent;
+use App\Domain\Event\EventPublisher;
 use App\Domain\Exception\CountdownException;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\CountdownRepository;
@@ -19,6 +21,7 @@ readonly class CreateCountdownUseCase
         private CountdownRepository $repository,
         private LoggerInterface $logger,
         private CountdownValidationHelper $validator,
+        private EventPublisher $publisher,
     ) {}
 
     /**
@@ -39,6 +42,8 @@ readonly class CreateCountdownUseCase
         if (!$id) {
             throw CountdownException::failedToCreate();
         }
+
+        $this->publisher->publish(new CountdownCreatedEvent((string)$id, $dto->title));
 
         $this->logger->info('Countdown creation finished', [
             'admin_id' => $adminId,

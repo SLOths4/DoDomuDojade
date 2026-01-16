@@ -2,37 +2,36 @@
 
 namespace App\Infrastructure\Trait;
 
-use JetBrains\PhpStorm\NoReturn;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
 trait SendResponseTrait {
-    #[NoReturn]
-    protected function sendSuccess(array $data, string $message = '', int $responseCode = 200): void
+    protected function sendSuccess(array $data, string $message = '', int $responseCode = 200): ResponseInterface
     {
-        header('Content-type: application/json');
-        http_response_code($responseCode);
-
-        echo json_encode(
+        $response = new Response($responseCode, ['Content-Type' => 'application/json']);
+        $response->getBody()->write(json_encode(
             [
                 'status' => 'success',
                 'data' => $data,
                 'message' => $message
             ]
-        );
+        ));
+
+        return $response;
     }
 
-    #[NoReturn]
-    protected function sendError(string $message, int $code, array $data, int $responseCode = 200): void
+    protected function sendError(string $message, int $code, array $data, int $responseCode = 200): ResponseInterface
     {
-        header('Content-type: application/json');
-        http_response_code($responseCode);
-
-        echo json_encode(
+        $response = new Response($responseCode, ['Content-Type' => 'application/json']);
+        $response->getBody()->write(json_encode(
             [
                 'status' => 'error',
                 'message' => $message,
                 'code' => $code,
                 'data' => $data
             ]
-        );
+        ));
+
+        return $response;
     }
 }

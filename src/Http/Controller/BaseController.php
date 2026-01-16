@@ -7,6 +7,9 @@ use App\Infrastructure\View\ViewRendererInterface;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * @property ViewRendererInterface $renderer
  * @property FlashMessengerInterface $flash
@@ -18,9 +21,9 @@ abstract class BaseController
      * Render a view with data
      * Automatically handles error/success messages from the session
      */
-    protected function render($view, $data = []): void
+    protected function render($view, $data = []): string
     {
-        echo $this->renderer->render($view, $data);
+        return $this->renderer->render($view, $data);
     }
 
     protected function flash(string $key, string $message): void
@@ -31,11 +34,9 @@ abstract class BaseController
     /**
      * Redirect to URL
      */
-    #[NoReturn]
-    protected function redirect(string $to): void
+    protected function redirect(string $to): ResponseInterface
     {
-        header("Location: $to");
-        exit;
+        return new Response(302, ['Location' => $to]);
     }
 
     protected function getCurrentUserId(): ?int

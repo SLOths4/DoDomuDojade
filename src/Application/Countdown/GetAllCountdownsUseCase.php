@@ -24,11 +24,6 @@ readonly class GetAllCountdownsUseCase
     public function execute(): array
     {
         $this->logger->debug('Fetching all countdowns');
-        $countdowns = $this->repository->findAll();
-        if (!$countdowns) {
-            throw CountdownException::failedToFetch();
-        }
-        $this->logger->debug('Fetched all countdowns');
-        return $countdowns;
+        return $this->repository->findAll();
     }
 }

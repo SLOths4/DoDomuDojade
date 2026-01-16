@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -19,7 +20,20 @@ final class MiddlewarePipeline
 
     public function run(ServerRequestInterface $request, callable $next): ResponseInterface
     {
-        $handler = $next;
+        $handler = function(ServerRequestInterface $req) use ($next): ResponseInterface {
+            $result = $next($req);
+            
+            if ($result instanceof ResponseInterface) {
+                return $result;
+            }
+
+            $response = new Response(200);
+            if (is_string($result)) {
+                $response->getBody()->write($result);
+            }
+            
+            return $response;
+        };
 
         foreach (array_reverse($this->middlewares) as $middleware) {
             $currentHandler = $handler;
@@ -28,12 +42,6 @@ final class MiddlewarePipeline
             };
         }
 
-        $result = $handler($request);
-
-        if ($result === null) {
-            $result = new Response(200);
-        }
-
-        return $result;
+        return $handler($request);
     }
 }

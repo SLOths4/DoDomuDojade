@@ -18,6 +18,13 @@ use App\Application\Countdown\GetAllCountdownsUseCase;
 use App\Application\Countdown\GetCountdownByIdUseCase;
 use App\Application\Countdown\GetCurrentCountdownUseCase;
 use App\Application\Countdown\UpdateCountdownUseCase;
+use App\Application\Display\GetDeparturesUseCase;
+use App\Application\Display\GetDisplayAnnouncementsUseCase;
+use App\Application\Display\GetDisplayCountdownUseCase;
+use App\Application\Display\GetDisplayEventsUseCase;
+use App\Application\Display\GetDisplayQuoteUseCase;
+use App\Application\Display\GetDisplayWeatherUseCase;
+use App\Application\Display\GetDisplayWordUseCase;
 use App\Application\Module\GetAllModulesUseCase;
 use App\Application\Module\GetModuleByIdUseCase;
 use App\Application\Module\IsModuleVisibleUseCase;
@@ -46,6 +53,7 @@ use App\Http\Context\RequestContext;
 use App\Http\Controller\DisplayController;
 use App\Http\Controller\ErrorController;
 use App\Http\Controller\PanelController;
+use App\Http\Service\RedirectService;
 use App\Infrastructure\Container;
 use App\Infrastructure\Event\RedisEventPublisher;
 use App\Infrastructure\Factory\LoggerFactory;
@@ -133,6 +141,9 @@ $container->set(DatabaseHelper::class, fn() => new DatabaseHelper($container->ge
 // HTTP client
 $container->set(HttpClientInterface::class, fn() => HttpClient::create());
 
+// RedirectService
+$container->set(RedirectService::class, fn(Container $c) => new RedirectService($c->get(RequestContext::class)));
+
 // AuthenticationService
 $container->set(AuthenticationService::class, fn() => new AuthenticationService($container->get(UserRepository::class)));
 
@@ -199,9 +210,9 @@ $container->set(PDOAnnouncementRepository::class, function (Container $c): PDOAn
 
 // Announcement Use Cases
 $container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class), $c->get(EventPublisher::class) ));
-$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
+$container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class), $c->get(EventPublisher::class) ));
 $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
-$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class) ));
+$container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class), $c->get(EventPublisher::class) ));
 $container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new GetValidAnnouncementsUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class)));
 
@@ -268,14 +279,17 @@ $container->set(IsModuleVisibleUseCase::class, function(Container $c) {
         $c->get(LoggerInterface::class),
     );
 });
-$container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class) ));
+$container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepository::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class), $c->get(EventPublisher::class) ));
 $container->set(UpdateModuleUseCase::class, function(Container $c) {
     return new UpdateModuleUseCase(
         $c->get(ModuleRepository::class),
         $c->get(LoggerInterface::class),
         $c->get(ModuleValidationHelper::class),
+        $c->get(EventPublisher::class),
     );
 });
+
+$container->set(ApproveRejectAnnouncementUseCase::class, fn(Container $c) => new ApproveRejectAnnouncementUseCase($c->get(PDOAnnouncementRepository::class), $c->get(LoggerInterface::class), $c->get(AnnouncementValidationHelper::class), $c->get(EventPublisher::class) ));
 
 // TRAMS
 // TramService
@@ -305,9 +319,10 @@ $container->set(CreateCountdownUseCase::class, function(Container $c) {
         $c->get(CountdownRepository::class),
         $c->get(LoggerInterface::class),
         $c->get(CountdownValidationHelper::class),
+        $c->get(EventPublisher::class),
     );
 });
-$container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class) ));
+$container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class), $c->get(EventPublisher::class) ));
 $container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
 $container->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class) ));
 $container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase($c->get(CountdownRepository::class), $c->get(LoggerInterface::class)));
@@ -316,6 +331,7 @@ $container->set(UpdateCountdownUseCase::class, function(Container $c) {
         $c->get(CountdownRepository::class),
         $c->get(LoggerInterface::class),
         $c->get(CountdownValidationHelper::class),
+        $c->get(EventPublisher::class),
     );
 });
 
@@ -395,6 +411,15 @@ $container->set(ErrorController::class, function (Container $c): ErrorController
     );
 });
 
+// Display Use Cases
+$container->set(GetDeparturesUseCase::class, fn(Container $c) => new GetDeparturesUseCase($c->get(TramService::class), $c->get(LoggerInterface::class)));
+$container->set(GetDisplayAnnouncementsUseCase::class, fn(Container $c) => new GetDisplayAnnouncementsUseCase($c->get(GetValidAnnouncementsUseCase::class), $c->get(GetUserByIdUseCase::class), $c->get(LoggerInterface::class)));
+$container->set(GetDisplayCountdownUseCase::class, fn(Container $c) => new GetDisplayCountdownUseCase($c->get(GetCurrentCountdownUseCase::class)));
+$container->set(GetDisplayWeatherUseCase::class, fn(Container $c) => new GetDisplayWeatherUseCase($c->get(WeatherService::class), $c->get(LoggerInterface::class)));
+$container->set(GetDisplayEventsUseCase::class, fn(Container $c) => new GetDisplayEventsUseCase($c->get(CalendarService::class), $c->get(LoggerInterface::class)));
+$container->set(GetDisplayQuoteUseCase::class, fn(Container $c) => new GetDisplayQuoteUseCase($c->get(FetchActiveQuoteUseCase::class), $c->get(LoggerInterface::class)));
+$container->set(GetDisplayWordUseCase::class, fn(Container $c) => new GetDisplayWordUseCase($c->get(FetchActiveWordUseCase::class), $c->get(LoggerInterface::class)));
+
 //DisplayController
 $container->set(DisplayController::class, function (Container $c) {
         $cfg = $c->get(Config::class);
@@ -403,15 +428,14 @@ $container->set(DisplayController::class, function (Container $c) {
             $c->get(TwigRenderer::class),
             $c->get(FlashMessengerService::class),
             $c->get(LoggerInterface::class),
-            $c->get(WeatherService::class),
             $c->get(IsModuleVisibleUseCase::class),
-            $c->get(TramService::class),
-            $c->get(CalendarService::class),
-            $c->get(GetValidAnnouncementsUseCase::class),
-            $c->get(GetUserByIdUseCase::class),
-            $c->get(GetCurrentCountdownUseCase::class),
-            $c->get(FetchActiveQuoteUseCase::class),
-            $c->get(FetchActiveWordUseCase::class),
+            $c->get(GetDeparturesUseCase::class),
+            $c->get(GetDisplayAnnouncementsUseCase::class),
+            $c->get(GetDisplayCountdownUseCase::class),
+            $c->get(GetDisplayWeatherUseCase::class),
+            $c->get(GetDisplayEventsUseCase::class),
+            $c->get(GetDisplayQuoteUseCase::class),
+            $c->get(GetDisplayWordUseCase::class),
             $cfg->stopID,
         );
 });

@@ -12,6 +12,8 @@ use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
 
+use Psr\Http\Message\ResponseInterface;
+
 final class LoginController extends BaseController
 {
     function __construct(
@@ -22,19 +24,19 @@ final class LoginController extends BaseController
         private readonly AuthenticateUserUseCase    $authenticateUserUseCase
     ) {}
 
-    public function show(): void
+    public function show(): string
     {
         $this->logger->debug("Render login page request received");
-        $this->render('pages/login');
+        $html = $this->render('pages/login');
         $this->logger->debug("Rendered login page");
+        return $html;
     }
 
     /**
      * @throws AuthenticationException
      * @throws Exception
      */
-    #[NoReturn]
-    public function authenticate(): void
+    public function authenticate(): ResponseInterface
     {
         $this->logger->debug("User verification request received.");
 
@@ -46,14 +48,13 @@ final class LoginController extends BaseController
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
         SessionHelper::setWithFingerprint('user_id', $user->id);
-        $this->redirect("/panel");
+        return $this->redirect("/panel");
     }
 
-    #[NoReturn]
-    public function logout(): void
+    public function logout(): ResponseInterface
     {
         $this->logger->debug("User logout requested.");
         SessionHelper::destroy();
-        $this->redirect("/login");
+        return $this->redirect("/login");
     }
 }

@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Application\Module;
 
+use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
+use App\Domain\Module\ModuleToggledEvent;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\ModuleRepository;
 use Exception;
@@ -15,6 +17,7 @@ readonly class ToggleModuleUseCase
         private ModuleRepository $repository,
         private LoggerInterface $logger,
         private ModuleValidationHelper $validator,
+        private EventPublisher $publisher,
     ) {}
 
     /**
@@ -38,6 +41,8 @@ readonly class ToggleModuleUseCase
         if (!$result) {
             throw ModuleException::failedToToggle();
         }
+
+        $this->publisher->publish(new ModuleToggledEvent((string)$id, $module->isActive));
 
         $this->logger->info('Module toggle finished', [
             'module_id' => $id,

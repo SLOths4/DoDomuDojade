@@ -12,6 +12,9 @@ use App\Infrastructure\View\ViewRendererInterface;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Psr\Log\LoggerInterface;
+use Predis\Client;
+
+use Psr\Http\Message\ResponseInterface;
 
 final class ModuleController extends BaseController
 {
@@ -22,6 +25,7 @@ final class ModuleController extends BaseController
         private readonly LoggerInterface $logger,
         private readonly ToggleModuleUseCase $toggleModuleUseCase,
         private readonly UpdateModuleUseCase $updateModuleUseCase,
+        private readonly Client $redis,
     ){}
 
     /**
@@ -29,8 +33,7 @@ final class ModuleController extends BaseController
      * @throws ModuleException
      * @throws Exception
      */
-    #[NoReturn]
-    public function toggleModule(): void
+    public function toggleModule(): ResponseInterface
     {
         $this->logger->debug("Received toggle module request");
         $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
@@ -38,15 +41,14 @@ final class ModuleController extends BaseController
         $this->toggleModuleUseCase->execute($moduleId);
 
         $this->flash('success', 'module.toggled_successfully');
-        $this->redirect('/panel/modules');
+        return $this->redirect('/panel/modules');
     }
 
     /**
      * Edit module settings (times and active status)
      * @throws Exception
      */
-    #[NoReturn]
-    public function editModule(): void
+    public function editModule(): ResponseInterface
     {
         $this->logger->debug("Received edit module request");
         $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
@@ -56,6 +58,6 @@ final class ModuleController extends BaseController
         $this->updateModuleUseCase->execute($moduleId, $dto);
 
         $this->flash('success', 'module.updated_successfully');
-        $this->redirect('/panel/modules');
+        return $this->redirect('/panel/modules');
     }
 }

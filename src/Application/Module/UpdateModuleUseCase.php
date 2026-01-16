@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\Module;
 
+use App\Domain\Event\EventPublisher;
 use App\Domain\Module\Module;
 use App\Domain\Module\ModuleException;
+use App\Domain\Module\ModuleUpdatedEvent;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\ModuleRepository;
 use Exception;
@@ -16,6 +18,7 @@ readonly class UpdateModuleUseCase
         private ModuleRepository $repository,
         private LoggerInterface $logger,
         private ModuleValidationHelper $validator,
+        private EventPublisher $publisher,
     ) {}
 
     /**
@@ -43,6 +46,8 @@ readonly class UpdateModuleUseCase
         if (!$result) {
             throw ModuleException::failedToUpdate();
         }
+
+        $this->publisher->publish(new ModuleUpdatedEvent((string)$id));
 
         $this->logger->info('Module update finished', [
             'module_id' => $id,

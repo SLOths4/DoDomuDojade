@@ -5,6 +5,7 @@ namespace App\Application\Announcement;
 
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
@@ -18,6 +19,7 @@ readonly class EditAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
+        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -38,20 +40,29 @@ readonly class EditAnnouncementUseCase
 
         $this->validator->validateId($id);
 
-        $existing = $this->repository->findById($id);
-        if (!$existing) {
+        $announcement = $this->repository->findById($id);
+        if (!$announcement) {
             throw AnnouncementException::notFound($id);
         }
 
         $this->validateBusinessRules($dto);
 
-        $updated = $this->mapDtoToEntity($dto, $existing, $adminId);
+        $announcement->update(
+            title: $dto->title,
+            text: $dto->text,
+            validUntil: $dto->validUntil,
+            status: $dto->status,
+            decidedBy: $adminId
+        );
 
-        $success = $this->repository->update($updated);
+        $success = $this->repository->update($announcement);
 
         if (!$success) {
             throw AnnouncementException::failedToUpdate();
         }
+
+        $this->publisher->publishAll($announcement->getDomainEvents());
+        $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement updated successfully', [
             'announcement_id' => $id,
@@ -59,33 +70,6 @@ readonly class EditAnnouncementUseCase
         ]);
 
         return $id;
-    }
-
-    /**
-     * Maps DTO to entity
-     * @param EditAnnouncementDTO $dto
-     * @param Announcement $existing
-     * @param int $adminId
-     * @return Announcement
-     */
-    private function mapDtoToEntity(
-        EditAnnouncementDTO $dto,
-        Announcement $existing,
-        int $adminId,
-    ): Announcement {
-        $statusChanged = $dto->status !== null && $dto->status !== $existing->status;
-
-        return new Announcement(
-            id: $existing->id,
-            title: $dto->title,
-            text: $dto->text,
-            createdAt: $existing->createdAt,
-            validUntil: $dto->validUntil,
-            userId: $existing->userId,
-            status: $dto->status ?? $existing->status,
-            decidedAt: $statusChanged ? new DateTimeImmutable() : $existing->decidedAt,
-            decidedBy: $statusChanged ? $adminId : $existing->decidedBy,
-        );
     }
 
     /**
