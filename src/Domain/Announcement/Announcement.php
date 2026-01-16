@@ -14,7 +14,6 @@ use App\Domain\Shared\DomainEvent;
  * - Mutable properties: status, decidedAt, decidedBy (mogą się zmieniać)
  * - Immutable properties: id, title, text, createdAt, validUntil, userId (nie zmieniają się)
  *
- * Getters/Setters tylko dla properties które mogą się zmieniać!
  */
 final class Announcement
 {

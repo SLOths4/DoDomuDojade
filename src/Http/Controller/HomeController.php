@@ -5,6 +5,7 @@ namespace App\Http\Controller;
 use App\Http\Context\RequestContext;
 use App\Infrastructure\Service\FlashMessengerInterface;
 use App\Infrastructure\View\ViewRendererInterface;
+use Psr\Http\Message\ResponseInterface;
 
 final class HomeController extends BaseController
 {

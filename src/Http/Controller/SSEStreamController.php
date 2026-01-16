@@ -13,7 +13,6 @@ final class SSEStreamController extends BaseController
 
     public function stream(): void
     {
-        // Wyłączamy buforowanie wyjściowe
         if (ob_get_level()) {
             ob_end_clean();
         }

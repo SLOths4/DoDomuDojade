@@ -23,10 +23,6 @@ readonly class GetCurrentCountdownUseCase
     {
         $this->logger->debug('Fetching current countdown');
         $countdown = $this->repository->findCurrent();
-        if (!$countdown) {
-            throw CountdownException::failedToFetch();
-        }
-        $this->logger->debug('Fetched current countdown');
         return $countdown;
     }
 }

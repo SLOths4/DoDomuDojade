@@ -38,19 +38,6 @@ readonly class TwigRenderer implements ViewRendererInterface
         return $this->twig->render($template, $data);
     }
 
-    /**
-     * Render and return as PSR-7 Response
-     */
-    public function renderResponse(string $template, array $data = []): ResponseInterface
-    {
-        $html = $this->render($template, $data);
-
-        $response = new Response(200, ['Content-Type' => 'text/html; charset=utf-8']);
-        $response->getBody()->write($html);
-
-        return $response;
-    }
-
     private function getGlobals(): array
     {
         $token = $this->requestContext->get('csrf_token');

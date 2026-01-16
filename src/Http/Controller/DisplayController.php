@@ -46,9 +46,9 @@ final class DisplayController extends BaseController
     /**
      * Render public display page
      */
-    public function index(): string
+    public function index(): void
     {
-        return $this->render('pages/display');
+        $this->render('pages/display');
     }
 
     /**
@@ -144,7 +144,7 @@ final class DisplayController extends BaseController
 
         $eventsArray = $this->getDisplayEventsUseCase->execute();
 
-        if ($eventsArray !== null && !empty($eventsArray)) {
+        if (!empty($eventsArray)) {
             return $this->sendSuccess([
                 'is_active' => true,
                 'events' => $eventsArray

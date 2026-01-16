@@ -21,9 +21,9 @@ abstract class BaseController
      * Render a view with data
      * Automatically handles error/success messages from the session
      */
-    protected function render($view, $data = []): string
+    protected function render($view, $data = []): void
     {
-        return $this->renderer->render($view, $data);
+        echo $this->renderer->render($view, $data);
     }
 
     protected function flash(string $key, string $message): void
@@ -34,9 +34,9 @@ abstract class BaseController
     /**
      * Redirect to URL
      */
-    protected function redirect(string $to): ResponseInterface
+    protected function redirect(string $to): void
     {
-        return new Response(302, ['Location' => $to]);
+        header('Location: '. $to);
     }
 
     protected function getCurrentUserId(): ?int

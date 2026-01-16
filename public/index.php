@@ -9,7 +9,6 @@ use App\Http\Controller\HomeController;
 use App\Http\Controller\LoginController;
 use App\Http\Controller\ModuleController;
 use App\Http\Controller\PanelController;
-use App\Http\Controller\SSEStreamController;
 use App\Http\Controller\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CsrfMiddleware;
@@ -19,10 +18,7 @@ use App\Http\Middleware\MiddlewarePipeline;
 use App\Http\Middleware\RequestContextMiddleware;
 use App\Infrastructure\Helper\StaticFileHandlingHelper;
 use FastRoute\RouteCollector;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use function FastRoute\simpleDispatcher;
 
 if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -30,10 +26,8 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/bootstrap/ErrorHandling.php';
 
 $container = require_once __DIR__ . '/../src/bootstrap/bootstrap.php';
-registerErrorHandling($container);
 
 $request = ServerRequest::fromGlobals();
 
@@ -42,22 +36,12 @@ if (!is_string($requestUri)) {
     $requestUri = '/';
 }
 
-$uri = parse_url($requestUri, PHP_URL_PATH) ?: '/';
-
-// Debugging routing
-if ($uri === '/stream') {
-    error_log("Routing Debug - Request URI: " . $requestUri);
-    error_log("Routing Debug - Parsed URI: " . $uri);
-    error_log("Routing Debug - Method: " . $request->getMethod());
-}
-
+$uri = $request->getUri()->getPath();
 $HttpMethod = $request->getMethod();
 
 $validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
 if (!in_array($HttpMethod, $validMethods, true)) {
-    if (!headers_sent()) {
-        http_response_code(400);
-    }
+    http_response_code(400);
     die('Invalid HTTP method');
 }
 
@@ -116,15 +100,12 @@ try {
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
         $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
 
-        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream', 'no_middleware' => true]);
-
-        $r->addRoute('GET', '/test', [PanelController::class, 'test']);
+        $r->addRoute('GET', '/stream', [\App\Http\Controller\SSEStreamController::class, 'stream', 'enableMiddleware' => false]);
+        $r->addRoute('GET', '/test', [PanelController::class, 'test', 'enableMiddleware' => false]);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
-    if (!headers_sent()) {
-        http_response_code(500);
-    }
+    http_response_code(500);
     die('Internal server error');
 }
 
@@ -153,25 +134,16 @@ switch ($routeInfo[0]) {
             $controllerClass = $handlerData[0];
             $methodName = $handlerData[1];
             $middlewares = $handlerData['middleware'] ?? [];
-            $noMiddleware = $handlerData['no_middleware'] ?? false;
+            $enableMiddlewares = $handlerData['enableMiddleware'] ?? false;
 
             $controller = $container->get($controllerClass);
 
-            if ($noMiddleware) {
-                try {
-                    $result = $controller->$methodName($vars);
-                    
-                    if ($result instanceof ResponseInterface) {
-                        $response = $result;
-                    } else {
-                        return;
-                    }
-                } catch (Throwable $e) {
-                    error_log("SSE Error: " . $e->getMessage());
-                    throw $e; // Pozwól globalnemu handlerowi to obsłużyć
-                }
+            if (!$enableMiddlewares) {
+                $controller->$methodName($vars);
             } else {
+
                 $pipeline = new MiddlewarePipeline();
+
                 $pipeline->add($container->get(RequestContextMiddleware::class));
                 $pipeline->add($container->get(ExceptionMiddleware::class));
                 $pipeline->add($container->get(LocaleMiddleware::class));
@@ -181,44 +153,10 @@ switch ($routeInfo[0]) {
                     $pipeline->add($container->get($mwClass));
                 }
 
-                $response = $pipeline->run($request, function(ServerRequestInterface $req) use ($vars, $methodName, $controller) {
-                    return $controller->$methodName($vars);
-                });
-
+                $pipeline->run($request, fn() => $controller->$methodName($vars));
             }
-
-            if (!headers_sent()) {
-                http_response_code($response->getStatusCode());
-                foreach ($response->getHeaders() as $name => $values) {
-                    foreach ($values as $value) {
-                        header("$name: $value");
-                    }
-                }
-            }
-            
-            if (ob_get_level()) {
-                ob_end_clean();
-            }
-            
-            echo $response->getBody();
-
         } elseif (is_callable($handlerData)) {
-            $response = $handlerData($vars);
-            
-            if (!headers_sent()) {
-                http_response_code($response->getStatusCode());
-                foreach ($response->getHeaders() as $name => $values) {
-                    foreach ($values as $value) {
-                        header("$name: $value");
-                    }
-                }
-            }
-
-            if (ob_get_level()) {
-                ob_end_clean();
-            }
-
-            echo $response->getBody();
+            $handlerData($vars);
         } else {
             throw new RuntimeException('Handler must be array [class, method] or callable');
         }

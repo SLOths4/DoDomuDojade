@@ -11,7 +11,7 @@
 
     function connect() {
         console.log('🔌 Connecting to SSE stream...');
-        eventSource = new EventSource(`/stream?clientId=${clientId}`);
+        eventSource = new EventSource(`http://localhost:8001/stream`); ///stream?clientId=${clientId}
 
         eventSource.onopen = () => {
             console.log('✅ Connected to SSE stream');

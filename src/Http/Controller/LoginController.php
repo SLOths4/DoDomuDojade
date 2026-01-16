@@ -24,19 +24,18 @@ final class LoginController extends BaseController
         private readonly AuthenticateUserUseCase    $authenticateUserUseCase
     ) {}
 
-    public function show(): string
+    public function show(): void
     {
         $this->logger->debug("Render login page request received");
-        $html = $this->render('pages/login');
+        $this->render('pages/login');
         $this->logger->debug("Rendered login page");
-        return $html;
     }
 
     /**
      * @throws AuthenticationException
      * @throws Exception
      */
-    public function authenticate(): ResponseInterface
+    public function authenticate(): void
     {
         $this->logger->debug("User verification request received.");
 
@@ -48,13 +47,13 @@ final class LoginController extends BaseController
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
         SessionHelper::setWithFingerprint('user_id', $user->id);
-        return $this->redirect("/panel");
+        $this->redirect("/panel");
     }
 
-    public function logout(): ResponseInterface
+    public function logout(): void
     {
         $this->logger->debug("User logout requested.");
         SessionHelper::destroy();
-        return $this->redirect("/login");
+        $this->redirect("/login");
     }
 }

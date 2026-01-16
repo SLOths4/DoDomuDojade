@@ -1,3 +1,15 @@
+-- Adapt announcement table
+ALTER TABLE announcement
+    ALTER COLUMN id DROP DEFAULT,
+    ALTER COLUMN id TYPE varchar(255),
+    ADD created_at date default now() not null;
+
+DROP SEQUENCE IF EXISTS announcement_id_seq;
+
+ALTER TABLE announcement
+    DROP CONSTRAINT announcement_pkey,
+    ADD CONSTRAINT announcement_pkey PRIMARY KEY (id);
+
 -- Events (Event Store)
 CREATE TABLE IF NOT EXISTS events (
                                       id SERIAL PRIMARY KEY,
