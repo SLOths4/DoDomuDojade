@@ -15,6 +15,7 @@ Dodomudojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyj
 
 ## Spis treści
 
+- [Dokumentacja](#Dokumentacja)
 - [Dostępne moduły](#Dostępne-moduły)
 - [Stos technologiczny](#stos-technologiczny)
 - [Szybki start (dev)](#Szybki-start-dev)
@@ -22,6 +23,10 @@ Dodomudojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyj
 - [Rozwiązywanie problemów](#rozwiązywanie-problemów)
 - [FAQ](#faq)
 - [Autorzy](#Autorzy)
+
+## Dokumentacja
+Dokumentacja projektu znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/)
+Autogenerowana dokumentacja kodu (klas, funkcji) znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/api/)
 
 ## Dostępne moduły
 - **tramwaje**
@@ -99,7 +104,7 @@ values  (4, 'tram', true, '00:00', '23:59'),
         (5, 'weather', true, '00:00', '23:59'),
         (6, 'quote', true, '00:00', '23:59'),
         (7, 'word', true, '00:00', '23:59'),
-        (1, 'announcements', true, '00:00', '23:59'),
+        (1, 'announcement', true, '00:00', '23:59'),
         (3, 'countdown', true, '00:00', '23:59'),
         (2, 'calendar', true, '00:00', '23:59');
 ```
@@ -113,7 +118,7 @@ Zainstaluj zależności:
    ```
 Uruchom backend lokalnie (przykłady):
 ```shell script
-php -S localhost:8080 -t public/ public/router.php
+php -S localhost:8080 -t public/ public/index.php
 ```
 Skonfiguruj zmienne środowiskowe:
 ```shell script
@@ -216,7 +221,7 @@ Warto dodać, że niektóre ścieżki zawierają tzw. "middleware". Jest ono cz�
 - translacje
 - uwierzytelnianie
 
-No dobrze, dobrze. Rzeczywiście, jeżeli uważnie się przyjrzeć zawartości repozytorium to znajdziemy pare nieopisanych tutaj części. Większość z nich staje się całkiem oczywista po zrozumieniu wyżej opisanej, głównej koncepcji. Do niewymieniony, ale istonych lementów należą:
+No dobrze, dobrze. Rzeczywiście, jeżeli uważnie się przyjrzeć zawartości repozytorium to znajdziemy pare nieopisanych tutaj części. Większość z nich staje się całkiem oczywista po zrozumieniu wyżej opisanej, głównej koncepcji. Do niewymieniony, ale istonych elementów należą:
 - Factory - *fabryki* tworzą insancje obiektów
 
 *To be continued...*
