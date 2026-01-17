@@ -92,7 +92,7 @@ grant execute on all functions in schema public to ddd;
 
 ```
 
-Nie można zapomnieć o dodaniu listy dostępnych modułów do tablei modułów (standarodowo `module`)
+Nie można zapomnieć o dodaniu listy dostępnych modułów do tabeli modułów (standarodowo `module`)
 ```postgresql
 insert into public.module (id, module_name, is_active, start_time, end_time)
 values  (4, 'tram', true, '00:00', '23:59'),
