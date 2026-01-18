@@ -61,7 +61,7 @@ psql -U postgres
 create user ddd with password 'your_password';
 
 # 3. Create database
-create database dodomudojade owner ddd
+create database dodomudojade owner ddd;
 
 # 4. Exit
 \q
