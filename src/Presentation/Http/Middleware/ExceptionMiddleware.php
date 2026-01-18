@@ -8,6 +8,7 @@ use App\Domain\Shared\AuthenticationException;
 use App\Domain\Shared\DomainException;
 use App\Infrastructure\Shared\InfrastructureException;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
+use App\Presentation\Http\Shared\MiddlewareInterface;
 use App\Presentation\Http\Shared\Translator;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

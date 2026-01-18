@@ -9,6 +9,7 @@ use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
 final class ModuleController extends BaseController
@@ -16,6 +17,7 @@ final class ModuleController extends BaseController
     public function __construct(
          RequestContext                     $requestContext,
          ViewRendererInterface              $renderer,
+         private readonly ServerRequestInterface $request,
         private readonly LoggerInterface $logger,
         private readonly Translator $translator,
         private readonly ToggleModuleUseCase $toggleModuleUseCase,
@@ -24,10 +26,15 @@ final class ModuleController extends BaseController
         parent::__construct($requestContext, $renderer);
     }
 
-    public function toggleModule(): ResponseInterface
+    /**
+     * Toggle module via API
+     * POST /api/module/{id}/toggle
+     * @throws \Exception
+     */
+    public function toggle(array $vars = []): ResponseInterface
     {
         $this->logger->debug("Received toggle module request");
-        $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
+        $moduleId = (int)$vars['id'];
 
         $this->toggleModuleUseCase->execute($moduleId);
 
@@ -37,12 +44,18 @@ final class ModuleController extends BaseController
         ]);
     }
 
-    public function editModule(): ResponseInterface
+    /**
+     * Update module via API
+     * PATCH /api/module/{id}
+     * @throws \Exception
+     */
+    public function update(array $vars = []): ResponseInterface
     {
-        $this->logger->debug("Received edit module request");
-        $moduleId = (int)filter_input(INPUT_POST, 'module_id', FILTER_VALIDATE_INT);
+        $this->logger->debug("Received update module request");
+        $moduleId = (int)$vars['id'];
+        $body = json_decode((string)$this->request->getBody(), true);
 
-        $dto = EditModuleDTO::fromHttpRequest($_POST);
+        $dto = EditModuleDTO::fromArray($body);
 
         $this->updateModuleUseCase->execute($moduleId, $dto);
 

@@ -2,7 +2,7 @@
 namespace App\Domain\Module;
 
 use App\Domain\Shared\DomainException;
-use App\Domain\Shared\ExceptionCodes;
+use App\Domain\Shared\DomainExceptionCodes;
 use DateTimeImmutable;
 
 /**
@@ -17,7 +17,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.invalid_id',
-            ExceptionCodes::MODULE_INVALID_ID->value
+            DomainExceptionCodes::MODULE_INVALID_ID->value
         );
     }
 
@@ -28,7 +28,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.not_found',
-            ExceptionCodes::MODULE_NOT_FOUND->value,
+            DomainExceptionCodes::MODULE_NOT_FOUND->value,
             [
                 '$id' => $id
             ]
@@ -42,7 +42,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.update_failed',
-            ExceptionCodes::MODULE_UPDATE_FAILED->value
+            DomainExceptionCodes::MODULE_UPDATE_FAILED->value
         );
     }
 
@@ -53,7 +53,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.toggle_failed',
-            ExceptionCodes::MODULE_TOGGLE_FAILED->value
+            DomainExceptionCodes::MODULE_TOGGLE_FAILED->value
         );
     }
 
@@ -61,7 +61,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.invalid_start_time',
-            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
             [
                 'start_time' => $startTime
             ]
@@ -72,7 +72,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.invalid_end_time',
-            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
             [
                 'end_time' => $endTime
             ]
@@ -83,7 +83,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.start_time_greater_than_end_time',
-            ExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
             [
                 'start_time' => $startTime,
                 'end_time' => $endTime
@@ -95,7 +95,7 @@ final class ModuleException extends DomainException
     {
         return new self(
             'module.invalid_name',
-            ExceptionCodes::MODULE_INVALID_NAME->value,
+            DomainExceptionCodes::MODULE_INVALID_NAME->value,
             [
                 'name' => $name
             ]

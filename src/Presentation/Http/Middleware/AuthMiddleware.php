@@ -6,6 +6,7 @@ namespace App\Presentation\Http\Middleware;
 use App\Domain\Shared\AuthenticationException;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Presentation\Http\Context\RequestContext;
+use App\Presentation\Http\Shared\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

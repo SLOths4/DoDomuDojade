@@ -1,7 +1,5 @@
  <?php
 return [
-    'error.user_not_found' => 'Użytkownik nie znaleziony',
-
     'module_name' => [
         'announcement' => 'ogłoszenia',
         'calendar' => 'kalendarz',
@@ -12,8 +10,12 @@ return [
         'word' => 'słowo dnia',
     ],
 
-    'csrf' => [
-        'invalid' => 'Nieprawidłowy token csrf'
+    'validation' => [
+        'csrf' => [
+            'invalid' => 'Nieprawidłowy token csrf',
+            'missing' => 'Brak tokenu csrf',
+        ],
+        'failed' => "nieudana weryfikacja danych",
     ],
 
     'auth' => [
@@ -31,8 +33,6 @@ return [
         'load_failed' => 'Nie udało się załadować strony',
         'missing_data' => 'Brakuje wymaganych danych',
     ],
-
-
 
     // announcement
     'announcement' => [

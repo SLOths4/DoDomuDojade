@@ -21,11 +21,11 @@ final readonly class AddAnnouncementDTO
      * @throws MissingParameterException
      * @throws InvalidDateTimeException
      */
-    public static function fromHttpRequest(array $post): self
+    public static function fromArray(array $array): self
     {
-        $title = (string)($post['title']);
-        $text = (string)($post['text']);
-        $validUntil = $post['valid_until'];
+        $title = (string)($array['title']);
+        $text = (string)($array['text']);
+        $validUntil = $array['valid_until'];
 
         try {
             $validUntil = new DateTimeImmutable($validUntil);

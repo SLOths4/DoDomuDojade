@@ -63,27 +63,25 @@
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
-                                <form method="POST" action="/panel/approve_announcement" class="inline">
-                                    <input type="hidden" name="_token" value="{{ csrf.token }}">
-                                    <input type="hidden" name="announcement_id" value="{{ announcement.id }}">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm">
-                                        <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
-                                    </button>
-                                </form>
-                                <form method="POST" action="/panel/reject_announcement" class="inline">
-                                    <input type="hidden" name="_token" value="{{ csrf.token }}">
-                                    <input type="hidden" name="announcement_id" value="{{ announcement.id }}">
-                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm">
-                                        <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
-                                    </button>
-                                </form>
+                                <button type="button"
+                                        class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="{{ announcement.id }}"
+                                        data-csrf-token="{{ csrf.token }}">
+                                    <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
+                                </button>
+                                <button type="button"
+                                        class="reject-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="{{ announcement.id }}"
+                                        data-csrf-token="{{ csrf.token }}">
+                                    <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
+                                </button>
                                 <button type="button"
                                         class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-sm"
                                         data-announcement-id="{{ announcement.id }}"
                                         data-title="{{ announcement.title }}"
                                         data-text="{{ announcement.text }}"
                                         data-valid-until="{{ announcement.validUntil }}"
-                                        data-status="{% if announcement.status == 'APPROVED' %}1{% elseif announcement.status == 'REJECTED' %}2{% else %}0{% endif %}">
+                                        data-status="{% if announcement.status == 'APPROVED' %}APPROVED{% elseif announcement.status == 'REJECTED' %}REJECTED{% else %}PENDING{% endif %}">
                                     <i class="fa-solid fa-edit mr-1"></i>Edytuj
                                 </button>
                             </td>
@@ -93,6 +91,7 @@
                 </table>
             </div>
         {% endif %}
+
 
         {# SECTION 3: All announcements #}
         {% if announcements is not empty %}
@@ -251,7 +250,6 @@
                 };
 
                 const forms = {
-                    delete: document.querySelector('#confirmationModal form.delete-form'),
                     edit: document.getElementById('editAnnouncementForm'),
                     addAnnouncement: document.getElementById('addAnnouncementForm')
                 };
@@ -274,55 +272,142 @@
                 };
 
                 // ============================================
-                // ADD ANNOUNCEMENT FORM - AJAX
+                // NOTIFICATION HELPER
                 // ============================================
                 const showFormNotification = (message, type = 'error') => {
                     const notification = document.getElementById('formNotification');
-                    const bgClass = type === 'success' 
+                    const bgClass = type === 'success'
                         ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-400 dark:border-green-600'
                         : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-400 dark:border-red-600';
-                    
+
                     notification.innerHTML = `<div class="p-3 rounded border ${bgClass} mb-4">${message}</div>`;
-                    
+
                     // Auto-remove after 5 seconds
                     setTimeout(() => {
                         notification.innerHTML = '';
                     }, 5000);
                 };
 
+                // ============================================
+                // HELPER: Refresh announcements from API
+                // ============================================
+                const refreshAnnouncementsTable = async () => {
+                    try {
+                        const response = await fetch('/api/announcements', {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const announcements = await response.json();
+                            updateTableRows(announcements);
+                        }
+                    } catch (error) {
+                        console.error('Błąd przy pobieraniu ogłoszeń:', error);
+                    }
+                };
+
+                const updateTableRows = (announcements) => {
+                    const tbody = document.querySelector('#announcementsTable tbody');
+                    if (!tbody) return;
+
+                    tbody.innerHTML = '';
+
+                    announcements.forEach(announcement => {
+                        const statusClass = announcement.status === 'APPROVED'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                            : announcement.status === 'REJECTED'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
+
+                        const row = `
+                    <tr>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.title}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.authorName || 'Nieznany użytkownik'}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.createdAt}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.validUntil}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">
+                            <span class="px-2 py-1 rounded text-xs font-semibold ${statusClass}">
+                                ${announcement.status}
+                            </span>
+                        </td>
+                        <td class="break-words whitespace-normal px-4 py-2 border text-xs">
+                            ${announcement.decidedAt
+                            ? `${announcement.decidedAt}<br>przez: ${announcement.decidedByName || 'Admin'}`
+                            : '<span class="text-gray-400 dark:text-gray-500">-</span>'
+                        }
+                        </td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.text}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
+                            <button type="button"
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="${announcement.id}">
+                                Usuń
+                            </button>
+                            <button type="button"
+                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="${announcement.id}"
+                                    data-title="${announcement.title}"
+                                    data-text="${announcement.text}"
+                                    data-valid-until="${announcement.validUntil}"
+                                    data-status="${announcement.status === 'APPROVED' ? '1' : announcement.status === 'REJECTED' ? '2' : '0'}">
+                                Edytuj
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
+
+                    // Re-attach event listeners for new buttons
+                    addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
+                    addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                };
+
+                // ============================================
+                // ADD ANNOUNCEMENT - AJAX
+                // POST /api/announcement
+                // ============================================
                 forms.addAnnouncement.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(forms.addAnnouncement);
                     const submitBtn = buttons.addAnnouncement;
                     const spinner = document.getElementById('addAnnouncementSpinner');
-                    const btnText = document.getElementById('addAnnouncementBtnText');
-                    
+                    const csrfToken = formData.get('_token');
+
                     // Disable button and show spinner
                     submitBtn.disabled = true;
                     spinner.classList.remove('hidden');
-                    
+
                     try {
-                        const response = await fetch('/announcement', {
+                        const response = await fetch('/api/announcement', {
                             method: 'POST',
-                            body: formData,
                             headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({
+                                title: formData.get('title'),
+                                text: formData.get('text'),
+                                valid_until: formData.get('valid_until')
+                            })
                         });
-                        
+
                         const data = await response.json();
-                        
+
                         if (response.ok && data.success) {
                             showFormNotification('✅ Ogłoszenie dodane pomyślnie!', 'success');
                             forms.addAnnouncement.reset();
                             initCounter(addTitleInput, addTitleCounter);
                             initCounter(addTextInput, addTextCounter);
-                            
-                            // Optional: Reload page after 2 seconds
+
+                            // Odśwież tabelę bez pełnego refresh
                             setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);
+                                refreshAnnouncementsTable();
+                            }, 500);
                         } else {
                             showFormNotification(data.message || 'Błąd: ' + data.error, 'error');
                         }
@@ -335,16 +420,48 @@
                 });
 
                 // ============================================
-                // DELETE ANNOUNCEMENT - Existing logic
+                // DELETE ANNOUNCEMENT - AJAX
+                // DELETE /api/announcement/{id}
                 // ============================================
                 const handleDeleteButtonClick = (event) => {
                     event.preventDefault();
-                    forms.delete.querySelector('input[name="announcement_id"]').value = event.currentTarget.getAttribute('data-announcement-id');
+                    const announcementId = event.currentTarget.getAttribute('data-announcement-id');
+                    document.getElementById('confirmationModal').dataset.announcementId = announcementId;
                     toggleModal(modals.confirmation, true);
                 };
 
+                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
+
+                buttons.confirmDelete.addEventListener('click', async () => {
+                    const announcementId = document.getElementById('confirmationModal').dataset.announcementId;
+                    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+                    try {
+                        const response = await fetch(`/api/announcement/${announcementId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-Token': csrfToken
+                            }
+                        });
+
+                        if (response.status === 204) {
+                            showFormNotification('✅ Ogłoszenie usunięte!', 'success');
+                            setTimeout(() => {
+                                refreshAnnouncementsTable();
+                            }, 500);
+                        } else {
+                            showFormNotification('❌ Błąd usuwania', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        toggleModal(modals.confirmation, false);
+                    }
+                });
+
                 // ============================================
-                // EDIT ANNOUNCEMENT - Existing logic
+                // EDIT ANNOUNCEMENT - AJAX
+                // PATCH /api/announcement/{id}
                 // ============================================
                 const handleEditButtonClick = (event) => {
                     event.preventDefault();
@@ -361,6 +478,101 @@
 
                     toggleModal(modals.edition, true);
                 };
+
+                forms.edit.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const announcementId = forms.edit.querySelector('#edit_announcement_id').value;
+                    const csrfToken = forms.edit.querySelector('input[name="_token"]').value;
+
+                    try {
+                        const response = await fetch(`/api/announcement/${announcementId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({
+                                title: forms.edit.querySelector('#edit_title').value,
+                                text: forms.edit.querySelector('#edit_text').value,
+                                valid_until: forms.edit.querySelector('#edit_valid_until').value,
+                                status: forms.edit.querySelector('#edit_status').value
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ Ogłoszenie zaktualizowane!', 'success');
+                            setTimeout(() => {
+                                refreshAnnouncementsTable();
+                            }, 500);
+                        } else {
+                            showFormNotification(data.message || 'Błąd', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        toggleModal(modals.edition, false);
+                    }
+                });
+
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
+
+                // ============================================
+                // APPROVE/REJECT BUTTONS
+                // POST /api/announcement/{id}/approve
+                // POST /api/announcement/{id}/reject
+                // ============================================
+                document.addEventListener('click', async (e) => {
+                    // APPROVE
+                    if (e.target.closest('.approve-btn')) {
+                        const btn = e.target.closest('.approve-btn');
+                        const announcementId = btn.getAttribute('data-announcement-id');
+                        const csrfToken = btn.getAttribute('data-csrf-token');
+
+                        try {
+                            const response = await fetch(`/api/announcement/${announcementId}/approve`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-Token': csrfToken
+                                }
+                            });
+
+                            const data = await response.json();
+                            if (response.ok) {
+                                showFormNotification('✅ Zatwierdzone!', 'success');
+                                setTimeout(() => window.location.reload(), 1500);
+                            }
+                        } catch (error) {
+                            showFormNotification('❌ Błąd: ' + error.message, 'error');
+                        }
+                    }
+
+                    // REJECT
+                    if (e.target.closest('.reject-btn')) {
+                        const btn = e.target.closest('.reject-btn');
+                        const announcementId = btn.getAttribute('data-announcement-id');
+                        const csrfToken = btn.getAttribute('data-csrf-token');
+
+                        try {
+                            const response = await fetch(`/api/announcement/${announcementId}/reject`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-Token': csrfToken
+                                }
+                            });
+
+                            const data = await response.json();
+                            if (response.ok) {
+                                showFormNotification('✅ Odrzucone!', 'success');
+                                setTimeout(() => window.location.reload(), 1500);
+                            }
+                        } catch (error) {
+                            showFormNotification('❌ Błąd: ' + error.message, 'error');
+                        }
+                    }
+                });
 
                 // ============================================
                 // CHARACTER COUNTERS
@@ -399,18 +611,10 @@
                 }
 
                 // ============================================
-                // EVENT LISTENERS
+                // EVENT LISTENERS - DELETE & EDIT BUTTONS
                 // ============================================
                 addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
-                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
-                buttons.confirmDelete.addEventListener('click', () => forms.delete.submit());
-
                 addClickEventToButtons('.edit-btn', handleEditButtonClick);
-                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
-                forms.edit.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    forms.edit.submit();
-                });
             });
         </script>
     </main>

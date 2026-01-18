@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Presentation\View\DTO;
+namespace App\Presentation\Http\DTO;
 
 use DateTimeImmutable;
 

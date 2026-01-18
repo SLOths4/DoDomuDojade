@@ -2,7 +2,7 @@
 namespace App\Domain\Announcement;
 
 use App\Domain\Shared\DomainException;
-use App\Domain\Shared\ExceptionCodes;
+use App\Domain\Shared\DomainExceptionCodes;
 
 /**
  * Announcement domain exceptions
@@ -19,7 +19,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_id',
-            ExceptionCodes::ANNOUNCEMENT_INVALID_ID->value,
+            DomainExceptionCodes::ANNOUNCEMENT_INVALID_ID->value,
             422,
             [
                 'announcement_id' => $id
@@ -35,7 +35,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.empty_title',
-            ExceptionCodes::ANNOUNCEMENT_EMPTY_TITLE->value
+            DomainExceptionCodes::ANNOUNCEMENT_EMPTY_TITLE->value
         );
     }
 
@@ -47,7 +47,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.empty_text',
-            ExceptionCodes::ANNOUNCEMENT_EMPTY_TEXT->value
+            DomainExceptionCodes::ANNOUNCEMENT_EMPTY_TEXT->value
         );
     }
 
@@ -60,7 +60,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_status',
-            ExceptionCodes::ANNOUNCEMENT_INVALID_STATUS->value,
+            DomainExceptionCodes::ANNOUNCEMENT_INVALID_STATUS->value,
             400,
             [
                 'staus' => $status
@@ -77,7 +77,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.not_found',
-            ExceptionCodes::ANNOUNCEMENT_NOT_FOUND->value,
+            DomainExceptionCodes::ANNOUNCEMENT_NOT_FOUND->value,
             404,
             [
                 'announcement_id' => $id
@@ -93,7 +93,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.create_failed',
-            ExceptionCodes::ANNOUNCEMENT_CREATE_FAILED->value,
+            DomainExceptionCodes::ANNOUNCEMENT_CREATE_FAILED->value,
             500
         );
     }
@@ -107,7 +107,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.delete_failed',
-            ExceptionCodes::ANNOUNCEMENT_DELETE_FAILED->value,
+            DomainExceptionCodes::ANNOUNCEMENT_DELETE_FAILED->value,
             500,
             [
                 'announcement_id' => $id
@@ -123,7 +123,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.update_failed',
-            ExceptionCodes::ANNOUNCEMENT_UPDATE_FAILED->value,
+            DomainExceptionCodes::ANNOUNCEMENT_UPDATE_FAILED->value,
             500
         );
     }
@@ -136,7 +136,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.status_update_failed',
-            ExceptionCodes::ANNOUNCEMENT_STATUS_UPDATE_FAILED->value,
+            DomainExceptionCodes::ANNOUNCEMENT_STATUS_UPDATE_FAILED->value,
             500
         );
     }
@@ -150,7 +150,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_title_length',
-            ExceptionCodes::ANNOUNCEMENT_TITLE_TOO_SHORT->value,
+            DomainExceptionCodes::ANNOUNCEMENT_TITLE_TOO_SHORT->value,
             400,
             [
                 'min title length' => $minTitleLength,
@@ -167,7 +167,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
                 'announcement.invalid_text_length',
-                ExceptionCodes::ANNOUNCEMENT_TEXT_TOO_SHORT->value,
+                DomainExceptionCodes::ANNOUNCEMENT_TEXT_TOO_SHORT->value,
                 400,
                 [
                     'min title length' => $minTextLength,
@@ -184,7 +184,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_title_length',
-            ExceptionCodes::ANNOUNCEMENT_TITLE_TOO_LONG->value,
+            DomainExceptionCodes::ANNOUNCEMENT_TITLE_TOO_LONG->value,
             400,
             [
                 'max title length' => $maxTitleLength
@@ -201,7 +201,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.invalid_text_length',
-            ExceptionCodes::ANNOUNCEMENT_TEXT_TOO_LONG->value,
+            DomainExceptionCodes::ANNOUNCEMENT_TEXT_TOO_LONG->value,
             400,
             [
                 'max title length' => $maxTextLength
@@ -217,7 +217,7 @@ final class AnnouncementException extends DomainException
     {
             return new self(
                 'announcement.expiration_to_far_in_the_future',
-                ExceptionCodes::ANNOUNCEMENT_EXPIRATION_TOO_FAR_IN_THE_FUTURE->value,
+                DomainExceptionCodes::ANNOUNCEMENT_EXPIRATION_TOO_FAR_IN_THE_FUTURE->value,
                 422
             );
     }
@@ -226,7 +226,7 @@ final class AnnouncementException extends DomainException
     {
         return new self(
             'announcement.expiration_in_the_past',
-            ExceptionCodes::ANNOUNCEMENT_EXPIRATION_IN_THE_PAST->value,
+            DomainExceptionCodes::ANNOUNCEMENT_EXPIRATION_IN_THE_PAST->value,
             422
         );
     }

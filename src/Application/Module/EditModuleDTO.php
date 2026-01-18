@@ -16,10 +16,10 @@ final readonly class EditModuleDTO
     /**
      * @throws InvalidDateTimeException
      */
-    public static function fromHttpRequest(array $post): self
+    public static function fromArray(array $array): self
     {
-        $start = $post['start_time'];
-        $end = $post['end_time'];
+        $start = $array['start_time'];
+        $end = $array['end_time'];
 
         try {
             $start = new DateTimeImmutable($start);

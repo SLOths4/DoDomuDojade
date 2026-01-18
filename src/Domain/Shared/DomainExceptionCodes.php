@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared;
 
-enum ExceptionCodes: string
+enum DomainExceptionCodes: string
 {
     // Logger
     case LOGGER_CREATION_FAILED = "LOGGER_CREATION_FAILED";
@@ -31,6 +31,8 @@ enum ExceptionCodes: string
     // WEB RELATED
     case INVALID_CSRF = "INVALID_CSRF";
     case MISSING_CSRF = "MISSING_CSRF";
+    case INVALID_DATETIME = "INVALID_DATETIME";
+    CASE MISSING_PARAMETER = "MISSING_PARAMETER";
 
     // Auth
     case AUTH_INVALID_CREDENTIALS = "AUTH_INVALID_CREDENTIALS";

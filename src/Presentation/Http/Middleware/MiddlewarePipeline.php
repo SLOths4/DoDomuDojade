@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Middleware;
 
+use App\Presentation\Http\Shared\MiddlewareInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

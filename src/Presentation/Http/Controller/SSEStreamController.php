@@ -10,8 +10,8 @@ use Throwable;
 final class SSEStreamController extends BaseController
 {
     public function __construct(
-         RequestContext                     $requestContext,
-         ViewRendererInterface              $renderer,
+        RequestContext                     $requestContext,
+        ViewRendererInterface              $renderer,
         private readonly Client $redis,
     ){
         parent::__construct($requestContext, $renderer);
@@ -33,31 +33,45 @@ final class SSEStreamController extends BaseController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $clientId = $_GET['clientId'] ?? uniqid('client_', true);
+        $clientId = $_GET['clientId'];
         $channel = "sse:broadcast";
 
         $this->sendEvent('connected', ['clientId' => $clientId]);
 
         try {
-            $loop = $this->redis->pubSubLoop();
-            $loop->subscribe($channel);
-
             $lastHeartbeat = time();
+            $pollInterval = 100000;
 
-            foreach ($loop as $msg) {
-                if (connection_aborted()) break;
+            while (true) {
+                if (connection_aborted()) {
+                    break;
+                }
+
+                try {
+                    $message = $this->redis->brpop($channel, 1);
+
+                    if ($message) {
+                        $payload = $message[1];
+                        echo "data: " . $payload . "\n\n";
+                        if (connection_aborted()) {
+                            break;
+                        }
+                        $lastHeartbeat = time();
+                    }
+
+                } catch (Throwable $e) {
+                    error_log("SSE Redis error: " . $e->getMessage());
+                    usleep($pollInterval);
+                    continue;
+                }
 
                 $now = time();
                 if ($now - $lastHeartbeat >= 20) {
                     echo ": heartbeat\n\n";
-                    if (flush() === false || connection_aborted()) break;
+                    if (connection_aborted()) {
+                        break;
+                    }
                     $lastHeartbeat = $now;
-                }
-
-                if ($msg->kind === 'message') {
-                    echo "data: $msg->payload\n\n";
-                    if (flush() === false || connection_aborted()) break;
-                    $lastHeartbeat = time();
                 }
             }
         } catch (Throwable $e) {
@@ -73,5 +87,4 @@ final class SSEStreamController extends BaseController
         echo "data: " . json_encode($data) . "\n\n";
         flush();
     }
-
 }

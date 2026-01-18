@@ -4,6 +4,7 @@ namespace App\Domain\Announcement;
 
 use App\Domain\Announcement\Event\AnnouncementApprovedEvent;
 use App\Domain\Announcement\Event\AnnouncementCreatedEvent;
+use App\Domain\Announcement\Event\AnnouncementProposedEvent;
 use App\Domain\Announcement\Event\AnnouncementRejectedEvent;
 use App\Domain\Announcement\Event\AnnouncementUpdatedEvent;
 use App\Domain\Shared\DomainEvent;
@@ -74,14 +75,16 @@ final class Announcement
 
     /**
      * Proposes a new announcement
+     * @throws \DateMalformedStringException
      */
     public static function proposeNew(
         string $title,
         string $text,
         DateTimeImmutable $validUntil
     ): self {
-        return new self(
-            id: null,
+        $id = AnnouncementId::generate();
+        $announcement = new self(
+            id: $id,
             title: $title,
             text: $text,
             createdAt: new DateTimeImmutable(),
@@ -91,12 +94,19 @@ final class Announcement
             decidedAt: null,
             decidedBy: null
         );
+
+        $announcement->recordEvent(
+            new AnnouncementProposedEvent(
+                announcementId: $id,
+                title:          $title,
+            )
+        );
+
+        return $announcement;
     }
 
     /**
      * Change status to approved
-     *
-     * MUTABLE OPERATION - zmienia state entity
      */
     public function approve(int $decidedBy): void
     {
@@ -115,8 +125,6 @@ final class Announcement
 
     /**
      * Change status to approved
-     *
-     * MUTABLE OPERATION - zmienia state entity
      */
     public function reject(int $decidedBy): void
     {
@@ -135,6 +143,7 @@ final class Announcement
 
     /**
      * Updates announcement data
+     * @throws \DateMalformedStringException
      */
     public function update(string $title, string $text, DateTimeImmutable $validUntil, ?AnnouncementStatus $status = null, ?int $decidedBy = null): void
     {

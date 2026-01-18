@@ -12,6 +12,9 @@ abstract class DomainEvent {
     protected string $aggregateId;
     protected string $aggregateType;
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     public function __construct(string $aggregateId, string $aggregateType) {
         $this->eventId = uniqid('evt_', true);
         $this->occurredAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
@@ -19,12 +22,34 @@ abstract class DomainEvent {
         $this->aggregateType = $aggregateType;
     }
 
+    /**
+     * Get event type identifier
+     *
+     * Used for routing events to specific handlers
+     */
     abstract public function getEventType(): string;
+
+    /**
+     * Returns payload
+     *
+     * @return array
+     */
     abstract protected function getPayload(): array;
 
+    /**
+     * @return string Event id
+     */
     public function getEventId(): string { return $this->eventId; }
+
+    /**
+     * @return string Event id
+     */
     public function getAggregateId(): string { return $this->aggregateId; }
 
+    /**
+     * Returns events contents as an array
+     * @return array
+     */
     public function toArray(): array
     {
         return [

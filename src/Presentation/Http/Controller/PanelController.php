@@ -10,10 +10,11 @@ use App\Domain\Announcement\AnnouncementStatus;
 use App\Domain\Module\Module;
 use App\Domain\Shared\ViewException;
 use App\Presentation\Http\Context\RequestContext;
+use App\Presentation\Http\DTO\ModuleViewDTO;
+use App\Presentation\Http\Mapper\AnnouncementViewMapper;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
-use App\Presentation\View\DTO\ModuleViewDTO;
 use App\Presentation\View\TemplateNames;
 use DateTimeImmutable;
 use Exception;
@@ -37,6 +38,7 @@ class PanelController extends BaseController
         private readonly GetAllCountdownsUseCase    $getAllCountdownsUseCase,
         private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
         private readonly Translator                 $translator,
+         private readonly AnnouncementViewMapper    $announcementMapper
     ){
         parent::__construct($requestContext, $renderer);
     }
@@ -176,12 +178,7 @@ class PanelController extends BaseController
      */
     public function index(): ResponseInterface
     {
-        $announcements = $this->getAllAnnouncementsUseCase->execute();
-        $users = $this->getAllUsersUseCase->execute();
-        $modules = $this->getAllModulesUseCase->execute();
-
         $this->logger->info("Panel index loaded");
-
         return $this->render(TemplateNames::PANEL->value);
     }
 
@@ -197,15 +194,19 @@ class PanelController extends BaseController
         $announcements = $this->getAllAnnouncementsUseCase->execute();
 
         $usernames = $this->buildUsernamesMap($users);
-        $allAnnouncements = $this->formatAnnouncements($announcements);
+
+        $announcementDTOs = $this->announcementMapper->toDTOCollection(
+            $announcements,
+            $usernames
+        );
 
         $pendingAnnouncements = array_filter(
-            $allAnnouncements,
-            fn($a) => $a->status === AnnouncementStatus::PENDING->name
+            $announcementDTOs,
+            fn($a) => $a->status === 'PENDING'
         );
         $decidedAnnouncements = array_filter(
-            $allAnnouncements,
-            fn($a) => $a->status !== AnnouncementStatus::PENDING->name
+            $announcementDTOs,
+            fn($a) => $a->status !== 'PENDING'
         );
 
         $this->logger->info("Announcements page loaded");
@@ -215,9 +216,5 @@ class PanelController extends BaseController
             'announcements' => $decidedAnnouncements,
             'pendingAnnouncements' => $pendingAnnouncements,
         ]);
-    }
-
-    public function test(): ResponseInterface {
-        return $this->render(TemplateNames::SSE->value, []);
     }
 }

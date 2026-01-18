@@ -9,22 +9,31 @@ use App\Application\Announcement\UseCase\ApproveRejectAnnouncementUseCase;
 use App\Application\Announcement\UseCase\CreateAnnouncementUseCase;
 use App\Application\Announcement\UseCase\DeleteAnnouncementUseCase;
 use App\Application\Announcement\UseCase\EditAnnouncementUseCase;
+use App\Application\Announcement\UseCase\GetAllAnnouncementsUseCase;
+use App\Application\Announcement\UseCase\GetAnnouncementByIdUseCase;
 use App\Application\Announcement\UseCase\ProposeAnnouncementUseCase;
+use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Announcement\AnnouncementStatus;
+use App\Domain\Shared\InvalidDateTimeException;
+use App\Domain\Shared\MissingParameterException;
+use App\Domain\User\UserException;
 use App\Infrastructure\Configuration\Config;
 use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use DateTimeImmutable;
+use Exception;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class AnnouncementController extends BaseController
 {
     public function __construct(
          RequestContext $requestContext,
          ViewRendererInterface $viewRenderer,
+         private readonly ServerRequestInterface $request,
         private readonly Translator $translator,
         private readonly Config $config,
         private readonly CreateAnnouncementUseCase $createAnnouncementUseCase,
@@ -32,25 +41,57 @@ final class AnnouncementController extends BaseController
         private readonly EditAnnouncementUseCase $editAnnouncementUseCase,
         private readonly ProposeAnnouncementUseCase $proposeAnnouncementUseCase,
         private readonly ApproveRejectAnnouncementUseCase $approveRejectAnnouncementUseCase,
+        private readonly GetAnnouncementByIdUseCase $getAnnouncementByIdUseCase,
+        private readonly GetAllAnnouncementsUseCase  $getAllAnnouncementsUseCase,
     ) {
         parent::__construct($requestContext, $viewRenderer);
     }
 
-    public function deleteAnnouncement(): ResponseInterface
+    /**
+     * @throws Exception
+     */
+    public function delete(array $vars = []): ResponseInterface
     {
-        $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+        $id = (string)$vars['id'];
 
-        $this->deleteAnnouncementUseCase->execute($announcementId);
+        $this->deleteAnnouncementUseCase->execute(new AnnouncementId($id));
 
-        return $this->jsonResponse(200, [
-            'success' => true,
-            'message' => $this->translator->translate('announcement.deleted_successfully'),
-        ]);
+        return $this->jsonResponse(204, []);
     }
 
-    public function addAnnouncement(): ResponseInterface
+    /**
+     * @throws Exception
+     */
+    public function get(array $vars = []): ResponseInterface
     {
-        $dto = AddAnnouncementDTO::fromHttpRequest($_POST);
+        $id = (string)$vars['id'];
+
+        $announcement = $this->getAnnouncementByIdUseCase->execute(new AnnouncementId($id));
+
+        return $this->jsonResponse(200, $announcement->toArray());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getAll(): ResponseInterface
+    {
+        $announcements = $this->getAllAnnouncementsUseCase->execute();
+
+        return $this->jsonResponse(200, $announcements);
+    }
+
+    /**
+     * @throws UserException
+     * @throws InvalidDateTimeException
+     * @throws MissingParameterException
+     * @throws Exception
+     */
+    public function add(): ResponseInterface
+    {
+        $body = json_decode((string)$this->request->getBody(), true);
+
+        $dto = AddAnnouncementDTO::fromArray($body);
         $userId = $this->getCurrentUserId();
 
         $this->createAnnouncementUseCase->execute($dto, $userId);
@@ -61,10 +102,17 @@ final class AnnouncementController extends BaseController
         ]);
     }
 
-    public function editAnnouncement(): ResponseInterface
+    /**
+     * @throws UserException
+     * @throws \DateMalformedStringException
+     * @throws AnnouncementException
+     */
+    public function update(array $vars = []): ResponseInterface
     {
-        $id = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
-        $dto = EditAnnouncementDTO::fromHttpRequest($_POST);
+        $id = (string)$vars['id'];
+        $body = json_decode((string)$this->request->getBody(), true);
+
+        $dto = EditAnnouncementDTO::fromArray($body);
         $userId = $this->getCurrentUserId();
 
         $this->editAnnouncementUseCase->execute(
@@ -79,13 +127,17 @@ final class AnnouncementController extends BaseController
         ]);
     }
 
-    public function approveAnnouncement(): ResponseInterface
+    /**
+     * @throws UserException
+     * @throws Exception
+     */
+    public function approve(array $vars = []): ResponseInterface
     {
-        $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+        $id = (string)$vars['id'];
         $userId = $this->getCurrentUserId();
 
         $this->approveRejectAnnouncementUseCase->execute(
-            new AnnouncementId($announcementId),
+            new AnnouncementId($id),
             AnnouncementStatus::APPROVED,
             $userId
         );
@@ -96,13 +148,17 @@ final class AnnouncementController extends BaseController
         ]);
     }
 
-    public function rejectAnnouncement(): ResponseInterface
+    /**
+     * @throws UserException
+     * @throws Exception
+     */
+    public function reject(array $vars = []): ResponseInterface
     {
-        $announcementId = filter_input(INPUT_POST, 'announcement_id', FILTER_VALIDATE_INT);
+        $id = (string)$vars['id'];
         $userId = $this->getCurrentUserId();
 
         $this->approveRejectAnnouncementUseCase->execute(
-            new AnnouncementId($announcementId),
+            new AnnouncementId($id),
             AnnouncementStatus::REJECTED,
             $userId
         );
@@ -113,12 +169,18 @@ final class AnnouncementController extends BaseController
         ]);
     }
 
-    public function proposeAnnouncement(): ResponseInterface
+    /**
+     * @throws \DateMalformedStringException
+     * @throws AnnouncementException
+     */
+    public function propose(array $vars = []): ResponseInterface
     {
+        $body = json_decode((string)$this->request->getBody(), true);
+
         $today = new DateTimeImmutable();
         $modified = $today->modify($this->config->announcementDefaultValidDate);
 
-        $dto = ProposeAnnouncementDTO::fromHttpRequest($_POST, $modified);
+        $dto = ProposeAnnouncementDTO::fromArray($body, $modified);
 
         $this->proposeAnnouncementUseCase->execute($dto);
 
@@ -126,14 +188,5 @@ final class AnnouncementController extends BaseController
             'success' => true,
             'message' => $this->translator->translate('announcement.proposed_successfully'),
         ]);
-    }
-
-    protected function jsonResponse(int $statusCode, array $data): ResponseInterface
-    {
-        return new Response(
-            $statusCode,
-            ['Content-Type' => 'application/json'],
-            json_encode($data)
-        );
     }
 }

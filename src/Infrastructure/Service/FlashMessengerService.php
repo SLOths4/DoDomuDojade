@@ -7,7 +7,7 @@ use App\Presentation\Http\Shared\FlashMessengerInterface;
 /**
  * Helps with managing flash messages
  */
-class FlashMessengerService implements FlashMessengerInterface
+readonly class FlashMessengerService implements FlashMessengerInterface
 {
     private const string PREFIX = 'flash';
 

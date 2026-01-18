@@ -5,9 +5,9 @@ namespace App\Application\Module\UseCase;
 
 use App\Application\Module\EditModuleDTO;
 use App\Domain\Event\EventPublisher;
+use App\Domain\Module\Event\ModuleUpdatedEvent;
 use App\Domain\Module\Module;
 use App\Domain\Module\ModuleException;
-use App\Domain\Module\ModuleUpdatedEvent;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use Exception;
@@ -48,7 +48,7 @@ readonly class UpdateModuleUseCase
             throw ModuleException::failedToUpdate();
         }
 
-        $this->publisher->publish(new ModuleUpdatedEvent((string)$id));
+        $this->publisher->publish(new ModuleUpdatedEvent((string)$id, $updated->startTime, $updated->endTime));
 
         $this->logger->info('Module update finished', [
             'module_id' => $id,

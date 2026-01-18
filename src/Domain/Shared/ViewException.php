@@ -13,7 +13,7 @@ final class ViewException extends DomainException
     {
         return new self(
             'view.user_not_authenticated',
-            ExceptionCodes::VIEW_USER_NOT_AUTHENTICATED->value
+            DomainExceptionCodes::VIEW_USER_NOT_AUTHENTICATED->value
         );
     }
 
@@ -24,7 +24,7 @@ final class ViewException extends DomainException
     {
         return new self(
             'view.load_failed',
-            ExceptionCodes::VIEW_LOAD_FAILED->value
+            DomainExceptionCodes::VIEW_LOAD_FAILED->value
         );
     }
 
@@ -35,7 +35,7 @@ final class ViewException extends DomainException
     {
         return new self(
             'view.missing_data',
-            ExceptionCodes::VIEW_MISSING_DATA->value
+            DomainExceptionCodes::VIEW_MISSING_DATA->value
         );
     }
 }

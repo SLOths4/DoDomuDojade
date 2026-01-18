@@ -62,33 +62,29 @@ try {
 
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika
-        $r->addRoute('POST', '/panel/authenticate', [LoginController::class, 'authenticate']);
-        $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/authenticate', [LoginController::class, 'authenticate']);
+        $r->addRoute('POST', '/api/user', [UserController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.2. Akcje ogłoszeń
-        $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
-
-       $r->addRoute('POST', '/announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-//        $r->addRoute('GET', '/announcement/{id}', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-//        $r->addRoute('DELETE', '/announcement/{id}', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-//        $r->addRoute('PATCH', '/announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-//        $r->addRoute('POST', '/announcement/approve/{id}', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-//        $r->addRoute('POST', '/announcement/reject/{id}', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
+        $r->addRoute('POST', '/api/announcement', [AnnouncementController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/announcements', [AnnouncementController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'get', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/announcement/{id:[a-z0-9_.]+}/approve', [AnnouncementController::class, 'approve', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/announcement/{id:[a-z0-9_.]+}/reject', [AnnouncementController::class, 'reject', 'middleware' => [AuthMiddleware::class,]]);
+        $r->addRoute('POST', '/api/announcement/propose', [AnnouncementController::class, 'propose']);
 
 
         // 2.3. Akcje powiązane z modułami
-        $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/module/{id:[a-z0-9_.]+}', [ModuleController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/module/{id:[a-z0-9_.]+}/toggle', [ModuleController::class, 'toggle', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.4. Akcje licznika
-        $r->addRoute('POST', '/panel/add_countdown', [CountdownController::class, 'addCountdown', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_countdown', [CountdownController::class, 'deleteCountdown', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_countdown', [CountdownController::class, 'editCountdown', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/countdown', [CountdownController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.5. Wyświetlenie stron panelu
         $r->addRoute('GET', '/panel/users', [PanelController::class, 'users', 'middleware' => [AuthMiddleware::class]]);
@@ -97,20 +93,19 @@ try {
         $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules', 'middleware' => [AuthMiddleware::class]]);
 
         // 3. Trasy wyświetlacza (display)
-        $r->addRoute('GET', '/display/get_departures', [DisplayController::class, 'getDepartures']);
-        $r->addRoute('GET', '/display/get_announcements', [DisplayController::class, 'getAnnouncements']);
-        $r->addRoute('GET', '/display/get_weather', [DisplayController::class, 'getWeather']);
-        $r->addRoute('GET', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
-        $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
-        $r->addRoute('GET', '/display/get_quote', [DisplayController::class, 'getQuote']);
-        $r->addRoute('GET', '/display/get_word', [DisplayController::class, 'getWord']);
+        $r->addRoute('GET', '/display/departures', [DisplayController::class, 'getDepartures']);
+        $r->addRoute('GET', '/display/announcements', [DisplayController::class, 'getAnnouncements']);
+        $r->addRoute('GET', '/display/weather', [DisplayController::class, 'getWeather']);
+        $r->addRoute('GET', '/display/countdown', [DisplayController::class, 'getCountdown']);
+        $r->addRoute('GET', '/display/events', [DisplayController::class, 'getEvents']);
+        $r->addRoute('GET', '/display/quote', [DisplayController::class, 'getQuote']);
+        $r->addRoute('GET', '/display/word', [DisplayController::class, 'getWord']);
 
         // 4. Trasy ogólnodostępne (public)
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
-        $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
 
+        // 5. SSE
         $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream']);
-        $r->addRoute('GET', '/test', [PanelController::class, 'test']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());

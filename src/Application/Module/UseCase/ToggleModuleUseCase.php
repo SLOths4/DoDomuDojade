@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Module\UseCase;
 
 use App\Domain\Event\EventPublisher;
+use App\Domain\Module\Event\ModuleToggledEvent;
 use App\Domain\Module\ModuleException;
-use App\Domain\Module\ModuleToggledEvent;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use Exception;

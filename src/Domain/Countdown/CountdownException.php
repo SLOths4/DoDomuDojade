@@ -2,7 +2,7 @@
 namespace App\Domain\Countdown;
 
 use App\Domain\Shared\DomainException;
-use App\Domain\Shared\ExceptionCodes;
+use App\Domain\Shared\DomainExceptionCodes;
 
 /**
  * Countdown domain exceptions - contains translation KEYS
@@ -16,7 +16,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.invalid_id',
-            ExceptionCodes::COUNTDOWN_INVALID_ID->value,
+            DomainExceptionCodes::COUNTDOWN_INVALID_ID->value,
             400,
             [
                 'countdown_id' => $id
@@ -31,7 +31,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.empty_fields',
-            ExceptionCodes::COUNTDOWN_EMPTY_FIELDS->value
+            DomainExceptionCodes::COUNTDOWN_EMPTY_FIELDS->value
         );
     }
 
@@ -42,7 +42,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.count_to_in_the_past',
-            ExceptionCodes::COUNTDOWN_COUNT_TO_IN_THE_PAST->value
+            DomainExceptionCodes::COUNTDOWN_COUNT_TO_IN_THE_PAST->value
         );
     }
 
@@ -53,7 +53,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.title_too_long',
-            ExceptionCodes::COUNTDOWN_TITLE_TOO_LONG->value,
+            DomainExceptionCodes::COUNTDOWN_TITLE_TOO_LONG->value,
             400,
             [
                 'maximum_title_length' => $maxTitleLength
@@ -68,7 +68,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.title_too_short',
-            ExceptionCodes::COUNTDOWN_TITLE_TOO_SHORT->value,
+            DomainExceptionCodes::COUNTDOWN_TITLE_TOO_SHORT->value,
             400,
             [
                 'minimum_title_length' => $minTitleLength
@@ -83,7 +83,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.not_found',
-            ExceptionCodes::COUNTDOWN_NOT_FOUND->value,
+            DomainExceptionCodes::COUNTDOWN_NOT_FOUND->value,
             400,
             [
                 'countdown_id' => $id
@@ -98,7 +98,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.create_failed',
-            ExceptionCodes::COUNTDOWN_CREATE_FAILED->value
+            DomainExceptionCodes::COUNTDOWN_CREATE_FAILED->value
         );
     }
 
@@ -109,7 +109,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.update_failed',
-            ExceptionCodes::COUNTDOWN_UPDATE_FAILED->value
+            DomainExceptionCodes::COUNTDOWN_UPDATE_FAILED->value
         );
     }
 
@@ -120,7 +120,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.delete_failed',
-            ExceptionCodes::COUNTDOWN_DELETE_FAILED->value
+            DomainExceptionCodes::COUNTDOWN_DELETE_FAILED->value
         );
     }
 
@@ -128,7 +128,7 @@ final class CountdownException extends DomainException
     {
         return new self(
             'countdown.fetch_failed',
-            ExceptionCodes::COUNTDOWN_FETCH_FAILED->value
+            DomainExceptionCodes::COUNTDOWN_FETCH_FAILED->value
         );
     }
 }

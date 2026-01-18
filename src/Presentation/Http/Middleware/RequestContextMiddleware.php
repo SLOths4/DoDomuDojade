@@ -3,6 +3,7 @@
 namespace App\Presentation\Http\Middleware;
 
 use App\Presentation\Http\Context\RequestContext;
+use App\Presentation\Http\Shared\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class RequestContextMiddleware implements MiddlewareInterface

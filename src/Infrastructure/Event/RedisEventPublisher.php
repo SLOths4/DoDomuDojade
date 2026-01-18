@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Infrastructure\Event;
 
 use App\Domain\Event\EventPublisher;
 use App\Domain\Shared\DomainEvent;
 use App\Infrastructure\Persistence\PDOEventStore;
 use Predis\Client;
+use Predis\Connection\ConnectionException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -46,11 +49,29 @@ final readonly class RedisEventPublisher implements EventPublisher
                 throw EventPublishingException::storageFailed($e);
             }
 
-            $this->redis->publish('sse:broadcast', $eventJson);
+            // ✅ Use RPUSH (list) instead of PUBLISH (pub/sub)
+            // Reason: pub/sub with pubSubLoop() causes hanging connections and SIGSEGV
+            // Lists with BRPOP are safer and work better with SSE
+            try {
+                // Push event to list that SSE controller will BRPOP from
+                $this->redis->rpush('sse:broadcast', (array)$eventJson);
 
-            $sseType = $this->mapToSseType($event->getEventType());
-            if ($sseType) {
-                $this->redis->publish('sse:broadcast', json_encode(['type' => $sseType]));
+                $sseType = $this->mapToSseType($event->getEventType());
+                if ($sseType) {
+                    $this->redis->rpush('sse:broadcast', (array)json_encode(['type' => $sseType]));
+                }
+            } catch (ConnectionException $e) {
+                // Redis connection failed - log but don't crash
+                $this->logger->warning(
+                    "Redis push failed (connection): " . $e->getMessage(),
+                    ['event_type' => $event->getEventType()]
+                );
+            } catch (Throwable $e) {
+                // Any other Redis error - log but don't crash
+                $this->logger->warning(
+                    "Redis push failed: " . $e->getMessage(),
+                    ['event_type' => $event->getEventType()]
+                );
             }
 
             $this->logger->info(sprintf('Event published: %s', $event->getEventType()));

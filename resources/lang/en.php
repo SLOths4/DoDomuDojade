@@ -1,10 +1,11 @@
 <?php
 return [
-    'error.user_not_found' => 'User not found',
-
-    'csrf' => [
-        'invalid' => 'Invalid csrf token',
-        'missing' => 'Csrf token missing',
+    'validation' => [
+        'csrf' => [
+            'invalid' => 'Invalid csrf token',
+            'missing' => 'Csrf token missing',
+        ],
+        'failed' => "Validation failed",
     ],
 
     'module_names' => [

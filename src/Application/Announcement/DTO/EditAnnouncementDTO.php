@@ -20,15 +20,15 @@ final readonly class EditAnnouncementDTO
      * @throws \DateMalformedStringException
      * @throws AnnouncementException
      */
-    public static function fromHttpRequest(array $post): self
+    public static function fromArray(array $array): self
     {
-        $title = (string)($post['title']);
-        $text = (string)($post['text'] ?? '');
-        $validUntil = new DateTimeImmutable($post['valid_until']);
+        $title = (string)($array['title']);
+        $text = (string)($array['text'] ?? '');
+        $validUntil = new DateTimeImmutable($array['valid_until']);
 
         $status = null;
-        if (isset($post['status'])) {
-            $status = AnnouncementStatus::fromString($post['status']);
+        if (isset($array['status'])) {
+            $status = AnnouncementStatus::fromString($array['status']);
         }
 
         return new self(

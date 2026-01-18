@@ -19,10 +19,10 @@ final readonly class AddEditCountdownDTO
      * @throws InvalidDateTimeException
      * @throws MissingParameterException
      */
-    public static function fromHttpRequest(array $post): self
+    public static function fromArray(array $array): self
     {
-        $title = (string)($post['title']);
-        $countTo = $post['count_to'];
+        $title = (string)($array['title']);
+        $countTo = $array['count_to'];
 
         try {
             $countTo = new DateTimeImmutable($countTo);

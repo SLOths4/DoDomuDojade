@@ -2,6 +2,7 @@
 namespace App\Presentation\Http\Middleware;
 
 use App\Presentation\Http\Context\LocaleContext;
+use App\Presentation\Http\Shared\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

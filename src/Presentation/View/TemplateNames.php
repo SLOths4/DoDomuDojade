@@ -14,13 +14,12 @@ enum TemplateNames: string
     // Pages
     case HOME = 'pages/index';
     case LOGIN = 'pages/login';
-    case USERS = 'pages/users';
-    case ANNOUNCEMENTS = 'pages/announcements';
-    case COUNTDOWNS = 'pages/countdowns';
-    case MODULES = 'pages/modules';
+    case USERS = 'pages/user';
+    case ANNOUNCEMENTS = 'pages/announcement';
+    case COUNTDOWNS = 'pages/countdown';
+    case MODULES = 'pages/module';
     case PANEL = 'pages/panel';
     case DISPLAY = 'pages/display';
-    case SSE = 'pages/sse';
     case ANNOUNCEMENT_PROPOSE = 'pages/announcement-propose';
 
     // Errors

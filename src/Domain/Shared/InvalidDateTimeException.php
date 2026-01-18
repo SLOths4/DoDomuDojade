@@ -23,7 +23,7 @@ final class InvalidDateTimeException extends ValidationException
     ) {
         parent::__construct(
             message: sprintf('Invalid date/time for "%s": "%s"%s', $field, $value, $expectedFormat ? sprintf(' (expected: %s)', $expectedFormat) : ''),
-            code: 400,
+            errorCode: DomainExceptionCodes::INVALID_DATETIME->value,
             context: ['field' => $field, 'value' => $value, 'format' => $expectedFormat],
             previous: $previous
         );

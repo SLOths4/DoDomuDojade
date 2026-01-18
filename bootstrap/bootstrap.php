@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
@@ -107,6 +110,7 @@ use App\Infrastructure\Persistence\PDOModuleRepository;
 use App\Infrastructure\Persistence\PDOQuoteRepository;
 use App\Infrastructure\Persistence\PDOUserRepository;
 use App\Infrastructure\Persistence\PDOWordRepository;
+use App\Infrastructure\Redis\RedisFactory;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
 use App\Infrastructure\Service\FlashMessengerService;
@@ -118,6 +122,7 @@ use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Controller\DisplayController;
 use App\Presentation\Http\Controller\ErrorController;
 use App\Presentation\Http\Controller\PanelController;
+use App\Presentation\Http\Mapper\AnnouncementViewMapper;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
@@ -126,8 +131,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment;
+use Psr\Http\Message\ServerRequestInterface;
+use GuzzleHttp\Psr7\ServerRequest;
 
 $container = new Container();
+
+$container->set(ServerRequestInterface::class, fn() => ServerRequest::fromGlobals());
+
 
 // Config
 $container->set(Config::class, fn() => Config::fromEnv());
@@ -155,11 +165,10 @@ $container->set(PDO::class, function(Container $c): PDO {
 // Redis
 $container->set(Client::class, function(Container $c): Client {
     $cfg = $c->get(Config::class);
-    return new Client([
-        'scheme' => 'tcp',
-        'host' => $cfg->redisHost,
-        'port' => $cfg->redisPort,
-    ]);
+    return RedisFactory::createSingleton(
+        $cfg->redisHost,
+        $cfg->redisPort,
+    );
 });
 
 $container->set(EventPublisher::class, function(Container $c): EventPublisher {
@@ -474,6 +483,7 @@ $container->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseC
     $c->get(LoggerInterface::class),
     $c->get(QuoteApiService::class),
     $c->get(PDOQuoteRepository::class),
+    $c->get(EventPublisher::class),
 ));
 
 $container->set(PDOWordRepository::class, fn(Container $c) => new PDOWordRepository(
@@ -559,6 +569,7 @@ $container->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(GetAllCountdownsUseCase::class),
     $c->get(GetAllAnnouncementsUseCase::class),
     $c->get(Translator::class),
+    $c->get(AnnouncementViewMapper::class),
 ));
 
 return $container;

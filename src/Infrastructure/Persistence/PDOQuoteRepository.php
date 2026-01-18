@@ -34,14 +34,11 @@ readonly class PDOQuoteRepository implements QuoteRepositoryInterface
     }
 
     /**
-     * Adds quote object to database
-     * @param Quote $quote
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
-    public function add(Quote $quote): bool
+    public function add(Quote $quote): int
     {
-        $lastId = $this->dbHelper->insert(
+        return $this->dbHelper->insert(
             $this->TABLE_NAME,
             [
                 'quote'         => [$quote->quote, PDO::PARAM_STR],
@@ -49,14 +46,10 @@ readonly class PDOQuoteRepository implements QuoteRepositoryInterface
                 'fetched_on'    => [$quote->fetchedOn->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ]
         );
-
-        return !empty($lastId);
     }
 
     /**
-     * Fetches quote for today
-     * @return ?Quote
-     * @throws Exception
+     * inheritDoc
      */
     public function fetchLatestQuote(): ?Quote
     {

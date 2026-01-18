@@ -70,13 +70,8 @@
     </div>
 </div>
 
-<script type="module">
-    import Alpine from 'alpinejs'
-    window.Alpine = Alpine
-    Alpine.start();
-</script>
-
 <script>
+    import Alpine from 'alpinejs'
     const currentPage = window.location.pathname;
 
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -129,4 +124,7 @@
     window.addEventListener("DOMContentLoaded", () => {
         Alpine.data("dropdown", dropdown)
     })
+
+    window.Alpine = Alpine
+    Alpine.start();
 </script>

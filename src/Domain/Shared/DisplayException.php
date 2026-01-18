@@ -13,7 +13,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.module_not_visible',
-            ExceptionCodes::DISPLAY_MODULE_NOT_VISIBLE->value
+            DomainExceptionCodes::DISPLAY_MODULE_NOT_VISIBLE->value
         );
     }
 
@@ -24,7 +24,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_departures_failed',
-            ExceptionCodes::DISPLAY_FETCH_DEPARTURES_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_DEPARTURES_FAILED->value
         );
     }
 
@@ -35,7 +35,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_announcements_failed',
-            ExceptionCodes::DISPLAY_FETCH_ANNOUNCEMENTS_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_ANNOUNCEMENTS_FAILED->value
         );
     }
 
@@ -46,7 +46,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_countdown_failed',
-            ExceptionCodes::DISPLAY_FETCH_COUNTDOWN_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_COUNTDOWN_FAILED->value
         );
     }
 
@@ -57,7 +57,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_weather_failed',
-            ExceptionCodes::DISPLAY_FETCH_WEATHER_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_WEATHER_FAILED->value
         );
     }
 
@@ -68,7 +68,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_quote_failed',
-            ExceptionCodes::DISPLAY_FETCH_QUOTE_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_QUOTE_FAILED->value
         );
     }
 
@@ -79,7 +79,7 @@ final class DisplayException extends DomainException
     {
         return new self(
             'display.fetch_word_failed',
-            ExceptionCodes::DISPLAY_FETCH_WORD_FAILED->value
+            DomainExceptionCodes::DISPLAY_FETCH_WORD_FAILED->value
         );
     }
 }

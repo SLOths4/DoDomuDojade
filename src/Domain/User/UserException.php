@@ -2,7 +2,7 @@
 namespace App\Domain\User;
 
 use App\Domain\Shared\DomainException;
-use App\Domain\Shared\ExceptionCodes;
+use App\Domain\Shared\DomainExceptionCodes;
 
 /**
  * User domain exceptions - contains translation KEYS
@@ -16,7 +16,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.invalid_id',
-            ExceptionCodes::USER_INVALID_ID->value
+            DomainExceptionCodes::USER_INVALID_ID->value
         );
     }
 
@@ -27,7 +27,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.empty_fields',
-            ExceptionCodes::USER_EMPTY_FIELDS->value
+            DomainExceptionCodes::USER_EMPTY_FIELDS->value
         );
     }
 
@@ -38,7 +38,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.not_found',
-            ExceptionCodes::USER_NOT_FOUND->value
+            DomainExceptionCodes::USER_NOT_FOUND->value
         );
     }
 
@@ -49,7 +49,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.username_taken',
-            ExceptionCodes::USER_USERNAME_TAKEN->value
+            DomainExceptionCodes::USER_USERNAME_TAKEN->value
         );
     }
 
@@ -60,7 +60,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.unauthorized',
-            ExceptionCodes::USER_UNAUTHORIZED->value
+            DomainExceptionCodes::USER_UNAUTHORIZED->value
         );
     }
 
@@ -71,7 +71,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.cannot_delete_self',
-            ExceptionCodes::USER_CANNOT_DELETE_SELF->value
+            DomainExceptionCodes::USER_CANNOT_DELETE_SELF->value
         );
     }
 
@@ -82,7 +82,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.create_failed',
-            ExceptionCodes::USER_CREATE_FAILED->value
+            DomainExceptionCodes::USER_CREATE_FAILED->value
         );
     }
 
@@ -93,7 +93,7 @@ final class UserException extends DomainException
     {
         return new self(
             'user.delete_failed',
-            ExceptionCodes::USER_DELETE_FAILED->value
+            DomainExceptionCodes::USER_DELETE_FAILED->value
         );
     }
 }

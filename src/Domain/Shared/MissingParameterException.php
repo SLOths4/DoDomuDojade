@@ -16,7 +16,7 @@ final class MissingParameterException extends ValidationException
     ) {
         parent::__construct(
             message: sprintf('Missing required parameter: %s%s', $paramName, $context ? " ($context)" : ''),
-            code: 400,
+            errorCode: DomainExceptionCodes::MISSING_PARAMETER->value,
             context: ['parameter' => $paramName, 'location' => $context],
             previous: $previous
         );

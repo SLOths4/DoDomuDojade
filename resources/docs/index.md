@@ -4,10 +4,9 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 
 ## 📚 Struktura Dokumentacji
 
-- **[Dokumentacja kodu](api/)** - autogenerowana przy użyciu phpDocumentator
+- **[Dokumentacja kodu](api/)** — autogenerowana przy użyciu phpDocumentator
 - **[Architektura](architecture.md)**
 - **[Warstwy w szczegółach](layers/application.md)**
-- **[Przykłady](examples/index.md)** - Przykłady
 
 ## 🎯 Cechy Projektu
 
@@ -19,8 +18,8 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 - **Tools**: Composer, NPM, PHPStorm
 
 ### Kluczowe Moduły
-1. **Announcements** - System ogłoszeń z workflow akceptacji
-2. **Words** - Słownik dziennych słów
-3. **Quotes** - Baza cytatów inspirujących
-4. **Countdown** - Odliczanie do ważnych dat
-5. **User Management** - Zarządzanie użytkownikami
+1. **Announcements** — System ogłoszeń z workflow akceptacji
+2. **Words** — Słownik dziennych słów
+3. **Quotes** — Baza cytatów inspirujących
+4. **Countdown** — Odliczanie do ważnych dat
+5. **User** — Zarządzanie użytkownikami

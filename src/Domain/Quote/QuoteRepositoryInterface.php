@@ -10,10 +10,10 @@ interface QuoteRepositoryInterface
      * Persists a new quote entity.
      *
      * @param Quote $quote The quote entity to add
-     * @return bool True if insertion was successful, false otherwise
+     * @return int id
      * @throws Exception
      */
-    public function add(Quote $quote): bool;
+    public function add(Quote $quote): int;
 
     /**
      * Fetches the latest quote for today.

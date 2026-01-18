@@ -12,8 +12,9 @@ class ValidationException extends DomainException
      */
     public static function invalidInput(array $errors, ?Throwable $previous = null): self {
         return new self(
-            "Validation failed",
-            ExceptionCodes::VALIDATION_FAILED->value,
+            "validation.failed",
+            DomainExceptionCodes::VALIDATION_FAILED->value,
+            400,
             ['fieldCount' => count($errors)],
             $previous
         );
@@ -21,8 +22,9 @@ class ValidationException extends DomainException
 
     public static function invalidCsrf(?Throwable $previous = null): self {
         return new self(
-            "csrf.invalid",
-            ExceptionCodes::INVALID_CSRF->value,
+            "validation.csrf.invalid",
+            DomainExceptionCodes::INVALID_CSRF->value,
+            400,
             [],
             $previous
         );
@@ -31,8 +33,9 @@ class ValidationException extends DomainException
     public static function missingCsrf(?Throwable $previous = null): self
     {
         return new self(
-            "csrf.missing",
-            ExceptionCodes::MISSING_CSRF->value,
+            "validation.csrf.missing",
+            DomainExceptionCodes::MISSING_CSRF->value,
+            400,
             [],
             $previous
         );

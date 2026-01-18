@@ -23,11 +23,11 @@ final readonly class ProposeAnnouncementDTO
     /**
      * @throws Exception
      */
-    public static function fromHttpRequest(array $post, DateTimeImmutable $defaultValidUntil): self
+    public static function fromArray(array $array, DateTimeImmutable $defaultValidUntil): self
     {
-        $title = trim((string)($post['title']));
-        $text = trim((string)($post['content']));
-        $validUntil = $post['expires_at'];
+        $title = trim((string)($array['title']));
+        $text = trim((string)($array['text']));
+        $validUntil = $array['expires_at'];
 
         if (empty($validUntil)) {
             $validUntil = $defaultValidUntil;
