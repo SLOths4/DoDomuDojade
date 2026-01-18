@@ -1,7 +1,8 @@
 <?php
 namespace App\Infrastructure\Translation;
 
-use App\Http\Context\LocaleContext;
+use App\Presentation\Http\Context\LocaleContext;
+use App\Presentation\Http\Shared\Translator;
 
 final class LanguageTranslator implements Translator
 {

@@ -3,15 +3,15 @@
 namespace App\Application\Word;
 
 use App\Domain\Word\Word;
-use App\Infrastructure\Persistence\WordRepository;
+use App\Infrastructure\Persistence\PDOWordRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
 readonly class FetchActiveWordUseCase
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private WordRepository $repository,
+        private LoggerInterface   $logger,
+        private PDOWordRepository $repository,
     ) {}
 
     /**

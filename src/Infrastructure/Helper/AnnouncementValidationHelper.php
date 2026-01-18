@@ -2,8 +2,9 @@
 
 namespace App\Infrastructure\Helper;
 
-use App\config\Config;
 use App\Domain\Announcement\AnnouncementException;
+use App\Domain\Announcement\AnnouncementId;
+use App\Infrastructure\Configuration\Config;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
@@ -92,9 +93,9 @@ final readonly class AnnouncementValidationHelper {
      *
      * @throws AnnouncementException
      */
-    public function validateId(int $id): void
+    public function validateId(AnnouncementId $id): void
     {
-        if ($id <= 0) {
+        if (!str_starts_with($id, 'ann_')) {
             throw AnnouncementException::invalidId($id);
         }
     }

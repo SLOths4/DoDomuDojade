@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Application\Announcement\DeleteRejectedSinceAnnouncementUseCase;
+use App\Application\Announcement\UseCase\DeleteRejectedSinceAnnouncementUseCase;
 use App\Console\Command;
 use App\Console\ConsoleOutput;
 use Exception;

@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Helper;
 
-use App\config\Config;
-use App\Domain\Exception\CountdownException;
+use App\Domain\Countdown\CountdownException;
+use App\Infrastructure\Configuration\Config;
 use DateTimeImmutable;
 
 final readonly class CountdownValidationHelper {

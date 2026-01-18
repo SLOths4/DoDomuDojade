@@ -6,19 +6,17 @@ namespace App\Application\Shared;
 use Exception;
 use Throwable;
 
+/**
+ * Basic exception for infrastructure exceptions
+ */
 class ApplicationException extends Exception
 {
     public function __construct(
-        string $message = "Application error",
-        private readonly int $httpStatusCode = 500,
-        int $code = 0,
+        string $message,
+        public readonly string $errorCode = "INTERNAL_ERROR",
+        public readonly int $httpStatusCode = 500,
         ?Throwable $previous = null
     ) {
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function getHttpStatusCode(): int
-    {
-        return $this->httpStatusCode;
+        parent::__construct($message, 0, $previous);
     }
 }

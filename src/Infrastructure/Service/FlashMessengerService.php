@@ -2,6 +2,7 @@
 namespace App\Infrastructure\Service;
 
 use App\Infrastructure\Helper\SessionHelper;
+use App\Presentation\Http\Shared\FlashMessengerInterface;
 
 /**
  * Helps with managing flash messages

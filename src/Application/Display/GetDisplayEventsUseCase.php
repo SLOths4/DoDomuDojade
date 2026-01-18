@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
-use App\Infrastructure\Service\CalendarService;
-use Psr\Log\LoggerInterface;
-use Exception;
+use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use DateTime;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class GetDisplayEventsUseCase
 {

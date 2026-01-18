@@ -1,17 +1,17 @@
 <?php
 namespace App\Application\User;
 
-use App\Domain\Exception\AuthenticationException;
+use App\Domain\Shared\AuthenticationException;
 use App\Domain\User\User;
-use App\Infrastructure\Persistence\UserRepository;
+use App\Infrastructure\Persistence\PDOUserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
 final readonly class AuthenticateUserUseCase
 {
     public function __construct(
-        private UserRepository  $userRepository,
-        private LoggerInterface $logger
+        private PDOUserRepository $userRepository,
+        private LoggerInterface   $logger
     ){}
 
     /**

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
-use App\Application\Countdown\GetCurrentCountdownUseCase;
+use App\Application\Countdown\UseCase\GetCurrentCountdownUseCase;
 use DateTimeZone;
 
 readonly class GetDisplayCountdownUseCase

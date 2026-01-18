@@ -2,7 +2,6 @@
 
 namespace App\Domain\Shared;
 
-use App\Domain\Exception\ValidationException;
 use Throwable;
 
 /**

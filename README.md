@@ -134,6 +134,83 @@ Jeżeli chcesz zobaczyć dokumentację architektury etc.
  mkdocs serve
 ```
 
+Ngnix config
+```shell
+upstream php_backend {
+    server 127.0.0.1:9000;
+    keepalive 32;
+}
+
+server {
+    listen 8000;
+    server_name localhost;
+    root /path/to/project/public;
+
+    # Logi
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log warn;
+
+    location = /stream {
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_redirect off;
+
+        # Timeouty dla long-lived connection
+        proxy_connect_timeout 7200s;  # 2 godziny
+        proxy_send_timeout 7200s;
+        proxy_read_timeout 7200s;
+
+        # Headers
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # FastCGI pass
+        fastcgi_pass php_backend;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param REQUEST_URI /stream;
+        fastcgi_param REQUEST_METHOD GET;
+        
+        # Wyłącz buforowanie FastCGI
+        fastcgi_buffering off;
+        fastcgi_buffer_size 4k;
+        
+        include fastcgi_params;
+    }
+
+    location / {
+        # Standardowe timeouty
+        fastcgi_connect_timeout 60s;
+        fastcgi_send_timeout 60s;
+        fastcgi_read_timeout 60s;
+
+        fastcgi_pass php_backend;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param REQUEST_URI $request_uri;
+        
+        include fastcgi_params;
+    }
+
+    # Statyczne
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Bezpieczeństwo
+    location ~ /\. {
+        deny all;
+    }
+}
+```
+
+WAŻNE: ZMIENIC TIMEOUT W PHP-FPM i NGINX
+
 ### Szybki start (produkcja)
 - Ustaw document root na `public/` (np. w Apache/Nginx).
 - Konfiguruj PHP-FPM.

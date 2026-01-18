@@ -2,8 +2,12 @@
 
 namespace App\Domain\Announcement;
 
-use DateTimeImmutable;
+use App\Domain\Announcement\Event\AnnouncementApprovedEvent;
+use App\Domain\Announcement\Event\AnnouncementCreatedEvent;
+use App\Domain\Announcement\Event\AnnouncementRejectedEvent;
+use App\Domain\Announcement\Event\AnnouncementUpdatedEvent;
 use App\Domain\Shared\DomainEvent;
+use DateTimeImmutable;
 
 /**
  * Announcement Entity
@@ -20,15 +24,15 @@ final class Announcement
     private array $events = [];
 
     public function __construct(
-        private ?AnnouncementId $id,
-        private string $title,
-        private string $text,
-        private DateTimeImmutable $createdAt,
-        private DateTimeImmutable $validUntil,
-        private ?int $userId,
-        private AnnouncementStatus $status = AnnouncementStatus::PENDING,
-        private ?DateTimeImmutable $decidedAt = null,
-        private ?int $decidedBy = null,
+        private readonly ?AnnouncementId   $id,
+        private string                     $title,
+        private string                     $text,
+        private readonly DateTimeImmutable $createdAt,
+        private DateTimeImmutable          $validUntil,
+        private readonly ?int              $userId,
+        private AnnouncementStatus         $status = AnnouncementStatus::PENDING,
+        private ?DateTimeImmutable         $decidedAt = null,
+        private ?int                       $decidedBy = null,
     ) {}
 
     /**
@@ -110,6 +114,26 @@ final class Announcement
     }
 
     /**
+     * Change status to approved
+     *
+     * MUTABLE OPERATION - zmienia state entity
+     */
+    public function reject(int $decidedBy): void
+    {
+        $this->status = AnnouncementStatus::REJECTED;
+        $this->decidedAt = new DateTimeImmutable();
+        $this->decidedBy = $decidedBy;
+
+        $this->recordEvent(
+            new AnnouncementRejectedEvent(
+                announcementId: $this->id->getValue(),
+                approvedBy: $decidedBy,
+                approvedAt: $this->decidedAt,
+            )
+        );
+    }
+
+    /**
      * Updates announcement data
      */
     public function update(string $title, string $text, DateTimeImmutable $validUntil, ?AnnouncementStatus $status = null, ?int $decidedBy = null): void
@@ -133,9 +157,9 @@ final class Announcement
     }
 
     /**
-     * Checks if announcement is valid
+     * Checks if an announcement is valid
      * - Status must be APPROVED
-     * - Valid until date must be in future
+     * - Valid until date must be in the future
      */
     public function isValid(): bool
     {
@@ -202,10 +226,6 @@ final class Announcement
     {
         $this->decidedBy = $decidedBy;
     }
-
-    /**
-     * Domain Event Management
-     */
 
     private function recordEvent(DomainEvent $event): void
     {

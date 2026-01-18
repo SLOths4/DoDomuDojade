@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
-use App\Infrastructure\Service\WeatherService;
-use Psr\Log\LoggerInterface;
+use App\Infrastructure\ExternalApi\Weather\WeatherService;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class GetDisplayWeatherUseCase
 {

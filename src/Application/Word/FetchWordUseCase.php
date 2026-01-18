@@ -3,8 +3,8 @@
 namespace App\Application\Word;
 
 use App\Domain\Word\Word;
-use App\Infrastructure\Persistence\WordRepository;
-use App\Infrastructure\Service\WordApiService;
+use App\Infrastructure\ExternalApi\Word\WordApiService;
+use App\Infrastructure\Persistence\PDOWordRepository;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -14,7 +14,7 @@ readonly class FetchWordUseCase
     public function __construct(
         private LoggerInterface $logger,
         private WordApiService $apiService,
-        private WordRepository $repository
+        private PDOWordRepository $repository
     ) {}
 
     /**

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
-use App\Application\Announcement\GetValidAnnouncementsUseCase;
+use App\Application\Announcement\UseCase\GetValidAnnouncementsUseCase;
 use App\Application\User\GetUserByIdUseCase;
-use Psr\Log\LoggerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class GetDisplayAnnouncementsUseCase
 {

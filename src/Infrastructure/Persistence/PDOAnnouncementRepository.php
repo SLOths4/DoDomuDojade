@@ -4,19 +4,19 @@ namespace App\Infrastructure\Persistence;
 
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementId;
-use App\Domain\Announcement\AnnouncementRepository;
+use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use App\Domain\Announcement\AnnouncementStatus;
-use App\Infrastructure\Helper\DatabaseHelper;
+use App\Infrastructure\Database\DatabaseService;
 use DateTimeImmutable;
 use Exception;
 use PDO;
 
-readonly class PDOAnnouncementRepository implements AnnouncementRepository
+readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterface
 {
     public function __construct(
-        private DatabaseHelper $dbHelper,
-        private string  $TABLE_NAME,
-        private string  $DATE_FORMAT,
+        private DatabaseService $dbHelper,
+        private string          $TABLE_NAME,
+        private string          $DATE_FORMAT,
     ) {}
 
     /**

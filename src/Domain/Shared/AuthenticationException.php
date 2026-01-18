@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Domain\Shared;
+
+use Throwable;
+
+class AuthenticationException extends DomainException
+{
+    public static function invalidCredentials(): self
+    {
+        return new self(
+            'auth.invalid_credentials',
+            ExceptionCodes::AUTH_INVALID_CREDENTIALS->value,
+            401
+        );
+    }
+
+    public static function emptyCredentials(): self
+    {
+        return new self(
+            'auth.empty_credentials',
+            ExceptionCodes::AUTH_EMPTY_CREDENTIALS->value,
+            400
+        );
+    }
+
+    public static function noUserLoggedIn(?Throwable $previous = null): self
+    {
+        return new self(
+            "auth.no_user_logged_in",
+            ExceptionCodes::AUTH_USER_NOT_LOGGED_IN->value,
+            401,
+            [],
+            $previous
+        );
+    }
+
+    public static function userNotFound(): self
+    {
+        return new self(
+            'auth.user_not_found',
+            ExceptionCodes::AUTH_USER_NOT_FOUND->value,
+            401
+        );
+    }
+
+    public static function unauthorized(int $userId, ?Throwable $previous = null): self
+    {
+        return new self(
+            "auth.unauthorized",
+            ExceptionCodes::AUTH_USER_UNAUTHORIZED->value,
+            403,
+            ['userId' => $userId],
+            $previous
+        );
+    }
+}

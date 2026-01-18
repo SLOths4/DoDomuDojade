@@ -3,8 +3,8 @@
 namespace App\Infrastructure\Security;
 
 use App\Domain\User\User;
+use App\Domain\User\UserRepositoryInterface;
 use App\Infrastructure\Helper\SessionHelper;
-use App\Infrastructure\Persistence\UserRepository;
 use Exception;
 
 /**
@@ -13,7 +13,7 @@ use Exception;
 readonly class AuthenticationService
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     ) {}
 
     /**

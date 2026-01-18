@@ -3,15 +3,15 @@
 namespace App\Application\Quote;
 
 use App\Domain\Quote\Quote;
-use App\Infrastructure\Persistence\QuoteRepository;
+use App\Infrastructure\Persistence\PDOQuoteRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
 readonly class FetchActiveQuoteUseCase
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private QuoteRepository $repository,
+        private LoggerInterface    $logger,
+        private PDOQuoteRepository $repository,
     ) {}
 
     /**

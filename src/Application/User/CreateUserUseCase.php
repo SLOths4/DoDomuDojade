@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\User;
 
-use App\Domain\User\Password;
 use App\Domain\User\User;
-use App\Domain\User\Username;
-use App\Infrastructure\Persistence\UserRepository;
+use App\Domain\User\ValueObject\Password;
+use App\Domain\User\ValueObject\Username;
+use App\Infrastructure\Persistence\PDOUserRepository;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -14,10 +14,10 @@ use Psr\Log\LoggerInterface;
 readonly class CreateUserUseCase
 {
     public function __construct(
-        private UserRepository $repository,
-        private LoggerInterface $logger,
-        private int $maxUsernameLength = 255,
-        private int $minPasswordLength = 8
+        private PDOUserRepository $repository,
+        private LoggerInterface   $logger,
+        private int               $maxUsernameLength = 255,
+        private int               $minPasswordLength = 8
     ) {}
 
     /**

@@ -1,22 +1,23 @@
 <?php
 declare(strict_types=1);
 
-use App\Http\Controller\AnnouncementController;
-use App\Http\Controller\CountdownController;
-use App\Http\Controller\DisplayController;
-use App\Http\Controller\ErrorController;
-use App\Http\Controller\HomeController;
-use App\Http\Controller\LoginController;
-use App\Http\Controller\ModuleController;
-use App\Http\Controller\PanelController;
-use App\Http\Controller\UserController;
-use App\Http\Middleware\AuthMiddleware;
-use App\Http\Middleware\CsrfMiddleware;
-use App\Http\Middleware\ExceptionMiddleware;
-use App\Http\Middleware\LocaleMiddleware;
-use App\Http\Middleware\MiddlewarePipeline;
-use App\Http\Middleware\RequestContextMiddleware;
 use App\Infrastructure\Helper\StaticFileHandlingHelper;
+use App\Presentation\Http\Controller\AnnouncementController;
+use App\Presentation\Http\Controller\CountdownController;
+use App\Presentation\Http\Controller\DisplayController;
+use App\Presentation\Http\Controller\ErrorController;
+use App\Presentation\Http\Controller\HomeController;
+use App\Presentation\Http\Controller\LoginController;
+use App\Presentation\Http\Controller\ModuleController;
+use App\Presentation\Http\Controller\PanelController;
+use App\Presentation\Http\Controller\SSEStreamController;
+use App\Presentation\Http\Controller\UserController;
+use App\Presentation\Http\Middleware\AuthMiddleware;
+use App\Presentation\Http\Middleware\CsrfMiddleware;
+use App\Presentation\Http\Middleware\ExceptionMiddleware;
+use App\Presentation\Http\Middleware\LocaleMiddleware;
+use App\Presentation\Http\Middleware\MiddlewarePipeline;
+use App\Presentation\Http\Middleware\RequestContextMiddleware;
 use FastRoute\RouteCollector;
 use GuzzleHttp\Psr7\ServerRequest;
 use function FastRoute\simpleDispatcher;
@@ -27,7 +28,7 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$container = require_once __DIR__ . '/../src/bootstrap/bootstrap.php';
+$container = require_once __DIR__ . '/../bootstrap/bootstrap.php';
 
 $request = ServerRequest::fromGlobals();
 
@@ -72,6 +73,14 @@ try {
         $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
 
+       $r->addRoute('POST', '/announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+//        $r->addRoute('GET', '/announcement/{id}', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+//        $r->addRoute('DELETE', '/announcement/{id}', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+//        $r->addRoute('PATCH', '/announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+//        $r->addRoute('POST', '/announcement/approve/{id}', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
+//        $r->addRoute('POST', '/announcement/reject/{id}', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
+
+
         // 2.3. Akcje powiązane z modułami
         $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule', 'middleware' => [AuthMiddleware::class]]);
@@ -100,8 +109,8 @@ try {
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
         $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
 
-        $r->addRoute('GET', '/stream', [\App\Http\Controller\SSEStreamController::class, 'stream', 'enableMiddleware' => false]);
-        $r->addRoute('GET', '/test', [PanelController::class, 'test', 'enableMiddleware' => false]);
+        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream']);
+        $r->addRoute('GET', '/test', [PanelController::class, 'test']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
@@ -134,26 +143,37 @@ switch ($routeInfo[0]) {
             $controllerClass = $handlerData[0];
             $methodName = $handlerData[1];
             $middlewares = $handlerData['middleware'] ?? [];
-            $enableMiddlewares = $handlerData['enableMiddleware'] ?? false;
 
             $controller = $container->get($controllerClass);
 
-            if (!$enableMiddlewares) {
+            if ($uri === '/stream') {
                 $controller->$methodName($vars);
+                exit;
             } else {
 
                 $pipeline = new MiddlewarePipeline();
 
                 $pipeline->add($container->get(RequestContextMiddleware::class));
                 $pipeline->add($container->get(ExceptionMiddleware::class));
-                $pipeline->add($container->get(LocaleMiddleware::class));
-                $pipeline->add($container->get(CsrfMiddleware::class));
 
                 foreach ($middlewares as $mwClass) {
                     $pipeline->add($container->get($mwClass));
                 }
 
-                $pipeline->run($request, fn() => $controller->$methodName($vars));
+                $pipeline->add($container->get(LocaleMiddleware::class));
+                $pipeline->add($container->get(CsrfMiddleware::class));
+
+                $response = $pipeline->run($request, fn() => $controller->$methodName($vars));
+
+                http_response_code($response->getStatusCode());
+
+                foreach ($response->getHeaders() as $name => $values) {
+                    foreach ($values as $value) {
+                        header(sprintf('%s: %s', $name, $value), false);
+                    }
+                }
+
+                echo $response->getBody();
             }
         } elseif (is_callable($handlerData)) {
             $handlerData($vars);
