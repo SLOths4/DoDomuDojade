@@ -137,7 +137,7 @@ final readonly class Config
             $moduleDateFormat = self::env('MODULE_DATE_FORMAT', 'H:i:s');
 
             // Users
-            $userTableName = self::env('USER_TABLE_NAME', 'user');
+            $userTableName = self::env('USER_TABLE_NAME', 'users');
             $userDateFormat = self::env('USER_DATE_FORMAT', 'Y-m-d');
             $maxUsernameLength = (int)self::env('MAX_USERNAME_LENGTH', 255);
             $minPasswordLength = (int)self::env('MIN_PASSWORD_LENGTH', 8);
