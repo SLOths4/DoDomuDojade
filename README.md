@@ -67,7 +67,7 @@ create database dodomudojade owner ddd;
 \q
 
 # 5. Run schema as postgres
-psql -U postgres -d dodomudojade -f schema.sql
+psql -U postgres -d dodomudojade -f schema/schema.sql
 
 # 6. Check schema as ddd
 psql -U ddd -d dodomudojade -c "\dt"
