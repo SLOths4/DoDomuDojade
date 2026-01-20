@@ -29,6 +29,7 @@ final class ModuleException extends DomainException
         return new self(
             'module.not_found',
             DomainExceptionCodes::MODULE_NOT_FOUND->value,
+            404,
             [
                 '$id' => $id
             ]
@@ -62,6 +63,7 @@ final class ModuleException extends DomainException
         return new self(
             'module.invalid_start_time',
             DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            400,
             [
                 'start_time' => $startTime
             ]
@@ -73,6 +75,7 @@ final class ModuleException extends DomainException
         return new self(
             'module.invalid_end_time',
             DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            400,
             [
                 'end_time' => $endTime
             ]
@@ -84,6 +87,7 @@ final class ModuleException extends DomainException
         return new self(
             'module.start_time_greater_than_end_time',
             DomainExceptionCodes::MODULE_TOGGLE_FAILED->value,
+            400,
             [
                 'start_time' => $startTime,
                 'end_time' => $endTime
@@ -96,6 +100,7 @@ final class ModuleException extends DomainException
         return new self(
             'module.invalid_name',
             DomainExceptionCodes::MODULE_INVALID_NAME->value,
+            400,
             [
                 'name' => $name
             ]

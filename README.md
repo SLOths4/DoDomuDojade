@@ -72,7 +72,7 @@ psql -U ddd -d dodomudojade -c "\dt"
 Dodatkowo pamiętaj, żeby nadać właściwe uprawnienia swojemu użytkownikowi. W przykładzie użytkownikiem tym jest `ddd`
 ```postgresql
 -- Grant all privileges on database
-grant all privileges on database dodomudojade_test to ddd;
+grant all privileges on database dodomudojade to ddd;
 
 -- Grant all privileges on all tables
 grant all privileges on all tables in schema public to ddd;
