@@ -7,18 +7,13 @@ use Predis\Client;
 use Predis\Connection\ConnectionException;
 use Throwable;
 
-/**
- * Redis factory - creates and manages Predis connections with safety checks
- */
 final class RedisFactory
 {
-    /**
-     * Creates Redis client instance with timeouts and reconnection support
-     * @param string $host
-     * @param int $port
-     * @return Client
-     * @throws RedisException
-     */
+    private static ?Client $instance = null;
+    private static int $requestCount = 0;
+    private static string $workerId = '';
+    private const int MAX_REQUESTS_PER_CONNECTION = 50;
+
     public static function create(
         string $host,
         int $port
@@ -28,69 +23,88 @@ final class RedisFactory
                 'scheme' => 'tcp',
                 'host' => $host,
                 'port' => $port,
-                'connect_timeout' => 1.0,      // Fail fast on connection
-                'read_timeout' => 1.0,         // Prevent hanging reads
-                'write_timeout' => 1.0,        // Prevent hanging writes
-                'tcp_keepalives' => true,      // Keep connection alive
-                'persistent' => false,         // Don't persist in PHP-FPM
-                'iterable_multibulk' => true,  // Support large responses
-                'throw_errors' => true,        // Throw exceptions, don't return errors
+                'connect_timeout' => 2.0,
+                'read_timeout' => 5.0,
+                'write_timeout' => 2.0,
+                'tcp_keepalives' => false,
+                'persistent' => false,
+                'iterable_multibulk' => true,
+                'throw_errors' => true,
             ]);
 
-            // Verify connection works
             $client->ping();
-
             return $client;
         } catch (Throwable $e) {
             throw RedisException::creationFailed($e);
         }
     }
 
-    /**
-     * Get or create singleton Redis client with auto-reconnect
-     * @param string $host
-     * @param int $port
-     * @return Client
-     * @throws RedisException
-     */
     public static function createSingleton(
         string $host,
         int $port
     ): Client {
-        static $instance = null;
-
-        if ($instance === null) {
-            $instance = self::create($host, $port);
-            register_shutdown_function([self::class, 'disconnect'], $instance);
-            return $instance;
+        $currentPid = getmypid();
+        if (self::$workerId !== (string)$currentPid) {
+            self::$workerId = (string)$currentPid;
+            self::$requestCount = 0;
+            self::disconnect(self::$instance);
+            self::$instance = null;
+            error_log("[Redis] New PHP-FPM worker detected: PID $currentPid");
         }
 
-        // Health check - reconnect if dead
-        try {
-            $instance->ping();
-        } catch (ConnectionException|Throwable $e) {
+        self::$requestCount++;
+
+        if (self::$requestCount > self::MAX_REQUESTS_PER_CONNECTION) {
+            error_log("[Redis] Recycling connection after " . self::$requestCount . " requests");
+            self::disconnect(self::$instance);
+            self::$instance = null;
+            self::$requestCount = 0;
+        }
+
+        if (self::$instance === null) {
             try {
-                $instance->disconnect();
-            } catch (Throwable) {
-                // Already disconnected, ignore
+                self::$instance = self::create($host, $port);
+                error_log("[Redis] New connection created (PID: {$currentPid}, Request: " . (self::$requestCount + 1) . ")");
+            } catch (Throwable $e) {
+                error_log("[Redis CRITICAL] Failed to create connection: " . $e->getMessage());
+                throw $e;
             }
-            $instance = self::create($host, $port);
+            return self::$instance;
         }
 
-        return $instance;
+        try {
+            self::$instance->ping();
+        } catch (ConnectionException|Throwable $e) {
+            error_log("[Redis] Health check failed, reconnecting: " . $e->getMessage());
+            self::disconnect(self::$instance);
+            self::$instance = self::create($host, $port);
+        }
+
+        return self::$instance;
     }
 
-    /**
-     * Safely disconnect from Redis
-     * @param Client $client
-     * @return void
-     */
-    public static function disconnect(Client $client): void
+    public static function disconnect(?Client $client): void
     {
-        try {
-            $client->disconnect();
-        } catch (Throwable) {
-            // Already disconnected or errored, ignore
+        if ($client === null) {
+            return;
         }
+
+        try {
+            @$client->disconnect();
+            error_log("[Redis] Connection closed");
+        } catch (Throwable $e) {
+            error_log("[Redis] Disconnect error (ignoring): " . $e->getMessage());
+        }
+    }
+
+    public static function getStats(): array
+    {
+        return [
+            'pid' => getmypid(),
+            'worker_id' => self::$workerId,
+            'request_count' => self::$requestCount,
+            'max_requests' => self::MAX_REQUESTS_PER_CONNECTION,
+            'has_instance' => self::$instance !== null,
+        ];
     }
 }

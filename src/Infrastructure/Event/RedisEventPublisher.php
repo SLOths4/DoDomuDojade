@@ -51,11 +51,11 @@ final readonly class RedisEventPublisher implements EventPublisher
             }
 
             try {
-                $this->redis->rpush('sse:broadcast', (array)$eventJson);
+                $this->redis->rpush('sse:broadcast', $eventJson);
 
                 $sseType = $this->mapToSseType($event->getEventType());
                 if ($sseType) {
-                    $this->redis->rpush('sse:broadcast', (array)json_encode(['type' => $sseType]));
+                    $this->redis->rpush('sse:broadcast', json_encode(['type' => $sseType]));
                 }
             } catch (ConnectionException $e) {
                 $this->logger->warning(
