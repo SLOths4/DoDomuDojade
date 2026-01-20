@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Application\User;
+namespace App\Application\User\UseCase;
 
+use App\Application\User\CreateUserDTO;
 use App\Domain\User\User;
 use App\Domain\User\ValueObject\Password;
 use App\Domain\User\ValueObject\Username;
@@ -23,15 +24,15 @@ readonly class CreateUserUseCase
     /**
      * @throws Exception
      */
-    public function execute(string $rawUsername, string $rawPassword): bool
+    public function execute(CreateUserDTO $dto): int
     {
-        $this->logger->info('Executing CreateUserUseCase', ['username' => $rawUsername]);
+        $this->logger->info('Executing CreateUserUseCase');
 
-        $username = new Username($rawUsername, $this->maxUsernameLength);
-        $password = new Password($rawPassword, $this->minPasswordLength);
+        $username = new Username($dto->username, $this->maxUsernameLength);
+        $password = new Password($dto->password, $this->minPasswordLength);
 
         if ($this->repository->findByExactUsername($username->value)) {
-            $this->logger->warning('User already exists', ['username' => $rawUsername]);
+            $this->logger->warning('User already exists');
             throw new Exception("User already exists");
         }
 
@@ -44,7 +45,7 @@ readonly class CreateUserUseCase
 
         $result = $this->repository->add($user);
 
-        $this->logger->info('User created successfully', ['username' => $rawUsername, 'success' => $result]);
+        $this->logger->info('User created successfully');
 
         return $result;
     }

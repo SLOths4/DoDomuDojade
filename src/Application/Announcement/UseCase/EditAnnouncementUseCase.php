@@ -19,7 +19,6 @@ readonly class EditAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
-        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -61,7 +60,6 @@ readonly class EditAnnouncementUseCase
             throw AnnouncementException::failedToUpdate();
         }
 
-        $this->publisher->publishAll($announcement->getDomainEvents());
         $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement updated successfully', [

@@ -20,7 +20,6 @@ readonly class DeleteCountdownUseCase
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
         private CountdownValidationHelper $validator,
-        private EventPublisher            $publisher,
     ){}
 
     /**
@@ -41,8 +40,6 @@ readonly class DeleteCountdownUseCase
         if (!$result) {
             throw CountdownException::failedToDelete();
         }
-
-        $this->publisher->publish(new CountdownDeletedEvent((string)$id));
 
         $this->logger->info('Countdown delete finished',
             [

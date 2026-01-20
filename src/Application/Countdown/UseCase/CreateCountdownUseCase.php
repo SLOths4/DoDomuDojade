@@ -22,7 +22,6 @@ readonly class CreateCountdownUseCase
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
         private CountdownValidationHelper $validator,
-        private EventPublisher            $publisher,
     ) {}
 
     /**
@@ -43,8 +42,6 @@ readonly class CreateCountdownUseCase
         if (!$id) {
             throw CountdownException::failedToCreate();
         }
-
-        $this->publisher->publish(new CountdownCreatedEvent((string)$id, $dto->title));
 
         $this->logger->info('Countdown creation finished', [
             'admin_id' => $adminId,

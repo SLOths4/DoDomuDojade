@@ -45,10 +45,10 @@ interface UserRepositoryInterface
      * Persists a new user entity.
      *
      * @param User $user The user entity to add
-     * @return bool True if insertion was successful, false otherwise
+     * @return int user id
      * @throws Exception
      */
-    public function add(User $user): bool;
+    public function add(User $user): int;
 
     /**
      * Updates an existing user entity.

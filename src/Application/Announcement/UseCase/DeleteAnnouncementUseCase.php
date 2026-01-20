@@ -18,7 +18,6 @@ readonly class DeleteAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
-        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -38,8 +37,6 @@ readonly class DeleteAnnouncementUseCase
         if (!$result) {
             throw AnnouncementException::failedToDelete($announcementId);
         }
-
-        $this->publisher->publish(new AnnouncementDeletedEvent((string)$announcementId));
 
         $this->logger->info('Announcement deleted successfully', [
             'announcement_id' => $announcementId,

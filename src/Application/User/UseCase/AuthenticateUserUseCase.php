@@ -1,5 +1,5 @@
 <?php
-namespace App\Application\User;
+namespace App\Application\User\UseCase;
 
 use App\Domain\Shared\AuthenticationException;
 use App\Domain\User\User;

@@ -19,7 +19,6 @@ readonly class UpdateModuleUseCase
         private PDOModuleRepository    $repository,
         private LoggerInterface        $logger,
         private ModuleValidationHelper $validator,
-        private EventPublisher         $publisher,
     ) {}
 
     /**
@@ -47,8 +46,6 @@ readonly class UpdateModuleUseCase
         if (!$result) {
             throw ModuleException::failedToUpdate();
         }
-
-        $this->publisher->publish(new ModuleUpdatedEvent((string)$id, $updated->startTime, $updated->endTime));
 
         $this->logger->info('Module update finished', [
             'module_id' => $id,

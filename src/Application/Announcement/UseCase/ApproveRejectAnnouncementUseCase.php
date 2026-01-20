@@ -20,7 +20,6 @@ readonly class ApproveRejectAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
-        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -56,7 +55,6 @@ readonly class ApproveRejectAnnouncementUseCase
             throw AnnouncementException::failedToUpdateStatus();
         }
 
-        $this->publisher->publishAll($announcement->getDomainEvents());
         $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement decision made', [

@@ -19,7 +19,6 @@ readonly class UpdateCountdownUseCase
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
         private CountdownValidationHelper $validator,
-        private EventPublisher            $publisher,
     ) {}
 
     /**
@@ -48,8 +47,6 @@ readonly class UpdateCountdownUseCase
         if (!$result){
             throw CountdownException::failedToUpdate();
         }
-
-        $this->publisher->publish(new CountdownUpdatedEvent((string)$id, $dto->title));
 
         $this->logger->info('Countdown update finished', [
             'countdown_id' => $id,

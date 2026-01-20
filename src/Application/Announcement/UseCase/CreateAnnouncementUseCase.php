@@ -20,7 +20,6 @@ readonly class CreateAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
-        private EventPublisher               $publisher,
     ){}
 
     /**
@@ -39,8 +38,6 @@ readonly class CreateAnnouncementUseCase
         $id = $this->repository->add($new);
 
         $events = $new->getDomainEvents();
-
-        $this->publisher->publishAll($events);
 
         $new->clearDomainEvents();
 

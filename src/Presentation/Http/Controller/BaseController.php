@@ -29,9 +29,12 @@ abstract class BaseController
     /**
      * Redirect to URL
      */
-    protected function redirect(string $to): void
+    protected function redirect(string $location, int $statusCode = 302): ResponseInterface
     {
-        header('Location: '. $to);
+        return new Response(
+            $statusCode,
+            ['Location' => $location]
+        );
     }
 
     /**
@@ -49,12 +52,12 @@ abstract class BaseController
     /**
      * Render view and return as response
      */
-    protected function render(string $view, array $data = []): ResponseInterface
+    protected function render(string $view, array $data = [], int $statusCode = 200): ResponseInterface
     {
         $content = $this->renderer->render($view, $data);
 
         return new Response(
-            200,
+            $statusCode,
             ['Content-Type' => 'text/html; charset=utf-8'],
             $content
         );

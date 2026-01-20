@@ -2,7 +2,7 @@
 
 namespace App\Presentation\Http\Controller;
 
-use App\Application\User\AuthenticateUserUseCase;
+use App\Application\User\UseCase\AuthenticateUserUseCase;
 use App\Domain\Shared\AuthenticationException;
 use App\Infrastructure\Helper\SessionHelper;
 use App\Presentation\Http\Context\RequestContext;
@@ -35,7 +35,7 @@ final class LoginController extends BaseController
      * @throws AuthenticationException
      * @throws Exception
      */
-    public function authenticate(): void
+    public function authenticate(): ResponseInterface
     {
         $this->logger->debug("User verification request received.");
 
@@ -47,13 +47,14 @@ final class LoginController extends BaseController
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
         SessionHelper::setWithFingerprint('user_id', $user->id);
-        $this->redirect("/panel");
+        $this->logger->debug("redirecting shortly to panel.");
+        return $this->redirect('/panel');
     }
 
-    public function logout(): void
+    public function logout(): ResponseInterface
     {
         $this->logger->debug("User logout requested.");
         SessionHelper::destroy();
-        $this->redirect("/login");
+        return $this->redirect("/login");
     }
 }

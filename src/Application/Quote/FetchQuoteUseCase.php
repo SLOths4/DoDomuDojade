@@ -18,7 +18,6 @@ readonly class FetchQuoteUseCase
         private LoggerInterface    $logger,
         private QuoteApiService    $apiService,
         private PDOQuoteRepository $repository,
-        private EventPublisher     $publisher,
     ) {}
 
     /**
@@ -39,7 +38,6 @@ readonly class FetchQuoteUseCase
             new DateTimeImmutable(),
         );
         $id = $this->repository->add($quote);
-        $this->publisher->publish(new QuoteCreatedEvent((string)$id, $quote->quote, $quote->author));
         $this->logger->info("Quote saved successfully");
     }
 }

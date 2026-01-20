@@ -17,7 +17,6 @@ readonly class ToggleModuleUseCase
         private PDOModuleRepository    $repository,
         private LoggerInterface        $logger,
         private ModuleValidationHelper $validator,
-        private EventPublisher         $publisher,
     ) {}
 
     /**
@@ -41,8 +40,6 @@ readonly class ToggleModuleUseCase
         if (!$result) {
             throw ModuleException::failedToToggle();
         }
-
-        $this->publisher->publish(new ModuleToggledEvent((string)$id, $module->isActive));
 
         $this->logger->info('Module toggle finished', [
             'module_id' => $id,

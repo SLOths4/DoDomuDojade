@@ -135,12 +135,12 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     /**
      * Adds a user.
      * @param User $user
-     * @return bool
+     * @return int id
      * @throws Exception
      */
-    public function add(User $user): bool
+    public function add(User $user): int
     {
-        $lastId = $this->dbHelper->insert(
+        return $this->dbHelper->insert(
             $this->TABLE_NAME,
             [
                 'username'      => [$user->username, PDO::PARAM_STR],
@@ -148,8 +148,6 @@ readonly class PDOUserRepository implements UserRepositoryInterface
                 'created_at'    => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ]
         );
-
-        return !empty($lastId);
     }
 
     /**

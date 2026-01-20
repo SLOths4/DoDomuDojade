@@ -20,21 +20,21 @@ final class ErrorController extends BaseController
 
     public function notFound(): ResponseInterface
     {
-        return $this->render(TemplateNames::ERROR_404->value);
+        return $this->render(TemplateNames::ERROR_404->value, [], 404);
     }
 
     public function methodNotAllowed(): ResponseInterface
     {
-        return $this->render(TemplateNames::ERROR_405->value);
+        return $this->render(TemplateNames::ERROR_405->value, [], 405);
     }
 
     public function forbidden(): ResponseInterface
     {
-        return $this->render(TemplateNames::ERROR_403->value);
+        return $this->render(TemplateNames::ERROR_403->value, [], 403);
     }
 
     public function internalServerError(): ResponseInterface
     {
-        return $this->render(TemplateNames::ERROR_500->value);
+        return $this->render(TemplateNames::ERROR_500->value, [], 500);
     }
 }

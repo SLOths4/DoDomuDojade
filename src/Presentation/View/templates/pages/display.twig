@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" x-data>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoDomu - Wyświetlacz</title>
-    <script defer src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DoDomuDojadę</title>
+    <link rel="icon" type="image/x-icon" href="/assets/resources/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/d85f6b75e6.js" crossorigin="anonymous"></script>
+    <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-        .shadow-custom { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .bg-primary-200 { background-color: #e8f4f8; }
-        .bg-primary-400 { background-color: #32b8c6; }
-        .bg-beige { background-color: #f5f1ed; }
-        .font-lato { font-family: 'Lato', sans-serif; }
-        .rounded-2xl { border-radius: 1rem; }
-    </style>
 </head>
-<body x-data="{ ...layout(), ...sseHandler() }" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
+<body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
 <!-- 🔹 GÓRNY PANEL: Data / Czas / Pogoda -->
 <div x-ref="header" class="flex mx-1 my-2">
     <!-- DATA I CZAS -->
     <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-2 shadow-custom justify-around items-center max-sm:hidden">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%2332b8c6'/%3E%3C/svg%3E" alt="logo" width="40" height="40">
+        <!--suppress CheckImageSize -->
+        <img src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
         <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
             <i class="fa-solid fa-calendar text-primary-400"></i>
             <span x-text="date"></span>
@@ -69,7 +63,7 @@
 <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2 overflow-hidden" :style="`height: ${gridHeight}px;`">
 
     <!-- LEWA KOLUMNA: Tramwaje -->
-    <div x-data="tramDepartures()" x-init="init()" x-ref="tramDiv" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
+    <div x-data="tramDepartures()" x-init="init()" x-ref="tramDiv" @tram-data-loaded.window="console.log('Tram departures refreshed')" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
         <template x-if="loading">
             <p class="text-center">Ładowanie danych...</p>
         </template>
@@ -99,11 +93,11 @@
                         <div
                                 x-text="tram.line"
                                 :class="[
-                                  (count[tram.line] || 'bg-white'),
-                                  tram.line < 20
-                                    ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
-                                    : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
-                                ]"
+                                      (count[tram.line] || 'bg-white'),
+                                      tram.line < 20
+                                        ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
+                                        : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
+                                    ]"
                                 class="font-bold inline-flex items-center justify-center"
                         ></div>
                     </div>
@@ -114,11 +108,11 @@
         </div>
     </div>
 
-    <!-- PRAWA KOLUMNA: Ogłoszenia + Pozostałe -->
     <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col">
 
         <!-- ODLICZANIE -->
         <div x-data="countdown()" x-init="load()">
+
             <template x-if="loading || data">
                 <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
                     <p x-show="loading" class="text-center">Ładowanie...</p>
@@ -126,6 +120,7 @@
                 </div>
             </template>
 
+            <!-- Error template, outside parent -->
             <template x-if="error">
                 <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
@@ -133,6 +128,7 @@
                 </div>
             </template>
 
+            <!-- Info template, outside parent -->
             <template x-if="info">
                 <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -141,18 +137,19 @@
             </template>
         </div>
 
-        <!-- CYTAT -->
         <div x-data="quote()" x-init="load()">
-            <template x-if="loading || (data && data.quote)">
+
+            <template x-if="loading || data">
                 <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
                     <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                    <div x-show="!loading && data && data.quote" class="space-y-2">
+                    <div x-show="!loading && data" class="space-y-2">
                         <p class="font-mono text-lg italic text-center" x-text="data.quote.quote"></p>
                         <p class="text-right text-sm text-gray-600" x-text="data.quote.from ? `— ${data.quote.from}` : ''"></p>
                     </div>
                 </div>
             </template>
 
+            <!-- Error -->
             <template x-if="error">
                 <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
@@ -160,6 +157,7 @@
                 </div>
             </template>
 
+            <!-- Info -->
             <template x-if="info">
                 <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -168,12 +166,12 @@
             </template>
         </div>
 
-        <!-- SŁOWO DNIA -->
         <div x-data="word()" x-init="load()">
-            <template x-if="loading || (data && data.word)">
+
+            <template x-if="loading || data">
                 <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
                     <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                    <div x-show="!loading && data && data.word" class="space-y-2">
+                    <div x-show="!loading && data" class="space-y-2">
                         <p class="font-mono text-lg italic text-center" x-text="data.word.word"></p>
                         <p class="font-mono text-lg italic text-center" x-text="data.word.ipa"></p>
                         <p class="font-mono text-lg italic text-center" x-text="data.word.definition"></p>
@@ -181,6 +179,7 @@
                 </div>
             </template>
 
+            <!-- Error -->
             <template x-if="error">
                 <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
@@ -188,6 +187,7 @@
                 </div>
             </template>
 
+            <!-- Info -->
             <template x-if="info">
                 <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -196,8 +196,8 @@
             </template>
         </div>
 
-        <!-- EVENIMENTE -->
         <div x-data="events()" x-init="load()">
+
             <div class="rounded-2xl m-2">
                 <p x-show="loading" class="bg-beige shadow-custom text-center text-gray-500">Ładowanie...</p>
                 <div x-show="!loading && data.length" class="space-y-2">
@@ -211,6 +211,7 @@
                 </div>
             </div>
 
+            <!-- Error -->
             <template x-if="error">
                 <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
@@ -218,6 +219,7 @@
                 </div>
             </template>
 
+            <!-- Info -->
             <template x-if="info">
                 <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -226,7 +228,7 @@
             </template>
         </div>
 
-        <!-- OGŁOSZENIA -->
+
         <div x-data="announcements()" x-init="load()">
             <div x-show="!error && !info" class="flex-1 overflow-y-auto py-2">
                 <template x-if="loading">
@@ -267,83 +269,13 @@
 
 <!-- 🔹 KOMPONENTY ALPINE -->
 <script>
-    function sseHandler() {
-        return {
-            clientId: 'client_' + Math.random().toString(36).substr(2, 9) + '.' + Date.now() % 100000000,
-            eventSource: null,
-            init() {
-                this.connect();
-            },
-            connect() {
-                console.log('🔌 Connecting to SSE stream...');
-                this.eventSource = new EventSource(`/stream?clientId=${this.clientId}`);
-
-                this.eventSource.onopen = () => {
-                    console.log('✅ Connected to SSE stream');
-                };
-
-                // Obsługa eventów
-                this.eventSource.addEventListener('connected', (e) => {
-                    console.log('🎯 Connected event:', e.data);
-                });
-
-                this.eventSource.addEventListener('announcement.created', (e) => {
-                    console.log('📢 Announcement created via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-announcements'));
-                });
-
-                this.eventSource.addEventListener('announcement.updated', (e) => {
-                    console.log('📢 Announcement updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-announcements'));
-                });
-
-                this.eventSource.addEventListener('weather_updated', (e) => {
-                    console.log('⛅ Weather updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-weather'));
-                });
-
-                this.eventSource.addEventListener('countdown_updated', (e) => {
-                    console.log('⏲️ Countdown updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-countdown'));
-                });
-
-                this.eventSource.addEventListener('departures_updated', (e) => {
-                    console.log('🚊 Departures updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-departures'));
-                });
-
-                this.eventSource.addEventListener('quote_updated', (e) => {
-                    console.log('💬 Quote updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-quote'));
-                });
-
-                this.eventSource.addEventListener('word_updated', (e) => {
-                    console.log('📖 Word updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-word'));
-                });
-
-                this.eventSource.addEventListener('events_updated', (e) => {
-                    console.log('📅 Events updated via SSE:', e.data);
-                    window.dispatchEvent(new CustomEvent('refresh-events'));
-                });
-
-                this.eventSource.onerror = (error) => {
-                    if (this.eventSource.readyState === EventSource.CLOSED) {
-                        console.log('❌ SSE connection closed, retrying in 3s...');
-                        setTimeout(() => this.connect(), 3000);
-                    }
-                };
-            }
-        }
-    }
-
     function layout() {
         return {
             gridHeight: 0,
-            tramHeight: 0,
             init() {
                 this.calcGridHeight();
                 window.addEventListener('resize', () => this.calcGridHeight());
+                // Delay calculation after fonts and styles settle
                 requestAnimationFrame(() => this.calcGridHeight());
             },
             calcGridHeight() {
@@ -352,7 +284,7 @@
                 const marginBottom = parseFloat(getComputedStyle(this.$refs.header).marginBottom) || 0;
                 const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
 
-                this.gridHeight = window.innerHeight - totalHeaderHeight;
+                this.gridHeight = window.innerHeight - totalHeaderHeight; // 8px fudge factor/padding adjustment
                 this.tramHeight = this.gridHeight - 1;
             }
         }
@@ -381,11 +313,6 @@
             error: null,
             loading: true,
             _firstLoadDone: false,
-            _weatherTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-weather', () => this.load(true));
-            },
             _isDifferent(a, b) {
                 if (!a || !b) return true;
                 return (
@@ -402,8 +329,8 @@
                             t <= 15 ? '#FFF9A6' :
                                 t <= 25 ? '#FFD1A4' : '#FFB3B3';
             },
-            async load(isManual = false) {
-                if (!this._firstLoadDone && !isManual) {
+            async load() {
+                if (!this._firstLoadDone) {
                     this.loading = true;
                     this.error = null;
                 }
@@ -443,11 +370,7 @@
                     this.loading = false;
                     this._firstLoadDone = true;
                 }
-
-                if (!isManual) {
-                    if (this._weatherTimeout) clearTimeout(this._weatherTimeout);
-                    this._weatherTimeout = setTimeout(() => this.load(), 60000);
-                }
+                setTimeout(() => this.load(), 60000);
             }
         }
     }
@@ -457,7 +380,6 @@
             data: [],
             error: null,
             loading: true,
-            _departuresTimeout: null,
             count: {
                 '1': 'bg-pink-700',
                 '2': 'bg-2',
@@ -478,11 +400,8 @@
                 '18': 'bg-18',
                 '19': 'bg-19',
             },
-            init() {
-                this.load();
-                window.addEventListener('refresh-departures', () => this.load(true));
-            },
-            async load(isManual = false) {
+
+            async fetchDepartures() {
                 this.error = null;
                 try {
                     const res = await fetch('/display/departures', {
@@ -506,24 +425,20 @@
                 } finally {
                     this.loading = false;
                 }
-
-                if (!isManual) {
-                    if (this._departuresTimeout) clearTimeout(this._departuresTimeout);
-                    this._departuresTimeout = setTimeout(() => this.load(), 60000);
-                }
-
-                requestAnimationFrame(() => this.checkOverflow());
             },
+
             formatMinutes(min) {
                 if (min === 0) return '<1';
                 if (min < 60) return `${min}`;
                 const h = Math.floor(min / 60), m = min % 60;
                 return `${h}h ${m}`;
             },
+
             calcExcessTram() {
                 var parentEl = this.$refs.tramDiv;
                 var els = document.getElementsByClassName('demo');
 
+                // Iterate backwards to remove last elements until no overflow
                 for (var i = els.length - 1; i >= 0; i--) {
                     if (!(parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth)) {
                         break;
@@ -534,11 +449,22 @@
                     }
                 }
             },
+
             checkOverflow() {
                 const elname = this.$refs.tramDiv;
                 if (elname.scrollHeight > elname.clientHeight || elname.scrollWidth > elname.clientWidth) {
                     this.calcExcessTram();
                 }
+            },
+
+            async init() {
+                await this.fetchDepartures();
+                const refreshData = async () => {
+                    await this.fetchDepartures();
+                    requestAnimationFrame(() => this.checkOverflow());
+                };
+                await refreshData();
+                setInterval(refreshData, 60000);
             }
         };
     }
@@ -550,13 +476,8 @@
             error: null,
             loading: true,
             info: null,
-            _intervalId: null,
-            _countdownTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-countdown', () => this.load(true));
-            },
-            async load(isManual = false) {
+            intervalId: null,
+            async load() {
                 try {
                     const res = await fetch('/display/countdown', {
                         method: 'GET',
@@ -564,50 +485,46 @@
                     });
                     const json = await res.json();
 
-                    if (!json || typeof json !== 'object') {
+                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
                         this.loading = true;
                         this.error = 'Błąd ładowania odliczania';
                         this.info = null;
-                        if (this._intervalId) clearInterval(this._intervalId);
-                    } else if (json.is_active === false) {
+                        if (this.intervalId) clearInterval(this.intervalId);
+                    } else if (json.data.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
                         this.data = null;
                         this.message = '';
-                        if (this._intervalId) clearInterval(this._intervalId);
-                    } else if (!json.title || !json.count_to) {
+                        if (this.intervalId) clearInterval(this.intervalId);
+                    } else if (!json.data.title || !json.data.count_to) {
                         this.loading = false;
                         this.info = 'Brak danych odliczania';
                         this.error = null;
                         this.data = null;
                         this.message = '';
-                        if (this._intervalId) clearInterval(this._intervalId);
+                        if (this.intervalId) clearInterval(this.intervalId);
                     } else {
                         if (this.error || this.info) {
                             this.error = null;
                             this.info = null;
                         }
 
-                        if (JSON.stringify(this.data) !== JSON.stringify(json)) {
-                            this.data = json;
+                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                            this.data = json.data;
                             this.loading = false;
                             this.update();
-                            if (this._intervalId) clearInterval(this._intervalId);
-                            this._intervalId = setInterval(() => this.update(), 1000);
+                            if (this.intervalId) clearInterval(this.intervalId);
+                            this.intervalId = setInterval(() => this.update(), 1000);
                         }
                     }
                 } catch (e) {
                     this.error = 'Błąd ładowania odliczania';
-                    if (this._intervalId) clearInterval(this._intervalId);
+                    if (this.intervalId) clearInterval(this.intervalId);
                     this.loading = false;
                     console.error('Fetch error:', e);
                 }
-
-                if (!isManual) {
-                    if (this._countdownTimeout) clearTimeout(this._countdownTimeout);
-                    this._countdownTimeout = setTimeout(() => this.load(), 60000);
-                }
+                setTimeout(() => this.load(), 60000);
             },
             update() {
                 if (!this.data) return;
@@ -615,9 +532,9 @@
                 const diff = end - Date.now();
                 if (diff <= 0) {
                     this.message = 'Zakończono!';
-                    if (this._intervalId) {
-                        clearInterval(this._intervalId);
-                        this._intervalId = null;
+                    if (this.intervalId) {
+                        clearInterval(this.intervalId);
+                        this.intervalId = null;
                     }
                     return;
                 }
@@ -625,12 +542,79 @@
                     h = Math.floor(diff / 3600000) % 24,
                     m = Math.floor(diff / 60000) % 60,
                     s = Math.floor(diff / 1000) % 60;
-
-                let odmianadni = d === 1 ? '1 dzień' : `${d} dni`;
-                let odmianagodzin = h === 1 ? '1 godzina' : [2,3,4,22,23].includes(h) ? `${h} godziny` : `${h} godzin`;
-                let odmianaminut = m === 1 ? '1 minuta' : [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(m) ? `${m} minuty` : `${m} minut`;
-                let odmianasekund = s === 1 ? '1 sekunda' : [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(s) ? `${s} sekundy` : `${s} sekund`;
-
+                let odmianadni;
+                let odmianagodzin;
+                let odmianaminut;
+                let odmianasekund;
+                switch (d) {
+                    case 1:
+                        odmianadni = `1 dzień`;
+                        break;
+                    default:
+                        odmianadni = `${d} dni`;
+                }
+                switch (h) {
+                    case 1:
+                        odmianagodzin = `1 godzina`;
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 22:
+                    case 23:
+                        odmianagodzin = `${h} godziny`;
+                        break;
+                    default:
+                        odmianagodzin = `${h} godzin`;
+                }
+                switch (m) {
+                    case 1:
+                        odmianaminut = `1 minuta`;
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 32:
+                    case 33:
+                    case 34:
+                    case 42:
+                    case 43:
+                    case 44:
+                    case 52:
+                    case 53:
+                    case 54:
+                        odmianaminut = `${m} minuty`;
+                        break;
+                    default:
+                        odmianaminut = `${m} minut`;
+                }
+                switch (s) {
+                    case 1:
+                        odmianasekund = `1 sekunda`;
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 32:
+                    case 33:
+                    case 34:
+                    case 42:
+                    case 43:
+                    case 44:
+                    case 52:
+                    case 53:
+                    case 54:
+                        odmianasekund = `${s} sekundy`;
+                        break;
+                    default:
+                        odmianasekund = `${s} sekund`;
+                }
                 this.message = `Do ${this.data.title} : ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
             }
         }
@@ -642,12 +626,7 @@
             error: null,
             loading: true,
             info: null,
-            _quoteTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-quote', () => this.load(true));
-            },
-            async load(isManual = false) {
+            async load() {
                 try {
                     const res = await fetch('/display/quote', {
                         method: 'GET',
@@ -655,17 +634,17 @@
                     });
                     const json = await res.json();
 
-                    if (!json || typeof json !== 'object') {
+                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania cytatu';
                         this.info = null;
                         this.data = null;
-                    } else if (json.is_active === false) {
+                    } else if (json.data.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
                         this.data = null;
-                    } else if (!json.quote) {
+                    } else if (!json.data.quote || !json.data.quote.quote) {
                         this.loading = false;
                         this.info = 'Brak dostępnego cytatu';
                         this.error = null;
@@ -676,8 +655,8 @@
                             this.info = null;
                         }
 
-                        if (JSON.stringify(this.data) !== JSON.stringify(json)) {
-                            this.data = json;
+                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                            this.data = json.data;
                             this.loading = false;
                         }
                     }
@@ -686,11 +665,7 @@
                     this.loading = false;
                     console.error('Fetch error:', e);
                 }
-
-                if (!isManual) {
-                    if (this._quoteTimeout) clearTimeout(this._quoteTimeout);
-                    this._quoteTimeout = setTimeout(() => this.load(), 60000);
-                }
+                setTimeout(() => this.load(), 60000);
             }
         }
     }
@@ -701,12 +676,7 @@
             error: null,
             loading: true,
             info: null,
-            _wordTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-word', () => this.load(true));
-            },
-            async load(isManual = false) {
+            async load() {
                 try {
                     const res = await fetch('/display/word', {
                         method: 'GET',
@@ -714,17 +684,17 @@
                     });
                     const json = await res.json();
 
-                    if (!json || typeof json !== 'object') {
+                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania słowa dnia';
                         this.info = null;
                         this.data = null;
-                    } else if (json.is_active === false) {
+                    } else if (json.data.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
                         this.data = null;
-                    } else if (!json.word) {
+                    } else if (!json.data.word || !json.data.word.word) {
                         this.loading = false;
                         this.info = 'Brak dostępnego słowa dnia';
                         this.error = null;
@@ -735,8 +705,8 @@
                             this.info = null;
                         }
 
-                        if (JSON.stringify(this.data) !== JSON.stringify(json)) {
-                            this.data = json;
+                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
+                            this.data = json.data;
                             this.loading = false;
                         }
                     }
@@ -745,11 +715,7 @@
                     this.loading = false;
                     console.error('Fetch error:', e);
                 }
-
-                if (!isManual) {
-                    if (this._wordTimeout) clearTimeout(this._wordTimeout);
-                    this._wordTimeout = setTimeout(() => this.load(), 60000);
-                }
+                setTimeout(() => this.load(), 60000);
             }
         }
     }
@@ -760,12 +726,7 @@
             error: null,
             loading: true,
             info: null,
-            _eventsTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-events', () => this.load(true));
-            },
-            async load(isManual = false) {
+            async load() {
                 try {
                     const res = await fetch('/display/events', {
                         method: 'GET',
@@ -773,29 +734,31 @@
                     });
                     const json = await res.json();
 
-                    if (!json || typeof json !== 'object') {
+                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania wydarzeń';
                         this.info = null;
-                        this.data = [];
-                    } else if (json.is_active === false) {
+                        this.data = null;
+                    } else if (json.data.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
-                        this.data = [];
-                    } else if (!Array.isArray(json.events) || !json.events.length) {
+                        this.data = null;
+                    } else if (!json.data.events || !json.data.events.length) {
                         this.loading = false;
                         this.info = 'Brak dostępnego wydarzenia';
                         this.error = null;
-                        this.data = [];
+                        this.data = null;
                     } else {
                         if (this.error || this.info) {
                             this.error = null;
                             this.info = null;
                         }
-                        if (JSON.stringify(this.data) !== JSON.stringify(json.events)) {
-                            this.data = json.events;
-                            this.loading = false;
+                        if (json.status === 'success' && Array.isArray(json.data.events)) {
+                            const newData = json.data.events;
+                            if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
+                                this.data = newData;
+                            }
                         }
                     }
                 } catch (e) {
@@ -805,14 +768,11 @@
                 } finally {
                     this.loading = false;
                 }
-
-                if (!isManual) {
-                    if (this._eventsTimeout) clearTimeout(this._eventsTimeout);
-                    this._eventsTimeout = setTimeout(() => this.load(), 60000);
-                }
+                setTimeout(() => this.load(), 60000);
             }
         }
     }
+
 
     function announcements() {
         return {
@@ -822,13 +782,8 @@
             error: null,
             loading: true,
             info: null,
-            _rotateIntervalId: null,
-            _announcementsTimeout: null,
-            init() {
-                this.load();
-                window.addEventListener('refresh-announcements', () => this.load(true));
-            },
-            async load(isManual = false) {
+            rotateIntervalId: null,
+            async load() {
                 try {
                     const res = await fetch('/display/announcements', {
                         method: 'GET',
@@ -841,29 +796,31 @@
                         this.loading = false;
                         this.error = 'Błąd ładowania ogłoszeń';
                         this.info = null;
-                        if (this._rotateIntervalId) clearInterval(this._rotateIntervalId);
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         return;
                     }
 
                     if (json.data.is_active === false) {
+                        // moduł WYŁĄCZONY – nic nie pokazujemy (ani error, ani info)
                         this.loading = false;
                         this.error = null;
                         this.info = null;
                         this.announcements = [];
                         this.grouped = [];
-                        if (this._rotateIntervalId) clearInterval(this._rotateIntervalId);
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         return;
                     }
 
                     const list = Array.isArray(json.data.announcements) ? json.data.announcements : [];
 
                     if (!list.length) {
+                        // moduł włączony, ale brak danych – pokazujemy info
                         this.loading = false;
                         this.info = 'Brak danych ogłoszeń';
                         this.error = null;
                         this.announcements = [];
                         this.grouped = [];
-                        if (this._rotateIntervalId) clearInterval(this._rotateIntervalId);
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         return;
                     }
 
@@ -878,28 +835,23 @@
                         this.announcements = list;
                         this.loading = false;
                         this.grouped = this.chunk(list, 4);
-                        this.current = 0;
-                        if (this._rotateIntervalId) clearInterval(this._rotateIntervalId);
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         this.rotate();
                     }
                 } catch (e) {
                     this.error = 'Błąd ładowania ogłoszeń';
                     this.loading = false;
-                    if (this._rotateIntervalId) clearInterval(this._rotateIntervalId);
+                    if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                     console.error(e);
                 }
-
-                if (!isManual) {
-                    if (this._announcementsTimeout) clearTimeout(this._announcementsTimeout);
-                    this._announcementsTimeout = setTimeout(() => this.load(), 300000);
-                }
+                setTimeout(() => this.load(), 8000);
             },
             chunk(arr, size) {
                 return Array.from({ length: Math.ceil(arr.length / size) },
                     (_, i) => arr.slice(i * size, i * size + size));
             },
             rotate() {
-                this._rotateIntervalId = setInterval(() => {
+                this.rotateIntervalId = setInterval(() => {
                     this.current = (this.current + 1) % this.grouped.length;
                 }, 8000);
             }

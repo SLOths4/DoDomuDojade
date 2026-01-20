@@ -103,9 +103,6 @@ try {
 
         // 4. Trasy ogólnodostępne (public)
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
-
-        // 5. SSE
-        $r->addRoute('GET', '/stream', [SSEStreamController::class, 'stream']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
@@ -123,11 +120,11 @@ try {
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        $container->get(ErrorController::class)->notFound();
+        $response = $container->get(ErrorController::class)->notFound();
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        $container->get(ErrorController::class)->methodNotAllowed();
+        $response = $container->get(ErrorController::class)->methodNotAllowed();
         break;
 
     case FastRoute\Dispatcher::FOUND:
@@ -145,9 +142,7 @@ switch ($routeInfo[0]) {
                 $controller->$methodName($vars);
                 exit;
             } else {
-
                 $pipeline = new MiddlewarePipeline();
-
                 $pipeline->add($container->get(RequestContextMiddleware::class));
                 $pipeline->add($container->get(ExceptionMiddleware::class));
 
@@ -159,19 +154,10 @@ switch ($routeInfo[0]) {
                 $pipeline->add($container->get(CsrfMiddleware::class));
 
                 $response = $pipeline->run($request, fn() => $controller->$methodName($vars));
-
-                http_response_code($response->getStatusCode());
-
-                foreach ($response->getHeaders() as $name => $values) {
-                    foreach ($values as $value) {
-                        header(sprintf('%s: %s', $name, $value), false);
-                    }
-                }
-
-                echo $response->getBody();
             }
         } elseif (is_callable($handlerData)) {
             $handlerData($vars);
+            exit;
         } else {
             throw new RuntimeException('Handler must be array [class, method] or callable');
         }
@@ -179,6 +165,18 @@ switch ($routeInfo[0]) {
 
     default:
         error_log('Unknown dispatcher status: ' . $routeInfo[0]);
-        $container->get(ErrorController::class)->internalServerError();
+        $response = $container->get(ErrorController::class)->internalServerError();
         break;
+}
+
+if (isset($response)) {
+    http_response_code($response->getStatusCode());
+
+    foreach ($response->getHeaders() as $name => $values) {
+        foreach ($values as $value) {
+            header(sprintf('%s: %s', $name, $value), false);
+        }
+    }
+
+    echo $response->getBody();
 }

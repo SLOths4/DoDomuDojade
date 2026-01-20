@@ -74,26 +74,25 @@ use App\Application\Module\UseCase\ToggleModuleUseCase;
 use App\Application\Module\UseCase\UpdateModuleUseCase;
 use App\Application\Quote\FetchActiveQuoteUseCase;
 use App\Application\Quote\FetchQuoteUseCase;
-use App\Application\User\ChangePasswordUseCase;
-use App\Application\User\CreateUserUseCase;
-use App\Application\User\DeleteUserUseCase;
-use App\Application\User\GetAllUsersUseCase;
-use App\Application\User\GetUserByIdUseCase;
-use App\Application\User\GetUserByUsernameUseCase;
-use App\Application\User\UpdateUserUseCase;
+use App\Application\User\UseCase\ChangePasswordUseCase;
+use App\Application\User\UseCase\CreateUserUseCase;
+use App\Application\User\UseCase\DeleteUserUseCase;
+use App\Application\User\UseCase\GetAllUsersUseCase;
+use App\Application\User\UseCase\GetUserByIdUseCase;
+use App\Application\User\UseCase\GetUserByUsernameUseCase;
+use App\Application\User\UseCase\UpdateUserUseCase;
 use App\Application\Word\FetchActiveWordUseCase;
 use App\Application\Word\FetchWordUseCase;
 use App\Console\CommandRegistry;
+use App\Console\Commands\AddUserCommand;
 use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\Database\DatabaseService;
 use App\Infrastructure\Database\PDOFactory;
-use App\Infrastructure\Event\RedisEventPublisher;
 use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
 use App\Infrastructure\ExternalApi\Tram\TramService;
@@ -105,12 +104,10 @@ use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Logger\LoggerFactory;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
-use App\Infrastructure\Persistence\PDOEventStore;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use App\Infrastructure\Persistence\PDOQuoteRepository;
 use App\Infrastructure\Persistence\PDOUserRepository;
 use App\Infrastructure\Persistence\PDOWordRepository;
-use App\Infrastructure\Redis\RedisFactory;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
 use App\Infrastructure\Service\FlashMessengerService;
@@ -126,13 +123,12 @@ use App\Presentation\Http\Mapper\AnnouncementViewMapper;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
-use Predis\Client;
+use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment;
-use Psr\Http\Message\ServerRequestInterface;
-use GuzzleHttp\Psr7\ServerRequest;
 
 $container = new Container();
 
@@ -159,23 +155,6 @@ $container->set(PDO::class, function(Container $c): PDO {
         $cfg->dbDsn(),
         $cfg->dbUsername(),
         $cfg->dbPassword(),
-    );
-});
-
-// Redis
-$container->set(Client::class, function(Container $c): Client {
-    $cfg = $c->get(Config::class);
-    return RedisFactory::createSingleton(
-        $cfg->redisHost,
-        $cfg->redisPort,
-    );
-});
-
-$container->set(EventPublisher::class, function(Container $c): EventPublisher {
-    return new RedisEventPublisher(
-        $c->get(Client::class),
-        $c->get(PDOEventStore::class),
-        $c->get(LoggerInterface::class),
     );
 });
 
@@ -207,6 +186,7 @@ $container->set(CommandRegistry::class, function (Container $c) {
     $registry->register($c->get(QuoteFetchCommand::class));
     $registry->register($c->get(WordFetchCommand::class));
     $registry->register($c->get(AnnouncementRejectedDeleteCommand::class));
+    $registry->register($c->get(AddUserCommand::class));
     return $registry;
 });
 
@@ -248,14 +228,12 @@ $container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new Create
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase(
@@ -267,7 +245,6 @@ $container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnno
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase(
@@ -284,7 +261,6 @@ $container->set(ApproveRejectAnnouncementUseCase::class, fn(Container $c) => new
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 // ============ USERS ============
@@ -378,14 +354,12 @@ $container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModule
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(ModuleValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase(
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(ModuleValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 // ============ COUNTDOWNS ============
@@ -403,14 +377,12 @@ $container->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCou
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase(
@@ -433,7 +405,6 @@ $container->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCou
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
-    $c->get(EventPublisher::class),
 ));
 
 // ============ EXTERNAL APIS ============
@@ -483,7 +454,6 @@ $container->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseC
     $c->get(LoggerInterface::class),
     $c->get(QuoteApiService::class),
     $c->get(PDOQuoteRepository::class),
-    $c->get(EventPublisher::class),
 ));
 
 $container->set(PDOWordRepository::class, fn(Container $c) => new PDOWordRepository(

@@ -21,7 +21,6 @@ readonly class ProposeAnnouncementUseCase
         private PDOAnnouncementRepository    $repository,
         private AnnouncementValidationHelper $validator,
         private LoggerInterface              $logger,
-        private EventPublisher               $publisher,
     ) {}
 
     /**
@@ -44,8 +43,6 @@ readonly class ProposeAnnouncementUseCase
         $announcement = $this->mapDtoToEntity($dto);
 
         $id = $this->repository->add($announcement);
-
-        $this->publisher->publish(new AnnouncementProposedEvent((string)$id, $dto->title));
 
         $this->logger->info('Announcement proposed successfully', ['id' => $id]);
 
