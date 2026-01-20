@@ -36,7 +36,7 @@ final class DisplayController extends BaseController
 
     public function index(): ResponseInterface
     {
-        return $this->render(TemplateNames::DISPLAY->value, []);
+        return $this->render(TemplateNames::DISPLAY->value);
     }
 
     public function getDepartures(): ResponseInterface

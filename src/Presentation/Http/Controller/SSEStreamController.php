@@ -33,7 +33,7 @@ final class SSEStreamController extends BaseController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $clientId = $_GET['clientId'];
+        $clientId = $_GET['clientId'] ?? "";
         $channel = "sse:broadcast";
 
         $this->sendEvent('connected', ['clientId' => $clientId]);

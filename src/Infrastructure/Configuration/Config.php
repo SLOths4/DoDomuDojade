@@ -14,7 +14,6 @@ final readonly class Config
         public string $loggingLevel,
 
         // Twig
-        public string $viewPath,
         public string $twigCachePath,
         public bool $twigDebug,
 
@@ -92,7 +91,6 @@ final readonly class Config
                 loggingLevel: self::optionalEnv('LOGGING_LEVEL', 'INFO'),
 
                 // Twig
-                viewPath: self::requiredEnv('VIEWS_PATH'),
                 twigCachePath: self::requiredEnv('TWIG_CACHE_PATH'),
                 twigDebug: self::boolEnv('TWIG_DEBUG', false),
 
