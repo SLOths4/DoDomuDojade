@@ -4,6 +4,35 @@
 
 **Domain-Driven Design (DDD)** to metodologia projektowania software'u, która kładzie nacisk na głębokie zrozumienie domeny biznesowej i odzwierciedlenie tej wiedzy w kodzie. Projekt DoDomuDojade implementuje DDD i clean architecture z wyraźnym podziałem na warstwy.
 
+
+## Trochę o architekturze (Dla początkujących)
+Projekt stara się utrzymać zgodność z architekturą DDD (Domain-Driven Design).
+
+Punktem wejściowym całej aplikacji jest `index.php`. To tam znajdują się wszystkie ścieżki oraz ich obsługa.
+
+Index zaczyna od inicjacji `bootstrap.php` w `src/bootstrap/bootstrap.php`. Tu z kolei dzieje się druga część magii. Wszystkie instancje klas są inicjowane, tak, żeby mogły potem zostać wykorzystane w DI (Dependency Injection).
+
+Żeby wyjaśnić działanie aplikacji, przyjrzyjmy się przykładowej ścieżce `/login`.
+1. Nasz serwer odpytuje `index.php` o tę ścieżkę
+2. W router obecny w `index.php` odnajduje właściwą klasę i funkcję do uruchomienia. Jak to robi? Otóż w opisie ścieżki `$r->addRoute('GET', '/login', [PanelController::class, 'login']);` zawarta jest ta informacja.
+3. Router uruchamia funkcję `login` w klasie `PanelController::class` (Dokładniej robi to w linii `$pipeline->run(fn() => $controller->$methodName($vars));`)
+4. Funkcja login w akcji. (Poniżej przytaczam kod). Odziedziczona po `BaseController.php` funkcja render jest wykorzystywana do przekazania do użytkownika pliku z katalogu `src/Presentation`
+```
+public function show(): ResponseInterface
+    {
+        $this->logger->debug("Render login page request received");
+        return $this->render(TemplateNames::LOGIN->value);
+    }
+```
+Ot cała magia ✨
+
+Warto dodać, że niektóre ścieżki zawierają tzw. "middleware". Jest ono częścią wspólną między różnymi warstwami aplikacji. W naszej aplikacji na tę chwilę znajduje się middleware odpowiedzialne za:
+- csrf (cross-site request forgery)
+- translacje
+- uwierzytelnianie
+
+*To be continued...*
+
 ## 🎯 Główne Zasady DDD w Projekcie
 
 ### 1. Ubiquity of Language (Wszechobecność Języka)
@@ -17,24 +46,6 @@ Kod i dokumentacja używają jednolitego słownika biznesowego:
 
 ### Warstwa Domain (src/Domain)
 **Odpowiedzialność**: Zawiera czystą logikę biznesową niezależną od technologii
-
-```
-src/Domain/
-├── Entity/           # Agregaty i Entity
-│   ├── Announcement.php
-│   ├── User.php
-│   ├── Word.php
-│   ├── Quote.php
-│   ├── Module.php
-│   └── Countdown.php
-├── ValueObject/      # Niezmienne obiekty wartości
-├── Enum/             # Enumeracje dla typów i statusów
-│   ├── AnnouncementStatus.php
-│   └── ...
-└── Exception/        # Wyjątki domenowe
-    ├── AnnouncementException.php
-    └── ...
-```
 
 #### Entities
 Entity reprezentuje obiekt z unikalną tożsamością (ID), który zmienia się w czasie.

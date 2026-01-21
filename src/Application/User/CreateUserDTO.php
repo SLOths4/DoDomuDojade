@@ -6,19 +6,18 @@ namespace App\Application\User;
 use App\Domain\Shared\MissingParameterException;
 
 /**
- * DTO for creating users in UseCase layer
+ * DTO for creating users
  */
 final readonly class CreateUserDTO
 {
     public function __construct(
         public string $username,
         public string $password,
-    )
-    {
-    }
+    ) {}
 
     /**
-     * Create DTO from HTTP request
+     * Create DTO from an array
+     * @param array $array
      * @throws MissingParameterException
      */
     public static function fromArray(array $array): self
@@ -30,20 +29,8 @@ final readonly class CreateUserDTO
             throw new MissingParameterException("username");
         }
 
-        if (strlen($username) < 3) {
-            throw new MissingParameterException("username must be at least 3 characters long");
-        }
-
-        if (strlen($username) > 255) {
-            throw new MissingParameterException("username must not exceed 255 characters");
-        }
-
         if (empty($password)) {
             throw new MissingParameterException("password");
-        }
-
-        if (strlen($password) < 8) {
-            throw new MissingParameterException("password must be at least 8 characters");
         }
 
         return new self(

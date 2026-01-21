@@ -1,4 +1,4 @@
-# DoDomuDojadę - Dokumentacja Architektura i API
+# DoDomuDojadę — Dokumentacja Architektura i API
 
 Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjścia do zrozumienia struktury i architektury aplikacji.
 
@@ -6,7 +6,6 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 
 - **[Dokumentacja kodu](api/)** — autogenerowana przy użyciu phpDocumentator
 - **[Architektura](architecture.md)**
-- **[Warstwy w szczegółach](layers/application.md)**
 
 ## 🎯 Cechy Projektu
 
@@ -23,3 +22,4 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 3. **Quotes** — Baza cytatów inspirujących
 4. **Countdown** — Odliczanie do ważnych dat
 5. **User** — Zarządzanie użytkownikami
+
