@@ -6,6 +6,9 @@ namespace App\Infrastructure\Database;
 use PDO;
 use Throwable;
 
+/**
+ * Creates PDO instance
+ */
 final class PDOFactory
 {
     public static function create(

@@ -8,8 +8,15 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Use case for deleting announcements since the provided date
+ */
 readonly class DeleteRejectedSinceAnnouncementUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOAnnouncementRepository $repository,
         private LoggerInterface           $logger,

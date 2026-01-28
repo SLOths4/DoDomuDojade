@@ -86,19 +86,6 @@ final class AnnouncementException extends DomainException
     }
 
     /**
-     * Failed to create an announcement
-     * @return self
-     */
-    public static function failedToCreate(): self
-    {
-        return new self(
-            'announcement.create_failed',
-            DomainExceptionCodes::ANNOUNCEMENT_CREATE_FAILED->value,
-            500
-        );
-    }
-
-    /**
      * Failed to delete an announcement
      * @param AnnouncementId $id
      * @return self
@@ -222,6 +209,10 @@ final class AnnouncementException extends DomainException
             );
     }
 
+    /**
+     * Thrown when the expiration date is in the past
+     * @return self
+     */
     public static function expirationInThePast(): self
     {
         return new self(

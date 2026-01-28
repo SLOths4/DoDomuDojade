@@ -9,8 +9,16 @@ use App\Domain\Shared\MissingParameterException;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
+/**
+ * Data Transfer Object for adding announcements
+ */
 final readonly class AddAnnouncementDTO
 {
+    /**
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     */
     public function __construct(
         public string              $title,
         public string              $text,
@@ -18,8 +26,11 @@ final readonly class AddAnnouncementDTO
     ){}
 
     /**
-     * @throws MissingParameterException
+     * Creates DTO from an array
+     * @param array $array
+     * @return self
      * @throws InvalidDateTimeException
+     * @throws MissingParameterException
      */
     public static function fromArray(array $array): self
     {

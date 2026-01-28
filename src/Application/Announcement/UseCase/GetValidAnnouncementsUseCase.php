@@ -8,8 +8,15 @@ use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches all valid announcements
+ */
 readonly class GetValidAnnouncementsUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOAnnouncementRepository $repository,
         private LoggerInterface           $logger

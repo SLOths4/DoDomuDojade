@@ -12,18 +12,23 @@ use DateTimeImmutable;
 
 /**
  * Announcement Entity
- *
  * Aggregate Root for Announcement domain
- *
- * Immutability strategy:
- * - Mutable properties: status, decidedAt, decidedBy (mogą się zmieniać)
- * - Immutable properties: id, title, text, createdAt, validUntil, userId (nie zmieniają się)
- *
  */
 final class Announcement
 {
     private array $events = [];
 
+    /**
+     * @param AnnouncementId|null $id
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $createdAt
+     * @param DateTimeImmutable $validUntil
+     * @param int|null $userId
+     * @param AnnouncementStatus $status
+     * @param DateTimeImmutable|null $decidedAt
+     * @param int|null $decidedBy
+     */
     public function __construct(
         private readonly ?AnnouncementId   $id,
         private string                     $title,
@@ -37,7 +42,7 @@ final class Announcement
     ) {}
 
     /**
-     * Creates a new announcement
+     * Creates a new announcement <br>
      * Announcement is approved by default
      */
     public static function create(
@@ -124,7 +129,7 @@ final class Announcement
     }
 
     /**
-     * Change status to approved
+     * Change status to rejected
      */
     public function reject(int $decidedBy): void
     {

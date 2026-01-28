@@ -4,6 +4,9 @@ namespace App\Domain\Countdown;
 
 use Exception;
 
+/**
+ * Describes behavior of the countdown repository
+ */
 interface CountdownRepositoryInterface
 {
     /**
@@ -65,7 +68,7 @@ interface CountdownRepositoryInterface
      * @param int $id The countdown ID
      * @param string $field The field name to update
      * @param string $value The new value for the field
-     * @return bool True if update was successful, false otherwise
+     * @return bool True if the update was successful, false otherwise
      * @throws Exception
      */
     public function updateField(int $id, string $field, string $value): bool;

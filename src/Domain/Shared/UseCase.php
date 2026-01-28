@@ -4,6 +4,9 @@ namespace App\Domain\Shared;
 
 use Exception;
 
+/**
+ * Describes a use case
+ */
 abstract class UseCase
 {
     /**

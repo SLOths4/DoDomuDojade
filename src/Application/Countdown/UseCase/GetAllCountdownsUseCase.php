@@ -12,12 +12,17 @@ use Psr\Log\LoggerInterface;
  */
 readonly class GetAllCountdownsUseCase
 {
+    /**
+     * @param PDOCountdownRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOCountdownRepository $repository,
         private LoggerInterface        $logger
     ) {}
 
     /**
+     * @return array
      * @throws Exception
      */
     public function execute(): array

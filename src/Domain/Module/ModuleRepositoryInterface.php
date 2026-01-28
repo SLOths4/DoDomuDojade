@@ -4,6 +4,9 @@ namespace App\Domain\Module;
 
 use Exception;
 
+/**
+ * Describes behavior of the module repository
+ */
 interface ModuleRepositoryInterface
 {
     /**

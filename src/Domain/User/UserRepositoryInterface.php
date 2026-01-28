@@ -4,6 +4,9 @@ namespace App\Domain\User;
 
 use Exception;
 
+/**
+ * Describes user repository behavior
+ */
 interface UserRepositoryInterface
 {
     /**

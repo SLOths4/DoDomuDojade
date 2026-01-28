@@ -14,8 +14,8 @@ Index zaczyna od inicjacji `bootstrap.php` w `src/bootstrap/bootstrap.php`. Tu z
 
 Żeby wyjaśnić działanie aplikacji, przyjrzyjmy się przykładowej ścieżce `/login`.
 1. Nasz serwer odpytuje `index.php` o tę ścieżkę
-2. W router obecny w `index.php` odnajduje właściwą klasę i funkcję do uruchomienia. Jak to robi? Otóż w opisie ścieżki `$r->addRoute('GET', '/login', [PanelController::class, 'login']);` zawarta jest ta informacja.
-3. Router uruchamia funkcję `login` w klasie `PanelController::class` (Dokładniej robi to w linii `$pipeline->run(fn() => $controller->$methodName($vars));`)
+2. W router obecny w `index.php` odnajduje właściwą klasę i funkcję do uruchomienia. Jak to robi? Otóż w opisie ścieżki `$r->addRoute('GET', '/login', [LoginController::class, 'login']);` zawarta jest ta informacja.
+3. Router uruchamia funkcję `login` w klasie `PanelController::class`
 4. Funkcja login w akcji. (Poniżej przytaczam kod). Odziedziczona po `BaseController.php` funkcja render jest wykorzystywana do przekazania do użytkownika pliku z katalogu `src/Presentation`
 ```
 public function show(): ResponseInterface
@@ -30,8 +30,6 @@ Warto dodać, że niektóre ścieżki zawierają tzw. "middleware". Jest ono cz�
 - csrf (cross-site request forgery)
 - translacje
 - uwierzytelnianie
-
-*To be continued...*
 
 ## 🎯 Główne Zasady DDD w Projekcie
 
@@ -86,7 +84,6 @@ final class Announcement {
 Value Objects reprezentują wartości, które nie zmieniają się i nie mają tożsamości.
 
 ```php
-// Będą w src/Domain/ValueObject/ gdy zostaną wprowadzone
 // Przykład: Password
 final readonly class Password
 {

@@ -13,6 +13,10 @@ use Psr\Log\LoggerInterface;
  */
 readonly class GetAllAnnouncementsUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOAnnouncementRepository $repository,
         private LoggerInterface           $logger

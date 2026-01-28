@@ -6,6 +6,10 @@ use Throwable;
 
 class AuthenticationException extends DomainException
 {
+    /**
+     * Thrown when invalid announcements given
+     * @return self
+     */
     public static function invalidCredentials(): self
     {
         return new self(
@@ -15,6 +19,10 @@ class AuthenticationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when no credentials given
+     * @return self
+     */
     public static function emptyCredentials(): self
     {
         return new self(
@@ -24,6 +32,11 @@ class AuthenticationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when no user logged in
+     * @param Throwable|null $previous
+     * @return self
+     */
     public static function noUserLoggedIn(?Throwable $previous = null): self
     {
         return new self(
@@ -35,6 +48,10 @@ class AuthenticationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when user is not found
+     * @return self
+     */
     public static function userNotFound(): self
     {
         return new self(
@@ -44,6 +61,12 @@ class AuthenticationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when a user is not authorized to perform an action
+     * @param int $userId
+     * @param Throwable|null $previous
+     * @return self
+     */
     public static function unauthorized(int $userId, ?Throwable $previous = null): self
     {
         return new self(

@@ -8,8 +8,17 @@ use App\Infrastructure\Persistence\PDOUserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Updates user
+ */
 readonly class UpdateUserUseCase
 {
+    /**
+     * @param PDOUserRepository $repository
+     * @param LoggerInterface $logger
+     * @param int $maxUsernameLength
+     * @param int $minPasswordLength
+     */
     public function __construct(
         private PDOUserRepository $repository,
         private LoggerInterface   $logger,
@@ -18,6 +27,9 @@ readonly class UpdateUserUseCase
     ) {}
 
     /**
+     * @param int $id
+     * @param array $data
+     * @return bool
      * @throws Exception
      */
     public function execute(int $id, array $data): bool
@@ -48,6 +60,8 @@ readonly class UpdateUserUseCase
     }
 
     /**
+     * @param array $data
+     * @return void
      * @throws Exception
      */
     private function validate(array $data): void

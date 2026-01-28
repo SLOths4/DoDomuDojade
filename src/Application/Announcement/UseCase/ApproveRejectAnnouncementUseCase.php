@@ -7,15 +7,20 @@ namespace App\Application\Announcement\UseCase;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Announcement\AnnouncementStatus;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
-use Exception;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Use case for approving announcements
+ */
 readonly class ApproveRejectAnnouncementUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     * @param AnnouncementValidationHelper $validator
+     */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
@@ -23,8 +28,11 @@ readonly class ApproveRejectAnnouncementUseCase
     ) {}
 
     /**
-     * @throws InvalidArgumentException
-     * @throws Exception
+     * @param AnnouncementId $announcementId
+     * @param AnnouncementStatus $status
+     * @param int $adminId
+     * @return void
+     * @throws AnnouncementException
      */
     public function execute(AnnouncementId $announcementId, AnnouncementStatus $status, int $adminId): void
     {

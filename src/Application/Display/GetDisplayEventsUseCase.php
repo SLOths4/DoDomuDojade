@@ -8,13 +8,23 @@ use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Provides events data formatted for display page
+ */
 readonly class GetDisplayEventsUseCase
 {
+    /**
+     * @param CalendarService $calendarService
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private CalendarService $calendarService,
         private LoggerInterface $logger
     ) {}
 
+    /**
+     * @return array|null
+     */
     public function execute(): ?array
     {
         try {

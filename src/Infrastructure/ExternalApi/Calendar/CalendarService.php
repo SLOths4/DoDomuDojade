@@ -8,6 +8,9 @@ use Google_Service_Calendar;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * Used to interact with google calendar interface
+ */
 readonly class CalendarService
 {
     public function __construct(

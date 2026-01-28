@@ -8,8 +8,15 @@ use App\Domain\Shared\MissingParameterException;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
+/**
+ * DTO for editing & adding countdown
+ */
 final readonly class AddEditCountdownDTO
 {
+    /**
+     * @param string $title
+     * @param DateTimeImmutable $countTo
+     */
     public function __construct(
         public string            $title,
         public DateTimeImmutable $countTo,

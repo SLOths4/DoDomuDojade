@@ -7,20 +7,31 @@ use App\Infrastructure\ExternalApi\Tram\TramService;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Provides tram data formatted for display page
+ */
 readonly class GetDeparturesUseCase
 {
+    /**
+     * @param TramService $tramService
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private TramService $tramService,
         private LoggerInterface $logger
     ) {}
 
+    /**
+     * @param array $stopIds
+     * @return array
+     */
     public function execute(array $stopIds): array
     {
         $departures = [];
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
                 continue;
             }

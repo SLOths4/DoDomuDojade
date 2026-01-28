@@ -4,6 +4,9 @@ namespace App\Domain\Quote;
 
 use Exception;
 
+/**
+ * Describes behavior of quote repository
+ */
 interface QuoteRepositoryInterface
 {
     /**

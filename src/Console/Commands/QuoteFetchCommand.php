@@ -9,12 +9,21 @@ use App\Console\Command;
 use App\Console\ConsoleOutput;
 use Exception;
 
+/**
+ * Fetches fresh quote
+ */
 final readonly class QuoteFetchCommand implements Command
 {
+    /**
+     * @param FetchQuoteUseCase $useCase
+     */
     public function __construct(
         private FetchQuoteUseCase $useCase
     ) {}
 
+    /**
+     * @inheritDoc
+     */
     public function execute(array $arguments, ConsoleOutput $output): void
     {
         $output->info("Fetching quotes...");
@@ -27,16 +36,25 @@ final readonly class QuoteFetchCommand implements Command
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return 'quote:fetch';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getDescription(): string
     {
         return 'Fetch fresh quotes from API';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getArgumentsCount(): int
     {
         return 0;

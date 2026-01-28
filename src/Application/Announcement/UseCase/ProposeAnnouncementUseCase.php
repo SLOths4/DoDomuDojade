@@ -7,16 +7,22 @@ use App\Application\Announcement\DTO\ProposeAnnouncementDTO;
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
-use App\Domain\Announcement\Event\AnnouncementProposedEvent;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Proposes announcement
+ */
 readonly class ProposeAnnouncementUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param AnnouncementValidationHelper $validator
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private AnnouncementValidationHelper $validator,
@@ -53,6 +59,7 @@ readonly class ProposeAnnouncementUseCase
      * Maps DTO to entity
      * @param ProposeAnnouncementDTO $dto
      * @return Announcement
+     * @throws DateMalformedStringException
      */
     private function mapDtoToEntity(ProposeAnnouncementDTO $dto): Announcement
     {

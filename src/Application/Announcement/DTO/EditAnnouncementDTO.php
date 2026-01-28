@@ -5,10 +5,20 @@ namespace App\Application\Announcement\DTO;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementStatus;
+use DateMalformedStringException;
 use DateTimeImmutable;
 
+/**
+ * Data Transfer Object for editing announcements
+ */
 final readonly class EditAnnouncementDTO
 {
+    /**
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     * @param AnnouncementStatus|null $status
+     */
     public function __construct(
         public string $title,
         public string $text,
@@ -17,8 +27,11 @@ final readonly class EditAnnouncementDTO
     ) {}
 
     /**
-     * @throws \DateMalformedStringException
+     * Creates DTO from an array
+     * @param array $array
+     * @return self
      * @throws AnnouncementException
+     * @throws DateMalformedStringException
      */
     public static function fromArray(array $array): self
     {

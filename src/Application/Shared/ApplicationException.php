@@ -7,7 +7,7 @@ use Exception;
 use Throwable;
 
 /**
- * Basic exception for infrastructure exceptions
+ * Basic exception for application exceptions
  */
 class ApplicationException extends Exception
 {

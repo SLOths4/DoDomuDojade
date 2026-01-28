@@ -8,8 +8,15 @@ use App\Infrastructure\Persistence\PDOUserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Gets all users
+ */
 readonly class GetAllUsersUseCase
 {
+    /**
+     * @param PDOUserRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOUserRepository $repository,
         private LoggerInterface   $logger

@@ -7,8 +7,16 @@ use App\Infrastructure\Persistence\PDOUserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Changes password for a user
+ */
 readonly class ChangePasswordUseCase
 {
+    /**
+     * @param PDOUserRepository $repository
+     * @param LoggerInterface $logger
+     * @param int $minPasswordLength
+     */
     public function __construct(
         private PDOUserRepository $repository,
         private LoggerInterface   $logger,
@@ -16,6 +24,9 @@ readonly class ChangePasswordUseCase
     ) {}
 
     /**
+     * @param int $id
+     * @param string $newPassword
+     * @return bool
      * @throws Exception
      */
     public function execute(int $id, string $newPassword): bool

@@ -20,6 +20,11 @@ class ValidationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when invalid csrf provided
+     * @param Throwable|null $previous
+     * @return self
+     */
     public static function invalidCsrf(?Throwable $previous = null): self {
         return new self(
             "validation.csrf.invalid",
@@ -30,6 +35,11 @@ class ValidationException extends DomainException
         );
     }
 
+    /**
+     * Thrown when no csrf found
+     * @param Throwable|null $previous
+     * @return self
+     */
     public static function missingCsrf(?Throwable $previous = null): self
     {
         return new self(

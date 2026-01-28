@@ -10,6 +10,9 @@ use PDOStatement;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
+/**
+ * Simplifies interaction with database
+ */
 final readonly class DatabaseService
 {
     protected PDO $pdo;

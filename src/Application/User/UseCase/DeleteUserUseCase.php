@@ -7,14 +7,24 @@ use App\Infrastructure\Persistence\PDOUserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Deletes user
+ */
 readonly class DeleteUserUseCase
 {
+    /**
+     * @param PDOUserRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOUserRepository $repository,
         private LoggerInterface   $logger
     ) {}
 
     /**
+     * @param int $activeUserId
+     * @param int $targetUserId
+     * @return bool
      * @throws Exception
      */
     public function execute(int $activeUserId, int $targetUserId): bool
@@ -29,7 +39,6 @@ readonly class DeleteUserUseCase
             throw new Exception("User can't delete themselves.");
         }
 
-        // Verify user exists
         $this->repository->findById($targetUserId);
 
         $result = $this->repository->delete($targetUserId);

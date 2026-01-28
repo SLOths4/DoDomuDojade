@@ -2,18 +2,23 @@
 
 namespace App\Application\Quote;
 
-use App\Domain\Countdown\Event\CountdownCreatedEvent;
-use App\Domain\Event\EventPublisher;
 use App\Domain\Quote\Quote;
-use App\Domain\Quote\QuoteCreatedEvent;
+use App\Infrastructure\ExternalApi\Quote\QuoteApiException;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
 use App\Infrastructure\Persistence\PDOQuoteRepository;
 use DateTimeImmutable;
-use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches quote from external API
+ */
 readonly class FetchQuoteUseCase
 {
+    /**
+     * @param LoggerInterface $logger
+     * @param QuoteApiService $apiService
+     * @param PDOQuoteRepository $repository
+     */
     public function __construct(
         private LoggerInterface    $logger,
         private QuoteApiService    $apiService,
@@ -21,7 +26,8 @@ readonly class FetchQuoteUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @return void
+     * @throws QuoteApiException
      */
     public function execute(): void
     {

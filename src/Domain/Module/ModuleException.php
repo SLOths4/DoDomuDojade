@@ -58,6 +58,11 @@ final class ModuleException extends DomainException
         );
     }
 
+    /**
+     * Thrown when start time is invaalid
+     * @param DateTimeImmutable $startTime
+     * @return self
+     */
     public static function invalidStartTime(DateTimeImmutable $startTime): self
     {
         return new self(
@@ -70,6 +75,11 @@ final class ModuleException extends DomainException
         );
     }
 
+    /**
+     * Thrown when end time is incorrect
+     * @param DateTimeImmutable $endTime
+     * @return self
+     */
     public static function invalidEndTime(DateTimeImmutable $endTime): self
     {
         return new self(
@@ -82,6 +92,12 @@ final class ModuleException extends DomainException
         );
     }
 
+    /**
+     * Thrown when start time is greater than end time
+     * @param DateTimeImmutable $startTime
+     * @param DateTimeImmutable $endTime
+     * @return self
+     */
     public static function startTimeGreaterThanEndTime(DateTimeImmutable $startTime, DateTimeImmutable $endTime): self
     {
         return new self(
@@ -95,6 +111,11 @@ final class ModuleException extends DomainException
         );
     }
 
+    /**
+     * Thrown when moudle with given name not found
+     * @param string $name
+     * @return self
+     */
     public static function invalidName(string $name): self
     {
         return new self(

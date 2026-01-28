@@ -4,6 +4,9 @@ namespace App\Domain\Announcement;
 
 use DateTimeImmutable;
 
+/**
+ * Descirbes behaviour of announcement repository
+ */
 interface AnnouncementRepositoryInterface
 {
     /**

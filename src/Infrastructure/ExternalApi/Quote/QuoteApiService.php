@@ -11,6 +11,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
+/**
+ * Used to interact quotes API
+ */
 readonly class QuoteApiService
 {
     public function __construct(

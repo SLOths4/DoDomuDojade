@@ -5,6 +5,9 @@ namespace App\Domain\Shared;
 use DateTimeImmutable;
 use DateTimeZone;
 
+/**
+ * Describes a domain event
+ */
 abstract class DomainEvent {
     protected string $eventId;
     protected DateTimeImmutable $occurredAt;

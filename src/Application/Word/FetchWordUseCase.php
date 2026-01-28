@@ -3,14 +3,22 @@
 namespace App\Application\Word;
 
 use App\Domain\Word\Word;
+use App\Infrastructure\ExternalApi\Word\WordApiException;
 use App\Infrastructure\ExternalApi\Word\WordApiService;
 use App\Infrastructure\Persistence\PDOWordRepository;
 use DateTimeImmutable;
-use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches a word form api
+ */
 readonly class FetchWordUseCase
 {
+    /**
+     * @param LoggerInterface $logger
+     * @param WordApiService $apiService
+     * @param PDOWordRepository $repository
+     */
     public function __construct(
         private LoggerInterface $logger,
         private WordApiService $apiService,
@@ -18,7 +26,8 @@ readonly class FetchWordUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @return void
+     * @throws WordApiException
      */
     public function execute(): void
     {

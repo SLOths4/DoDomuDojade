@@ -4,6 +4,9 @@ namespace App\Domain\Word;
 
 use Exception;
 
+/**
+ * Desciurbes behavior of word repository
+ */
 interface WordRepositoryInterface
 {
     /**

@@ -7,14 +7,22 @@ use App\Infrastructure\Persistence\PDOModuleRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches all modules
+ */
 readonly class GetAllModulesUseCase
 {
+    /**
+     * @param PDOModuleRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOModuleRepository $repository,
         private LoggerInterface     $logger
     ) {}
 
     /**
+     * @return array
      * @throws Exception
      */
     public function execute(): array

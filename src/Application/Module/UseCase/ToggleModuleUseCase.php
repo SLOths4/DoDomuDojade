@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace App\Application\Module\UseCase;
 
-use App\Domain\Event\EventPublisher;
-use App\Domain\Module\Event\ModuleToggledEvent;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Toggles module
+ */
 readonly class ToggleModuleUseCase
 {
     public function __construct(
@@ -20,7 +21,9 @@ readonly class ToggleModuleUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @return bool
+     * @throws ModuleException
      */
     public function execute(int $id): bool
     {

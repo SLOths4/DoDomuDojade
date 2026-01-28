@@ -7,13 +7,23 @@ use App\Application\Word\FetchActiveWordUseCase;
 use Psr\Log\LoggerInterface;
 use Exception;
 
+/**
+ * Provides word data formatted for display page
+ */
 readonly class GetDisplayWordUseCase
 {
+    /**
+     * @param FetchActiveWordUseCase $fetchActiveWordUseCase
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private FetchActiveWordUseCase $fetchActiveWordUseCase,
         private LoggerInterface $logger
     ) {}
 
+    /**
+     * @return array|null
+     */
     public function execute(): ?array
     {
         try {

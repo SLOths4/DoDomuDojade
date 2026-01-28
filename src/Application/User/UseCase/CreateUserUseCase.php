@@ -12,6 +12,9 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Creates new user
+ */
 readonly class CreateUserUseCase
 {
     public function __construct(

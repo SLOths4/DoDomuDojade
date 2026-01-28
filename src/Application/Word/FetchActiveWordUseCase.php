@@ -7,8 +7,15 @@ use App\Infrastructure\Persistence\PDOWordRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches active word
+ */
 readonly class FetchActiveWordUseCase
 {
+    /**
+     * @param LoggerInterface $logger
+     * @param PDOWordRepository $repository
+     */
     public function __construct(
         private LoggerInterface   $logger,
         private PDOWordRepository $repository,

@@ -4,11 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Countdown\UseCase;
 
 use App\Domain\Countdown\CountdownException;
-use App\Domain\Countdown\Event\CountdownDeletedEvent;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -16,6 +13,11 @@ use Psr\Log\LoggerInterface;
  */
 readonly class DeleteCountdownUseCase
 {
+    /**
+     * @param PDOCountdownRepository $repository
+     * @param LoggerInterface $logger
+     * @param CountdownValidationHelper $validator
+     */
     public function __construct(
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
@@ -23,7 +25,9 @@ readonly class DeleteCountdownUseCase
     ){}
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @return bool
+     * @throws CountdownException
      */
     public function execute(int $id): bool
     {

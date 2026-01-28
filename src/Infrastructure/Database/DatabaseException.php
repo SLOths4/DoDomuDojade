@@ -4,8 +4,16 @@ namespace App\Infrastructure\Database;
 use App\Infrastructure\Shared\InfrastructureException;
 use Throwable;
 
+/**
+ * Collection of various database exceptions
+ */
 final class DatabaseException extends InfrastructureException
 {
+    /**
+     * @param string $dsn
+     * @param Throwable $previous
+     * @return self
+     */
     public static function connectionFailed(string $dsn, Throwable $previous): self
     {
         return new self(
@@ -16,6 +24,10 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @param string $dsn
+     * @return self
+     */
     public static function invalidDsn(string $dsn): self
     {
         return new self(
@@ -24,6 +36,12 @@ final class DatabaseException extends InfrastructureException
             500
         );
     }
+
+    /**
+     * @param string $query
+     * @param Throwable $previous
+     * @return self
+     */
     public static function executionFailed(string $query, Throwable $previous): self
     {
         return new self(
@@ -34,6 +52,11 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @param string $key
+     * @param Throwable $previous
+     * @return self
+     */
     public static function parameterBindingFailed(string $key, Throwable $previous): self
     {
         return new self(
@@ -44,6 +67,11 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @param string $table
+     * @param array $invalidColumns
+     * @return self
+     */
     public static function invalidColumns(string $table, array $invalidColumns = []): self
     {
         return new self(
@@ -53,6 +81,9 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @return self
+     */
     public static function emptyUpdateData(): self
     {
         return new self(
@@ -62,6 +93,9 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @return self
+     */
     public static function emptyDeleteConditions(): self
     {
         return new self(
@@ -71,6 +105,10 @@ final class DatabaseException extends InfrastructureException
         );
     }
 
+    /**
+     * @param string $driver
+     * @return self
+     */
     public static function unsupportedDriver(string $driver): self
     {
         return new self(

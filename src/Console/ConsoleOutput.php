@@ -32,6 +32,11 @@ final class ConsoleOutput
         echo self::GREEN . "✓ " . self::RESET . $message . "\n";
     }
 
+    /**
+     * Outputs error to console
+     * @param string $message
+     * @return void
+     */
     public function error(string $message): void
     {
         fwrite(STDERR, self::RED . "✗ " . self::RESET . $message . "\n");
@@ -58,7 +63,7 @@ final class ConsoleOutput
     }
 
     /**
-     * Outputs message to console
+     * Outputs a message to the console
      * @param string $message
      * @return void
      */

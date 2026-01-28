@@ -15,6 +15,4 @@ readonly class Quote
         public string $author,
         public DateTimeImmutable $fetchedOn
     ){}
-
-
 }

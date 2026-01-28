@@ -7,13 +7,23 @@ use App\Infrastructure\ExternalApi\Weather\WeatherService;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Provides weather data formatted for display page
+ */
 readonly class GetDisplayWeatherUseCase
 {
+    /**
+     * @param WeatherService $weatherService
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private WeatherService $weatherService,
         private LoggerInterface $logger
     ) {}
 
+    /**
+     * @return string[]|null
+     */
     public function execute(): ?array
     {
         try {

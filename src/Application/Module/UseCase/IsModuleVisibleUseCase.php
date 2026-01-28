@@ -10,15 +10,24 @@ use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Checks if a module is visible
+ */
 readonly class IsModuleVisibleUseCase
 {
+    /**
+     * @param PDOModuleRepository $repository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private PDOModuleRepository $repository,
         private LoggerInterface     $logger,
     ) {}
 
     /**
-     * @throws Exception
+     * @param ModuleName $moduleName
+     * @return bool
+     * @throws ModuleException
      */
     public function execute(ModuleName $moduleName): bool
     {

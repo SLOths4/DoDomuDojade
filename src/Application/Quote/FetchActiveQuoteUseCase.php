@@ -7,8 +7,15 @@ use App\Infrastructure\Persistence\PDOQuoteRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches active quote
+ */
 readonly class FetchActiveQuoteUseCase
 {
+    /**
+     * @param LoggerInterface $logger
+     * @param PDOQuoteRepository $repository
+     */
     public function __construct(
         private LoggerInterface    $logger,
         private PDOQuoteRepository $repository,

@@ -11,8 +11,16 @@ use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Fetches an announcement by provided id
+ */
 readonly class GetAnnouncementByIdUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     * @param AnnouncementValidationHelper $validator
+     */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,

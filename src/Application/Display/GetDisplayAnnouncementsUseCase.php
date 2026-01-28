@@ -8,6 +8,9 @@ use App\Application\User\UseCase\GetUserByIdUseCase;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Provides announcements data formatted for display page
+ */
 readonly class GetDisplayAnnouncementsUseCase
 {
     public function __construct(

@@ -5,6 +5,9 @@ namespace App\Domain\User\ValueObject;
 
 use App\Domain\Shared\ValidationException;
 
+/**
+ * Username value object
+ */
 final readonly class Username
 {
     /**

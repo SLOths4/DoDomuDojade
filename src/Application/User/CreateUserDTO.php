@@ -10,6 +10,10 @@ use App\Domain\Shared\MissingParameterException;
  */
 final readonly class CreateUserDTO
 {
+    /**
+     * @param string $username
+     * @param string $password
+     */
     public function __construct(
         public string $username,
         public string $password,
@@ -18,6 +22,7 @@ final readonly class CreateUserDTO
     /**
      * Create DTO from an array
      * @param array $array
+     * @return self
      * @throws MissingParameterException
      */
     public static function fromArray(array $array): self

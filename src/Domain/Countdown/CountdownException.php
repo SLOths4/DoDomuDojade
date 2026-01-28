@@ -124,6 +124,10 @@ final class CountdownException extends DomainException
         );
     }
 
+    /**
+     * Failed to fetch countdown
+     * @return self
+     */
     public static function failedToFetch(): self
     {
         return new self(

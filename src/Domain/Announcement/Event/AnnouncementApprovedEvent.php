@@ -5,12 +5,8 @@ use App\Domain\Shared\DomainEvent;
 use DateTimeImmutable;
 
 /**
- * AnnouncementApprovedEvent
- *
  * Domain event raised when announcement is approved by a moderator
- *
  * Fired by: Announcement::approve()
- * Handled by: Event Worker → broadcasts to SSE clients
  */
 final class AnnouncementApprovedEvent extends DomainEvent
 {
@@ -20,10 +16,10 @@ final class AnnouncementApprovedEvent extends DomainEvent
 
     /**
      * Constructor
-     *
      * @param string $announcementId ID of announcement being approved
      * @param int $approvedBy User ID of moderator approving
      * @param DateTimeImmutable $approvedAt When approval happened
+     * @throws \DateMalformedStringException
      */
     public function __construct(
         string $announcementId,

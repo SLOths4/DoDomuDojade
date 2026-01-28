@@ -10,10 +10,15 @@ use DateTimeImmutable;
 use Exception;
 
 /**
- * Represents HTTP data
+ * Data Transfer Object for proposing announcements
  */
 final readonly class ProposeAnnouncementDTO
 {
+    /**
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     */
     public function __construct(
         public string $title,
         public string $text,
@@ -21,7 +26,12 @@ final readonly class ProposeAnnouncementDTO
     ) {}
 
     /**
-     * @throws Exception
+     * Creates DTO from an array
+     * @param array $array
+     * @param DateTimeImmutable $defaultValidUntil
+     * @return self
+     * @throws InvalidDateTimeException
+     * @throws MissingParameterException
      */
     public static function fromArray(array $array, DateTimeImmutable $defaultValidUntil): self
     {

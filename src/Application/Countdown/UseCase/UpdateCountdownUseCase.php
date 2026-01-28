@@ -13,8 +13,16 @@ use App\Infrastructure\Persistence\PDOCountdownRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Updates countdown
+ */
 readonly class UpdateCountdownUseCase
 {
+    /**
+     * @param PDOCountdownRepository $repository
+     * @param LoggerInterface $logger
+     * @param CountdownValidationHelper $validator
+     */
     public function __construct(
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
@@ -22,7 +30,11 @@ readonly class UpdateCountdownUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @param AddEditCountdownDTO $dto
+     * @param int $adminId
+     * @return bool
+     * @throws CountdownException
      */
     public function execute(int $id, AddEditCountdownDTO $dto, int $adminId): bool
     {

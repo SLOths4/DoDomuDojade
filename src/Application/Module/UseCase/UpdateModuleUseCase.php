@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Application\Module\UseCase;
 
 use App\Application\Module\EditModuleDTO;
-use App\Domain\Event\EventPublisher;
-use App\Domain\Module\Event\ModuleUpdatedEvent;
 use App\Domain\Module\Module;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
@@ -13,6 +11,9 @@ use App\Infrastructure\Persistence\PDOModuleRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Updates module
+ */
 readonly class UpdateModuleUseCase
 {
     public function __construct(
@@ -22,7 +23,10 @@ readonly class UpdateModuleUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @param int $id
+     * @param EditModuleDTO $dto
+     * @return bool
+     * @throws ModuleException
      */
     public function execute(int $id, EditModuleDTO $dto): bool
     {

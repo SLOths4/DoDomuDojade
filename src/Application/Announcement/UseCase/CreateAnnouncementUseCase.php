@@ -7,15 +7,21 @@ use App\Application\Announcement\DTO\AddAnnouncementDTO;
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
-use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Use case for creating announcements
+ */
 readonly class CreateAnnouncementUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     * @param AnnouncementValidationHelper $validator
+     */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
@@ -23,7 +29,11 @@ readonly class CreateAnnouncementUseCase
     ){}
 
     /**
-     * @throws Exception
+     * @param AddAnnouncementDTO $dto
+     * @param int $adminId
+     * @return AnnouncementId
+     * @throws AnnouncementException
+     * @throws DateMalformedStringException
      */
     public function execute(AddAnnouncementDTO $dto, int $adminId): AnnouncementId
     {
@@ -50,7 +60,6 @@ readonly class CreateAnnouncementUseCase
     }
 
     /**
-     *
      * @param AddAnnouncementDTO $dto
      * @param int $adminId
      * @return Announcement

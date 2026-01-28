@@ -6,8 +6,6 @@ namespace App\Application\Countdown\UseCase;
 use App\Application\Countdown\AddEditCountdownDTO;
 use App\Domain\Countdown\Countdown;
 use App\Domain\Countdown\CountdownException;
-use App\Domain\Countdown\Event\CountdownCreatedEvent;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
 use Exception;
@@ -18,6 +16,11 @@ use Psr\Log\LoggerInterface;
  */
 readonly class CreateCountdownUseCase
 {
+    /**
+     * @param PDOCountdownRepository $repository
+     * @param LoggerInterface $logger
+     * @param CountdownValidationHelper $validator
+     */
     public function __construct(
         private PDOCountdownRepository    $repository,
         private LoggerInterface           $logger,
@@ -25,7 +28,10 @@ readonly class CreateCountdownUseCase
     ) {}
 
     /**
-     * @throws Exception
+     * @param AddEditCountdownDTO $dto
+     * @param int $adminId
+     * @return int
+     * @throws CountdownException
      */
     public function execute(AddEditCountdownDTO $dto, int $adminId): int
     {
@@ -52,7 +58,6 @@ readonly class CreateCountdownUseCase
     }
 
     /**
-     *
      * @param AddEditCountdownDTO $dto
      * @param int $adminId
      * @return Countdown

@@ -5,15 +5,21 @@ namespace App\Application\Announcement\UseCase;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
-use App\Domain\Announcement\Event\AnnouncementDeletedEvent;
-use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Use case for deleting announcements
+ */
 readonly class DeleteAnnouncementUseCase
 {
+    /**
+     * @param PDOAnnouncementRepository $repository
+     * @param LoggerInterface $logger
+     * @param AnnouncementValidationHelper $validator
+     */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
         private LoggerInterface              $logger,
