@@ -46,8 +46,7 @@ readonly class QuoteApiService
 
         $data = $this->fetchData();
 
-        // Validate response
-        if (!isset($data['quote'], $data['from'])) {
+        if (!isset($data['quote'], $data['author'])) {
             throw QuoteApiException::invalidResponse();
         }
 
@@ -56,7 +55,7 @@ readonly class QuoteApiService
 
         return [
             'quote' => $data['quote'],
-            'author' => $data['from'],
+            'author' => $data['author'],
         ];
     }
 }

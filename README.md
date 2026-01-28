@@ -15,13 +15,18 @@ Dodomudojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyj
 
 ## Spis treści
 
+- [Dokumentacja](#Dokumentacja)
 - [Dostępne moduły](#Dostępne-moduły)
 - [Stos technologiczny](#stos-technologiczny)
 - [Szybki start (dev)](#Szybki-start-dev)
-- [Szybki start (prod)](#Szybki-start-produkcja)
-- [Rozwiązywanie problemów](#rozwiązywanie-problemów)
 - [FAQ](#faq)
 - [Autorzy](#Autorzy)
+
+## Dokumentacja
+W dokumentacji odnajdziesz więcej informacji odnośnie projektu. Poniżej znajduje się minimum, które jest wymagane do uruchomienia projektu.
+- Dokumentacja projektu znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/)
+- Autogenerowana dokumentacja kodu (klas, funkcji) znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/api/)
+
 
 ## Dostępne moduły
 - **tramwaje**
@@ -132,44 +137,6 @@ Jeżeli chcesz przeglądać dokumentację kodu, autogenerowaną przy użyciu php
 ```shell script
 vendor/bin/phpdoc run
 ```
-
-### Szybki start (produkcja)
-- Ustaw document root na `public/` (np. w Apache/Nginx).
-- Konfiguruj PHP-FPM.
-- Upewnij się, że `logs/` jest zapisywalne, ale nie publiczne.
-- Zablokuj dostęp do katalogów źródłowych oraz .env.
-
-#### Stwórz .env
-```
-cp .env.example .env
-```
-Ustaw `APP_ENV=prod` i `LOGGING_LEVEL=info`.
-
-#### Ustaw cron jobs
-
-##### Ustaw pobieranie dziennego słowa
-```shell script
-.bin/app word:fetch
-```
-
-##### Ustaw pobieranie dziennego cytatu
-```shell script
-.bin/app quote:fetch
-```
-
-##### Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data 
-```shell script
-.bin/app announcement-rejected:delete {YYYY-MM-DD}
-```
-
-## Rozwiązywanie problemów
-Rozwiązanie większości problemów staje się oczywiste po spojrzeniu do logów. Dlatego zacznij właśnie tam. 
-
-- **Błąd 500**: Sprawdź logi (`logs/app-{YYYY-MM-DD}.log`); sprawdź logi php fmp; włącz `APP_ENV=dev`.
-- **Brak danych API**: Weryfikuj klucze w .env.
-- **CSS się nie ładuje**: Uruchom `npm run build`; sprawdź ścieżki w HTML.
-- **Baza się nie łączy**: Sprawdź PDO exceptions; testuj połączenie w teście.
-- **Błąd bazy danych**: Sprawdź, czy baza danych ma prawidłową strukturę i zawiera wszystkie tabele; sprawdź, czy 
 
 ## FAQ
 

@@ -19,7 +19,7 @@
             <source dsn=".">
                 <paths>src</paths>
             </source>
-            <output>api</output>
+            <output>code</output>
             <extensions>
                 <extension>php</extension>
             </extensions>

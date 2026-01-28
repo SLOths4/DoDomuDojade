@@ -1,25 +1,81 @@
 # DoDomuDojadę — Dokumentacja Architektura i API
 
-Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjścia do zrozumienia struktury i architektury aplikacji.
+Witaj w dokumentacji projektu **DoDomuDojade**! Ta strona stanowi punkt wyjścia do zrozumienia struktury i architektury aplikacji.
 
 ## 📚 Struktura Dokumentacji
 
-- **[Dokumentacja kodu](api/)** — autogenerowana przy użyciu phpDocumentator
-- **[Architektura](architecture.md)**
+- **[Autogenerowana dokumentacja kodu](code/)**
+- **[Architektura](architecture.md)** - opisuje architekturę aplikacji
+- **[Display](display.md)** - opisuje działanie najważniejszej funkcjonalnośći aplikacji`
+- - **[Development](development.md)** - opisuje założenia dalszego rozwoju projektu
 
-## 🎯 Cechy Projektu
+## Stos technologiczny
+### Backend
+- PHP 8.5
+### Frontend
+- Tailwind CSS
+- Alpine.js
+### Baza danych
+- Postgres
 
-### Stos Technologiczny
-- **Backend**: PHP 8.3+ z czystą architekturą DDD
-- **Framework**: Własna implementacja bez dużych frameworków
-- **Baza Danych**: PostgreSQL, SQLite
-- **Frontend**: HTML, CSS, JavaScript
-- **Tools**: Composer, NPM, PHPStorm
+### Szybki start (produkcja)
+- Ustaw document root na `public/` (np. w Apache/Nginx).
+- Konfiguruj PHP-FPM.
+- Upewnij się, że `logs/` jest zapisywalne, ale nie publiczne.
+- Zablokuj dostęp do katalogów źródłowych oraz .env.
 
-### Kluczowe Moduły
-1. **Announcements** — System ogłoszeń z workflow akceptacji
-2. **Words** — Słownik dziennych słów
-3. **Quotes** — Baza cytatów inspirujących
-4. **Countdown** — Odliczanie do ważnych dat
-5. **User** — Zarządzanie użytkownikami
+#### Stwórz .env
+```
+cp .env.example .env
+```
+Ustaw `APP_ENV=prod` i `LOGGING_LEVEL=info`.
 
+#### Ustaw cron jobs
+
+##### Ustaw pobieranie dziennego słowa
+```shell script
+.bin/app word:fetch
+```
+
+##### Ustaw pobieranie dziennego cytatu
+```shell script
+.bin/app quote:fetch
+```
+
+##### Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data
+```shell script
+.bin/app announcement-rejected:delete {YYYY-MM-DD}
+```
+
+## Rozwiązywanie problemów
+Rozwiązanie większości problemów staje się oczywiste po spojrzeniu do logów. Dlatego zacznij właśnie tam.
+
+- **Błąd 500**: Sprawdź logi (`logs/app-{YYYY-MM-DD}.log`); sprawdź logi php fmp; włącz `APP_ENV=dev`.
+- **Brak danych API**: Weryfikuj klucze w .env.
+- **CSS się nie ładuje**: Uruchom `npm run build`; sprawdź ścieżki w HTML.
+- **Baza się nie łączy**: Sprawdź PDO exceptions; testuj połączenie w teście.
+- **Błąd bazy danych**: Sprawdź, czy baza danych ma prawidłową strukturę i zawiera wszystkie tabele; sprawdź, czy
+
+
+## FAQ
+
+- **Dlaczego projekt nie używa framework-a?** Głównym celem jest lekkość projektu oraz nauka PHP.
+
+## Licencja
+
+Ten projekt jest licencjonowany na warunkach **CC-BY-NC-4.0**
+
+Oznacza to, że:
+- ✅ możesz używać, modyfikować i dzielić się kodem
+- ✅ musisz przypisać autorstwo
+- ❌ nie możesz użytkować komercyjnie kodu bez zgody
+
+## Autorzy
+
+© **SLOths4** 2025
+
+@AirScorpionK
+@hexer7
+
+---
+**Masz pytania?** Otwórz [Issue](https://github.com/SLOths4/DoDomuDojade/issues) lub skontaktuj się z nami na [sloths4@spolecznaczworka.pl](mailto:sloths4@spolecznaczworka.pl).
