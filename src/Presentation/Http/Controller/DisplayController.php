@@ -78,17 +78,15 @@ final class DisplayController extends BaseController
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::countdown)) {
             return $this->jsonResponse(200, [
                 'is_active' => false,
-                'title' => null,
-                'count_to' => null,
+                'countdown' => null,
             ]);
         }
 
-        $data = $this->getDisplayCountdownUseCase->execute();
+        $countdown = $this->getDisplayCountdownUseCase->execute();
 
         return $this->jsonResponse(200, [
             'is_active' => true,
-            'title' => $data['title'] ?? null,
-            'count_to' => $data['count_to'] ?? null,
+            'countdown' => $countdown,
         ]);
     }
 

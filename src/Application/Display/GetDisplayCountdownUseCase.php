@@ -20,7 +20,6 @@ readonly class GetDisplayCountdownUseCase
             return null;
         }
 
-        // ✅ Convert to Warsaw timezone and Unix timestamp
         $dt = $currentCountdown->countTo->setTimezone(new DateTimeZone('Europe/Warsaw'));
 
         return [

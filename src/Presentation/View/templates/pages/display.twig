@@ -13,11 +13,8 @@
 </head>
 <body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
-<!-- 🔹 GÓRNY PANEL: Data / Czas / Pogoda -->
 <div x-ref="header" class="flex mx-1 my-2">
-    <!-- DATA I CZAS -->
     <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-2 shadow-custom justify-around items-center max-sm:hidden">
-        <!--suppress CheckImageSize -->
         <img src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
         <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
             <i class="fa-solid fa-calendar text-primary-400"></i>
@@ -29,10 +26,11 @@
         </div>
     </div>
 
-    <!-- POGODA -->
     <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
         <template x-if="loading">
-            <p class="text-center">Ładowanie...</p>
+            <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+                <p class="font-extrabold text-center">Ładowanie...</p>
+            </div>
         </template>
         <template x-if="error">
             <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg items-center space-x-2 flex flex-grow w-full">
@@ -40,42 +38,32 @@
                 <p class="text-red-500 text-sm font-medium" x-text="error"></p>
             </div>
         </template>
-        <template x-if="!loading && !error && data">
+        <template x-if="!loading && !error && weather">
             <div class="flex w-full justify-around text-xl">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${tempColor}`"></i>
-                    <span x-text="`${data.temperature}°C`"></span>
+                    <span x-text="`${weather.temperature}°C`"></span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-gauge text-primary-400"></i>
-                    <span x-text="`${data.pressure} hPa`"></span>
+                    <span x-text="`${weather.pressure} hPa`"></span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <i class="fas fa-air-freshener" :style="`color: ${data.airlyColour}`"></i>
-                    <span x-text="data.airlyAdvice"></span>
+                    <i class="fas fa-air-freshener" :style="`color: ${weather.airlyColour}`"></i>
+                    <span x-text="weather.airlyAdvice"></span>
                 </div>
             </div>
         </template>
     </div>
 </div>
 
-<!-- 🔹 GŁÓWNY GRID: Tramwaje | Odliczanie + Ogłoszenia -->
 <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2 overflow-hidden" :style="`height: ${gridHeight}px;`">
 
-    <!-- LEWA KOLUMNA: Tramwaje -->
     <div x-data="tramDepartures()" x-init="init()" x-ref="tramDiv" @tram-data-loaded.window="console.log('Tram departures refreshed')" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
-        <template x-if="loading">
-            <p class="text-center">Ładowanie danych...</p>
-        </template>
-
-        <template x-if="error">
-            <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
-                <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-            </div>
-        </template>
-
-        <div id="tramGrid" x-show="!loading && !error && data.length">
+        <div x-show="loading" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+            <p class="font-extrabold text-center">Ładowanie...</p>
+        </div>
+        <div id="tramGrid" x-show="!loading && !error && departures.length">
             <div class="grid grid-cols-4 w-full text-center">
                 <div class="pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
                     <i class="fa-solid fa-train-tram"></i> Linia
@@ -87,7 +75,7 @@
                     <i class="fa-solid fa-clock"></i> Odjazd
                 </div>
             </div>
-            <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
+            <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
                 <div class="demo grid grid-cols-4 w-full text-center">
                     <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
                         <div
@@ -106,21 +94,27 @@
                 </div>
             </template>
         </div>
+
+
+        <template x-if="error">
+            <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
+                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
+                <p class="text-red-500 text-sm font-medium" x-text="error"></p>
+            </div>
+        </template>
     </div>
 
     <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col">
 
-        <!-- ODLICZANIE -->
         <div x-data="countdown()" x-init="load()">
 
-            <template x-if="loading || data">
+            <template x-if="loading || countdown">
                 <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
                     <p x-show="loading" class="text-center">Ładowanie...</p>
-                    <p x-show="!loading && data" x-text="message"></p>
+                    <p x-show="!loading && countdown" x-text="message"></p>
                 </div>
             </template>
 
-            <!-- Error template, outside parent -->
             <template x-if="error">
                 <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
@@ -128,7 +122,6 @@
                 </div>
             </template>
 
-            <!-- Info template, outside parent -->
             <template x-if="info">
                 <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -139,12 +132,12 @@
 
         <div x-data="quote()" x-init="load()">
 
-            <template x-if="loading || data">
+            <template x-if="loading || quote">
                 <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
-                    <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                    <div x-show="!loading && data" class="space-y-2">
-                        <p class="font-mono text-lg italic text-center" x-text="data.quote.quote"></p>
-                        <p class="text-right text-sm text-gray-600" x-text="data.quote.from ? `— ${data.quote.from}` : ''"></p>
+                    <p x-show="loading" class="font-mono text-xl font-extrabold text-center">Ładowanie...</p>
+                    <div x-show="!loading && quote" class="space-y-2">
+                        <p class="font-mono text-lg italic text-center" x-text="quote.quote"></p>
+                        <p class="text-right text-sm text-gray-600" x-text="quote.from ? `— ${quote.from}` : ''"></p>
                     </div>
                 </div>
             </template>
@@ -168,13 +161,13 @@
 
         <div x-data="word()" x-init="load()">
 
-            <template x-if="loading || data">
+            <template x-if="loading || word">
                 <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
-                    <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                    <div x-show="!loading && data" class="space-y-2">
-                        <p class="font-mono text-lg italic text-center" x-text="data.word.word"></p>
-                        <p class="font-mono text-lg italic text-center" x-text="data.word.ipa"></p>
-                        <p class="font-mono text-lg italic text-center" x-text="data.word.definition"></p>
+                    <p x-show="loading" class="font-mono text-xl font-extrabold text-center">Ładowanie...</p>
+                    <div x-show="!loading && word" class="space-y-2">
+                        <p class="font-mono text-lg italic text-center" x-text="word.word"></p>
+                        <p class="font-mono text-lg italic text-center" x-text="word.ipa"></p>
+                        <p class="font-mono text-lg italic text-center" x-text="word.definition"></p>
                     </div>
                 </div>
             </template>
@@ -198,10 +191,12 @@
 
         <div x-data="events()" x-init="load()">
 
-            <div class="rounded-2xl m-2">
-                <p x-show="loading" class="bg-beige shadow-custom text-center text-gray-500">Ładowanie...</p>
-                <div x-show="!loading && data.length" class="space-y-2">
-                    <template x-for="(eventvar, index) in data" :key="`${eventvar.start}-${index}`">
+            <div x-show="loading || events.length" class="rounded-2xl m-2">
+                <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+                    <p x-show="loading">Ładowanie...</p>
+                </div>
+                <div x-show="!loading && events.length" class="space-y-2">
+                    <template x-for="(eventvar, index) in events" :key="`${eventvar.start}-${index}`">
                         <div class="my-2 py-2 bg-beige shadow-custom text-center rounded-2xl">
                             <p><i class="fa-solid fa-calendar"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.summary"></span></p>
                             <p><i class="fa-solid fa-clock"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.end ? `${eventvar.start} - ${eventvar.end}` : `${eventvar.start}`"></span></p>
@@ -230,10 +225,10 @@
 
 
         <div x-data="announcements()" x-init="load()">
-            <div x-show="!error && !info" class="flex-1 overflow-y-auto py-2">
-                <template x-if="loading">
-                    <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
-                </template>
+            <div x-show="loading || announcements" class="flex-1 overflow-y-auto py-2">
+                <div x-show="loading" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+                    <p>Ładowanie...</p>
+                </div>
                 <template x-if="!loading && announcements">
                     <template x-for="(group, index) in grouped" :key="index">
                         <div x-show="current === index" x-transition>
@@ -308,7 +303,7 @@
 
     function weather() {
         return {
-            data: null,
+            weather: null,
             tempColor: '#000',
             error: null,
             loading: true,
@@ -347,17 +342,17 @@
                         throw new Error('Niepoprawny JSON');
                     }
 
-                    if (!json || json.status !== 'success' || !json.data) {
+                    if (!json || !json.weather) {
                         this.error = 'Błąd ładowania pogody';
                         this.loading = false;
                         this._firstLoadDone = true;
                         return;
                     }
 
-                    const weather = json.data.weather;
+                    const weather = json.weather;
 
-                    if (this._isDifferent(this.data, weather)) {
-                        this.data = weather;
+                    if (this._isDifferent(this.weather, weather)) {
+                        this.weather = weather;
                         const t = Number(weather.temperature);
                         if (!Number.isNaN(t)) this._setTempColor(t);
                     }
@@ -377,7 +372,7 @@
 
     function tramDepartures() {
         return {
-            data: [],
+            departures: [],
             error: null,
             loading: true,
             count: {
@@ -411,10 +406,10 @@
 
                     const json = await res.json();
 
-                    if (json.status === 'success' && Array.isArray(json.data.departures)) {
-                        const newData = json.data.departures;
+                    if (json && Array.isArray(json.departures)) {
+                        const newData = json.departures;
                         if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
-                            this.data = newData;
+                            this.departures = newData;
                         }
                     } else {
                         this.error = 'Błąd ładowania odjazdów';
@@ -471,7 +466,7 @@
 
     function countdown() {
         return {
-            data: null,
+            countdown: null,
             message: '',
             error: null,
             loading: true,
@@ -485,23 +480,23 @@
                     });
                     const json = await res.json();
 
-                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
-                        this.loading = true;
+                    if (!json || typeof json.countdown !== 'object') {
+                        this.loading = false;
                         this.error = 'Błąd ładowania odliczania';
                         this.info = null;
                         if (this.intervalId) clearInterval(this.intervalId);
-                    } else if (json.data.is_active === false) {
+                    } else if (json.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
-                        this.data = null;
+                        this.countdown = null;
                         this.message = '';
                         if (this.intervalId) clearInterval(this.intervalId);
-                    } else if (!json.data.title || !json.data.count_to) {
+                    } else if (!json.countdown.title || !json.countdown.count_to) {
                         this.loading = false;
                         this.info = 'Brak danych odliczania';
                         this.error = null;
-                        this.data = null;
+                        this.countdown = null;
                         this.message = '';
                         if (this.intervalId) clearInterval(this.intervalId);
                     } else {
@@ -510,8 +505,8 @@
                             this.info = null;
                         }
 
-                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                            this.data = json.data;
+                        if (JSON.stringify(this.countdown) !== JSON.stringify(json.countdown)) {
+                            this.countdown = json.countdown;
                             this.loading = false;
                             this.update();
                             if (this.intervalId) clearInterval(this.intervalId);
@@ -527,8 +522,8 @@
                 setTimeout(() => this.load(), 60000);
             },
             update() {
-                if (!this.data) return;
-                const end = new Date(this.data.count_to * 1000);
+                if (!this.countdown) return;
+                const end = new Date(this.countdown.count_to * 1000);
                 const diff = end - Date.now();
                 if (diff <= 0) {
                     this.message = 'Zakończono!';
@@ -615,14 +610,14 @@
                     default:
                         odmianasekund = `${s} sekund`;
                 }
-                this.message = `Do ${this.data.title} : ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
+                this.message = `Do ${this.countdown.title} : ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
             }
         }
     }
 
     function quote() {
         return {
-            data: null,
+            quote: null,
             error: null,
             loading: true,
             info: null,
@@ -633,30 +628,28 @@
                         headers: { 'Content-Type': 'application/json' },
                     });
                     const json = await res.json();
-
-                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                    if (!json || typeof json.quote !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania cytatu';
                         this.info = null;
-                        this.data = null;
-                    } else if (json.data.is_active === false) {
+                        this.quote = null;
+                    } else if (json.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
-                        this.data = null;
-                    } else if (!json.data.quote || !json.data.quote.quote) {
+                        this.quote = null;
+                    } else if (!json.quote || !json.quote.quote) {
                         this.loading = false;
                         this.info = 'Brak dostępnego cytatu';
                         this.error = null;
-                        this.data = null;
+                        this.quote = null;
                     } else {
                         if (this.error || this.info) {
                             this.error = null;
                             this.info = null;
                         }
-
-                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                            this.data = json.data;
+                        if (JSON.stringify(this.quote) !== JSON.stringify(json.quote)) {
+                            this.quote = json.quote;
                             this.loading = false;
                         }
                     }
@@ -672,7 +665,7 @@
 
     function word() {
         return {
-            data: null,
+            word: null,
             error: null,
             loading: true,
             info: null,
@@ -684,29 +677,29 @@
                     });
                     const json = await res.json();
 
-                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                    if (!json || typeof json.word !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania słowa dnia';
                         this.info = null;
-                        this.data = null;
-                    } else if (json.data.is_active === false) {
+                        this.word = null;
+                    } else if (json.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
-                        this.data = null;
-                    } else if (!json.data.word || !json.data.word.word) {
+                        this.word = null;
+                    } else if (!json.word || !json.word.word) {
                         this.loading = false;
                         this.info = 'Brak dostępnego słowa dnia';
                         this.error = null;
-                        this.data = null;
+                        this.word = null;
                     } else {
                         if (this.error || this.info) {
                             this.error = null;
                             this.info = null;
                         }
 
-                        if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                            this.data = json.data;
+                        if (JSON.stringify(this.word) !== JSON.stringify(json.word)) {
+                            this.word = json.word;
                             this.loading = false;
                         }
                     }
@@ -722,7 +715,7 @@
 
     function events() {
         return {
-            data: [],
+            events: [],
             error: null,
             loading: true,
             info: null,
@@ -734,30 +727,30 @@
                     });
                     const json = await res.json();
 
-                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                    if (!json || typeof json.events !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania wydarzeń';
                         this.info = null;
-                        this.data = null;
-                    } else if (json.data.is_active === false) {
+                        this.events = null;
+                    } else if (json.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
-                        this.data = null;
-                    } else if (!json.data.events || !json.data.events.length) {
+                        this.events = null;
+                    } else if (!json.events || !json.events.length) {
                         this.loading = false;
                         this.info = 'Brak dostępnego wydarzenia';
                         this.error = null;
-                        this.data = null;
+                        this.events = null;
                     } else {
                         if (this.error || this.info) {
                             this.error = null;
                             this.info = null;
                         }
-                        if (json.status === 'success' && Array.isArray(json.data.events)) {
-                            const newData = json.data.events;
+                        if (json.events.length && Array.isArray(json.events)) {
+                            const newData = json.events;
                             if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
-                                this.data = newData;
+                                this.events = newData;
                             }
                         }
                     }
@@ -792,7 +785,7 @@
 
                     const json = await res.json();
 
-                    if (!json || json.status !== 'success' || typeof json.data !== 'object') {
+                    if (!json || typeof json.announcements !== 'object') {
                         this.loading = false;
                         this.error = 'Błąd ładowania ogłoszeń';
                         this.info = null;
@@ -800,8 +793,7 @@
                         return;
                     }
 
-                    if (json.data.is_active === false) {
-                        // moduł WYŁĄCZONY – nic nie pokazujemy (ani error, ani info)
+                    if (json.is_active === false) {
                         this.loading = false;
                         this.error = null;
                         this.info = null;
@@ -811,10 +803,9 @@
                         return;
                     }
 
-                    const list = Array.isArray(json.data.announcements) ? json.data.announcements : [];
+                    const list = Array.isArray(json.announcements) ? json.announcements : [];
 
                     if (!list.length) {
-                        // moduł włączony, ale brak danych – pokazujemy info
                         this.loading = false;
                         this.info = 'Brak danych ogłoszeń';
                         this.error = null;
