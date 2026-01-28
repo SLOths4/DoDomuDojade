@@ -265,15 +265,17 @@
 
                                 <template x-if="mod.type === 'event'">
                                     <div class="text-center">
-                                        <p>
-                                            <i class="fa-solid fa-calendar mr-1 text-primary-400"></i>
-                                            <span class="text-lg" x-text="mod.data.summary"></span>
-                                        </p>
-                                        <p>
-                                            <i class="fa-solid fa-clock mr-1 text-primary-400"></i>
-                                            <span class="text-lg"
-                                                  x-text="mod.data.end ? `${mod.data.start} - ${mod.data.end}` : mod.data.start"></span>
-                                        </p>
+                                        <div class="flex items-center">
+                                            <p class="px-2">
+                                                <i class="fa-solid fa-calendar mr-1 text-primary-400"></i>
+                                                <span class="text-lg" x-text="mod.data.summary"></span>
+                                            </p>
+                                            <p class="px-2">
+                                                <i class="fa-solid fa-clock mr-1 text-primary-400"></i>
+                                                <span class="text-lg"
+                                                      x-text="mod.data.end ? `${mod.data.start} - ${mod.data.end}` : mod.data.start"></span>
+                                            </p>
+                                        </div>
                                         <p>
                                             <i class="fa-solid fa-align-justify mr-1 text-primary-400"></i>
                                             <span class="text-lg" x-text="mod.data.description"></span>
@@ -289,13 +291,15 @@
                             <p class="text-center text-gray-500 text-lg">Brak danych do wyświetlenia</p>
                         </div>
                     </template>
-                    <template x-if="info || error">
+                    <template x-if="error">
                         <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
                             <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
                                 <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
                                 <p class="text-red-500 text-sm font-medium" x-text="errors"></p>
                             </div>
                         </template>
+                    </template>
+                    <template x-if="info">
                         <template x-for="(infos, index) in info" :key="`info-${index}-${info}`">
                             <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
                                 <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
@@ -901,8 +905,10 @@
 
                                     if (name === 'events') {
                                         const events = json.data.events;
-                                        if ((!events || (Array.isArray(events) && !events.length)) && !this.info.includes('Brak dostępnego wydarzenia')) {
-                                            this.info.push('Brak dostępnego wydarzenia');
+                                        if (!events || !Array.isArray(events)) {
+                                            if (!this.info.includes('Brak dostępnego wydarzenia')) {
+                                                this.info.push('Brak dostępnego wydarzenia');
+                                            }
                                             return [];
                                         }
                                         return Array.isArray(events) ?
@@ -911,24 +917,30 @@
                                     }
 
                                     if (name === 'countdown') {
-                                        if ((!json.data || !json.data.count_to || !json.data.title) && !this.info.includes('Brak dostępnego odliczania')) {
-                                            this.info.push('Brak dostępnego odliczania');
+                                        if (!json.data || !json.data.count_to || !json.data.title) {
+                                            if (!this.info.includes('Brak dostępnego odliczania')) {
+                                                this.info.push('Brak dostępnego odliczania');
+                                            }
                                             return [];
                                         }
                                         return [{type: 'countdown', data: json.data}];
                                     }
 
                                     if (name === 'word') {
-                                        if ((!json.data.word || !json.data.word.word) && !this.info.includes('Brak dostępnego słowa dnia')) {
-                                            this.info.push('Brak dostępnego słowa dnia');
+                                        if (!json.data.word || !json.data.word.word) {
+                                            if (!this.info.includes('Brak dostępnego słowa dnia')) {
+                                                this.info.push('Brak dostępnego słowa dnia');
+                                            }
                                             return [];
                                         }
                                         return [{type: 'word', data: json.data.word}];
                                     }
 
                                     if (name === 'quote') {
-                                        if ((!json.data.quote || !json.data.from) && !this.info.includes('Brak dostępnego cytatu')) {
-                                            this.info.push('Brak dostępnego cytatu');
+                                        if (!json.data.quote || !json.data.from) {
+                                            if (!this.info.includes('Brak dostępnego cytatu')) {
+                                                this.info.push('Brak dostępnego cytatu');
+                                            }
                                             return [];
                                         }
                                         return [{type: 'quote', data: json.data.quote}];
@@ -946,6 +958,9 @@
                             const results = await Promise.all(promises);
                             this.modules = results.flat().filter(Boolean);
                             console.log(this.modules);
+                            this.info.forEach(element => {
+                                console.log(element)
+                            });
                             this.updateCountdown();
                             this.loading = false;
                             this.startRotation();
