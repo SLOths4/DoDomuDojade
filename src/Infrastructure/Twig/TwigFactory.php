@@ -34,7 +34,7 @@ final class TwigFactory
             $loader->addPath($viewsPath . '/components', self::COMPONENTS_DIR);
 
             $twig = new Environment($loader, [
-                'cache' => $debug ? false : $cachePath,
+                'cache' => $debug ? $cachePath : false,
                 'debug' => $debug,
                 'auto_reload' => $debug,
                 'charset' => 'UTF-8',
