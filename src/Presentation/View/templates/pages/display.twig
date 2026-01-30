@@ -14,7 +14,7 @@
 <body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
 <div x-ref="header" class="flex mx-1 my-2">
-    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-2xl mr-2 shadow-custom justify-around items-center max-sm:hidden">
+    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-l-2xl shadow-custom justify-around items-center max-sm:hidden">
         <img src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
         <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
             <i class="fa-solid fa-calendar text-primary-400"></i>
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
+    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-r-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
         <template x-if="loading">
             <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
                 <p class="font-extrabold text-center">Ładowanie...</p>
@@ -879,10 +879,10 @@
                     message: '',
 
                     endpoints: [
-                        { name: 'countdown', url: '/display/get_countdown' },
-                        { name: 'quote', url: '/display/get_quote' },
-                        { name: 'word', url: '/display/get_word' },
-                        { name: 'events', url: '/display/get_events' }
+                        { name: 'countdown', url: '/display/countdown' },
+                        { name: 'quote', url: '/display/quote' },
+                        { name: 'word', url: '/display/word' },
+                        { name: 'events', url: '/display/events' }
                     ],
 
                     async load() {
@@ -895,13 +895,13 @@
                                     });
                                     const json = await res.json();
 
-                                    if (json.status !== 'success' || !json.data && !this.error.includes(`Brak danych w module ${name}`)) {
+                                    if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
                                         this.error.push(`Brak danych w module ${name}`);
                                         return [];
                                     }
 
                                     if (name === 'events') {
-                                        const events = json.data.events;
+                                        const events = json.events;
                                         if (!events || !Array.isArray(events)) {
                                             if (!this.info.includes('Brak dostępnego wydarzenia')) {
                                                 this.info.push('Brak dostępnego wydarzenia');
@@ -914,33 +914,33 @@
                                     }
 
                                     if (name === 'countdown') {
-                                        if (!json.data || !json.data.count_to || !json.data.title) {
+                                        if (!json.countdown || !json.countdown.count_to) {
                                             if (!this.info.includes('Brak dostępnego odliczania')) {
                                                 this.info.push('Brak dostępnego odliczania');
                                             }
                                             return [];
                                         }
-                                        return [{type: 'countdown', data: json.data}];
+                                        return [{type: 'countdown', data: json.countdown}];
                                     }
 
                                     if (name === 'word') {
-                                        if (!json.data.word || !json.data.word.word) {
+                                        if (!json.word || !json.word.word) {
                                             if (!this.info.includes('Brak dostępnego słowa dnia')) {
                                                 this.info.push('Brak dostępnego słowa dnia');
                                             }
                                             return [];
                                         }
-                                        return [{type: 'word', data: json.data.word}];
+                                        return [{type: 'word', data: json.word}];
                                     }
 
                                     if (name === 'quote') {
-                                        if (!json.data.quote || !json.data.from) {
+                                        if (!json.quote.quote || !json.quote.from) {
                                             if (!this.info.includes('Brak dostępnego cytatu')) {
                                                 this.info.push('Brak dostępnego cytatu');
                                             }
                                             return [];
                                         }
-                                        return [{type: 'quote', data: json.data.quote}];
+                                        return [{type: 'quote', data: json.quote}];
                                     }
 
                                     return [];
@@ -955,9 +955,6 @@
                             const results = await Promise.all(promises);
                             this.modules = results.flat().filter(Boolean);
                             console.log(this.modules);
-                            this.info.forEach(element => {
-                                console.log(element)
-                            });
                             this.updateCountdown();
                             this.loading = false;
                             this.startRotation();

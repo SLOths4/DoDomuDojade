@@ -5,45 +5,54 @@ Witaj w dokumentacji projektu **DoDomuDojade**! Ta strona stanowi punkt wyjścia
 ## 📚 Struktura Dokumentacji
 
 - **[Autogenerowana dokumentacja kodu](code/)**
-- **[Architektura](architecture.md)** - opisuje architekturę aplikacji
-- **[Display](display.md)** - opisuje działanie najważniejszej funkcjonalnośći aplikacji`
-- - **[Development](development.md)** - opisuje założenia dalszego rozwoju projektu
+- **[Architektura](architecture.md)** — opisuje architekturę aplikacji
+- **[Display](display.md)** — opisuje działanie najważniejszej funkcjonalności aplikacji`
+- **[Development](development.md)** — opisuje założenia dalszego rozwoju projektu
 
 ## Stos technologiczny
 ### Backend
+
 - PHP 8.5
 ### Frontend
+
 - Tailwind CSS
 - Alpine.js
 ### Baza danych
+
 - Postgres
 
 ### Szybki start (produkcja)
+
 - Ustaw document root na `public/` (np. w Apache/Nginx).
 - Konfiguruj PHP-FPM.
 - Upewnij się, że `logs/` jest zapisywalne, ale nie publiczne.
 - Zablokuj dostęp do katalogów źródłowych oraz .env.
 
 #### Stwórz .env
+
 ```
 cp .env.example .env
 ```
+
 Ustaw `APP_ENV=prod` i `LOGGING_LEVEL=info`.
 
 #### Ustaw cron jobs
 
 ##### Ustaw pobieranie dziennego słowa
-```shell script
+
+```shell
 .bin/app word:fetch
 ```
 
 ##### Ustaw pobieranie dziennego cytatu
-```shell script
+
+```shell
 .bin/app quote:fetch
 ```
 
 ##### Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data
-```shell script
+
+```shell
 .bin/app announcement-rejected:delete {YYYY-MM-DD}
 ```
 
@@ -52,9 +61,9 @@ Rozwiązanie większości problemów staje się oczywiste po spojrzeniu do logó
 
 - **Błąd 500**: Sprawdź logi (`logs/app-{YYYY-MM-DD}.log`); sprawdź logi php fmp; włącz `APP_ENV=dev`.
 - **Brak danych API**: Weryfikuj klucze w .env.
-- **CSS się nie ładuje**: Uruchom `npm run build`; sprawdź ścieżki w HTML.
-- **Baza się nie łączy**: Sprawdź PDO exceptions; testuj połączenie w teście.
-- **Błąd bazy danych**: Sprawdź, czy baza danych ma prawidłową strukturę i zawiera wszystkie tabele; sprawdź, czy
+- **CSS się nie ładuje**: Uruchom `npm run build`; sprawdź, czy statyczne pliki są serwowane
+- **Baza się nie łączy**: Upewnij się, że podałeś/aś poprawny username i hasło
+- **Błąd bazy danych**: Sprawdź, czy baza danych ma prawidłową strukturę i zawiera wszystkie tabele;
 
 
 ## FAQ
@@ -66,9 +75,10 @@ Rozwiązanie większości problemów staje się oczywiste po spojrzeniu do logó
 Ten projekt jest licencjonowany na warunkach **CC-BY-NC-4.0**
 
 Oznacza to, że:
+
 - ✅ możesz używać, modyfikować i dzielić się kodem
 - ✅ musisz przypisać autorstwo
-- ❌ nie możesz użytkować komercyjnie kodu bez zgody
+- ❌ nie możesz użytkować kodu komercyjnie bez zgody
 
 ## Autorzy
 

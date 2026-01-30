@@ -6,7 +6,7 @@
 
 ## O projekcie
 
-Dodomudojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyjną.
+DoDomuDojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyjną.
 
 **Cele projektu:**
 - Ułatwienie dostępu do informacji publicznych (transport, pogoda).
@@ -17,8 +17,8 @@ Dodomudojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyj
 
 - [Dokumentacja](#Dokumentacja)
 - [Dostępne moduły](#Dostępne-moduły)
-- [Stos technologiczny](#stos-technologiczny)
-- [Szybki start (dev)](#Szybki-start-dev)
+- [Stos technologiczny](#Stos-technologiczny)
+- [Uruchamianie aplikacji](#Uruchamianie-aplikacji)
 - [FAQ](#faq)
 - [Autorzy](#Autorzy)
 
@@ -108,8 +108,6 @@ Dodaj nowego użytkownika przy użyciu interfejsu CLI. Pamiętaj, że nazwa uży
 ```shell
 bin/app user:add <username> <password>
 ```
-
-### Szybki start (dev)
 
 Zainstaluj zależności:
    ```

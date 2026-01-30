@@ -275,6 +275,9 @@
   .relative {
     position: relative;
   }
+  .static {
+    position: static;
+  }
   .sticky {
     position: sticky;
   }
@@ -377,6 +380,9 @@
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
   }
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
+  }
   .block {
     display: block;
   }
@@ -388,9 +394,6 @@
   }
   .hidden {
     display: none;
-  }
-  .inline {
-    display: inline;
   }
   .inline-flex {
     display: inline-flex;
@@ -580,6 +583,14 @@
   .rounded-t-2xl {
     border-top-left-radius: var(--radius-2xl);
     border-top-right-radius: var(--radius-2xl);
+  }
+  .rounded-l-2xl {
+    border-top-left-radius: var(--radius-2xl);
+    border-bottom-left-radius: var(--radius-2xl);
+  }
+  .rounded-r-2xl {
+    border-top-right-radius: var(--radius-2xl);
+    border-bottom-right-radius: var(--radius-2xl);
   }
   .border {
     border-style: var(--tw-border-style);
@@ -963,6 +974,11 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
   .duration-75 {
     --tw-duration: 75ms;
     transition-duration: 75ms;
@@ -1108,6 +1124,16 @@
       outline-style: none;
     }
   }
+  .disabled\:cursor-not-allowed {
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+  .disabled\:opacity-50 {
+    &:disabled {
+      opacity: 50%;
+    }
+  }
   .max-lg\:block {
     @media (width < 64rem) {
       display: block;
@@ -1230,6 +1256,11 @@
       border-color: var(--color-gray-700);
     }
   }
+  .dark\:border-green-600 {
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--color-green-600);
+    }
+  }
   .dark\:border-green-700 {
     @media (prefers-color-scheme: dark) {
       border-color: var(--color-green-700);
@@ -1238,6 +1269,11 @@
   .dark\:border-primary-300 {
     @media (prefers-color-scheme: dark) {
       border-color: var(--color-primary-300);
+    }
+  }
+  .dark\:border-red-600 {
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--color-red-600);
     }
   }
   .dark\:border-red-700 {

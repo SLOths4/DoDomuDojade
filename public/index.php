@@ -95,7 +95,7 @@ try {
         $r->addRoute('GET', '/display/departures', [DisplayController::class, 'getDepartures']);
         $r->addRoute('GET', '/display/announcements', [DisplayController::class, 'getAnnouncements']);
         $r->addRoute('GET', '/display/weather', [DisplayController::class, 'getWeather']);
-        $r->addRoute('GET', '/display/countdowns', [DisplayController::class, 'getCountdown']);
+        $r->addRoute('GET', '/display/countdown', [DisplayController::class, 'getCountdown']);
         $r->addRoute('GET', '/display/events', [DisplayController::class, 'getEvents']);
         $r->addRoute('GET', '/display/quote', [DisplayController::class, 'getQuote']);
         $r->addRoute('GET', '/display/word', [DisplayController::class, 'getWord']);
