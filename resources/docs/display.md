@@ -1,30 +1,30 @@
 # API Reference - DoDomuDojadę
 
-Podstrona diplay stanowi główną funkcjonalność aplikacji. To od niej zaczą się nasz projekt :-) (Nie wierzysz? Zajżyj w przeszłość w repozytorium!)
+Podstrona `display` stanowi główną funkcjonalność aplikacji. To od niej zaczął się nasz projekt :-) (Nie wierzysz? Zajrzyj w przeszłość w repozytorium!)
 
 ## 📡 Endpoints Overview
 
-| Endpoint                        | Method | Type | Purpose                 | Auth |
-|---------------------------------|--------|------|-------------------------|------|
-| `/display/departures`           | GET    | JSON | Rozkład jazdy tramwajów | No   |
-| `/display/announcements`        | GET    | JSON | Ogłoszenia              | No   |
-| `/display/countdown`            | GET    | JSON | Odliczanie              | No   |
-| `/display/weather`              | GET    | JSON | Pogoda                  | No   |
-| `/display/events`               | GET    | JSON | Zdarzenia z kalendarza  | No   |
-| `/display/quote`                | GET    | JSON | Cytat dnia              | No   |
-| `/display/word`                 | GET    | JSON | Słowo dnia              | No   |
+| Endpoint                     | Method | Type | Purpose                | Auth |
+|------------------------------|--------|------|------------------------|------|
+| `/display/departure`         | GET    | JSON | Odjazdy tramwajów      | No   |
+| `/display/announcement`      | GET    | JSON | Ogłoszenia             | No   |
+| `/display/countdown`         | GET    | JSON | Odliczanie             | No   |
+| `/display/weather`           | GET    | JSON | Pogoda                 | No   |
+| `/display/event`             | GET    | JSON | Zdarzenia z kalendarza | No   |
+| `/display/quote`             | GET    | JSON | Cytat dnia             | No   |
+| `/display/word`              | GET    | JSON | Słowo dnia             | No   |
 
-> Wszystkie endpointy Display zwracają spójny format z polem `is_active`, które mówi, czy dany moduł jest obecnie włączony
+> Wszystkie endpoint-y Display zwracają spójny format z polem `is_active`, które mówi, czy dany moduł jest obecnie włączony
 
 ---
 
 ## 🏗️ Display API Endpoints
 
-> Jeżeli dany moduł nie zwrócił danych pole, które normalnie by je zawierało będzie równe `null`
+> Jeżeli dany moduł nie zwrócił danych, pole, które normalnie by je zawierało będzie równe `null`.
 
 ### GET `/display/departures`
 
-Pobiera odjazdy dla skonfigurowanych pojazdów.
+Pobiera odjazdy dla skonfigurowanych przystanków.
 
 **Przykładowa odpowiedź (aktywny moduł):**
 ```json
@@ -49,6 +49,9 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 
 ### GET `/display/announcements`
 
+Pobiera ważne (valid) ogłoszenia.
+
+**Przykładowa odpowiedź (aktywny moduł):**
 ```json
 {
   "is_active":true,
@@ -63,6 +66,9 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 
 ### GET `/display/weather`
 
+Pobiera pogodę.
+
+**Przykładowa odpowiedź (aktywny moduł):**
 ```json
 {
   "is_active":true,
@@ -78,6 +84,9 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 
 ### GET `/display/countdowns`
 
+Pobiera najświeższe odliczanie.
+
+**Przykładowa odpowiedź (aktywny moduł):**
 ```json
 {
   "is_active":true,
@@ -90,6 +99,9 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 
 ### GET `/display/events`
 
+Pobiera ogłoszenia.
+
+**Przykładowa odpowiedź (aktywny moduł):**
 ```json
 {
   "is_active":true,
@@ -112,6 +124,10 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 
 ### GET `/display/word`
 
+Pobiera słowo dnia (z bazy danych).
+
+**Przykładowa odpowiedź (aktywny moduł):**
+
 ```json
 {
   "is_active":true,
@@ -124,6 +140,10 @@ Pobiera odjazdy dla skonfigurowanych pojazdów.
 ```
 
 ### GET `/display/quote`
+
+Pobiera cytat dnia (z bazy danych).
+
+**Przykładowa odpowiedź (aktywny moduł):**
 
 ```json
 {

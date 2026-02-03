@@ -339,7 +339,7 @@ src/Console/
 9. HTTP Response (201 Created)
 ```
 
-```mermaid
+``` mermaid
 graph TB
     A["HTTP Request<br/>(POST /panel/add_announcement)"] -->|Parse | B["Controller"]
     B -->|Execute| C["Use Case"]

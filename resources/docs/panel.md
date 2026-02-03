@@ -1,9 +1,5 @@
 # Dokumentacja ściezki `/panel`
 
-## Przegląd
-
-Endpoint `/panel` jest główną stronę panelu administracyjnego aplikacji DoDomuDojade. Implementuje architekturę Domain-Driven Design (DDD) z czystą separacją warstw: Presentation → Application → Domain → Infrastructure.
-
 ## Struktura endpointa
 
 ### Routing
@@ -15,81 +11,6 @@ GET /panel → PanelController::class, 'index'
 **Middleware**: `AuthMiddleware::class` — wymaga uwierzytelnienia użytkownika.
 
 ## Architektura i przepływ żądania
-
-### 1. Warstwa Presentation (Kontroler)
-
-**Plik**: `src/Presentation/Http/Controller/PanelController.php`
-
-#### Konstruktor
-
-```php
-public function __construct(
-RequestContext $requestContext,
-ViewRendererInterface $renderer,
-readonly FlashMessengerInterface $flash,
-private readonly LoggerInterface $logger,
-private readonly GetAllModulesUseCase $getAllModulesUseCase,
-private readonly GetAllUsersUseCase $getAllUsersUseCase,
-private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
-private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
-private readonly Translator $translator,
-private readonly AnnouncementViewMapper $announcementMapper
-)
-```
-
-**Zależności**:
-- `RequestContext` — kontekst bieżącego żądania
-- `ViewRendererInterface` — renderer widoków (Twig)
-- `FlashMessengerInterface` — system komunikatów (flash messages)
-- `LoggerInterface` — logger do śledzenia zdarzeń
-- Kilka Use Cases do pobierania danych
-- `Translator` — system tłumaczeń
-- `AnnouncementViewMapper` — mapowanie ogłoszeń do DTO
-
-#### Metoda `index()`
-
-```php
-public function index(): ResponseInterface
-{
-$this->logger->info("Panel index loaded");
-return $this->render(TemplateNames::PANEL->value);
-}
-```
-
-**Działanie**:
-1. Loguje informację o załadowaniu strony
-2. Renderuje szablon `PANEL` (główna strona panelu)
-3. Zwraca `ResponseInterface` z wygenerowaną HTML
-
-**Szablon**: Zdefiniowany w `TemplateNames::PANEL` — zawiera strukturę głównego panelu administracyjnego
-
-### 2. Warstwa Application (Use Cases)
-
-Dostępne Use Cases wstrzykiwane do kontrolera:
-
-- **`GetAllModulesUseCase`** — pobiera wszystkie moduły
-- **`GetAllUsersUseCase`** — pobiera wszystkich użytkowników
-- **`GetAllCountdownsUseCase`** — pobiera wszystkie liczniki
-- **`GetAllAnnouncementsUseCase`** — pobiera wszystkie ogłoszenia
-
-Każdy Use Case implementuje konkretny przypadek użycia (use case) i ma dostęp do odpowiedniego repozytorium.
-
-### 3. Warstwa Domain
-
-Warstwy Domain zawiera:
-
-- **Aggregate Root** — `User`, `Module`, `Countdown`, `Announcement`
-- **Value Objects** — `ModuleName`, `AnnouncementStatus`, itp.
-- **Interfaces Repozytoriów** — definiują kontrakty dla infrastruktury
-
-### 4. Warstwa Infrastructure (Persistence)
-
-Repozytoria PDO:
-
-- `PDOUserRepository` — zarządza użytkownikami w bazie
-- `PDOModuleRepository` — zarządza modułami
-- `PDOCountdownRepository` — zarządza licznikami
-- `PDOAnnouncementRepository` — zarządza ogłoszeniami
 
 ## Request Flow
 
@@ -140,18 +61,18 @@ Formatuje obiekty liczników do postaci gotowej dla widoku:
 ```php
 private function formatCountdowns(array $countdowns): array
 {
-$formatted = [];
-foreach ($countdowns as $countdown) {
-$formatted[] = (object)[
-'id' => $countdown->id,
-'title' => $countdown->title,
-'userId' => $countdown->userId,
-'countTo' => $countdown->countTo instanceof DateTimeImmutable
-? $countdown->countTo->format('Y-m-d')
-: $countdown->countTo,
-];
-}
-return $formatted;
+   $formatted = [];
+   foreach ($countdowns as $countdown) {
+      $formatted[] = (object)[
+      'id' => $countdown->id,
+      'title' => $countdown->title,
+      'userId' => $countdown->userId,
+      'countTo' => $countdown->countTo instanceof DateTimeImmutable
+      ? $countdown->countTo->format('Y-m-d')
+      : $countdown->countTo,
+      ];
+    }
+    return $formatted;
 }
 ```
 
@@ -257,7 +178,7 @@ Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/`)
 
 ## API Endpoints (powiązane)
 
-Poniższe endpointy API pracują z danymi wyświetlanymi w panelu:
+Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 
 ### Użytkownicy
 - `POST /api/user` — dodaj użytkownika
@@ -279,25 +200,3 @@ Poniższe endpointy API pracują z danymi wyświetlanymi w panelu:
 ### Moduły
 - `PATCH /api/module/{id}` — edytuj moduł
 - `POST /api/module/{id}/toggle` — włącz/wyłącz moduł
-
-
-### Translacje
-
-Kontroler używa `Translator` do tłumaczenia wartości enum (np. nazwy modułów):
-
-'moduleNameLabel' => $this->translator->translate('module_name.' . $module->moduleName->value)
-
-Klucze tłumaczeń: `module_name.MODULE_NAME_VALUE`
-
-## Podsumowanie
-
-Endpoint `/panel` to główna strona administracyjna aplikacji, która:
-
-1. Wymaga autentykacji (AuthMiddleware)
-2. Renderuje szablon głównego panelu
-3. Łączy się z Application Layer poprzez Use Cases
-4. Pobiera dane z bazy danych poprzez repozytoria
-5. Loguje dostęp do strony
-6. Obsługiwana przez czysty DDD flow
-
-Struktura kontrolera wspiera scalability i maintainability poprzez silną separację odpowiedzialności między warstwami.

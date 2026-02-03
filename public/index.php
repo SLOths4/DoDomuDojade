@@ -92,11 +92,11 @@ try {
         $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules', 'middleware' => [AuthMiddleware::class]]);
 
         // 3. Trasy wyświetlacza (display)
-        $r->addRoute('GET', '/display/departures', [DisplayController::class, 'getDepartures']);
-        $r->addRoute('GET', '/display/announcements', [DisplayController::class, 'getAnnouncements']);
+        $r->addRoute('GET', '/display/departure', [DisplayController::class, 'getDepartures']);
+        $r->addRoute('GET', '/display/announcement', [DisplayController::class, 'getAnnouncements']);
         $r->addRoute('GET', '/display/weather', [DisplayController::class, 'getWeather']);
         $r->addRoute('GET', '/display/countdown', [DisplayController::class, 'getCountdown']);
-        $r->addRoute('GET', '/display/events', [DisplayController::class, 'getEvents']);
+        $r->addRoute('GET', '/display/event', [DisplayController::class, 'getEvents']);
         $r->addRoute('GET', '/display/quote', [DisplayController::class, 'getQuote']);
         $r->addRoute('GET', '/display/word', [DisplayController::class, 'getWord']);
 
