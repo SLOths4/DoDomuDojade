@@ -8,16 +8,27 @@ use DateTimeImmutable;
 class AnnouncementRejectedEvent extends DomainEvent
 {
 
-    private string $announcementId;
-    private int $approvedBy;
-    private DateTimeImmutable $approvedAt;
+    private string $announcementId {
+        get {
+            return $this->announcementId;
+        }
+    }
+    private int $approvedBy {
+        get {
+            return $this->approvedBy;
+        }
+    }
+    private DateTimeImmutable $approvedAt {
+        get {
+            return $this->approvedAt;
+        }
+    }
 
     /**
-     * Constructor
-     *
      * @param string $announcementId ID of announcement being approved
      * @param int $approvedBy User ID of moderator approving
      * @param DateTimeImmutable $approvedAt When approval happened
+     * @throws \DateMalformedStringException
      */
     public function __construct(
         string $announcementId,
@@ -59,21 +70,4 @@ class AnnouncementRejectedEvent extends DomainEvent
         ];
     }
 
-    /**
-     * Getters
-     */
-    public function getAnnouncementId(): string
-    {
-        return $this->announcementId;
-    }
-
-    public function getApprovedBy(): int
-    {
-        return $this->approvedBy;
-    }
-
-    public function getApprovedAt(): DateTimeImmutable
-    {
-        return $this->approvedAt;
-    }
 }

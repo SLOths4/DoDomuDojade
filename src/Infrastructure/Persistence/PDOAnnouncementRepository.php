@@ -11,6 +11,9 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterface
 {
     public function __construct(
@@ -31,9 +34,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Returns all announcements.
-     * @return Announcement[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findAll(): array
     {
@@ -42,9 +43,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Returns all announcements that are still valid.
-     * @return Announcement[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findValid(): array
     {
@@ -59,9 +58,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Returns pending announcements (awaiting approval).
-     * @return Announcement[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findPending(): array
     {
@@ -73,10 +70,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Returns announcements by title.
-     * @param string $title
-     * @return Announcement[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findByTitle(string $title): array
     {
@@ -88,10 +82,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Returns a single announcement by ID.
-     * @param AnnouncementId $id
-     * @return Announcement|null
-     * @throws Exception
+     * @inheritDoc
      */
     public function findById(AnnouncementId $id): ?Announcement
     {
@@ -104,10 +95,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Adds an announcement.
-     * @param Announcement $announcement
-     * @return AnnouncementId
-     * @throws Exception
+     * @inheritDoc
      */
     public function add(Announcement $announcement): AnnouncementId
     {
@@ -115,19 +103,19 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
             $this->TABLE_NAME,
             [
                 'id'          => [$announcement->getId(), PDO::PARAM_STR],
-                'title'       => [$announcement->getTitle(), PDO::PARAM_STR],
-                'text'        => [$announcement->getText(), PDO::PARAM_STR],
+                'title'       => [$announcement->title, PDO::PARAM_STR],
+                'text'        => [$announcement->text, PDO::PARAM_STR],
                 'date'        => [$announcement->getCreatedAt()->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'valid_until' => [$announcement->getValidUntil()->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'status'      => [$announcement->getStatus()->name, PDO::PARAM_STR],
+                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'status'      => [$announcement->status->name, PDO::PARAM_STR],
                 'user_id'     => [$announcement->getUserId(), PDO::PARAM_INT],
                 'decided_at'  => [
-                    $announcement->getDecidedAt()?->format($this->DATE_FORMAT),
-                    $announcement->getDecidedAt() === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+                    $announcement->decidedAt?->format($this->DATE_FORMAT),
+                    $announcement->decidedAt === null ? PDO::PARAM_NULL : PDO::PARAM_STR
                 ],
                 'decided_by'  => [
-                    $announcement->getDecidedBy(),
-                    $announcement->getDecidedBy() === null ? PDO::PARAM_NULL : PDO::PARAM_INT
+                    $announcement->decidedBy,
+                    $announcement->decidedBy === null ? PDO::PARAM_NULL : PDO::PARAM_INT
                 ],
             ]
         );
@@ -136,22 +124,19 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Updates an announcement.
-     * @param Announcement $announcement
-     * @return int
-     * @throws Exception
+     * @inheritDoc
      */
     public function update(Announcement $announcement): int
     {
         return $this->dbHelper->update(
             $this->TABLE_NAME,
             [
-                'title'       => [$announcement->getTitle(), PDO::PARAM_STR],
-                'text'        => [$announcement->getText(), PDO::PARAM_STR],
-                'valid_until' => [$announcement->getValidUntil()->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'status'      => [$announcement->getStatus()->name, PDO::PARAM_STR],
-                'decided_at'  => [$announcement->getDecidedAt()?->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'decided_by'  => [$announcement->getDecidedBy(), PDO::PARAM_INT],
+                'title'       => [$announcement->title, PDO::PARAM_STR],
+                'text'        => [$announcement->text, PDO::PARAM_STR],
+                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'status'      => [$announcement->status->name, PDO::PARAM_STR],
+                'decided_at'  => [$announcement->decidedAt?->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'decided_by'  => [$announcement->decidedBy, PDO::PARAM_INT],
             ],
             [
                 'id' => [$announcement->getId(), PDO::PARAM_STR],
@@ -160,10 +145,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Deletes rejected announcements older than the specified date.
-     * @param DateTimeImmutable $date
-     * @return int Number of deleted rows
-     * @throws Exception
+     * @inheritDoc
      */
     public function deleteRejectedOlderThan(DateTimeImmutable $date): int
     {
@@ -178,10 +160,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     }
 
     /**
-     * Deletes an announcement by ID.
-     * @param AnnouncementId $id
-     * @return int
-     * @throws Exception
+     * @inheritDoc
      */
     public function delete(AnnouncementId $id): int
     {

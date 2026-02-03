@@ -36,10 +36,7 @@ readonly class FlashMessengerService implements FlashMessengerInterface
 
     /**
      * Returns all flash messages
-     * @return array{
-     *      success?: string,
-     *      error?: string,
-     *  }
+     * @return array{success?: string, error?: string}
      */
     public function getAll(): array
     {

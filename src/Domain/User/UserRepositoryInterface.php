@@ -80,12 +80,4 @@ interface UserRepositoryInterface
      * @throws Exception
      */
     public function updatePassword(int $id, string $newPasswordHash): bool;
-
-    /**
-     * Returns allowed fields for update operations.
-     * Excludes immutable fields like id and createdAt.
-     *
-     * @return array Array of allowed field names
-     */
-    public function getAllowedFields(): array;
 }

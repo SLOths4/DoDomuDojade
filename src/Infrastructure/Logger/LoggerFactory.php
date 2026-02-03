@@ -88,7 +88,6 @@ final class LoggerFactory
     {
         return match (strtolower(trim($value))) {
             'debug' => Level::Debug,
-            'info' => Level::Info,
             'notice' => Level::Notice,
             'warning' => Level::Warning,
             'error' => Level::Error,

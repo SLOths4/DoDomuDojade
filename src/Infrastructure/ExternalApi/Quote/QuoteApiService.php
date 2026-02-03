@@ -12,7 +12,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
 /**
- * Used to interact quotes API
+ * Used to interact with quotes API
  */
 readonly class QuoteApiService
 {
@@ -22,6 +22,10 @@ readonly class QuoteApiService
         private string $quoteApiUrl
     ) {}
 
+    /**
+     * @return array
+     * @throws QuoteApiException
+     */
     private function fetchData(): array
     {
         try {
@@ -40,6 +44,10 @@ readonly class QuoteApiService
         }
     }
 
+    /**
+     * @return array
+     * @throws QuoteApiException
+     */
     public function getQuote(): array
     {
         $this->logger->debug("Starting fetching quote");

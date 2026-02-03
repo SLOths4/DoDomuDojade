@@ -4,6 +4,7 @@ namespace App\Infrastructure\ExternalApi\Tram;
 use App\Infrastructure\Shared\InfrastructureException;
 use Throwable;
 
+
 final class TramApiException extends InfrastructureException
 {
     public static function transportError(Throwable $previous): self

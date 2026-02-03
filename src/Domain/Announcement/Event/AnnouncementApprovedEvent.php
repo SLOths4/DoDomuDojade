@@ -10,9 +10,21 @@ use DateTimeImmutable;
  */
 final class AnnouncementApprovedEvent extends DomainEvent
 {
-    private string $announcementId;
-    private int $approvedBy;
-    private DateTimeImmutable $approvedAt;
+    private string $announcementId {
+        get {
+            return $this->announcementId;
+        }
+    }
+    private int $approvedBy {
+        get {
+            return $this->approvedBy;
+        }
+    }
+    private DateTimeImmutable $approvedAt {
+        get {
+            return $this->approvedAt;
+        }
+    }
 
     /**
      * Constructor
@@ -61,21 +73,4 @@ final class AnnouncementApprovedEvent extends DomainEvent
         ];
     }
 
-    /**
-     * Getters
-     */
-    public function getAnnouncementId(): string
-    {
-        return $this->announcementId;
-    }
-
-    public function getApprovedBy(): int
-    {
-        return $this->approvedBy;
-    }
-
-    public function getApprovedAt(): DateTimeImmutable
-    {
-        return $this->approvedAt;
-    }
 }

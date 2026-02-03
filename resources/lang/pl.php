@@ -85,6 +85,8 @@ return [
         'created_successfully' => 'Odliczanie zostało utworzone',
         'updated_successfully' => 'Odliczanie zostało zaktualizowane',
         'deleted_successfully' => 'Odliczanie zostało usunięte',
+        'title_too_short' => 'Za krótki tytuł odliczania',
+        'count_to_in_the_past' => 'Data odliczania nie może być w przeszłości'
     ],
 
     'module' => [

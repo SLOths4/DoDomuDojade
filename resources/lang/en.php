@@ -83,6 +83,8 @@ return [
         'created_successfully' => 'Countdown has been created',
         'updated_successfully' => 'Countdown has been updated',
         'deleted_successfully' => 'Countdown has been deleted',
+        'title_too_short' => 'Countdown title is too short',
+        'count_to_in_the_past' => 'Count to date cannot be in the past',
     ],
 
     'module' => [

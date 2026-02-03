@@ -40,9 +40,9 @@ readonly class GetDisplayAnnouncementsUseCase
             }
 
             $response[] = [
-                'title' => $announcement->getTitle(),
+                'title' => $announcement->title,
                 'author' => $author,
-                'text' => $announcement->getText(),
+                'text' => $announcement->text,
             ];
         }
 

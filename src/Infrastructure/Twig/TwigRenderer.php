@@ -37,7 +37,7 @@ readonly class TwigRenderer implements ViewRendererInterface
 
             return $this->twig->render($template, $data);
 
-        } catch (LoaderError $e) {
+        } catch (LoaderError) {
             throw TwigException::templateNotFound($template);
         } catch (RuntimeError | SyntaxError|Throwable $e) {
             throw TwigException::renderingFailed($template, $e);

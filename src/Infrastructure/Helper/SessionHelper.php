@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Helper;
 
+/**
+ * Helper for interacting with session
+ */
 final readonly class SessionHelper {
 
     public static function start(): void {

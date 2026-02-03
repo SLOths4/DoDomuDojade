@@ -11,6 +11,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
+/**
+ * Used to interact with IMGW API and airly API
+ */
 readonly class WeatherService
 {
     public function __construct(

@@ -9,6 +9,9 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOCountdownRepository implements CountdownRepositoryInterface
 {
     public function __construct(
@@ -18,6 +21,9 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     ) {}
 
     /**
+     * Maps database row to Countdown entity.
+     * @param array $row
+     * @return Countdown
      * @throws Exception
      */
     private function mapRow(array $row): Countdown
@@ -31,7 +37,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * @throws Exception
+     * @inheritDoc
      */
     public function findById(int $id): ?Countdown
     {
@@ -44,7 +50,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * @throws Exception
+     * @inheritDoc
      */
     public function findCurrent(): ?Countdown
     {
@@ -57,7 +63,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * @throws Exception
+     * @inheritDoc
      */
     public function findAll(): array
     {
@@ -66,10 +72,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * Adds a countdown.
-     * @param Countdown $countdown
-     * @return int
-     * @throws Exception
+     * @inheritDoc
      */
     public function add(Countdown $countdown): int
     {
@@ -84,10 +87,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * Updates a countdown.
-     * @param Countdown $countdown
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function update(Countdown $countdown): bool
     {
@@ -106,10 +106,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * Deletes a countdown.
-     * @param int $id
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function delete(int $id): bool
     {
@@ -124,12 +121,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     }
 
     /**
-     * Updates a specific field in a countdown.
-     * @param int $id
-     * @param string $field
-     * @param string $value
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function updateField(int $id, string $field, string $value): bool
     {

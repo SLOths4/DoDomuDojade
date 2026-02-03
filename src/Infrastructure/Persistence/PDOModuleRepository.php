@@ -8,9 +8,11 @@ use App\Domain\Module\ModuleName;
 use App\Domain\Module\ModuleRepositoryInterface;
 use App\Infrastructure\Database\DatabaseService;
 use DateTimeImmutable;
-use Exception;
 use PDO;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOModuleRepository implements ModuleRepositoryInterface
 {
     private const string DEFAULT_START_TIME = '00:00:00';
@@ -43,10 +45,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     }
 
     /**
-     * Finds module by ID and returns Module entity or null
-     * @param int $id
-     * @return Module|null
-     * @throws Exception
+     * @inheritDoc
      */
     public function findById(int $id): ?Module
     {
@@ -63,10 +62,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     }
 
     /**
-     * Updates a module entity
-     * @param Module $module
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function update(Module $module): bool
     {
@@ -87,9 +83,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     }
 
     /**
-     * Finds all modules
-     * @return Module[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findAll(): array
     {
@@ -99,10 +93,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     }
 
     /**
-     * Finds module by the provided name
-     * @param ModuleName $moduleName
-     * @return Module|null
-     * @throws Exception
+     * @inheritDoc
      */
     public function findByName(ModuleName $moduleName): ?Module
     {

@@ -9,10 +9,18 @@ use DateTimeZone;
  * Describes a domain event
  */
 abstract class DomainEvent {
-    protected string $eventId;
+    protected string $eventId {
+        get {
+            return $this->eventId;
+        }
+    }
     protected DateTimeImmutable $occurredAt;
     protected int $version = 1;
-    protected string $aggregateId;
+    protected string $aggregateId {
+        get {
+            return $this->aggregateId;
+        }
+    }
     protected string $aggregateType;
 
     /**
@@ -38,16 +46,6 @@ abstract class DomainEvent {
      * @return array
      */
     abstract protected function getPayload(): array;
-
-    /**
-     * @return string Event id
-     */
-    public function getEventId(): string { return $this->eventId; }
-
-    /**
-     * @return string Event id
-     */
-    public function getAggregateId(): string { return $this->aggregateId; }
 
     /**
      * Returns events contents as an array

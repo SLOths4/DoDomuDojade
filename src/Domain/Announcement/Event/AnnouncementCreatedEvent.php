@@ -7,10 +7,26 @@ use DateTimeImmutable;
 
 final class AnnouncementCreatedEvent extends DomainEvent
 {
-    private string $announcementId;
-    private string $title;
-    private string $text;
-    private DateTimeImmutable $createdAt;
+    private string $announcementId {
+        get {
+            return $this->announcementId;
+        }
+    }
+    private string $title {
+        get {
+            return $this->title;
+        }
+    }
+    private string $text {
+        get {
+            return $this->text;
+        }
+    }
+    private DateTimeImmutable $createdAt {
+        get {
+            return $this->createdAt;
+        }
+    }
 
     public function __construct(
         string            $announcementId,
@@ -44,23 +60,4 @@ final class AnnouncementCreatedEvent extends DomainEvent
         ];
     }
 
-    public function getAnnouncementId(): string
-    {
-        return $this->announcementId;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
 }

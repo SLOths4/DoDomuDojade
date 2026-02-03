@@ -5,8 +5,54 @@ namespace App\Infrastructure\Configuration;
 
 use Throwable;
 
+/**
+ * Wrapper class around the .env file
+ */
 final readonly class Config
 {
+    /**
+     * @param string $loggingDirectoryPath
+     * @param string $loggingChannelName
+     * @param string $loggingLevel
+     * @param string $twigCachePath
+     * @param bool   $twigDebug
+     * @param string $imgwWeatherUrl
+     * @param string $airlyEndpoint
+     * @param string $airlyApiKey
+     * @param string $airlyLocationId
+     * @param string $dbHost
+     * @param string $dbPort
+     * @param string $dbName
+     * @param string $dbUsername
+     * @param string $dbPassword
+     * @param string $announcementTableName
+     * @param string $announcementDateFormat
+     * @param string $announcementMaxValidDate
+     * @param string $announcementDefaultValidDate
+     * @param int    $announcementMaxTitleLength
+     * @param int    $announcementMinTitleLength
+     * @param int    $announcementMaxTextLength
+     * @param int    $announcementMinTextLength
+     * @param string $countdownTableName
+     * @param string $countdownDateFormat
+     * @param int    $countdownMaxTitleLength
+     * @param string $moduleTableName
+     * @param string $moduleDateFormat
+     * @param string $userTableName
+     * @param string $userDateFormat
+     * @param int    $maxUsernameLength
+     * @param int    $minPasswordLength
+     * @param string $tramUrl
+     * @param array  $stopID
+     * @param string $googleCalendarApiKey
+     * @param string $googleCalendarId
+     * @param string $quoteApiUrl
+     * @param string $quoteDateFormat
+     * @param string $quoteTableName
+     * @param string $wordApiUrl
+     * @param string $wordTableName
+     * @param string $wordDateFormat
+     */
     private function __construct(
         // Logging
         public string $loggingDirectoryPath,
@@ -24,13 +70,11 @@ final readonly class Config
         public string $airlyLocationId,
 
         // Database
-        private string $dbDsn,
+        private string $dbHost,
+        private string $dbPort,
+        private string $dbName,
         private string $dbUsername,
         private string $dbPassword,
-
-        // Redis
-        public string $redisHost,
-        public int $redisPort,
 
         // Announcements
         public string $announcementTableName,
@@ -101,13 +145,11 @@ final readonly class Config
                 airlyLocationId: ltrim(self::optionalEnv('AIRLY_LOCATION_ID', ''), '/'),
 
                 // Database
-                dbDsn: self::requiredEnv('DB_DSN'),
+                dbHost: self::optionalEnv('DB_HOST', 'localhost'),
+                dbPort: self::optionalEnv('DB_PORT', '5432'),
+                dbName: self::optionalEnv('DB_NAME', 'dodomudojade'),
                 dbUsername: self::optionalEnv('DB_USERNAME', ''),
                 dbPassword: self::optionalEnv('DB_PASSWORD', ''),
-
-                // Redis
-                redisHost: self::optionalEnv('REDIS_HOST', '127.0.0.1'),
-                redisPort: self::intEnv('REDIS_PORT', 6379),
 
                 // Announcements
                 announcementTableName: self::optionalEnv('ANNOUNCEMENT_TABLE_NAME', 'announcement'),
@@ -163,6 +205,12 @@ final readonly class Config
         }
     }
 
+    /**
+     * Fetches required variable from .env and throws error if not found
+     * @param string $key
+     * @return string
+     * @throws ConfigException
+     */
     private static function requiredEnv(string $key): string
     {
         $value = self::fetchEnv($key);
@@ -174,17 +222,35 @@ final readonly class Config
         return $value;
     }
 
+    /**
+     * Returns default value if variable is not found in .env
+     * @param string $key
+     * @param string $default
+     * @return string
+     */
     private static function optionalEnv(string $key, string $default): string
     {
         return self::fetchEnv($key) ?? $default;
     }
 
+    /**
+     * Fetches integer variable type from .env
+     * @param string $key
+     * @param int $default
+     * @return int
+     */
     private static function intEnv(string $key, int $default): int
     {
         $value = self::fetchEnv($key);
         return $value !== null ? (int)$value : $default;
     }
 
+    /**
+     * Fetches boolean variable type from .env
+     * @param string $key
+     * @param bool $default
+     * @return bool
+     */
     private static function boolEnv(string $key, bool $default): bool
     {
         $value = self::fetchEnv($key);
@@ -200,6 +266,11 @@ final readonly class Config
         };
     }
 
+    /**
+     * Fetches variable from .env file
+     * @param string $key
+     * @return string|null
+     */
     private static function fetchEnv(string $key): ?string
     {
         $value = getenv($key);
@@ -215,18 +286,26 @@ final readonly class Config
         return null;
     }
 
+    /**
+     * @return string
+     */
     public function dbDsn(): string
     {
-        return $this->dbDsn;
+
+        return "pgsql:host=" . $this->dbHost . ";port=" . $this->dbPort . ";dbname=" . $this->dbName;
     }
 
-    public function dbUsername(): string
-    {
+    /**
+     * @return string
+     */
+    public function dbUsername(): string {
         return $this->dbUsername;
     }
 
-    public function dbPassword(): string
-    {
+    /**
+     * @return string
+     */
+    public function dbPassword(): string {
         return $this->dbPassword;
     }
 }

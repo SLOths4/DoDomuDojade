@@ -31,14 +31,47 @@ final class Announcement
      */
     public function __construct(
         private readonly ?AnnouncementId   $id,
-        private string                     $title,
-        private string                     $text,
+        public string                      $title {
+            get {
+                return $this->title;
+            }
+        },
+        public string                      $text {
+            get {
+                return $this->text;
+            }
+        },
         private readonly DateTimeImmutable $createdAt,
-        private DateTimeImmutable          $validUntil,
-        private readonly ?int              $userId,
-        private AnnouncementStatus         $status = AnnouncementStatus::PENDING,
-        private ?DateTimeImmutable         $decidedAt = null,
-        private ?int                       $decidedBy = null,
+        public DateTimeImmutable  $validUntil {
+            get {
+                return $this->validUntil;
+            }
+        },
+        private readonly ?int     $userId,
+        public AnnouncementStatus $status = AnnouncementStatus::PENDING {
+            get {
+                return $this->status;
+            }
+            set(AnnouncementStatus $value) {
+                $this->status = $value;
+            }
+        },
+        public ?DateTimeImmutable $decidedAt = null {
+            get {
+                return $this->decidedAt;
+            }
+            set {
+                $this->decidedAt = $value;
+            }
+        },
+        public ?int               $decidedBy = null {
+            get {
+                return $this->decidedBy;
+            }
+            set {
+                $this->decidedBy = $value;
+            }
+        },
     ) {}
 
     /**
@@ -186,59 +219,14 @@ final class Announcement
         return $this->id;
     }
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getValidUntil(): DateTimeImmutable
-    {
-        return $this->validUntil;
-    }
-
     public function getUserId(): ?int
     {
         return $this->userId;
-    }
-
-    public function getStatus(): AnnouncementStatus
-    {
-        return $this->status;
-    }
-
-    public function setStatus(AnnouncementStatus $status): void
-    {
-        $this->status = $status;
-    }
-
-    public function getDecidedAt(): ?DateTimeImmutable
-    {
-        return $this->decidedAt;
-    }
-
-    public function setDecidedAt(?DateTimeImmutable $decidedAt): void
-    {
-        $this->decidedAt = $decidedAt;
-    }
-
-    public function getDecidedBy(): ?int
-    {
-        return $this->decidedBy;
-    }
-
-    public function setDecidedBy(?int $decidedBy): void
-    {
-        $this->decidedBy = $decidedBy;
     }
 
     private function recordEvent(DomainEvent $event): void

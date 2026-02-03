@@ -9,6 +9,9 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOWordRepository implements WordRepositoryInterface
 {
 
@@ -36,10 +39,7 @@ readonly class PDOWordRepository implements WordRepositoryInterface
     }
 
     /**
-     * Adds word object to database
-     * @param Word $word
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function add(Word $word): bool
     {
@@ -49,7 +49,7 @@ readonly class PDOWordRepository implements WordRepositoryInterface
                 'word'              => [$word->word, PDO::PARAM_STR],
                 'ipa'               => [$word->ipa, PDO::PARAM_STR],
                 'definition'        => [$word->definition, PDO::PARAM_STR],
-                'fetched_on'         => [$word->fetchedOn->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'fetched_on'        => [$word->fetchedOn->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ]
         );
 
@@ -57,9 +57,7 @@ readonly class PDOWordRepository implements WordRepositoryInterface
     }
 
     /**
-     * Fetches word for today
-     * @return ?Word
-     * @throws Exception
+     * @inheritDoc
      */
     public function fetchLatestWord(): ?Word
     {
@@ -70,5 +68,4 @@ readonly class PDOWordRepository implements WordRepositoryInterface
         );
         return $row === null ? null : $this->mapRow($row);
     }
-
 }

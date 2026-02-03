@@ -9,6 +9,9 @@ use DateTimeImmutable;
 use Exception;
 use PDO;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOQuoteRepository implements QuoteRepositoryInterface
 {
     public function __construct(
@@ -49,7 +52,7 @@ readonly class PDOQuoteRepository implements QuoteRepositoryInterface
     }
 
     /**
-     * inheritDoc
+     * @inheritDoc
      */
     public function fetchLatestQuote(): ?Quote
     {

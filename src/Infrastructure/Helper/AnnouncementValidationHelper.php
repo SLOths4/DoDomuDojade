@@ -8,6 +8,9 @@ use App\Infrastructure\Configuration\Config;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
+/**
+ * Helper class for validating announcements
+ */
 final readonly class AnnouncementValidationHelper {
 
     public function __construct(

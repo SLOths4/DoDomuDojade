@@ -21,19 +21,19 @@ final class AnnouncementViewMapper
         ?string $authorName = null,
         ?string $decidedByName = null
     ): AnnouncementViewDTO {
-        $decidedBy = $announcement->getDecidedBy();
+        $decidedBy = $announcement->decidedBy;
         $userId = $announcement->getUserId();
 
         return new AnnouncementViewDTO(
             id: $this->convertId($announcement->getId()),
-            title: $announcement->getTitle(),
-            text: $announcement->getText(),
+            title: $announcement->title,
+            text: $announcement->text,
             userId: $this->convertUserId($userId),
             createdAt: $this->formatDateTime($announcement->getCreatedAt()),
-            validUntil: $this->formatDate($announcement->getValidUntil()),
-            status: $announcement->getStatus()->name,
-            decidedAt: $announcement->getDecidedAt()
-                ? $this->formatDateTime($announcement->getDecidedAt())
+            validUntil: $this->formatDate($announcement->validUntil),
+            status: $announcement->status->name,
+            decidedAt: $announcement->decidedAt
+                ? $this->formatDateTime($announcement->decidedAt)
                 : null,
             decidedBy: $this->convertDecidedBy($decidedBy),
             authorName: $authorName,
@@ -52,7 +52,7 @@ final class AnnouncementViewMapper
             fn(Announcement $announcement) => $this->toDTO(
                 $announcement,
                 $this->getUsername($announcement->getUserId(), $usernamesMap),
-                $this->getUsername($announcement->getDecidedBy(), $usernamesMap)
+                $this->getUsername($announcement->decidedBy, $usernamesMap)
             ),
             $announcements
         );

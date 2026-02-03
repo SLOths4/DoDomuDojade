@@ -8,8 +8,10 @@ use App\Infrastructure\Database\DatabaseService;
 use DateTimeImmutable;
 use Exception;
 use PDO;
-use ReflectionClass;
 
+/**
+ * @inheritDoc
+ */
 readonly class PDOUserRepository implements UserRepositoryInterface
 {
     public function __construct(
@@ -17,25 +19,6 @@ readonly class PDOUserRepository implements UserRepositoryInterface
         private string          $TABLE_NAME,
         private string          $DATE_FORMAT,
     ) {}
-
-    /**
-     * Zwraca dozwolone pola do update'u na podstawie encji (wszystkie poza id i createdAt).
-     * @return array
-     */
-    public function getAllowedFields(): array
-    {
-        $reflection = new ReflectionClass(User::class);
-        $properties = $reflection->getProperties();
-
-        $fields = [];
-        foreach ($properties as $prop) {
-            $name = $prop->getName();
-            if ($name !== 'id' && $name !== 'createdAt') {
-                $fields[] = $name;
-            }
-        }
-        return $fields;
-    }
 
     /**
      * Maps database row to User entity.
@@ -54,9 +37,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Returns all users.
-     * @return User[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findAll(): array
     {
@@ -65,10 +46,9 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Find the exact user by username.
-     * @throws Exception
+     * @inheritDoc
      */
-    public function findByUsername(string $username): ?User
+    public function findByExactUsername(string $username): ?User
     {
         $rows = $this->dbHelper->getAll(
             "SELECT * FROM \"$this->TABLE_NAME\" WHERE username = :username LIMIT 1",
@@ -83,8 +63,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Find users by partial username.
-     * @throws Exception
+     * @inheritDoc
      */
     public function findByUsernamePartial(string $username): array
     {
@@ -97,10 +76,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Returns a single user by ID.
-     * @param int $id
-     * @return User
-     * @throws Exception
+     * @inheritDoc
      */
     public function findById(int $id): User
     {
@@ -117,26 +93,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Returns a single user by exact username.
-     * @param string $username
-     * @return User|null
-     * @throws Exception
-     */
-    public function findByExactUsername(string $username): ?User
-    {
-        $row = $this->dbHelper->getOne(
-            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username = :username",
-            [':username' => [$username, PDO::PARAM_STR]]
-        );
-
-        return $row === null ? null : $this->mapRow($row);
-    }
-
-    /**
-     * Adds a user.
-     * @param User $user
-     * @return int id
-     * @throws Exception
+     * @inheritDoc
      */
     public function add(User $user): int
     {
@@ -151,10 +108,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Updates a user.
-     * @param User $user
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function update(User $user): bool
     {
@@ -173,10 +127,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Deletes a user.
-     * @param int $id
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function delete(int $id): bool
     {
@@ -191,11 +142,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Updates user password.
-     * @param int $id
-     * @param string $newPasswordHash
-     * @return bool
-     * @throws Exception
+     * @inheritDoc
      */
     public function updatePassword(int $id, string $newPasswordHash): bool
     {

@@ -6,6 +6,9 @@ use App\Domain\Countdown\CountdownException;
 use App\Infrastructure\Configuration\Config;
 use DateTimeImmutable;
 
+/**
+ *  Helper class for validating countdowns
+ */
 final readonly class CountdownValidationHelper {
     public function __construct(
         private Config $config,

@@ -13,6 +13,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
+/**
+ * Used to interact with words API
+ */
 readonly class WordApiService
 {
     public function __construct(
@@ -21,12 +24,10 @@ readonly class WordApiService
         private string $wordApiUrl
     ) {}
 
-    public static function todayIs(): string
-    {
-        $dateNow = new DateTimeImmutable('now', new DateTimeZone('UTC'));
-        return $dateNow->format('Y-m-d');
-    }
-
+    /**
+     * @return array
+     * @throws WordApiException
+     */
     private function fetchData(): array
     {
         try {
@@ -34,7 +35,7 @@ readonly class WordApiService
 
             $response = $this->httpClient->request(
                 'GET',
-                $this->wordApiUrl . self::todayIs(),
+                $this->wordApiUrl . new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d'),
             );
 
             return $response->toArray();
@@ -48,13 +49,16 @@ readonly class WordApiService
         }
     }
 
+    /**
+     * @return array
+     * @throws WordApiException
+     */
     public function getWord(): array
     {
         $this->logger->debug("Starting fetching words");
 
         $data = $this->fetchData();
 
-        // Validate response
         if (!isset($data['word'], $data['ipa'], $data['definition'])) {
             throw WordApiException::invalidResponse();
         }

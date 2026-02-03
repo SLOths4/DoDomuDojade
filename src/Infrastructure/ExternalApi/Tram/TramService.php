@@ -14,7 +14,6 @@ use Throwable;
 
 /**
  * PEKA e-monitor API wrapper
- * Integrates with ZTM (Zarząd Transportu Miejskiego) API for tram data
  *
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */

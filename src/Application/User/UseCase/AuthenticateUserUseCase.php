@@ -33,7 +33,7 @@ final readonly class AuthenticateUserUseCase
             throw AuthenticationException::emptyCredentials();
         }
 
-        $user = $this->userRepository->findByUsername($username);
+        $user = $this->userRepository->findByExactUsername($username);
 
         if (!$user || !password_verify($password, $user->passwordHash)) {
             throw AuthenticationException::invalidCredentials();
