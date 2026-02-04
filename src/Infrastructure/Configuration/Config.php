@@ -20,6 +20,9 @@ final readonly class Config
      * @param string $airlyEndpoint
      * @param string $airlyApiKey
      * @param string $airlyLocationId
+     * @param string $weatherTableName
+     * @param string $weatherDateFormat
+     * @param int    $weatherCacheTtlSeconds
      * @param string $dbHost
      * @param string $dbPort
      * @param string $dbName
@@ -68,6 +71,11 @@ final readonly class Config
         public string $airlyEndpoint,
         public string $airlyApiKey,
         public string $airlyLocationId,
+
+        // Weather persistence
+        public string $weatherTableName,
+        public string $weatherDateFormat,
+        public int $weatherCacheTtlSeconds,
 
         // Database
         private string $dbHost,
@@ -143,6 +151,11 @@ final readonly class Config
                 airlyEndpoint: self::requiredEnv('AIRLY_ENDPOINT'),
                 airlyApiKey: self::requiredEnv('AIRLY_API_KEY'),
                 airlyLocationId: ltrim(self::optionalEnv('AIRLY_LOCATION_ID', ''), '/'),
+
+                // Weather persistence
+                weatherTableName: self::optionalEnv('WEATHER_TABLE_NAME', 'weather'),
+                weatherDateFormat: self::optionalEnv('WEATHER_DATE_FORMAT', 'Y-m-d H:i:s'),
+                weatherCacheTtlSeconds: self::intEnv('WEATHER_CACHE_TTL_SECONDS', 900),
 
                 // Database
                 dbHost: self::optionalEnv('DB_HOST', 'localhost'),
