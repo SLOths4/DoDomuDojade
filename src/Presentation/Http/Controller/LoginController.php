@@ -2,6 +2,7 @@
 
 namespace App\Presentation\Http\Controller;
 
+use App\Application\User\AuthenticateUserDTO;
 use App\Application\User\UseCase\AuthenticateUserUseCase;
 use App\Domain\Shared\AuthenticationException;
 use App\Infrastructure\Helper\SessionHelper;
@@ -11,6 +12,7 @@ use App\Presentation\Http\Shared\ViewRendererInterface;
 use App\Presentation\View\TemplateNames;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
 final class LoginController extends BaseController
@@ -20,6 +22,7 @@ final class LoginController extends BaseController
          ViewRendererInterface $renderer,
         readonly FlashMessengerInterface            $flash,
         readonly LoggerInterface                    $logger,
+        private readonly ServerRequestInterface     $request,
         private readonly AuthenticateUserUseCase    $authenticateUserUseCase
     ) {
         parent::__construct($requestContext, $renderer);
@@ -39,17 +42,26 @@ final class LoginController extends BaseController
     {
         $this->logger->debug("User verification request received.");
 
-        $username = trim((string)filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));
-        $password = trim((string)filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW));
+        $body = $this->request->getParsedBody();
+        if (!is_array($body)) {
+            $decoded = json_decode((string) $this->request->getBody(), true);
+            $body = is_array($decoded) ? $decoded : [];
+        }
 
-        $user = $this->authenticateUserUseCase->execute($username, $password);
+        $dto = AuthenticateUserDTO::fromArray(is_array($body) ? $body : []);
+
+        $user = $this->authenticateUserUseCase->execute($dto);
 
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
         SessionHelper::regenerateId();
         SessionHelper::setWithFingerprint('user_id', $user->id);
         $this->logger->debug("Redirecting shortly to panel.");
-        return $this->redirect('/panel');
+
+        return $this->jsonResponse(200, [
+            'success' => true,
+            'redirect' => '/panel',
+        ]);
     }
 
     public function logout(): ResponseInterface
@@ -58,4 +70,5 @@ final class LoginController extends BaseController
         SessionHelper::destroy();
         return $this->redirect("/login");
     }
+
 }

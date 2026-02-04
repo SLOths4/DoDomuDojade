@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Middleware;
 
-use App\Domain\Shared\AuthenticationException;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Shared\MiddlewareInterface;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -32,12 +32,11 @@ final readonly class AuthMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @param callable $next
      * @return ResponseInterface
-     * @throws AuthenticationException When a user is not authenticated
      */
     public function handle(ServerRequestInterface $request, callable $next): ResponseInterface
     {
         if (!$this->authService->isUserLoggedIn()) {
-            throw AuthenticationException::noUserLoggedIn();
+            return new Response(302, ['Location' => '/login']);
         }
 
         $user = $this->authService->getCurrentUser();

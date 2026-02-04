@@ -1,6 +1,7 @@
 <?php
 namespace App\Application\User\UseCase;
 
+use App\Application\User\AuthenticateUserDTO;
 use App\Domain\Shared\AuthenticationException;
 use App\Domain\User\User;
 use App\Infrastructure\Persistence\PDOUserRepository;
@@ -25,19 +26,21 @@ final readonly class AuthenticateUserUseCase
      * @throws AuthenticationException
      * @throws Exception
      */
-    public function execute(string $username, string $password): User
+    public function execute(AuthenticateUserDTO $dto): User
     {
         $this->logger->debug("User authentication attempt");
 
-        if (empty($username) || empty($password)) {
+        try {
+            $dto->validate();
+        } catch (AuthenticationException $e) {
             $this->logger->debug("Empty credentials");
-            throw AuthenticationException::emptyCredentials();
+            throw $e;
         }
 
-        $user = $this->userRepository->findByExactUsername($username);
+        $user = $this->userRepository->findByExactUsername($dto->username);
         $this->logger->debug("Finding user");
 
-        if (!$user || !password_verify($password, $user->passwordHash)) {
+        if (!$user || !password_verify($dto->password, $user->passwordHash)) {
             $this->logger->debug("Invalid credentials");
             throw AuthenticationException::invalidCredentials();
         }
