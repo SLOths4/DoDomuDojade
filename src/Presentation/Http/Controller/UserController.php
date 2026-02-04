@@ -63,6 +63,6 @@ final class UserController extends BaseController
 
         $this->deleteUserUseCase->execute($currentUserId, $userToDeleteId);
 
-        return $this->jsonResponse(204, []);
+        return $this->noContentResponse();
     }
 }

@@ -59,7 +59,7 @@ final class AnnouncementController extends BaseController
 
         $this->deleteAnnouncementUseCase->execute(new AnnouncementId($id));
 
-        return $this->jsonResponse(204, []);
+        return $this->noContentResponse();
     }
 
     /**

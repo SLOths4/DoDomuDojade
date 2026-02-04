@@ -74,4 +74,12 @@ abstract class BaseController
             json_encode($data)
         );
     }
+
+    /**
+     * No content response helper
+     */
+    protected function noContentResponse(int $statusCode = 204): ResponseInterface
+    {
+        return new Response($statusCode);
+    }
 }
