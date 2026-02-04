@@ -1,6 +1,6 @@
 site_name: DoDomuDojade - Dokumentacja
 docs_dir: resources/docs
-site_dir: build
+site_dir: site
 site_url: https://sloths4.github.io/DoDomuDojade/
 use_directory_urls: true
 

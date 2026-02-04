@@ -8,8 +8,8 @@
     <title>DoDomuDojade Documentation</title>
 
     <paths>
-        <output>build/api</output>
-        <cache>build/cache</cache>
+        <output>site/code</output>
+        <cache>resources/cache/phpdoc</cache>
     </paths>
 
     <version number="latest">

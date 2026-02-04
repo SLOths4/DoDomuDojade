@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 
 ifneq (,$(wildcard .env))
 include .env
@@ -8,28 +8,30 @@ endif
 .PHONY: install dev build lint test docs db-init
 
 install:
-	export COMPOSER_NO_DEV=1
+	@export COMPOSER_NO_DEV=1
 	composer install
 	npm ci
 
 dev:
 	export COMPOSER_NO_DEV=0
 	@trap 'kill 0' INT TERM EXIT; \
-		php -S localhost:8080 -t public/ public/index.php & \
+		php -S localhost:9090 -t public/ public/index.php & \
 		npm run dev
 
 build:
-	npm run build
+	@echo "Building frontend"
+	@npm run build
 
 lint:
-	vendor/bin/phpstan analyse src bootstrap public
+	./vendor/bin/phpstan analyse --memory-limit=2G
 
 test:
-	vendor/bin/phpunit
+	@./vendor/bin/phpunit
 
 docs:
-	mkdocs build
-	vendor/bin/phpdoc run
+	@./vendor/bin/phpdoc run --no-progress --no-interaction
+	@php -S localhost:8080 -t site
+
 
 db-init:
 	PGPASSWORD="$${DB_PASSWORD}" psql "postgresql://$${DB_USERNAME}:$${DB_PASSWORD}@$${DB_HOST:-localhost}:$${DB_PORT:-5432}/$${DB_NAME:-dodomudojade}" -f schema/schema.sql

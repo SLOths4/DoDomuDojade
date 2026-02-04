@@ -7,10 +7,10 @@ use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
-#[RunInSeparateProcess]
 #[PreserveGlobalState(false)]
 final class SessionHelperTest extends TestCase
 {
+    #[RunInSeparateProcess]
     public function testSetGetAndRemoveSessionData(): void
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
@@ -24,6 +24,7 @@ final class SessionHelperTest extends TestCase
         self::assertFalse(SessionHelper::has('key'));
     }
 
+    #[RunInSeparateProcess]
     public function testFingerprintValidation(): void
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';

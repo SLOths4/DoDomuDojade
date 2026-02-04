@@ -4,7 +4,7 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 
 ## 📚 Struktura Dokumentacji
 
-- **[Autogenerowana dokumentacja kodu](code/)**
+- **[Autogenerowana dokumentacja kodu](code/index.html)**
 - **[Architektura](architecture.md)** — opisuje architekturę aplikacji
 - **[Display](display.md)** — opisuje działanie najważniejszej funkcjonalności aplikacji
 - **[Development](development.md)** — opisuje założenia dalszego rozwoju projektu
