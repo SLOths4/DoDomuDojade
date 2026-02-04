@@ -57,7 +57,7 @@ try {
         $r->addRoute('GET', '/display', [DisplayController::class, 'index']);
         $r->addRoute('GET', '/panel', [PanelController::class, 'index', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/login', [LoginController::class, 'show']);
-        $r->addRoute('GET', '/logout', [LoginController::class, 'logout']);
+        $r->addRoute('POST', '/logout', [LoginController::class, 'logout']);
 
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika

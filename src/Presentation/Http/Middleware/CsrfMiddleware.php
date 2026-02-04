@@ -25,13 +25,20 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
             $csrf = $this->csrfTokenService->getOrCreate();
             $this->requestContext->set('csrf_token', $csrf);
 
-            $isPostRequest = $_SERVER['REQUEST_METHOD'] === 'POST';
-            if ($isPostRequest) {
+            $mutatingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+            $requestMethod = $request->getMethod();
+            $isMutatingRequest = in_array($requestMethod, $mutatingMethods, true);
+            if ($isMutatingRequest) {
                 $providedToken = $request->getHeaderLine('X-CSRF-Token') ?:
                     $request->getHeaderLine('X-XSRF-TOKEN');
 
-                if (!$providedToken && !empty($_POST['_token'])) {
-                    $providedToken = $_POST['_token'];
+                if (!$providedToken) {
+                    $parsedBody = $request->getParsedBody();
+                    if (is_array($parsedBody) && !empty($parsedBody['_token'])) {
+                        $providedToken = $parsedBody['_token'];
+                    } elseif (!empty($_POST['_token'])) {
+                        $providedToken = $_POST['_token'];
+                    }
                 }
 
                 // Jeśli brak tokenu, wyrzuć błąd
