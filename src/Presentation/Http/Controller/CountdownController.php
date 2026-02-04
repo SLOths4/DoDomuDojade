@@ -86,6 +86,6 @@ final class CountdownController extends BaseController
 
         $this->deleteCountdownUseCase->execute($countdownId);
 
-        return $this->jsonResponse(204, []);
+        return $this->noContentResponse();
     }
 }
