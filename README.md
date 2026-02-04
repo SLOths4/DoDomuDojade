@@ -10,7 +10,7 @@ DoDomuDojadę to aplikacja webowa, która stanowi wirtualną tablicę informacyj
 
 **Cele projektu:**
 - Ułatwienie dostępu do informacji publicznych (transport, pogoda).
-- Minimalistyczna architektura dla szybkiego development-u.
+- Minimalistyczna architektura dla szybkiego rozwoju.
 - Łatwość integracji z nowymi źródłami danych.
 
 ## Spis treści
@@ -27,7 +27,7 @@ W dokumentacji odnajdziesz więcej informacji odnośnie projektu. Poniżej znajd
 - Dokumentacja projektu znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/)
 - Autogenerowana dokumentacja kodu (klas, funkcji) znajduje się [tutaj](https://sloths4.github.io/DoDomuDojade/api/)
 
-Jeżeli chesz zobaczyć dokumentację lokalnie przejdź do sekcji [lokalna dokumentacja](#lokalna-dokumentacja).
+Jeżeli chcesz zobaczyć dokumentację lokalnie, przejdź do sekcji [lokalna dokumentacja](#lokalna-dokumentacja).
 
 ## Dostępne moduły
 - **tramwaje**
@@ -53,7 +53,20 @@ Sklonuj repozytorium:
 git clone https://github.com/SLOths4/DoDomuDojade.git
 cd DoDomuDojade
 ```
-Utwórz bazę danych używając `schema.sql` i użytkownika (tutaj dla przykładu `ddd`)
+Zainstaluj zależności:
+
+```shell
+composer install --dev
+npm ci
+```
+
+Skonfiguruj zmienne środowiskowe:
+
+```shell
+cp .env.example .env
+```
+
+Utwórz bazę danych używając `schema.sql` i użytkownika (tutaj dla przykładu `ddd`):
 
 ```shell
 # 1. Connect as postgres (admin)
@@ -63,7 +76,7 @@ psql -U postgres
 create user ddd with password '<your_password>';
 
 # 3. Create database
-create database dodomudojade owner ddd
+create database dodomudojade owner ddd;
 
 # 4. Exit
 \q
@@ -98,7 +111,7 @@ alter default privileges in schema public grant all on sequences to ddd;
 grant execute on all functions in schema public to ddd;
 ```
 
-Nie można zapomnieć o dodaniu listy dostępnych modułów do tabeli modułów (standardowo `module`)
+Nie zapomnij o dodaniu listy dostępnych modułów do tabeli modułów (standardowo `module`):
 
 ```postgresql
 insert into public.module (id, module_name, is_active, start_time, end_time)
@@ -111,35 +124,28 @@ values  (4, 'tram', true, '00:00', '23:59'),
         (2, 'calendar', true, '00:00', '23:59');
 ```
 
-Dodaj nowego użytkownika przy użyciu interfejsu CLI. Pamiętaj, że nazwa użytkownika i haslo muszą byc zgodne z domyślnymi lub z ustalonymi przez Ciebie wymogami.
+Dodaj nowego użytkownika przy użyciu interfejsu CLI. Pamiętaj, że nazwa użytkownika i hasło muszą być zgodne z domyślnymi lub z ustalonymi przez Ciebie wymogami.
 
 ```shell
 bin/app user:add <username> <password>
 ```
 
-Zainstaluj zależności:
-
-```shell
-composer install --dev
-npm ci
-```
-
-Uruchom backend lokalnie np. przy użyciu wbudowanego serwera php:
+Uruchom backend lokalnie, np. przy użyciu wbudowanego serwera PHP:
 
 ```shell
 php -S localhost:8080 -t public/ public/index.php
-```
-
-Skonfiguruj zmienne środowiskowe:
-
-```shell
-cp .env.example .env
 ```
 
 Zbuduj frontend:
 
 ```shell script
 npm run dev
+```
+
+Jeżeli potrzebujesz jednorazowego buildu (np. do wdrożenia), użyj:
+
+```shell script
+npm run build
 ```
 
 ## Lokalna dokumentacja

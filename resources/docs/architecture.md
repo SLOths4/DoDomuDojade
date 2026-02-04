@@ -10,19 +10,19 @@ Projekt stara się utrzymać zgodność z architekturą DDD (Domain-Driven Desig
 
 Punktem wejściowym całej aplikacji jest `index.php`. To tam znajdują się wszystkie ścieżki oraz ich obsługa.
 
-Index zaczyna od inicjacji `bootstrap.php` w `src/bootstrap/bootstrap.php`. Tu z kolei dzieje się druga część magii. Wszystkie instancje klas są inicjowane, tak, żeby mogły potem zostać wykorzystane w DI (Dependency Injection).
+Index zaczyna od inicjacji `bootstrap.php` w `bootstrap/bootstrap.php`. Tu z kolei dzieje się druga część magii. Wszystkie instancje klas są inicjowane, tak, żeby mogły potem zostać wykorzystane w DI (Dependency Injection).
 
 Żeby wyjaśnić działanie aplikacji, przyjrzyjmy się przykładowej ścieżce `/login`.
 1. Nasz serwer odpytuje `index.php` o tę ścieżkę
-2. W router obecny w `index.php` odnajduje właściwą klasę i funkcję do uruchomienia. Jak to robi? Otóż w opisie ścieżki `$r->addRoute('GET', '/login', [LoginController::class, 'login']);` zawarta jest ta informacja.
-3. Router uruchamia funkcję `login` w klasie `PanelController::class`
-4. Funkcja login w akcji. (Poniżej przytaczam kod). Odziedziczona po `BaseController.php` funkcja render jest wykorzystywana do przekazania do użytkownika pliku z katalogu `src/Presentation`
+2. Router obecny w `index.php` odnajduje właściwą klasę i funkcję do uruchomienia. Jak to robi? Otóż w opisie ścieżki `$r->addRoute('GET', '/login', [LoginController::class, 'show']);` zawarta jest ta informacja.
+3. Router uruchamia funkcję `show` w klasie `LoginController::class`
+4. Funkcja `show` w akcji. Odziedziczona po `BaseController.php` funkcja `render` jest wykorzystywana do przekazania do użytkownika pliku z katalogu `src/Presentation/View/templates`
 ```
 public function show(): ResponseInterface
-    {
-        $this->logger->debug("Render login page request received");
-        return $this->render(TemplateNames::LOGIN->value);
-    }
+{
+    $this->logger->debug("Render login page request received");
+    return $this->render(TemplateNames::LOGIN->value);
+}
 ```
 Ot cała magia ✨
 
@@ -52,25 +52,25 @@ Entity reprezentuje obiekt z unikalną tożsamością (ID), który zmienia się 
 // Przykład: Announcement Entity
 final class Announcement {
     public function __construct(
-        public ?int               $id,
-        public string             $title,
-        public string             $text,
-        public DateTimeImmutable  $createdAt,
-        public DateTimeImmutable  $validUntil,
-        public ?int               $userId,
+        private readonly ?AnnouncementId $id,
+        public string $title,
+        public string $text,
+        private readonly DateTimeImmutable $createdAt,
+        public DateTimeImmutable $validUntil,
+        private readonly ?int $userId,
         public AnnouncementStatus $status = AnnouncementStatus::PENDING,
         public ?DateTimeImmutable $decidedAt = null,
-        public ?int               $decidedBy = null,
+        public ?int $decidedBy = null,
     ){}
-    
+
     // Factory methods
-    public static function createNew(...): self { }
+    public static function create(...): self { }
     public static function proposeNew(...): self { }
-    
+
     // Business methods
     public function approve(int $decidedBy): void { }
     public function reject(int $decidedBy): void { }
-    public function isValid(): bool { }
+    public function update(...): void { }
 }
 ```
 
@@ -129,9 +129,8 @@ enum AnnouncementStatus {
 Wyjątki domenowe reprezentujące błędy biznesowe.
 
 ```php
-// W src/Domain/Exception/
-class AnnouncementException extends DomainException { }
-class InvalidAnnouncementStatusException extends AnnouncementException { }
+// W src/Domain/Announcement/
+final class AnnouncementException extends DomainException { }
 ```
 
 ### Warstwa Application (src/Application)
@@ -139,15 +138,20 @@ class InvalidAnnouncementStatusException extends AnnouncementException { }
 
 ```
 src/Application/
-├── UseCase/              # Główne scenariusze użytkownika
-│   ├── Announcement/
-│   │   ├── CreateAnnouncementUseCase.php
-│   │   ├── ApproveAnnouncementUseCase.php
-│   │   └── RejectAnnouncementUseCase.php
-│   └── ...
-└── DataTransferObject/   # Obiekty transferu danych
-    ├── AnnouncementDTO.php
-    └── ...
+├── Announcement/
+│   ├── DTO/
+│   │   ├── AddAnnouncementDTO.php
+│   │   └── EditAnnouncementDTO.php
+│   └── UseCase/
+│       ├── CreateAnnouncementUseCase.php
+│       ├── ApproveAnnouncementUseCase.php
+│       └── RejectAnnouncementUseCase.php
+├── Countdown/
+│   ├── AddEditCountdownDTO.php
+│   └── UseCase/
+│       ├── CreateCountdownUseCase.php
+│       └── UpdateCountdownUseCase.php
+└── ...
 ```
 
 #### Use Cases
@@ -157,11 +161,11 @@ Use Case opisuje pojedynczy, znaczący scenariusz użytkowania aplikacji.
 // Struktura Use Case
 class CreateAnnouncementUseCase {
     public function __construct(
-        private AnnouncementRepository $repository,
+        private PDOAnnouncementRepository $repository,
         // inne zależności
     ) {}
     
-    public function execute(CreateAnnouncementRequest $request): void {
+    public function execute(AddAnnouncementDTO $dto, int $adminId): AnnouncementId {
         // 1. Validate request
         // 2. Create domain entity
         // 3. Call repository to save
@@ -201,20 +205,17 @@ class AnnouncementDTO {
 
 ```
 src/Infrastructure/
-├── Repository/        # Implementacja repozytoriów
-│   ├── AnnouncementRepository.php
-│   └── UserRepository.php
-├── Service/           # Serwisy zewnętrzne
-│   ├── ExternalApiService.php
-│   └── EmailService.php
-├── Factory/           # Fabryki do tworzenia obiektów
-├── Security/          # Komponenty bezpieczeństwa
-│   └── AuthenticationService.php
-├── Helper/            # Funkcje pomocnicze
-├── Translation/       # Tłumaczenia
-├── Trait/             # Traity wspólne
-├── View/              # View helpers
-└── Container.php      # DI Container
+├── Configuration/   # Konfiguracja i .env
+├── Container.php    # DI Container
+├── Database/        # PDO i obsługa bazy
+├── ExternalApi/     # Integracje (Tram, Weather, Quote, Word, Calendar)
+├── Helper/          # Funkcje pomocnicze
+├── Logger/          # Konfiguracja logowania
+├── Persistence/     # Implementacje repozytoriów (PDO*)
+├── Security/        # Autoryzacja/uwierzytelnienie
+├── Service/         # Serwisy aplikacyjne
+├── Translation/     # Tłumaczenia
+└── Twig/            # Renderowanie widoków
 ```
 
 #### Repositories
@@ -222,20 +223,21 @@ Repository abstrahuje dostęp do danych (patrz: Repository Pattern).
 
 ```php
 // Interface w Domain
-interface AnnouncementRepository {
-    public function save(Announcement $announcement): void;
-    public function findById(int $id): ?Announcement;
+interface AnnouncementRepositoryInterface {
+    public function add(Announcement $announcement): AnnouncementId;
+    public function update(Announcement $announcement): int;
+    public function findById(AnnouncementId $id): ?Announcement;
     public function findAll(): array;
-    public function delete(Announcement $announcement): void;
+    public function delete(AnnouncementId $id): int;
 }
 
 // Implementacja w Infrastructure
-class DatabaseAnnouncementRepository implements AnnouncementRepository {
-    public function save(Announcement $announcement): void {
+class PDOAnnouncementRepository implements AnnouncementRepositoryInterface {
+    public function add(Announcement $announcement): AnnouncementId {
         // SQL INSERT/UPDATE
     }
     
-    public function findById(int $id): ?Announcement {
+    public function findById(AnnouncementId $id): ?Announcement {
         // SQL SELECT
     }
 }
@@ -265,29 +267,11 @@ class EmailService {
 }
 ```
 
-#### Factories
-Fabryki tworzą kompleksowe obiekty.
-
-```php
-class AnnouncementFactory {
-    public static function createFromRequest(
-        CreateAnnouncementRequest $request
-    ): Announcement {
-        return Announcement::createNew(
-            title: $request->title,
-            text: $request->text,
-            validUntil: $request->validUntil,
-            userId: $request->userId,
-        );
-    }
-}
-```
-
-### Warstwa Presentation (src/Http, src/Console)
+### Warstwa Presentation (src/Presentation/Http, src/Console)
 **Odpowiedzialność**: Interfejsy użytkownika (HTTP, CLI)
 
 ```
-src/Http/
+src/Presentation/Http/
 ├── Controller/      # HTTP Controllers
 │   ├── AnnouncementController.php
 │   ├── UserController.php
@@ -295,10 +279,11 @@ src/Http/
 └── Response/        # Response helpers
 
 src/Console/
-└── Command/         # CLI Commands
-    ├── FetchDailyWordCommand.php
-    ├── FetchDailyQuoteCommand.php
-    └── ...
+└── Commands/        # CLI Commands
+    ├── WordFetchCommand.php
+    ├── QuoteFetchCommand.php
+    ├── AnnouncementRejectedDeleteCommand.php
+    └── AddUserCommand.php
 ```
 
 **Charakterystyka Controllers:**
@@ -312,7 +297,7 @@ src/Console/
 ### Typowy Scenariusz: Tworzenie Ogłoszenia
 
 ```
-1. HTTP Request (POST /panel/add_anndouncement)
+1. HTTP Request (POST /api/announcement)
         ↓
 2. Controller (AnnouncementController)
    - Parsuje request
@@ -326,7 +311,7 @@ src/Console/
         ↓
 5. Repository Interface
         ↓
-6. Repository Implementation (DatabaseAnnouncementRepository)
+6. Repository Implementation (PDOAnnouncementRepository)
    - Wykonuje SQL INSERT
    - Zwraca entity z ID
         ↓
@@ -341,12 +326,12 @@ src/Console/
 
 ``` mermaid
 graph TB
-    A["HTTP Request<br/>(POST /panel/add_announcement)"] -->|Parse | B["Controller"]
+    A["HTTP Request<br/>(POST /api/announcement)"] -->|Parse | B["Controller"]
     B -->|Execute| C["Use Case"]
     C -->|Create| D["Domain Entity"]
     D -->|Follow Business Rules| E["Entity Created"]
     C -->|Save| F["Repository Interface"]
-    F -->|Implement| G["Database<br/>Implementation"]
+    F -->|Implement| G["PDO<br/>Implementation"]
     G -->|SQL INSERT| H["Database"]
     H -->|Return Entity| G
     G -->|Return to UseCase| F
@@ -379,13 +364,13 @@ Projekt używa DI Container (`src/Infrastructure/Container.php`) zgodny z psr-11
 
 ```php
 // Container Registration
-$container->register(
-    AnnouncementRepository::class,
-    new DatabaseAnnouncementRepository($pdo)
+$container->set(
+    PDOAnnouncementRepository::class,
+    fn(Container $c) => new PDOAnnouncementRepository($pdo)
 );
 
 // Usage in Controller
-$container->get(AnnouncementRepository::class);
+$container->get(PDOAnnouncementRepository::class);
 ```
 
 **Zasady:**

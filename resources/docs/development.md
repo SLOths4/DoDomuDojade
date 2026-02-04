@@ -4,7 +4,7 @@
 Zacznij od tego, żeby się zapoznać z dokumentacją. 
 Projekt kieruje się następującymi wartościami: **prostotą**, **jakością**.
 
-Aby dodać nowy moduł/funcjonalność zadbaj o to, żeby w odpowiednich warstwach znalazł sięodpowiedni kod, analogiczny do tego działający dla pozostałych modułów.
+Aby dodać nowy moduł/funkcjonalność, zadbaj o to, żeby w odpowiednich warstwach znalazł się odpowiedni kod, analogiczny do tego, który działa w pozostałych modułach.
 
 
 ## 🎓 Best Practices
@@ -40,9 +40,9 @@ Aby dodać nowy moduł/funcjonalność zadbaj o to, żeby w odpowiednich warstwa
 ### Infrastructure Layer
 ✅ DO:
 
-- Implementuj Repository interfaces
+- Implementuj interfejsy repozytoriów z Domain
 - Integruj z zewnętrznymi serwisami
-- Zarządzaj baza danych
+- Zarządzaj bazą danych
 - Konfiguruj zależności
 
 ❌ DON'T:
@@ -91,10 +91,10 @@ Domain Layer (interfaces only)
 
 | Warstwa        | Namespace                    | Przykład                                                       |
 |----------------|------------------------------|----------------------------------------------------------------|
-| Domain         | `App\Domain\`                | `App\Domain\Entity\Announcement`                               |
-| Application    | `App\Application\`           | `App\Application\UseCase\CreateAnnouncementUseCase`            |
-| Infrastructure | `App\Infrastructure\`        | `App\Infrastructure\Repository\DatabaseAnnouncementRepository` |
-| Presentation   | `App\Http\` / `App\Console\` | `App\Http\Controller\AnnouncementController`                   |
+| Domain         | `App\Domain\`                | `App\Domain\Announcement\Announcement`                         |
+| Application    | `App\Application\`           | `App\Application\Announcement\UseCase\CreateAnnouncementUseCase`  |
+| Infrastructure | `App\Infrastructure\`        | `App\Infrastructure\Persistence\PDOAnnouncementRepository`     |
+| Presentation   | `App\Presentation\` / `App\Console\` | `App\Presentation\Http\Controller\AnnouncementController` |
 
 
 ## 🚀 Rozszerzanie Projektu
@@ -104,32 +104,32 @@ Aby dodać nową funkcjonalność (np. nowy moduł):
 1. **Stwórz Entity w Domain**
 
 ```php
-// src/Domain/Entity/NewEntity.php
+// src/Domain/NewEntity/NewEntity.php
 final class NewEntity { }
 ```
 
 2. **Zdefiniuj Enums (jeśli potrzebne)**
   
 ```php
-// src/Domain/Enum/NewEntityStatus.php
+// src/Domain/NewEntity/NewEntityStatus.php
 enum NewEntityStatus { }
 ```
 
 3. **Stwórz Use Cases w Application**
 ```php
-// src/Application/UseCase/CreateNewEntityUseCase.php
+// src/Application/NewEntity/UseCase/CreateNewEntityUseCase.php
 class CreateNewEntityUseCase { }
 ```
 
 4. **Implementuj Repository w Infrastructure (jeśli potrzebne)**
 
 ```php
-// src/Infrastructure/Repository/DatabaseNewEntityRepository.php
-class DatabaseNewEntityRepository { }
+// src/Infrastructure/Persistence/PDONewEntityRepository.php
+class PDONewEntityRepository { }
 ```
 
 5. **Zarejestruj w DI Container**
 ```php
 // src/Infrastructure/Container.php
-$container->register(NewEntityRepository::class, $implementation);
+$container->set(NewEntityRepository::class, fn(Container $c) => $implementation);
 ```

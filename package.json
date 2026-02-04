@@ -1,7 +1,7 @@
 {
   "name": "dodomudojade",
   "version": "1.0.0",
-  "description": "DoDomuDojadę - carpooling and public transit platform",
+  "description": "DoDomuDojadę - wirtualna tablica informacyjna",
   "author": "SLOths4",
   "license": "CC-BY-NC-4.0",
   "repository": {
@@ -15,8 +15,7 @@
   "type": "module",
   "scripts": {
     "dev": "tailwindcss -i src/input.css -o public/assets/styles/output.css --watch",
-    "build": "tailwindcss -i src/input.css -o public/assets/styles/output.css",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tailwindcss -i src/input.css -o public/assets/styles/output.css"
   },
   "dependencies": {
     "alpinejs": "^3.15.0"
