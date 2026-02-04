@@ -52,6 +52,8 @@ return [
         'status_update_failed' => 'Failed to update announcement status',
         'invalid_title_length' => 'Invalid title length',
         'invalid_text_length' => 'Invalid text length',
+        'title_too_short' => 'Announcement title must be at least :min_title_length characters',
+        'title_too_long' => 'Announcement title must be at most :max_title_length characters',
         'expiration_to_far_in_future' => 'Expiration date is to far in the future',
         'expiration_in_the_past' => 'Expiration date cannot be in the past',
 
@@ -83,7 +85,8 @@ return [
         'created_successfully' => 'Countdown has been created',
         'updated_successfully' => 'Countdown has been updated',
         'deleted_successfully' => 'Countdown has been deleted',
-        'title_too_short' => 'Countdown title is too short',
+        'title_too_short' => 'Countdown title must be at least :min_title_length characters',
+        'title_too_long' => 'Countdown title must be at most :max_title_length characters',
         'count_to_in_the_past' => 'Count to date cannot be in the past',
     ],
 

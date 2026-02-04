@@ -57,7 +57,12 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
             ]);
         }
 
-        return $this->respond($request, $this->translator->translate($e->getMessage()), $e->errorCode, $e->httpStatusCode);
+        return $this->respond(
+            $request,
+            $this->translator->translate($e->getMessage(), $e->context),
+            $e->errorCode,
+            $e->httpStatusCode
+        );
     }
 
     private function handleApplicationException(ServerRequestInterface $request, ApplicationException $e): ResponseInterface

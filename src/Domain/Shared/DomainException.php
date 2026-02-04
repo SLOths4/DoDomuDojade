@@ -14,7 +14,7 @@ class DomainException extends Exception
         string $message,
         public readonly string $errorCode,
         public readonly int $httpStatusCode = 400,
-        array $context = [],
+        public readonly array $context = [],
         ?Throwable $previous = null
     ) {
         parent::__construct($message, 0, $previous);

@@ -44,6 +44,8 @@ return [
         'expiration_to_far_in_future' => 'Data ważności zbytnio wybiega w przyszłość',
         'invalid_text_length' => 'Nieprawidłowa długość tekstu',
         'invalid_title_length' => 'Nieprawidłowa długość tytułu',
+        'title_too_short' => 'Tytuł ogłoszenia musi mieć co najmniej :min_title_length znaków',
+        'title_too_long' => 'Tytuł ogłoszenia może mieć maksymalnie :max_title_length znaków',
         'invalid_status' => 'Nieprawidłowy status ogłoszenia',
         'expiration_in_the_past' => 'Data ważności nie może być w przeszłości',
 
@@ -85,7 +87,8 @@ return [
         'created_successfully' => 'Odliczanie zostało utworzone',
         'updated_successfully' => 'Odliczanie zostało zaktualizowane',
         'deleted_successfully' => 'Odliczanie zostało usunięte',
-        'title_too_short' => 'Za krótki tytuł odliczania',
+        'title_too_short' => 'Tytuł odliczania musi mieć co najmniej :min_title_length znaków',
+        'title_too_long' => 'Tytuł odliczania może mieć maksymalnie :max_title_length znaków',
         'count_to_in_the_past' => 'Data odliczania nie może być w przeszłości'
     ],
 
