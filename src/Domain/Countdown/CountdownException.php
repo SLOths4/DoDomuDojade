@@ -56,7 +56,7 @@ final class CountdownException extends DomainException
             DomainExceptionCodes::COUNTDOWN_TITLE_TOO_LONG->value,
             400,
             [
-                'maximum_title_length' => $maxTitleLength
+                'max_title_length' => $maxTitleLength
             ]
         );
     }
@@ -71,7 +71,7 @@ final class CountdownException extends DomainException
             DomainExceptionCodes::COUNTDOWN_TITLE_TOO_SHORT->value,
             400,
             [
-                'minimum_title_length' => $minTitleLength
+                'min_title_length' => $minTitleLength
             ]
         );
     }

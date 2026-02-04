@@ -136,11 +136,11 @@ final class AnnouncementException extends DomainException
     public static function titleTooShort(int $minTitleLength): self
     {
         return new self(
-            'announcement.invalid_title_length',
+            'announcement.title_too_short',
             DomainExceptionCodes::ANNOUNCEMENT_TITLE_TOO_SHORT->value,
             400,
             [
-                'min title length' => $minTitleLength,
+                'min_title_length' => $minTitleLength,
             ]
         );
     }
@@ -170,11 +170,11 @@ final class AnnouncementException extends DomainException
     public static function titleTooLong(int $maxTitleLength): self
     {
         return new self(
-            'announcement.invalid_title_length',
+            'announcement.title_too_long',
             DomainExceptionCodes::ANNOUNCEMENT_TITLE_TOO_LONG->value,
             400,
             [
-                'max title length' => $maxTitleLength
+                'max_title_length' => $maxTitleLength
             ]
         );
     }
