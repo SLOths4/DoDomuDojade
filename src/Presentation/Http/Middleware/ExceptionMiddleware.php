@@ -28,8 +28,8 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
     {
         try {
             return $next($request);
-        }catch (AuthenticationException) {
-            return new Response(302, ['Location' => '/login']);
+        } catch (AuthenticationException $e) {
+            return $this->handleAuthenticationException($request, $e);
         } catch (DomainException $e) {
             return $this->handleDomainException($request, $e);
         } catch (ApplicationException $e) {
@@ -62,6 +62,24 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
             $this->translator->translate($e->getMessage(), $e->context),
             $e->errorCode,
             $e->httpStatusCode
+        );
+    }
+
+    private function handleAuthenticationException(
+        ServerRequestInterface $request,
+        AuthenticationException $e
+    ): ResponseInterface {
+        $this->logger->info('Authentication exception', [
+            'code' => $e->errorCode,
+            'message' => $e->getMessage(),
+        ]);
+
+        return $this->respond(
+            $request,
+            $this->translator->translate($e->getMessage(), $e->context),
+            $e->errorCode,
+            $e->httpStatusCode,
+            '/login'
         );
     }
 
@@ -102,7 +120,13 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
         return $this->respond($request, 'An unexpected error occurred', 'INTERNAL_SERVER_ERROR', 500);
     }
 
-    private function respond(ServerRequestInterface $request, string $message, string $code, int $statusCode): ResponseInterface
+    private function respond(
+        ServerRequestInterface $request,
+        string $message,
+        string $code,
+        int $statusCode,
+        ?string $redirectPath = null
+    ): ResponseInterface
     {
         if ($this->isJsonRequest($request)) {
             return new Response(
@@ -118,7 +142,7 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
         $this->flashMessenger->flash('error', $message);
 
         $referer = $request->getHeaderLine('Referer');
-        $redirectPath = $referer ?: '/';
+        $redirectPath = $redirectPath ?? ($referer ?: '/');
 
         return new Response(302, ['Location' => $redirectPath]);
     }
