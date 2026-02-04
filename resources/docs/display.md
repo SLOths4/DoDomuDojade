@@ -1,4 +1,4 @@
-# API Reference - DoDomuDojadę
+# API Reference — DoDomuDojadę
 
 Podstrona `display` stanowi główną funkcjonalność aplikacji. To od niej zaczął się nasz projekt :-) (Nie wierzysz? Zajrzyj w przeszłość w repozytorium!)
 
@@ -6,6 +6,7 @@ Podstrona `display` stanowi główną funkcjonalność aplikacji. To od niej zac
 
 | Endpoint                     | Method | Type | Purpose                | Auth |
 |------------------------------|--------|------|------------------------|------|
+| `/display`                   | GET    | HTML | Główna strona display  | No   |
 | `/display/departure`         | GET    | JSON | Odjazdy tramwajów      | No   |
 | `/display/announcement`      | GET    | JSON | Ogłoszenia             | No   |
 | `/display/countdown`         | GET    | JSON | Odliczanie             | No   |
@@ -22,7 +23,7 @@ Podstrona `display` stanowi główną funkcjonalność aplikacji. To od niej zac
 
 > Jeżeli dany moduł nie zwrócił danych, pole, które normalnie by je zawierało będzie równe `null`.
 
-### GET `/display/departures`
+### GET `/display/departure`
 
 Pobiera odjazdy dla skonfigurowanych przystanków.
 
@@ -47,7 +48,7 @@ Pobiera odjazdy dla skonfigurowanych przystanków.
 }
 ```
 
-### GET `/display/announcements`
+### GET `/display/announcement`
 
 Pobiera ważne (valid) ogłoszenia.
 
@@ -82,7 +83,7 @@ Pobiera pogodę.
 }
 ```
 
-### GET `/display/countdowns`
+### GET `/display/countdown`
 
 Pobiera najświeższe odliczanie.
 
@@ -97,9 +98,9 @@ Pobiera najświeższe odliczanie.
 }
 ```
 
-### GET `/display/events`
+### GET `/display/event`
 
-Pobiera ogłoszenia.
+Pobiera zdarzenia z kalendarza.
 
 **Przykładowa odpowiedź (aktywny moduł):**
 ```json

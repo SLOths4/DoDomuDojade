@@ -1,4 +1,4 @@
-# Dokumentacja ściezki `/panel`
+# Dokumentacja ścieżki `/panel`
 
 ## Struktura endpointa
 
@@ -6,13 +6,11 @@
 
 Endpoint GET `/panel` jest zarejestrowany w `public/index.php` i mapuje się do `PanelController::index()`:
 
-GET /panel → PanelController::class, 'index'
+`GET /panel` → `PanelController::class`, `index`
 
 **Middleware**: `AuthMiddleware::class` — wymaga uwierzytelnienia użytkownika.
 
 ## Architektura i przepływ żądania
-
-## Request Flow
 
 ```
 HTTP GET /panel
@@ -44,11 +42,11 @@ Tworzy mapę ID użytkowników do loginów:
 ```php
 private function buildUsernamesMap(array $users): array
 {
-$usernames = [];
-foreach ($users as $user) {
-$usernames[$user->id] = $user->username;
-}
-return $usernames;
+    $usernames = [];
+    foreach ($users as $user) {
+        $usernames[$user->id] = $user->username;
+    }
+    return $usernames;
 }
 ```
 
@@ -61,16 +59,16 @@ Formatuje obiekty liczników do postaci gotowej dla widoku:
 ```php
 private function formatCountdowns(array $countdowns): array
 {
-   $formatted = [];
-   foreach ($countdowns as $countdown) {
-      $formatted[] = (object)[
-      'id' => $countdown->id,
-      'title' => $countdown->title,
-      'userId' => $countdown->userId,
-      'countTo' => $countdown->countTo instanceof DateTimeImmutable
-      ? $countdown->countTo->format('Y-m-d')
-      : $countdown->countTo,
-      ];
+    $formatted = [];
+    foreach ($countdowns as $countdown) {
+        $formatted[] = (object)[
+            'id' => $countdown->id,
+            'title' => $countdown->title,
+            'userId' => $countdown->userId,
+            'countTo' => $countdown->countTo instanceof DateTimeImmutable
+                ? $countdown->countTo->format('Y-m-d')
+                : $countdown->countTo,
+        ];
     }
     return $formatted;
 }
@@ -136,16 +134,16 @@ Instancja `PanelController` jest konfigurowana w `bootstrap/bootstrap.php`:
 
 ```php
 $container->set(PanelController::class, fn(Container $c) => new PanelController(
-$c->get(RequestContext::class),
-$c->get(TwigRenderer::class),
-$c->get(FlashMessengerService::class),
-$c->get(LoggerInterface::class),
-$c->get(GetAllModulesUseCase::class),
-$c->get(GetAllUsersUseCase::class),
-$c->get(GetAllCountdownsUseCase::class),
-$c->get(GetAllAnnouncementsUseCase::class),
-$c->get(Translator::class),
-$c->get(AnnouncementViewMapper::class),
+    $c->get(RequestContext::class),
+    $c->get(TwigRenderer::class),
+    $c->get(FlashMessengerService::class),
+    $c->get(LoggerInterface::class),
+    $c->get(GetAllModulesUseCase::class),
+    $c->get(GetAllUsersUseCase::class),
+    $c->get(GetAllCountdownsUseCase::class),
+    $c->get(GetAllAnnouncementsUseCase::class),
+    $c->get(Translator::class),
+    $c->get(AnnouncementViewMapper::class),
 ));
 ```
 
@@ -166,7 +164,7 @@ $c->get(AnnouncementViewMapper::class),
 
 ## Szablony (Templates)
 
-Szablony są przechowywane w `resources/` i renderowane przez Twig:
+Szablony są przechowywane w `src/Presentation/View/templates/` i renderowane przez Twig:
 
 - `PANEL` — strona główna panelu administracyjnego
 - `USERS` — zarządzanie użytkownikami
@@ -174,7 +172,7 @@ Szablony są przechowywane w `resources/` i renderowane przez Twig:
 - `ANNOUNCEMENTS` — zarządzanie ogłoszeniami
 - `MODULES` — zarządzanie modułami
 
-Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/`)
+Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/TemplateNames.php`)
 
 ## API Endpoints (powiązane)
 
@@ -186,7 +184,8 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 
 ### Ogłoszenia
 - `POST /api/announcement` — dodaj ogłoszenie
-- `GET /api/announcements` — pobierz wszystkie
+- `GET /api/announcement` — pobierz wszystkie
+- `GET /api/announcement/{id}` — pobierz pojedyncze
 - `PATCH /api/announcement/{id}` — edytuj ogłoszenie
 - `DELETE /api/announcement/{id}` — usuń ogłoszenie
 - `POST /api/announcement/{id}/approve` — zaakceptuj ogłoszenie

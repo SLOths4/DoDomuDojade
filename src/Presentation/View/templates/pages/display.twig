@@ -481,7 +481,7 @@
             async fetchDepartures() {
                 this.error = null;
                 try {
-                    const res = await fetch('/display/departures', {
+                    const res = await fetch('/display/departure', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
@@ -556,7 +556,7 @@
                     intervalId: null,
                     async load() {
                         try {
-                            const res = await fetch('/display/get_countdown', {
+                            const res = await fetch('/display/countdown', {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
@@ -705,7 +705,7 @@
                     info: null,
                     async load() {
                         try {
-                            const res = await fetch('/display/get_quote', {
+                            const res = await fetch('/display/quote', {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
@@ -755,7 +755,7 @@
                     info: null,
                     async load() {
                         try {
-                            const res = await fetch('/display/get_word', {
+                            const res = await fetch('/display/word', {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
@@ -808,7 +808,7 @@
                     rotateIntervalId1: null,
                     async load() {
                         try {
-                            const res = await fetch('/display/get_events', {
+                            const res = await fetch('/display/event', {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
@@ -882,7 +882,7 @@
                         { name: 'countdown', url: '/display/countdown' },
                         { name: 'quote', url: '/display/quote' },
                         { name: 'word', url: '/display/word' },
-                        { name: 'events', url: '/display/events' }
+                        { name: 'events', url: '/display/event' }
                     ],
 
                     async load() {
@@ -1039,7 +1039,7 @@
             rotateIntervalId: null,
             async load() {
                 try {
-                    const res = await fetch('/display/announcements', {
+                    const res = await fetch('/display/announcement', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
