@@ -13,6 +13,11 @@ final readonly class SessionHelper {
         }
     }
 
+    public static function regenerateId(bool $deleteOldSession = true): void {
+        self::start();
+        session_regenerate_id($deleteOldSession);
+    }
+
     public static function validateFingerprint(): bool {
         $storedIp = self::get('user_ip_hash');
         $storedAgent = self::get('user_agent_hash');

@@ -46,6 +46,7 @@ final class LoginController extends BaseController
 
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
+        SessionHelper::regenerateId();
         SessionHelper::setWithFingerprint('user_id', $user->id);
         $this->logger->debug("redirecting shortly to panel.");
         return $this->redirect('/panel');
