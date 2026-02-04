@@ -113,7 +113,8 @@ return [
         'delete_failed' => 'Nie udało się usunąć użytkownika',
         'created_successfully' => 'Użytkownik został utworzony',
         'deleted_successfully' => 'Użytkownik został usunięty',
-        'validation_failed' => 'Nie udało się utworzyć użytkownika. Oczekiwano długość :length dla pola :field'
+        'updated_successfully' => 'Użytkownik został zaktualizowany',
+        'password_changed_successfully' => 'Hasło zostało zmienione',
     ],
 
     'display' => [

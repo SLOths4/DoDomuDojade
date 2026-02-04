@@ -42,13 +42,9 @@ final class LoginController extends BaseController
     {
         $this->logger->debug("User verification request received.");
 
-        $body = $this->request->getParsedBody();
-        if (!is_array($body)) {
-            $decoded = json_decode((string) $this->request->getBody(), true);
-            $body = is_array($decoded) ? $decoded : [];
-        }
+        $body = json_decode((string) $this->request->getBody(), true);
 
-        $dto = AuthenticateUserDTO::fromArray(is_array($body) ? $body : []);
+        $dto = AuthenticateUserDTO::fromArray($body);
 
         $user = $this->authenticateUserUseCase->execute($dto);
 

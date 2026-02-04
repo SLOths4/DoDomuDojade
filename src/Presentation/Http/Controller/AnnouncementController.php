@@ -23,9 +23,9 @@ use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Presenter\AnnouncementPresenter;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
+use DateMalformedStringException;
 use DateTimeImmutable;
 use Exception;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -107,7 +107,7 @@ final class AnnouncementController extends BaseController
 
     /**
      * @throws UserException
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      * @throws AnnouncementException
      */
     public function update(array $vars = []): ResponseInterface
@@ -173,8 +173,12 @@ final class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \DateMalformedStringException
+     * @param array $vars
+     * @return ResponseInterface
      * @throws AnnouncementException
+     * @throws DateMalformedStringException
+     * @throws InvalidDateTimeException
+     * @throws MissingParameterException
      */
     public function propose(array $vars = []): ResponseInterface
     {
