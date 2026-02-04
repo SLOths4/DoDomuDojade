@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Infrastructure\ExternalApi\Weather;
-
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;

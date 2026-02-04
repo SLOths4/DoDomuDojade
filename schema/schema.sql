@@ -52,6 +52,13 @@ create table if not exists quote (
     fetched_on timestamp not null
 );
 
+-- Weather table (fetched from external API)
+create table if not exists weather (
+    id         serial primary key,
+    payload    jsonb not null,
+    fetched_on timestamp not null
+);
+
 -- Modules table (settings/configuration)
 create table if not exists module (
     id          serial primary key,
@@ -82,3 +89,4 @@ create index if not exists idx_announcement_date on announcement(date);
 create index if not exists idx_countdown_user_id on countdown(user_id);
 create index if not exists idx_word_word on word(word);
 create index if not exists idx_quote_author on quote(author);
+create index if not exists idx_weather_fetched_on on weather(fetched_on desc);

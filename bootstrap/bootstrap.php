@@ -107,6 +107,7 @@ use App\Infrastructure\Persistence\PDOCountdownRepository;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use App\Infrastructure\Persistence\PDOQuoteRepository;
 use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Infrastructure\Persistence\PDOWeatherRepository;
 use App\Infrastructure\Persistence\PDOWordRepository;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
@@ -415,6 +416,12 @@ $container->set(TramService::class, fn(Container $c) => new TramService(
     $c->get(Config::class)->tramUrl,
 ));
 
+$container->set(PDOWeatherRepository::class, fn(Container $c) => new PDOWeatherRepository(
+    $c->get(DatabaseService::class),
+    $c->get(Config::class)->weatherTableName,
+    $c->get(Config::class)->weatherDateFormat,
+));
+
 $container->set(WeatherService::class, fn(Container $c) => new WeatherService(
     $c->get(LoggerInterface::class),
     $c->get(HttpClientInterface::class),
@@ -487,7 +494,9 @@ $container->set(GetDisplayCountdownUseCase::class, fn(Container $c) => new GetDi
 
 $container->set(GetDisplayWeatherUseCase::class, fn(Container $c) => new GetDisplayWeatherUseCase(
     $c->get(WeatherService::class),
+    $c->get(PDOWeatherRepository::class),
     $c->get(LoggerInterface::class),
+    $c->get(Config::class)->weatherCacheTtlSeconds,
 ));
 
 $container->set(GetDisplayEventsUseCase::class, fn(Container $c) => new GetDisplayEventsUseCase(
