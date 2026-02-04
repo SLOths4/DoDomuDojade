@@ -109,6 +109,8 @@ return [
         'delete_failed' => 'Failed to delete user',
         'created_successfully' => 'User has been created',
         'deleted_successfully' => 'User has been deleted',
+        'updated_successfully' => 'User has been updated',
+        'password_changed_successfully' => 'User password has been changed',
     ],
 
     'display' => [

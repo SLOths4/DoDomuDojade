@@ -64,6 +64,8 @@ try {
         $r->addRoute('POST', '/api/authenticate', [LoginController::class, 'authenticate']);
         $r->addRoute('POST', '/api/user', [UserController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/user/{id:[a-z0-9_.]+}/change-password', [UserController::class, 'changePassword', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.2. Akcje ogłoszeń
         $r->addRoute('POST', '/api/announcement', [AnnouncementController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
