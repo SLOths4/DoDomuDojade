@@ -8,10 +8,12 @@ endif
 .PHONY: install dev build lint test docs db-init
 
 install:
-	composer install --dev
+	export COMPOSER_NO_DEV=1
+	composer install
 	npm ci
 
 dev:
+	export COMPOSER_NO_DEV=0
 	@trap 'kill 0' INT TERM EXIT; \
 		php -S localhost:8080 -t public/ public/index.php & \
 		npm run dev

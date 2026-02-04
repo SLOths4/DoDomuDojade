@@ -30,12 +30,15 @@ final readonly class AuthenticateUserUseCase
         $this->logger->debug("User authentication attempt");
 
         if (empty($username) || empty($password)) {
+            $this->logger->debug("Empty credentials");
             throw AuthenticationException::emptyCredentials();
         }
 
         $user = $this->userRepository->findByExactUsername($username);
+        $this->logger->debug("Finding user");
 
         if (!$user || !password_verify($password, $user->passwordHash)) {
+            $this->logger->debug("Invalid credentials");
             throw AuthenticationException::invalidCredentials();
         }
 

@@ -346,7 +346,7 @@
 
                 // ============================================
                 // RESET PASSWORD - AJAX
-                // POST /api/user/{id}/reset-password
+                // POST /api/user/{id}/change-password
                 // ============================================
                 const handleResetButtonClick = (event) => {
                     event.preventDefault();
@@ -380,7 +380,7 @@
 
                     try {
                         const csrfToken = document.querySelector('input[name="_token"]').value;
-                        const response = await fetch(`/api/user/${userId}/reset-password`, {
+                        const response = await fetch(`/api/user/${userId}/change-password`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

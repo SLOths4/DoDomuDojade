@@ -18,8 +18,8 @@ final class LoginController extends BaseController
     function __construct(
          RequestContext $requestContext,
          ViewRendererInterface $renderer,
-        readonly FlashMessengerInterface $flash,
-        readonly LoggerInterface            $logger,
+        readonly FlashMessengerInterface            $flash,
+        readonly LoggerInterface                    $logger,
         private readonly AuthenticateUserUseCase    $authenticateUserUseCase
     ) {
         parent::__construct($requestContext, $renderer);
@@ -48,7 +48,7 @@ final class LoginController extends BaseController
         SessionHelper::start();
         SessionHelper::regenerateId();
         SessionHelper::setWithFingerprint('user_id', $user->id);
-        $this->logger->debug("redirecting shortly to panel.");
+        $this->logger->debug("Redirecting shortly to panel.");
         return $this->redirect('/panel');
     }
 
