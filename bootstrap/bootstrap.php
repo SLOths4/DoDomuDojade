@@ -119,7 +119,7 @@ use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Controller\DisplayController;
 use App\Presentation\Http\Controller\ErrorController;
 use App\Presentation\Http\Controller\PanelController;
-use App\Presentation\Http\Mapper\AnnouncementViewMapper;
+use App\Presentation\Http\Presenter\AnnouncementPresenter;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
@@ -539,7 +539,7 @@ $container->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(GetAllCountdownsUseCase::class),
     $c->get(GetAllAnnouncementsUseCase::class),
     $c->get(Translator::class),
-    $c->get(AnnouncementViewMapper::class),
+    $c->get(AnnouncementPresenter::class),
 ));
 
 return $container;

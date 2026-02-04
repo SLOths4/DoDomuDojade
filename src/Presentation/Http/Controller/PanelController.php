@@ -6,11 +6,12 @@ use App\Application\Announcement\UseCase\GetAllAnnouncementsUseCase;
 use App\Application\Countdown\UseCase\GetAllCountdownsUseCase;
 use App\Application\Module\UseCase\GetAllModulesUseCase;
 use App\Application\User\UseCase\GetAllUsersUseCase;
+use App\Domain\Announcement\AnnouncementStatus;
 use App\Domain\Module\Module;
 use App\Domain\Shared\ViewException;
 use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\DTO\ModuleViewDTO;
-use App\Presentation\Http\Mapper\AnnouncementViewMapper;
+use App\Presentation\Http\Presenter\AnnouncementPresenter;
 use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
@@ -28,8 +29,8 @@ use Psr\Log\LoggerInterface;
 class PanelController extends BaseController
 {
     public function __construct(
-         RequestContext                     $requestContext,
-         ViewRendererInterface              $renderer,
+        RequestContext                              $requestContext,
+        ViewRendererInterface                       $renderer,
         readonly FlashMessengerInterface            $flash,
         private readonly LoggerInterface            $logger,
         private readonly GetAllModulesUseCase       $getAllModulesUseCase,
@@ -37,7 +38,7 @@ class PanelController extends BaseController
         private readonly GetAllCountdownsUseCase    $getAllCountdownsUseCase,
         private readonly GetAllAnnouncementsUseCase $getAllAnnouncementsUseCase,
         private readonly Translator                 $translator,
-         private readonly AnnouncementViewMapper    $announcementMapper
+        private readonly AnnouncementPresenter      $announcementPresenter
     ){
         parent::__construct($requestContext, $renderer);
     }
@@ -69,35 +70,6 @@ class PanelController extends BaseController
                 'countTo' => $countdown->countTo instanceof DateTimeImmutable
                     ? $countdown->countTo->format('Y-m-d')
                     : $countdown->countTo,
-            ];
-        }
-        return $formatted;
-    }
-
-    /**
-     * Format announcement objects for display
-     * Separates pending and decided announcements, ensures consistent formatting
-     */
-    private function formatAnnouncements(array $announcements): array
-    {
-        $formatted = [];
-        foreach ($announcements as $announcement) {
-            $formatted[] = (object)[
-                'id' => $announcement->getId(),
-                'title' => $announcement->getTitle(),
-                'text' => $announcement->getText(),
-                'userId' => $announcement->getUserId(),
-                'createdAt' => $announcement->getCreatedAt() instanceof DateTimeImmutable
-                    ? $announcement->getCreatedAt()->format('Y-m-d H:i:s')
-                    : $announcement->getCreatedAt(),
-                'validUntil' => $announcement->getValidUntil() instanceof DateTimeImmutable
-                    ? $announcement->getValidUntil()->format('Y-m-d')
-                    : $announcement->getValidUntil(),
-                'status' => $announcement->getStatus()->name,
-                'decidedAt' => $announcement->getDecidedAt() instanceof DateTimeImmutable
-                    ? $announcement->getDecidedAt()->format('Y-m-d H:i:s')
-                    : $announcement->getDecidedAt(),
-                'decidedBy' => $announcement->getDecidedBy(),
             ];
         }
         return $formatted;
@@ -182,7 +154,7 @@ class PanelController extends BaseController
     }
 
     /**
-     * Display announcements management page
+     * Display announcement management page
      * Shows pending announcements separately from decided ones
      *
      * @throws Exception
@@ -194,21 +166,18 @@ class PanelController extends BaseController
 
         $usernames = $this->buildUsernamesMap($users);
 
-        $announcementDTOs = $this->announcementMapper->toDTOCollection(
-            $announcements,
-            $usernames
-        );
+        $announcementDTOs = $this->announcementPresenter->toView($announcements, $usernames);
 
         $pendingAnnouncements = array_filter(
             $announcementDTOs,
-            fn($a) => $a->status === 'PENDING'
+            fn($a) => $a->status === AnnouncementStatus::PENDING->value,
         );
         $decidedAnnouncements = array_filter(
             $announcementDTOs,
-            fn($a) => $a->status !== 'PENDING'
+            fn($a) => $a->status !== AnnouncementStatus::PENDING->value,
         );
 
-        $this->logger->info("Announcements page loaded");
+        $this->logger->debug("Announcements page loaded");
 
         return $this->render(TemplateNames::ANNOUNCEMENTS->value, [
             'usernames' => $usernames,

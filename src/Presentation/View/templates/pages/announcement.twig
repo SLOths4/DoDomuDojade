@@ -58,7 +58,7 @@
                     {% for announcement in pendingAnnouncements %}
                         <tr>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ usernames[announcement.userId] ?? 'Nieznany użytkownik' }}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
@@ -116,7 +116,7 @@
                     {% for announcement in announcements %}
                         <tr>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ usernames[announcement.userId] ?? 'Nieznany użytkownik' }}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">
@@ -128,7 +128,7 @@
                             <td class="break-words whitespace-normal px-4 py-2 border text-xs">
                                 {% if announcement.decidedAt %}
                                     {{ announcement.decidedAt }}<br>
-                                    przez: {{ usernames[announcement.decidedBy] ?? 'Admin' }}
+                                    przez: {{ usernames[announcement.decidedByName] ?? 'Admin' }}
                                 {% else %}
                                     <span class="text-gray-400 dark:text-gray-500">-</span>
                                 {% endif %}
@@ -293,7 +293,7 @@
                 // ============================================
                 const refreshAnnouncementsTable = async () => {
                     try {
-                        const response = await fetch('/api/announcements', {
+                        const response = await fetch('/api/announcement', {
                             method: 'GET',
                             headers: {
                                 'Accept': 'application/json'
@@ -425,8 +425,7 @@
                 // ============================================
                 const handleDeleteButtonClick = (event) => {
                     event.preventDefault();
-                    const announcementId = event.currentTarget.getAttribute('data-announcement-id');
-                    document.getElementById('confirmationModal').dataset.announcementId = announcementId;
+                    document.getElementById('confirmationModal').dataset.announcementId = event.currentTarget.getAttribute('data-announcement-id');
                     toggleModal(modals.confirmation, true);
                 };
 
@@ -539,7 +538,6 @@
                                 }
                             });
 
-                            const data = await response.json();
                             if (response.ok) {
                                 showFormNotification('✅ Zatwierdzone!', 'success');
                                 setTimeout(() => window.location.reload(), 1500);
@@ -563,7 +561,6 @@
                                 }
                             });
 
-                            const data = await response.json();
                             if (response.ok) {
                                 showFormNotification('✅ Odrzucone!', 'success');
                                 setTimeout(() => window.location.reload(), 1500);

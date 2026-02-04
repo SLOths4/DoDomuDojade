@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Announcement\UseCase;
 
 use App\Domain\Announcement\Announcement;
-use App\Infrastructure\Persistence\PDOAnnouncementRepository;
+use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -14,12 +14,12 @@ use Psr\Log\LoggerInterface;
 readonly class GetAllAnnouncementsUseCase
 {
     /**
-     * @param PDOAnnouncementRepository $repository
-     * @param LoggerInterface $logger
+     * @param AnnouncementRepositoryInterface $repository
+     * @param LoggerInterface                 $logger
      */
     public function __construct(
-        private PDOAnnouncementRepository $repository,
-        private LoggerInterface           $logger
+        private AnnouncementRepositoryInterface $repository,
+        private LoggerInterface                 $logger
     ){}
 
     /**

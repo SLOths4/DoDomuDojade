@@ -20,6 +20,7 @@ use App\Domain\Shared\MissingParameterException;
 use App\Domain\User\UserException;
 use App\Infrastructure\Configuration\Config;
 use App\Presentation\Http\Context\RequestContext;
+use App\Presentation\Http\Presenter\AnnouncementPresenter;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use DateTimeImmutable;
@@ -30,19 +31,21 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class AnnouncementController extends BaseController
 {
+
     public function __construct(
-         RequestContext $requestContext,
-         ViewRendererInterface $viewRenderer,
-         private readonly ServerRequestInterface $request,
-        private readonly Translator $translator,
-        private readonly Config $config,
-        private readonly CreateAnnouncementUseCase $createAnnouncementUseCase,
-        private readonly DeleteAnnouncementUseCase $deleteAnnouncementUseCase,
-        private readonly EditAnnouncementUseCase $editAnnouncementUseCase,
-        private readonly ProposeAnnouncementUseCase $proposeAnnouncementUseCase,
+        RequestContext                                    $requestContext,
+        ViewRendererInterface                             $viewRenderer,
+        private readonly ServerRequestInterface           $request,
+        private readonly Translator                       $translator,
+        private readonly Config                           $config,
+        private readonly CreateAnnouncementUseCase        $createAnnouncementUseCase,
+        private readonly DeleteAnnouncementUseCase        $deleteAnnouncementUseCase,
+        private readonly EditAnnouncementUseCase          $editAnnouncementUseCase,
+        private readonly ProposeAnnouncementUseCase       $proposeAnnouncementUseCase,
         private readonly ApproveRejectAnnouncementUseCase $approveRejectAnnouncementUseCase,
-        private readonly GetAnnouncementByIdUseCase $getAnnouncementByIdUseCase,
-        private readonly GetAllAnnouncementsUseCase  $getAllAnnouncementsUseCase,
+        private readonly GetAnnouncementByIdUseCase       $getAnnouncementByIdUseCase,
+        private readonly GetAllAnnouncementsUseCase       $getAllAnnouncementsUseCase,
+        private readonly AnnouncementPresenter            $presenter,
     ) {
         parent::__construct($requestContext, $viewRenderer);
     }
@@ -78,7 +81,7 @@ final class AnnouncementController extends BaseController
     {
         $announcements = $this->getAllAnnouncementsUseCase->execute();
 
-        return $this->jsonResponse(200, $announcements);
+        return $this->jsonResponse(200, $this->presenter->toApi($announcements));
     }
 
     /**

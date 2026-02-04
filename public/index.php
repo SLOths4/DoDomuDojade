@@ -67,7 +67,7 @@ try {
 
         // 2.2. Akcje ogłoszeń
         $r->addRoute('POST', '/api/announcement', [AnnouncementController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('GET', '/api/announcements', [AnnouncementController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/announcement', [AnnouncementController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'get', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
