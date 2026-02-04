@@ -6,15 +6,21 @@
     <main class="flex-grow">
         <h2 class="block my-5 text-3xl font-medium dark:text-white text-center">Panel</h2>
 
-        <form class="p-2 rounded-2xl max-w-sm mx-auto shadow-custom bg-white dark:bg-gray-900 dark:text-white" method="POST" action="/api/authenticate">
+        <form
+            class="p-2 rounded-2xl max-w-sm mx-auto shadow-custom bg-white dark:bg-gray-900 dark:text-white"
+            method="POST"
+            action="/api/authenticate"
+            x-data="loginForm('{{ csrf.token }}')"
+            x-on:submit.prevent="submit"
+        >
             <div class="mb-5">
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nazwa użytkownika</label>
-                <input name="username" type="text" id="username" autocomplete="on" class="text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!ring-primary-400 focus:!border-primary-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                <input name="username" type="text" id="username" autocomplete="on" x-model="username" class="text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!ring-primary-400 focus:!border-primary-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
             </div>
 
             <div class="mb-5">
                 <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hasło</label>
-                <input name="password" type="password" id="password" autocomplete="on" class="text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!ring-primary-400 focus:!border-primary-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
+                <input name="password" type="password" id="password" autocomplete="on" x-model="password" class="text-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!ring-primary-400 focus:!border-primary-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" required>
             </div>
 
             {% if flash.error %}
@@ -24,11 +30,68 @@
                 </div>
             {% endif %}
 
+            <template x-if="error">
+                <div class="mb-5 bg-red-200 border border-red-800 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
+                    <p class="text-red-500 text-sm font-medium" x-text="error"></p>
+                </div>
+            </template>
+
             <input type="hidden" name="_token" value="{{ csrf.token }}">
 
-            <button type="submit" class="shadow-custom dark:text-white bg-primary-200 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
-                Zaloguj się
+            <button type="submit" class="shadow-custom dark:text-white bg-primary-200 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" :disabled="loading">
+                <span x-show="!loading">Zaloguj się</span>
+                <span x-show="loading">Logowanie...</span>
             </button>
         </form>
     </main>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('loginForm', (csrfToken) => ({
+                username: '',
+                password: '',
+                error: '',
+                loading: false,
+                async submit() {
+                    this.error = '';
+                    this.loading = true;
+
+                    try {
+                        const response = await fetch('/api/authenticate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-Token': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify({
+                                username: this.username,
+                                password: this.password,
+                            }),
+                        });
+
+                        const payload = await response.json();
+
+                        if (!response.ok) {
+                            this.error = payload?.error || 'Wystąpił błąd logowania.';
+                            return;
+                        }
+
+                        if (payload?.redirect) {
+                            window.location.href = payload.redirect;
+                            return;
+                        }
+
+                        window.location.href = '/panel';
+                    } catch (error) {
+                        this.error = 'Wystąpił błąd logowania.';
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+            }));
+        });
+    </script>
 {% endblock %}
