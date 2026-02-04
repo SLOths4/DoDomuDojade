@@ -148,6 +148,18 @@ Jeżeli potrzebujesz jednorazowego buildu (np. do wdrożenia), użyj:
 npm run build
 ```
 
+### Makefile (skrótowe komendy)
+
+Jeżeli wolisz krótsze polecenia, możesz użyć Makefile:
+
+- `make install` — instaluje zależności Composer i npm.
+- `make dev` — uruchamia lokalny serwer PHP oraz proces frontendowy (watch).
+- `make build` — buduje frontend.
+- `make lint` — uruchamia PHPStan.
+- `make test` — uruchamia PHPUnit.
+- `make docs` — buduje dokumentację MkDocs i phpDocumentor.
+- `make db-init` — wczytuje `schema/schema.sql` do istniejącej bazy (korzysta z `DB_*` z `.env`).
+
 ## Lokalna dokumentacja
 
 Jeżeli chcesz zobaczyć lokalną dokumentację:
