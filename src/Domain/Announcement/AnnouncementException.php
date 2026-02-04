@@ -157,7 +157,7 @@ final class AnnouncementException extends DomainException
                 DomainExceptionCodes::ANNOUNCEMENT_TEXT_TOO_SHORT->value,
                 400,
                 [
-                    'min title length' => $minTextLength,
+                    'min_text_length' => $minTextLength,
                 ]
         );
     }
@@ -174,7 +174,7 @@ final class AnnouncementException extends DomainException
             DomainExceptionCodes::ANNOUNCEMENT_TITLE_TOO_LONG->value,
             400,
             [
-                'max_title_length' => $maxTitleLength
+                'min_title_length' => $maxTitleLength
             ]
         );
     }
@@ -191,7 +191,7 @@ final class AnnouncementException extends DomainException
             DomainExceptionCodes::ANNOUNCEMENT_TEXT_TOO_LONG->value,
             400,
             [
-                'max title length' => $maxTextLength
+                'max_text_length' => $maxTextLength
             ]
         );
     }

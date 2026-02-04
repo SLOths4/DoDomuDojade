@@ -50,14 +50,12 @@ return [
         'delete_failed' => 'Failed to delete announcement',
         'update_failed' => 'Failed to update announcement',
         'status_update_failed' => 'Failed to update announcement status',
-        'invalid_title_length' => 'Invalid title length',
-        'invalid_text_length' => 'Invalid text length',
+        'invalid_title_length' => 'Announcement text must be at least :min_text_length characters',
+        'invalid_text_length' => 'Announcement text must be at most :max_text_length characters',
         'title_too_short' => 'Announcement title must be at least :min_title_length characters',
         'title_too_long' => 'Announcement title must be at most :max_title_length characters',
         'expiration_to_far_in_future' => 'Expiration date is to far in the future',
         'expiration_in_the_past' => 'Expiration date cannot be in the past',
-
-
         'no_changes' => 'No changes were made',
         'unauthorized' => 'You do not have permission for this action',
         'cannot_edit_others' => 'You can only edit your own announcements',
