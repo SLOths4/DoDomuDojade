@@ -14,7 +14,7 @@
 <body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
 
 <div x-ref="header" class="flex mx-1 my-2">
-    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-l-2xl shadow-custom justify-around items-center max-sm:hidden">
+    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-l-2xl justify-around items-center max-sm:hidden">
         <img src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
         <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
             <i class="fa-solid fa-calendar text-primary-400"></i>
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-r-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
+    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-r-2xl justify-around items-center font-mono text-xl font-extrabold">
         <template x-if="loading">
             <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
                 <p class="font-extrabold text-center">Ładowanie...</p>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-air-freshener" :style="`color: ${weather.airlyColour}`"></i>
-                    <span x-text="weather.airlyAdvice"></span>
+                    <span x-text="weather.airlyDescription"></span>
                 </div>
             </div>
         </template>
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
-                <div class="demo grid grid-cols-4 w-full text-center">
+                <div class="departure grid grid-cols-4 w-full text-center">
                     <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
                         <div
                                 x-text="tram.line"
@@ -261,12 +261,12 @@
 
                                 <template x-if="mod.type === 'event'">
                                     <div class="text-center">
-                                        <div class="flex items-center">
+                                        <div class="flex justify-center">
                                             <p class="px-2">
                                                 <i class="fa-solid fa-calendar mr-1 text-primary-400"></i>
                                                 <span class="text-lg" x-text="mod.data.summary"></span>
                                             </p>
-                                            <p class="px-2">
+                                            <p class="text-right px-2">
                                                 <i class="fa-solid fa-clock mr-1 text-primary-400"></i>
                                                 <span class="text-lg"
                                                       x-text="mod.data.end ? `${mod.data.start} - ${mod.data.end}` : mod.data.start"></span>
@@ -307,14 +307,14 @@
 
 
 
-                <div x-data="announcements()" x-init="load()">
-                    <div x-show="!error && !info" class="overflow-y-auto py-2">
+                <div x-data="announcements()" x-init="init()">
+                    <div x-show="!error && !info" class="py-2" x-ref="announcementControl">
                         <template x-if="loading">
                             <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
                         </template>
                         <template x-if="!loading && announcements">
                             <template x-for="(group, index) in grouped" :key="index">
-                                <div class="" x-show="current === index">
+                                <div id="announcementDiv" x-show="current === index">
                                     <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
                                     <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
                                             <h3 class="font-bold text-lg" x-text="a.title"></h3>
@@ -362,7 +362,7 @@
                         const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
 
                         this.gridHeight = window.innerHeight - totalHeaderHeight;
-                        this.tramHeight = this.gridHeight - 1;
+                        this.tramHeight = this.gridHeight - 4;
                     }
                 }
             }
@@ -396,7 +396,7 @@
                     a.temperature !== b.temperature ||
                     a.pressure !== b.pressure ||
                     a.airlyColour !== b.airlyColour ||
-                    a.airlyAdvice !== b.airlyAdvice
+                    a.airlyDescription !== b.airlyDescription
                 );
             },
             _setTempColor(t) {
@@ -513,7 +513,7 @@
 
             calcExcessTram() {
                 var parentEl = this.$refs.tramDiv;
-                var els = document.getElementsByClassName('demo');
+                var els = document.getElementsByClassName('departure');
 
                 // Iterate backwards to remove last elements until no overflow
                 for (var i = els.length - 1; i >= 0; i--) {
@@ -1064,7 +1064,7 @@
                         return;
                     }
 
-                    const list = Array.isArray(json.announcements) ? json.announcements : [];
+                    const list = new Array(Array.isArray(json.announcements) ? json.announcements : []);
 
                     if (!list.length) {
                         this.loading = false;
@@ -1086,9 +1086,11 @@
                     } else {
                         this.announcements = list;
                         this.loading = false;
-                        this.grouped = this.chunk(list, 4);
+                        /*this.grouped = this.chunk(list, 1);*/
+                        this.grouped = this.announcements
                         if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         this.rotate();
+
                     }
                 } catch (e) {
                     this.error = 'Błąd ładowania ogłoszeń';
@@ -1098,14 +1100,58 @@
                 }
                 setTimeout(() => this.load(), 8000);
             },
-            chunk(arr, size) {
+            /*chunk(arr, size) {
                 return Array.from({ length: Math.ceil(arr.length / size) },
                     (_, i) => arr.slice(i * size, i * size + size));
+            },*/
+            async init() {
+                await this.load();
+                const refreshData = async () => {
+                    await this.load();
+                    requestAnimationFrame(() => this.checkOverflow());
+                };
+                await refreshData();
+                setInterval(refreshData, 60000);
             },
             rotate() {
                 this.rotateIntervalId = setInterval(() => {
                     this.current = (this.current + 1) % this.grouped.length;
+                    this.checkOverflow();
                 }, 8000);
+            },
+            calcExcessAnnouncement() {
+                const div = document.getElementById('announcementDiv');
+                let counter = 0;
+                Array.from(div.children).forEach((announcement) => {
+                    if (announcement instanceof HTMLDivElement) {
+                        announcement.id = `announcement${counter + 1}`
+                        counter++;
+                    }
+                });
+                const parentEl = this.$refs.announcementControl;
+                for (var i = (this.grouped[this.current]).length; i > 0; i--) {
+                    if (!(parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth)) {
+                        break;
+                    }
+                    var el = document.getElementById(`announcement${i}`);
+                    if (el) {
+                        let regrouped = this.grouped[this.current][i-1];
+                        const targetIndex = this.current + 1;
+                        if (!this.grouped[targetIndex]) {
+                            this.grouped[targetIndex] = [];
+                        }
+                        this.grouped[targetIndex].unshift(regrouped);
+                        this.grouped[this.current].length = i-1;
+                        el.remove();
+                    }
+                }
+                console.log(this.grouped);
+            },
+            checkOverflow() {
+                const elname = this.$refs.announcementControl;
+                if (elname.scrollHeight > elname.clientHeight || elname.scrollWidth > elname.clientWidth) {
+                    this.calcExcessAnnouncement();
+                }
             }
         }
     }
