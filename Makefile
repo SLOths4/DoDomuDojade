@@ -29,8 +29,8 @@ test:
 	@./vendor/bin/phpunit
 
 docs:
+	@mkdocs build
 	@./vendor/bin/phpdoc run --no-progress --no-interaction
-	@php -S localhost:8080 -t site
 
 
 db-init:
