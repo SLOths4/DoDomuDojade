@@ -53,13 +53,20 @@
         <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2">
             <i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i>
         </div>
-        <div x-data="dropdown()">
+        <div x-data="{ open: false }" @click.outside="open = false">
             <div class="mx-2 pr-2">
-                <button x-bind="dropdownToggle" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                <button @click="open = !open" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true">
                     {{ user ? user.username : 'Gościu' }}
                 </button>
             </div>
-            <div x-bind="dropdownMenu" x-cloak class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                 <div class="py-3" role="none">
                     <form action="/logout" method="post" class="mx-2">
                         <input type="hidden" name="_token" value="{{ csrf.token }}">
@@ -74,60 +81,35 @@
 </div>
 
 <script>
-    import Alpine from 'alpinejs'
-    const currentPage = window.location.pathname;
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname;
+        console.log(window.location.pathname);
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                console.log('true');
+                link.classList.remove('bg-white', 'dark:bg-gray-800', 'hover:bg-beige', 'dark:hover:bg-gray-900');
+                link.classList.add('bg-primary-200', 'hover:bg-primary-400');
+            }
+        });
+        window.openMenu = function() {
+            const menu = document.getElementById('menu');
+            if (menu) {
+                menu.classList.remove('opacity-0', 'pointer-events-none');
+                menu.classList.add('opacity-95');
+            }
+        };
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        if (link.getAttribute('href') === currentPage && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            link.classList.remove('bg-gray-800', 'hover:bg-gray-900');
-            link.classList.add('hover:bg-primary-400', 'bg-primary-200');
-        } else if (link.getAttribute('href') === currentPage && window.matchMedia("(prefers-color-scheme: light)").matches) {
-            link.classList.remove('bg-white', 'hover:bg-beige');
-            link.classList.add('hover:bg-primary-400', 'bg-primary-200');
-        }
+        window.closeMenu = function() {
+            const menu = document.getElementById('menu');
+            if (menu) {
+                menu.classList.remove('opacity-95');
+                menu.classList.add('opacity-0', 'pointer-events-none');
+            }
+        };
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('#menu a')) {
+                window.closeMenu();
+            }
+        });
     });
-
-    const menu = document.getElementById("menu");
-
-    function openMenu() {
-        menu.classList.remove("opacity-0", "pointer-events-none");
-        menu.classList.add("opacity-95");
-    }
-
-    function closeMenu() {
-        menu.classList.add("opacity-0", "pointer-events-none");
-        menu.classList.remove("opacity-95");
-    }
-
-    let dropdown = () => ({
-        open: false,
-
-        dropdownToggle: {
-            ["x-on:click"]() {
-                this.open = !this.open
-            },
-        },
-
-        dropdownMenu: {
-            ["x-transition:enter"]: "transition ease-out duration-100",
-            ["x-transition:enter-start"]: "transform opacity-0 scale-95",
-            ["x-transition:enter-end"]: "transform opacity-100 scale-100",
-            ["x-transition:leave"]: "transition ease-in duration-75",
-            ["x-transition:leave-start"]: "transform opacity-100 scale-100",
-            ["x-transition:leave-end"]: "transform opacity-0 scale-95",
-            ["x-on:click.outside"]() {
-                this.open = false
-            },
-            ["x-show"]() {
-                return this.open
-            },
-        }
-    })
-
-    window.addEventListener("DOMContentLoaded", () => {
-        Alpine.data("dropdown", dropdown)
-    })
-
-    window.Alpine = Alpine
-    Alpine.start();
 </script>
