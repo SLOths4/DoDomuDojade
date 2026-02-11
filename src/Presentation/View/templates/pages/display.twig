@@ -1086,7 +1086,7 @@
                     } else {
                         this.announcements = list;
                         this.loading = false;
-                        this.grouped = this.chunk(list, 4);
+                        this.grouped = this.chunk(list, 1);
                         if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                         this.rotate();
                     }
