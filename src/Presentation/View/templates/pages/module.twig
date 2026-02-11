@@ -1,0 +1,239 @@
+{% extends "layout/base.twig" %}
+
+{% block content %}
+    <main class="flex-grow">
+        {# Flash messages #}
+        {% include 'components/error.twig' with { error: flash.error} %}
+
+        {% include 'components/success.twig' with { success: flash.success} %}
+
+        {# Modules table #}
+        {% if modules is not empty %}
+            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                <div id="formNotification"></div>
+
+                <table id="modulesTable" class="w-full table-fixed border-collapse">
+                    <thead class="bg-gray-200 dark:bg-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border">Nazwa modułu</th>
+                        <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
+                        <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
+                        <th class="px-4 py-2 border">Stan</th>
+                        <th class="px-4 py-2 border">Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for module in modules %}
+                        <tr>
+                            <td class="px-4 py-2 border">{{ module.moduleNameLabel }}</td>
+                            <td class="px-4 py-2 border">{{ module.startTime.format('H:i') }}</td>
+                            <td class="px-4 py-2 border">{{ module.endTime.format('H:i') }}</td>
+                            <td class="px-4 py-2 border space-x-2">
+                                <span class="toggle-status px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-green-500{% else %}bg-red-500{% endif %}"
+                                      data-module-id="{{ module.id }}">
+                                    {% if module.isActive %}Włączony{% else %}Wyłączony{% endif %}
+                                </span>
+                                <button type="button"
+                                        class="toggle-btn px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-red-500 hover:bg-red-600{% else %}bg-green-500 hover:bg-green-600{% endif %}"
+                                        data-module-id="{{ module.id }}"
+                                        data-csrf-token="{{ csrf.token }}">
+                                    {% if module.isActive %}Wyłącz{% else %}Włącz{% endif %}
+                                </button>
+                            </td>
+                            <td class="px-4 py-2 border space-x-2">
+                                <button type="button"
+                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                        data-module-id="{{ module.id }}"
+                                        data-start-time="{{ module.startTime.format('H:i') }}"
+                                        data-end-time="{{ module.endTime.format('H:i') }}">
+                                    Edytuj
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            {% include 'components/error.twig' with { error: "Brak modułów do wyświetlenia." } %}
+        {% endif %}
+
+        {# Edit modal #}
+        <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-md w-full z-10 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-xl font-semibold mb-4">Edytuj godziny wyświetlania modułu</h2>
+                <form id="editModuleForm">
+                    <input type="hidden" name="_token" value="{{ csrf.token }}">
+                    <input type="hidden" id="edit_module_id" name="module_id">
+
+                    <div class="mb-4">
+                        <label for="edit_start_time" class="block text-sm font-medium text-gray-700 dark:text-white">Od</label>
+                        <input type="time" id="edit_start_time" name="start_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="edit_end_time" class="block text-sm font-medium text-gray-700 dark:text-white">Do</label>
+                        <input type="time" id="edit_end_time" name="end_time" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" id="cancelEditBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                            Anuluj
+                        </button>
+                        <button type="submit" id="submitEditBtn" class="px-4 py-2 !bg-primary-200 text-white rounded hover:!bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                            <span id="submitEditBtnText">Zapisz</span>
+                            <span id="submitEditSpinner" class="hidden ml-2">⏳</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const modals = {
+                    edition: document.getElementById('editionModal')
+                };
+
+                const forms = {
+                    edit: document.getElementById('editModuleForm')
+                };
+
+                const buttons = {
+                    cancelEdit: document.getElementById('cancelEditBtn'),
+                    submitEdit: document.getElementById('submitEditBtn')
+                };
+
+                const toggleModal = (modal, show) => {
+                    modal.classList.toggle('hidden', !show);
+                };
+
+                // ============================================
+                // NOTIFICATION HELPER
+                // ============================================
+                const showFormNotification = (message, type = 'error') => {
+                    const notification = document.getElementById('formNotification');
+                    const bgClass = type === 'success'
+                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-400 dark:border-green-600'
+                        : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-400 dark:border-red-600';
+
+                    notification.innerHTML = `<div class="p-3 rounded border ${bgClass} mb-4">${message}</div>`;
+
+                    setTimeout(() => {
+                        notification.innerHTML = '';
+                    }, 5000);
+                };
+
+                // ============================================
+                // TOGGLE MODULE - AJAX
+                // POST /api/module/{id}/toggle
+                // ============================================
+                document.querySelectorAll('.toggle-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        const moduleId = btn.getAttribute('data-module-id');
+                        const csrfToken = btn.getAttribute('data-csrf-token');
+
+                        try {
+                            const response = await fetch(`/api/module/${moduleId}/toggle`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-Token': csrfToken
+                                }
+                            });
+
+                            const data = await response.json();
+
+                            if (response.ok && data.success) {
+                                showFormNotification('✅ ' + data.message, 'success');
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                showFormNotification(data.message || 'Błąd', 'error');
+                            }
+                        } catch (error) {
+                            showFormNotification('❌ Błąd: ' + error.message, 'error');
+                        }
+                    });
+                });
+
+                // ============================================
+                // EDIT MODULE - AJAX
+                // PATCH /api/module/{id}
+                // ============================================
+                const handleEditButtonClick = (event) => {
+                    event.preventDefault();
+
+                    const btn = event.currentTarget;
+                    const moduleId = btn.getAttribute('data-module-id');
+                    const startTime = btn.getAttribute('data-start-time');
+                    const endTime = btn.getAttribute('data-end-time');
+
+                    forms.edit.querySelector('#edit_module_id').value = moduleId;
+                    forms.edit.querySelector('#edit_start_time').value = startTime;
+                    forms.edit.querySelector('#edit_end_time').value = endTime;
+
+                    toggleModal(modals.edition, true);
+                };
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', handleEditButtonClick);
+                });
+
+                forms.edit.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const moduleId = forms.edit.querySelector('#edit_module_id').value;
+                    const startTime = forms.edit.querySelector('#edit_start_time').value;
+                    const endTime = forms.edit.querySelector('#edit_end_time').value;
+
+                    if (!startTime || !endTime) {
+                        showFormNotification('Obie godziny są wymagane', 'error');
+                        return;
+                    }
+
+                    buttons.submitEdit.disabled = true;
+                    document.getElementById('submitEditSpinner').classList.remove('hidden');
+
+                    try {
+                        const csrfToken = forms.edit.querySelector('input[name="_token"]').value;
+
+                        const response = await fetch(`/api/module/${moduleId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({
+                                start_time: startTime,
+                                end_time: endTime
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ ' + data.message, 'success');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showFormNotification(data.message || 'Błąd', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        buttons.submitEdit.disabled = false;
+                        document.getElementById('submitEditSpinner').classList.add('hidden');
+                        toggleModal(modals.edition, false);
+                    }
+                });
+
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
+            });
+        </script>
+    </main>
+{% endblock %}

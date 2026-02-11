@@ -2,12 +2,20 @@
 
 namespace App\Infrastructure\Helper;
 
+/**
+ * Helper for interacting with session
+ */
 final readonly class SessionHelper {
 
     public static function start(): void {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
+
+    public static function regenerateId(bool $deleteOldSession = true): void {
+        self::start();
+        session_regenerate_id($deleteOldSession);
     }
 
     public static function validateFingerprint(): bool {

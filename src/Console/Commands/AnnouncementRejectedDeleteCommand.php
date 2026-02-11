@@ -4,17 +4,26 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Application\UseCase\Announcement\DeleteRejectedSinceAnnouncementUseCase;
+use App\Application\Announcement\UseCase\DeleteRejectedSinceAnnouncementUseCase;
 use App\Console\Command;
 use App\Console\ConsoleOutput;
 use Exception;
 
+/**
+ * Deletes rejected announcements since a provided date
+ */
 final readonly class AnnouncementRejectedDeleteCommand implements Command
 {
+    /**
+     * @param DeleteRejectedSinceAnnouncementUseCase $useCase
+     */
     public function __construct(
         private DeleteRejectedSinceAnnouncementUseCase $useCase
     ) {}
 
+    /**
+     * @inheritDoc
+     */
     public function execute(array $arguments, ConsoleOutput $output): void
     {
         $date = $arguments[0];
@@ -33,16 +42,25 @@ final readonly class AnnouncementRejectedDeleteCommand implements Command
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return 'announcement-rejected:delete';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getDescription(): string
     {
         return 'Delete rejected announcements since given date';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getArgumentsCount(): int
     {
         return 1;

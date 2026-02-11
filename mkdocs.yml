@@ -1,41 +1,39 @@
 site_name: DoDomuDojade - Dokumentacja
-site_dir: build
+docs_dir: resources/docs
+site_dir: site
 site_url: https://sloths4.github.io/DoDomuDojade/
 use_directory_urls: true
-
-nav:
-  - Home: index.md
-  - Architektura: architecture.md
-  - Przykłady: examples/index.md
-  - Warstwy:
-      - Aplikacji: layers/application.md
-      - Domeny: layers/domain.md
-      - Infrastruktury: layers/infrastructure.md
 
 theme:
   name: material
   locale: en
   palette:
-    - scheme: light
-      primary: teal
-    - scheme: dark
-      primary: teal
-  highlightjs: false
+    scheme: dark
   features:
     - content.code.copy
-    - navigation.top
 
 plugins:
   - search
 
 markdown_extensions:
-  - pymdownx.highlight:
-      use_pygments: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
 
-  - tables
+nav:
+  - Home: index.md
+  - Architektura: architecture.md
+  - Display: display.md
+  - Panel: panel.md
+  - Rozwój: development.md
 
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg

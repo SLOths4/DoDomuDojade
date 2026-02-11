@@ -2,11 +2,13 @@
 
 namespace App\Infrastructure\Helper;
 
-use App\config\Config;
-use App\Domain\Exception\AnnouncementException;
-use App\Domain\Exception\CountdownException;
+use App\Domain\Countdown\CountdownException;
+use App\Infrastructure\Configuration\Config;
 use DateTimeImmutable;
 
+/**
+ *  Helper class for validating countdowns
+ */
 final readonly class CountdownValidationHelper {
     public function __construct(
         private Config $config,

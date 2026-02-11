@@ -2,10 +2,12 @@
 
 namespace App\Infrastructure\Helper;
 
-use App\config\Config;
-use App\Domain\Exception\ModuleException;
+use App\Domain\Module\ModuleException;
 use DateTimeImmutable;
 
+/**
+ *  Helper class for validating modules
+ */
 final readonly class ModuleValidationHelper
 {
     /**

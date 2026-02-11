@@ -1,0 +1,66 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Application\Announcement\DTO;
+
+use App\Domain\Shared\InvalidDateTimeException;
+use App\Domain\Shared\MissingParameterException;
+use DateMalformedStringException;
+use DateTimeImmutable;
+use Exception;
+
+/**
+ * Data Transfer Object for proposing announcements
+ */
+final readonly class ProposeAnnouncementDTO
+{
+    /**
+     * @param string $title
+     * @param string $text
+     * @param DateTimeImmutable $validUntil
+     */
+    public function __construct(
+        public string $title,
+        public string $text,
+        public DateTimeImmutable $validUntil,
+    ) {}
+
+    /**
+     * Creates DTO from an array
+     * @param array $array
+     * @param DateTimeImmutable $defaultValidUntil
+     * @return self
+     * @throws InvalidDateTimeException
+     * @throws MissingParameterException
+     */
+    public static function fromArray(array $array, DateTimeImmutable $defaultValidUntil): self
+    {
+        $title = trim((string)($array['title']));
+        $text = trim((string)($array['text']));
+        $validUntil = $array['expires_at'];
+
+        if (empty($validUntil)) {
+            $validUntil = $defaultValidUntil;
+        } else {
+            try {
+                $validUntil = new DateTimeImmutable($validUntil);
+            } catch (DateMalformedStringException $e) {
+                throw new InvalidDateTimeException($validUntil, "expires_at", null, $e);
+            }
+        }
+
+        if (empty($title)) {
+            throw new MissingParameterException("title");
+        }
+
+        if (empty($text)) {
+            throw new MissingParameterException("text");
+        }
+
+        return new self(
+            title: $title,
+            text: $text,
+            validUntil: $validUntil,
+        );
+    }
+}

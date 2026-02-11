@@ -13,6 +13,9 @@ final class Kernel
 {
     private ConsoleOutput $output;
 
+    /**
+     * @param CommandRegistry $registry
+     */
     public function __construct(
         private readonly CommandRegistry $registry
     ) {

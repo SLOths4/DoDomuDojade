@@ -1,0 +1,414 @@
+{% extends "layout/base.twig" %}
+
+{% block content %}
+    <main class="flex-grow">
+        {# Flash messages #}
+        {% include 'components/error.twig' with { error: flash.error} %}
+        {% include 'components/success.twig' with { success: flash.success} %}
+
+        {# Add User Form #}
+        <form id="addUserForm" class="mb-6 p-4 bg-white rounded-2xl shadow-custom mx-1 dark:bg-gray-900 dark:text-white">
+            <div id="formNotification"></div>
+
+            <div class="mb-2">
+                <label>
+                    <input type="text" id="username" name="username" placeholder="Nazwa użytkownika" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                </label>
+            </div>
+            <div class="mb-2">
+                <label>
+                    <input type="text" id="password" name="password" placeholder="Hasło" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                </label>
+            </div>
+            <button type="submit" id="addUserBtn" class="!bg-primary-200 text-white px-4 py-2 rounded hover:!bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                <span id="addUserBtnText">Dodaj</span>
+                <span id="addUserSpinner" class="hidden ml-2">⏳</span>
+            </button>
+
+            <input type="hidden" name="_token" value="{{ csrf.token }}">
+        </form>
+
+        {# Users Table #}
+        {% if users is not empty %}
+            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                <table id="usersTable" class="w-full table-fixed border-collapse">
+                    <thead class="bg-gray-200 dark:bg-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border">Id</th>
+                        <th class="px-4 py-2 border">Nazwa użytkownika</th>
+                        <th class="px-4 py-2 border">Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td class="px-4 py-2 border">{{ user.id }}</td>
+                            <td class="px-4 py-2 border">{{ user.username }}</td>
+                            <td class="px-4 py-2 border space-x-2">
+                                <button type="button"
+                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                        data-user-id="{{ user.id }}"
+                                        data-username="{{ user.username }}">
+                                    Edytuj
+                                </button>
+                                <button type="button"
+                                        class="reset-password-btn bg-amber-500 hover:bg-amber-600 text-white font-bold py-1 px-2 rounded"
+                                        data-user-id="{{ user.id }}"
+                                        data-username="{{ user.username }}">
+                                    Resetuj hasło
+                                </button>
+                                <button type="button"
+                                        class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                        data-user-id="{{ user.id }}"
+                                        data-csrf-token="{{ csrf.token }}">
+                                    Usuń
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>Brak użytkowników do wyświetlenia.</p>
+        {% endif %}
+
+        {# Confirmation Modal #}
+        <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-xl font-semibold mb-4">Potwierdzenie usunięcia</h2>
+                <p class="mb-6">Czy na pewno chcesz usunąć tego użytkownika? Tej operacji nie można cofnąć.</p>
+                <div class="flex justify-end">
+                    <button id="cancelDeleteBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                        Anuluj
+                    </button>
+                    <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                        Usuń
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# Edit User Modal #}
+        <div id="editUserModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-xl font-semibold mb-4">Edytuj użytkownika</h2>
+                <form id="editUserForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2" for="editUsername">Nazwa użytkownika</label>
+                        <input type="text" id="editUsername" name="editUsername" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelEditBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                            Anuluj
+                        </button>
+                        <button type="submit" id="confirmEditBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span id="editUserBtnText">Zapisz</span>
+                            <span id="editUserSpinner" class="hidden ml-2">⏳</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# Reset Password Modal #}
+        <div id="resetPasswordModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+            <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
+            <div class="relative bg-white p-6 rounded shadow-lg max-w-sm w-full z-10 dark:bg-gray-800 dark:text-white">
+                <h2 class="text-xl font-semibold mb-4">Resetuj hasło</h2>
+                <form id="resetPasswordForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2" for="resetPassword">Nowe hasło</label>
+                        <input type="text" id="resetPassword" name="resetPassword" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" required>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelResetBtn" class="mr-4 px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+                            Anuluj
+                        </button>
+                        <button type="submit" id="confirmResetBtn" class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span id="resetPasswordBtnText">Zapisz</span>
+                            <span id="resetPasswordSpinner" class="hidden ml-2">⏳</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const modals = {
+                    confirmation: document.getElementById('confirmationModal'),
+                    edit: document.getElementById('editUserModal'),
+                    reset: document.getElementById('resetPasswordModal')
+                };
+
+                const forms = {
+                    add: document.getElementById('addUserForm'),
+                    edit: document.getElementById('editUserForm'),
+                    reset: document.getElementById('resetPasswordForm')
+                };
+
+                const buttons = {
+                    cancelDelete: document.getElementById('cancelDeleteBtn'),
+                    confirmDelete: document.getElementById('confirmDeleteBtn'),
+                    addUser: document.getElementById('addUserBtn'),
+                    cancelEdit: document.getElementById('cancelEditBtn'),
+                    confirmEdit: document.getElementById('confirmEditBtn'),
+                    cancelReset: document.getElementById('cancelResetBtn'),
+                    confirmReset: document.getElementById('confirmResetBtn')
+                };
+
+                const toggleModal = (modal, show) => {
+                    modal.classList.toggle('hidden', !show);
+                };
+
+                // ============================================
+                // NOTIFICATION HELPER
+                // ============================================
+                const showFormNotification = (message, type = 'error') => {
+                    const notification = document.getElementById('formNotification');
+                    const bgClass = type === 'success'
+                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-400 dark:border-green-600'
+                        : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-400 dark:border-red-600';
+
+                    notification.innerHTML = `<div class="p-3 rounded border ${bgClass} mb-4">${message}</div>`;
+
+                    setTimeout(() => {
+                        notification.innerHTML = '';
+                    }, 5000);
+                };
+
+                // ============================================
+                // ADD USER - AJAX
+                // POST /api/user
+                // ============================================
+                forms.add.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const username = document.getElementById('username').value.trim();
+                    const password = document.getElementById('password').value.trim();
+
+                    if (!username || !password) {
+                        showFormNotification('Wszystkie pola są wymagane', 'error');
+                        return;
+                    }
+
+                    buttons.addUser.disabled = true;
+                    document.getElementById('addUserSpinner').classList.remove('hidden');
+
+                    try {
+                        const csrfToken = document.querySelector('input[name="_token"]').value;
+
+                        const response = await fetch('/api/user', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({
+                                username: username,
+                                password: password
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ ' + data.message, 'success');
+                            forms.add.reset();
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showFormNotification(data.message || 'Błąd', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        buttons.addUser.disabled = false;
+                        document.getElementById('addUserSpinner').classList.add('hidden');
+                    }
+                });
+
+                // ============================================
+                // DELETE USER - AJAX
+                // DELETE /api/user/{id}
+                // ============================================
+                const handleDeleteButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    document.getElementById('confirmationModal').dataset.userId = userId;
+                    toggleModal(modals.confirmation, true);
+                };
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', handleDeleteButtonClick);
+                });
+
+                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
+
+                buttons.confirmDelete.addEventListener('click', async () => {
+                    const userId = document.getElementById('confirmationModal').dataset.userId;
+                    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+                    try {
+                        const response = await fetch(`/api/user/${userId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-Token': csrfToken
+                            }
+                        });
+
+                        if (response.status === 204) {
+                            showFormNotification('✅ Użytkownik usunięty!', 'success');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showFormNotification('❌ Błąd usuwania', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        toggleModal(modals.confirmation, false);
+                    }
+                });
+
+                // ============================================
+                // EDIT USER - AJAX
+                // PATCH /api/user/{id}
+                // ============================================
+                const handleEditButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    const username = event.currentTarget.getAttribute('data-username');
+                    modals.edit.dataset.userId = userId;
+                    document.getElementById('editUsername').value = username || '';
+                    toggleModal(modals.edit, true);
+                };
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', handleEditButtonClick);
+                });
+
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edit, false));
+
+                forms.edit.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const userId = modals.edit.dataset.userId;
+                    const username = document.getElementById('editUsername').value.trim();
+
+                    if (!username) {
+                        showFormNotification('Nazwa użytkownika jest wymagana', 'error');
+                        return;
+                    }
+
+                    buttons.confirmEdit.disabled = true;
+                    document.getElementById('editUserSpinner').classList.remove('hidden');
+
+                    try {
+                        const csrfToken = document.querySelector('input[name="_token"]').value;
+                        const response = await fetch(`/api/user/${userId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({ username })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ ' + data.message, 'success');
+                            toggleModal(modals.edit, false);
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showFormNotification(data.message || 'Błąd edycji', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        buttons.confirmEdit.disabled = false;
+                        document.getElementById('editUserSpinner').classList.add('hidden');
+                    }
+                });
+
+                // ============================================
+                // RESET PASSWORD - AJAX
+                // POST /api/user/{id}/change-password
+                // ============================================
+                const handleResetButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    const username = event.currentTarget.getAttribute('data-username');
+                    modals.reset.dataset.userId = userId;
+                    modals.reset.dataset.username = username || '';
+                    document.getElementById('resetPassword').value = '';
+                    toggleModal(modals.reset, true);
+                };
+
+                document.querySelectorAll('.reset-password-btn').forEach(btn => {
+                    btn.addEventListener('click', handleResetButtonClick);
+                });
+
+                buttons.cancelReset.addEventListener('click', () => toggleModal(modals.reset, false));
+
+                forms.reset.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const userId = modals.reset.dataset.userId;
+                    const password = document.getElementById('resetPassword').value.trim();
+
+                    if (!password) {
+                        showFormNotification('Hasło jest wymagane', 'error');
+                        return;
+                    }
+
+                    buttons.confirmReset.disabled = true;
+                    document.getElementById('resetPasswordSpinner').classList.remove('hidden');
+
+                    try {
+                        const csrfToken = document.querySelector('input[name="_token"]').value;
+                        const response = await fetch(`/api/user/${userId}/change-password`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken
+                            },
+                            body: JSON.stringify({ password })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ ' + data.message, 'success');
+                            toggleModal(modals.reset, false);
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            showFormNotification(data.message || 'Błąd resetu hasła', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    } finally {
+                        buttons.confirmReset.disabled = false;
+                        document.getElementById('resetPasswordSpinner').classList.add('hidden');
+                    }
+                });
+            });
+        </script>
+    </main>
+{% endblock %}

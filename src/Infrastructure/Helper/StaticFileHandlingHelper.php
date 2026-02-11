@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Helper;
 
+/**
+ * Helper for serving static files
+ */
 final class StaticFileHandlingHelper
 {
     private const array ALLOWED_EXTENSIONS = ['css', 'js', 'png', 'jpg', 'jpeg', 'ico', 'svg'];

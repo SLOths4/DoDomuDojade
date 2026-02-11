@@ -59,9 +59,9 @@ calendar_data/
 *.sqlite
 *.db
 
-phpunit.xml
-tests
 public/assets/styles/output.css
 composer.lock
 package-lock.json
 protean-vigil-481418-b7-7bd9c79928bf.json
+/.phpunit.cache/
+/site/

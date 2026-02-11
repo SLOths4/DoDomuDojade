@@ -4,8 +4,11 @@
 use App\Console\Kernel;
 
 chdir(__DIR__ . '/..');
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    die('vendor/autoload.php not found. Run: composer install');
+}
 require __DIR__ . '/../vendor/autoload.php';
-$container = require __DIR__ . '/../src/bootstrap/bootstrap.php';
+$container = require __DIR__ . '/../bootstrap/bootstrap.php';
 
 $kernel = $container->get(Kernel::class);
 exit($kernel->execute($argv));

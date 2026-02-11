@@ -2,11 +2,12 @@
 namespace App\Infrastructure\Service;
 
 use App\Infrastructure\Helper\SessionHelper;
+use App\Presentation\Http\Shared\FlashMessengerInterface;
 
 /**
  * Helps with managing flash messages
  */
-class FlashMessengerService implements FlashMessengerInterface
+readonly class FlashMessengerService implements FlashMessengerInterface
 {
     private const string PREFIX = 'flash';
 
@@ -35,10 +36,7 @@ class FlashMessengerService implements FlashMessengerInterface
 
     /**
      * Returns all flash messages
-     * @return array{
-     *      success?: string,
-     *      error?: string,
-     *  }
+     * @return array{success: string|null, error: string|null}
      */
     public function getAll(): array
     {

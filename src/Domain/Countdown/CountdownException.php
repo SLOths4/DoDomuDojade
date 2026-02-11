@@ -1,0 +1,138 @@
+<?php
+namespace App\Domain\Countdown;
+
+use App\Domain\Shared\DomainException;
+use App\Domain\Shared\DomainExceptionCodes;
+
+/**
+ * Countdown domain exceptions - contains translation KEYS
+ */
+final class CountdownException extends DomainException
+{
+    /**
+     * Invalid or missing countdown ID
+     */
+    public static function invalidId(int $id): self
+    {
+        return new self(
+            'countdown.invalid_id',
+            DomainExceptionCodes::COUNTDOWN_INVALID_ID->value,
+            400,
+            [
+                'countdown_id' => $id
+            ]
+        );
+    }
+
+    /**
+     * All required fields are empty
+     */
+    public static function emptyFields(): self
+    {
+        return new self(
+            'countdown.empty_fields',
+            DomainExceptionCodes::COUNTDOWN_EMPTY_FIELDS->value
+        );
+    }
+
+    /**
+     * Invalid datetime format
+     */
+    public static function countToInThePast(): self
+    {
+        return new self(
+            'countdown.count_to_in_the_past',
+            DomainExceptionCodes::COUNTDOWN_COUNT_TO_IN_THE_PAST->value
+        );
+    }
+
+    /**
+     * Too long title
+     */
+    public static function titleTooLong(int $maxTitleLength): self
+    {
+        return new self(
+            'countdown.title_too_long',
+            DomainExceptionCodes::COUNTDOWN_TITLE_TOO_LONG->value,
+            400,
+            [
+                'max_title_length' => $maxTitleLength
+            ]
+        );
+    }
+
+    /**
+     * Too short a title
+     */
+    public static function titleTooShort(int $minTitleLength): self
+    {
+        return new self(
+            'countdown.title_too_short',
+            DomainExceptionCodes::COUNTDOWN_TITLE_TOO_SHORT->value,
+            400,
+            [
+                'min_title_length' => $minTitleLength
+            ]
+        );
+    }
+
+    /**
+     * Countdown isn't found in a database
+     */
+    public static function notFound(int $id): self
+    {
+        return new self(
+            'countdown.not_found',
+            DomainExceptionCodes::COUNTDOWN_NOT_FOUND->value,
+            400,
+            [
+                'countdown_id' => $id
+            ]
+        );
+    }
+
+    /**
+     * Failed to create countdown
+     */
+    public static function failedToCreate(): self
+    {
+        return new self(
+            'countdown.create_failed',
+            DomainExceptionCodes::COUNTDOWN_CREATE_FAILED->value
+        );
+    }
+
+    /**
+     * Failed to update countdown
+     */
+    public static function failedToUpdate(): self
+    {
+        return new self(
+            'countdown.update_failed',
+            DomainExceptionCodes::COUNTDOWN_UPDATE_FAILED->value
+        );
+    }
+
+    /**
+     * Failed to delete countdown
+     */
+    public static function failedToDelete(): self
+    {
+        return new self(
+            'countdown.delete_failed',
+            DomainExceptionCodes::COUNTDOWN_DELETE_FAILED->value
+        );
+    }
+
+    /**
+     * Failed to fetch countdown
+     * @return self
+     */
+    public static function failedToFetch(): self
+    {
+        return new self(
+            'countdown.fetch_failed',
+            DomainExceptionCodes::COUNTDOWN_FETCH_FAILED->value
+        );
+    }
+}

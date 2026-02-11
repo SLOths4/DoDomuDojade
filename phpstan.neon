@@ -1,0 +1,12 @@
+parameters:
+    level: 7
+    paths:
+        - src
+        - bootstrap
+        - public
+    excludePaths:
+        - */tests/*
+        - */storage/*
+        - */vendor/*
+        - bootstrap/cache/*
+        - node_modules/*

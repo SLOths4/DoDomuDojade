@@ -1,7 +1,8 @@
 <?php
 namespace App\Infrastructure\Translation;
 
-use App\Http\Context\LocaleContext;
+use App\Presentation\Http\Context\LocaleContext;
+use App\Presentation\Http\Shared\Translator;
 
 final class LanguageTranslator implements Translator
 {
@@ -11,7 +12,7 @@ final class LanguageTranslator implements Translator
 
     public function __construct(
         private readonly LocaleContext $context,
-        string $translationsPath = __DIR__ . '/resources/'
+        string $translationsPath = __DIR__ . '/../../../resources/lang/'
     ) {
         $this->translationsPath = rtrim($translationsPath, '/');
         $this->cache = [];

@@ -1,0 +1,51 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Application\Display;
+
+use App\Application\Announcement\UseCase\GetValidAnnouncementsUseCase;
+use App\Application\User\UseCase\GetUserByIdUseCase;
+use Exception;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Provides announcements data formatted for display page
+ */
+readonly class GetDisplayAnnouncementsUseCase
+{
+    public function __construct(
+        private GetValidAnnouncementsUseCase $getValidAnnouncementsUseCase,
+        private GetUserByIdUseCase $getUserByIdUseCase,
+        private LoggerInterface $logger
+    ) {}
+
+    public function execute(): array
+    {
+        $announcements = $this->getValidAnnouncementsUseCase->execute();
+
+        $response = [];
+        foreach ($announcements as $announcement) {
+            $author = 'Nieznany użytkownik';
+
+            if (!is_null($announcement->getUserId())) {
+                try {
+                    $user = $this->getUserByIdUseCase->execute($announcement->getUserId());
+                    $author = $user->username;
+                } catch (Exception $e) {
+                    $this->logger->warning("Failed to fetch announcement author", [
+                        'userId' => $announcement->getUserId(),
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            $response[] = [
+                'title' => $announcement->title,
+                'author' => $author,
+                'text' => $announcement->text,
+            ];
+        }
+
+        return $response;
+    }
+}

@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-use App\Http\Controller\AnnouncementController;
-use App\Http\Controller\CountdownController;
-use App\Http\Controller\DisplayController;
-use App\Http\Controller\ErrorController;
-use App\Http\Controller\HomeController;
-use App\Http\Controller\LoginController;
-use App\Http\Controller\ModuleController;
-use App\Http\Controller\PanelController;
-use App\Http\Controller\UserController;
-use App\Http\Middleware\AuthMiddleware;
-use App\Http\Middleware\CsrfMiddleware;
-use App\Http\Middleware\ExceptionMiddleware;
-use App\Http\Middleware\LocaleMiddleware;
-use App\Http\Middleware\MiddlewarePipeline;
-use App\Http\Middleware\RequestContextMiddleware;
 use App\Infrastructure\Helper\StaticFileHandlingHelper;
+use App\Presentation\Http\Controller\AnnouncementController;
+use App\Presentation\Http\Controller\CountdownController;
+use App\Presentation\Http\Controller\DisplayController;
+use App\Presentation\Http\Controller\ErrorController;
+use App\Presentation\Http\Controller\HomeController;
+use App\Presentation\Http\Controller\LoginController;
+use App\Presentation\Http\Controller\ModuleController;
+use App\Presentation\Http\Controller\PanelController;
+use App\Presentation\Http\Controller\UserController;
+use App\Presentation\Http\Middleware\AuthMiddleware;
+use App\Presentation\Http\Middleware\CsrfMiddleware;
+use App\Presentation\Http\Middleware\ExceptionMiddleware;
+use App\Presentation\Http\Middleware\LocaleMiddleware;
+use App\Presentation\Http\Middleware\MiddlewarePipeline;
+use App\Presentation\Http\Middleware\RequestContextMiddleware;
 use FastRoute\RouteCollector;
 use GuzzleHttp\Psr7\ServerRequest;
 use function FastRoute\simpleDispatcher;
@@ -26,11 +26,8 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/bootstrap/ErrorHandling.php';
 
-$container = require_once __DIR__ . '/../src/bootstrap/bootstrap.php';
-/** @noinspection PhpUnhandledExceptionInspection */
-registerErrorHandling($container);
+$container = require_once __DIR__ . '/../bootstrap/bootstrap.php';
 
 $request = ServerRequest::fromGlobals();
 
@@ -60,29 +57,35 @@ try {
         $r->addRoute('GET', '/display', [DisplayController::class, 'index']);
         $r->addRoute('GET', '/panel', [PanelController::class, 'index', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/login', [LoginController::class, 'show']);
-        $r->addRoute('GET', '/logout', [LoginController::class, 'logout']);
+        $r->addRoute('POST', '/logout', [LoginController::class, 'logout']);
 
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika
-        $r->addRoute('POST', '/panel/authenticate', [LoginController::class, 'authenticate']);
-        $r->addRoute('POST', '/panel/add_user', [UserController::class, 'addUser', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_user', [UserController::class, 'deleteUser', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/authenticate', [LoginController::class, 'authenticate']);
+        $r->addRoute('POST', '/api/user', [UserController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/user/{id:[a-z0-9_.]+}/change-password', [UserController::class, 'changePassword', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.2. Akcje ogłoszeń
-        $r->addRoute('POST', '/panel/add_announcement', [AnnouncementController::class, 'addAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_announcement', [AnnouncementController::class, 'deleteAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_announcement', [AnnouncementController::class, 'editAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/approve_announcement', [AnnouncementController::class, 'approveAnnouncement', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/reject_announcement', [AnnouncementController::class, 'rejectAnnouncement', 'middleware' => [AuthMiddleware::class,]]);
+        $r->addRoute('POST', '/api/announcement', [AnnouncementController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/announcement', [AnnouncementController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'get', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/announcement/{id:[a-z0-9_.]+}', [AnnouncementController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/announcement/{id:[a-z0-9_.]+}/approve', [AnnouncementController::class, 'approve', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/announcement/{id:[a-z0-9_.]+}/reject', [AnnouncementController::class, 'reject', 'middleware' => [AuthMiddleware::class,]]);
+        $r->addRoute('POST', '/api/announcement/propose', [AnnouncementController::class, 'propose']);
+
 
         // 2.3. Akcje powiązane z modułami
-        $r->addRoute('POST', '/panel/edit_module', [ModuleController::class, 'editModule', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/toggle_module', [ModuleController::class, 'toggleModule', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/module/{id:[a-z0-9_.]+}', [ModuleController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/module/{id:[a-z0-9_.]+}/toggle', [ModuleController::class, 'toggle', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.4. Akcje licznika
-        $r->addRoute('POST', '/panel/add_countdown', [CountdownController::class, 'addCountdown', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/delete_countdown', [CountdownController::class, 'deleteCountdown', 'middleware' => [AuthMiddleware::class]]);
-        $r->addRoute('POST', '/panel/edit_countdown', [CountdownController::class, 'editCountdown', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/countdown', [CountdownController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('DELETE', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('PATCH', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.5. Wyświetlenie stron panelu
         $r->addRoute('GET', '/panel/users', [PanelController::class, 'users', 'middleware' => [AuthMiddleware::class]]);
@@ -91,17 +94,16 @@ try {
         $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules', 'middleware' => [AuthMiddleware::class]]);
 
         // 3. Trasy wyświetlacza (display)
-        $r->addRoute('GET', '/display/get_departures', [DisplayController::class, 'getDepartures']);
-        $r->addRoute('GET', '/display/get_announcements', [DisplayController::class, 'getAnnouncements']);
-        $r->addRoute('GET', '/display/get_weather', [DisplayController::class, 'getWeather']);
-        $r->addRoute('GET', '/display/get_countdown', [DisplayController::class, 'getCountdown']);
-        $r->addRoute('GET', '/display/get_events', [DisplayController::class, 'getEvents']);
-        $r->addRoute('GET', '/display/get_quote', [DisplayController::class, 'getQuote']);
-        $r->addRoute('GET', '/display/get_word', [DisplayController::class, 'getWord']);
+        $r->addRoute('GET', '/display/departure', [DisplayController::class, 'getDepartures']);
+        $r->addRoute('GET', '/display/announcement', [DisplayController::class, 'getAnnouncements']);
+        $r->addRoute('GET', '/display/weather', [DisplayController::class, 'getWeather']);
+        $r->addRoute('GET', '/display/countdown', [DisplayController::class, 'getCountdown']);
+        $r->addRoute('GET', '/display/event', [DisplayController::class, 'getEvents']);
+        $r->addRoute('GET', '/display/quote', [DisplayController::class, 'getQuote']);
+        $r->addRoute('GET', '/display/word', [DisplayController::class, 'getWord']);
 
         // 4. Trasy ogólnodostępne (public)
         $r->addRoute('GET', '/propose', [HomeController::class, 'proposeAnnouncement']);
-        $r->addRoute('POST', '/public/announcement/propose', [AnnouncementController::class, 'proposeAnnouncement']);
     });
 } catch (Throwable $e) {
     error_log('Router initialization failed: ' . $e->getMessage());
@@ -119,11 +121,11 @@ try {
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        $container->get(ErrorController::class)->notFound();
+        $response = $container->get(ErrorController::class)->notFound();
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        $container->get(ErrorController::class)->methodNotAllowed();
+        $response = $container->get(ErrorController::class)->methodNotAllowed();
         break;
 
     case FastRoute\Dispatcher::FOUND:
@@ -137,21 +139,26 @@ switch ($routeInfo[0]) {
 
             $controller = $container->get($controllerClass);
 
-            $pipeline = new MiddlewarePipeline();
+            if ($uri === '/stream') {
+                $controller->$methodName($vars);
+                exit;
+            } else {
+                $pipeline = new MiddlewarePipeline();
+                $pipeline->add($container->get(RequestContextMiddleware::class));
+                $pipeline->add($container->get(ExceptionMiddleware::class));
 
-            $pipeline->add($container->get(RequestContextMiddleware::class));
-            $pipeline->add($container->get(ExceptionMiddleware::class));
-            $pipeline->add($container->get(LocaleMiddleware::class));
-            $pipeline->add($container->get(CsrfMiddleware::class));
+                foreach ($middlewares as $mwClass) {
+                    $pipeline->add($container->get($mwClass));
+                }
 
-            foreach ($middlewares as $mwClass) {
-                $pipeline->add($container->get($mwClass));
+                $pipeline->add($container->get(LocaleMiddleware::class));
+                $pipeline->add($container->get(CsrfMiddleware::class));
+
+                $response = $pipeline->run($request, fn() => $controller->$methodName($vars));
             }
-
-            $pipeline->run($request, fn() => $controller->$methodName($vars));
-
         } elseif (is_callable($handlerData)) {
             $handlerData($vars);
+            exit;
         } else {
             throw new RuntimeException('Handler must be array [class, method] or callable');
         }
@@ -159,6 +166,18 @@ switch ($routeInfo[0]) {
 
     default:
         error_log('Unknown dispatcher status: ' . $routeInfo[0]);
-        $container->get(ErrorController::class)->internalServerError();
+        $response = $container->get(ErrorController::class)->internalServerError();
         break;
+}
+
+if (isset($response)) {
+    http_response_code($response->getStatusCode());
+
+    foreach ($response->getHeaders() as $name => $values) {
+        foreach ($values as $value) {
+            header(sprintf('%s: %s', $name, $value), false);
+        }
+    }
+
+    echo $response->getBody();
 }
