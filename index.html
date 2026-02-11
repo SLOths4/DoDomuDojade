@@ -1,0 +1,1148 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/">
+      
+      
+      
+        <link rel="next" href="architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dodomudojade-dokumentacja-architektury-i-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-dokumentacji" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Struktura Dokumentacji
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stos-technologiczny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stos technologiczny
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stos technologiczny">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#baza-danych" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baza danych
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#przeglad-projektu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przegląd projektu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-katalogow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struktura katalogów
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moduy-i-integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moduły i integracje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#szybki-start-lokalnie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Szybki start (lokalnie)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#konfiguracja-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfiguracja .env
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfiguracja .env">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wymagane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wymagane
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#najczesciej-uzywane-opcjonalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Najczęściej używane opcjonalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#szybki-start-produkcja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Szybki start (produkcja)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Szybki start (produkcja)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stworz-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stwórz .env
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-cron-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw cron jobs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ustaw cron jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-pobieranie-dziennego-sowa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw pobieranie dziennego słowa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-pobieranie-dziennego-cytatu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw pobieranie dziennego cytatu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-usuwanie-odrzucanie-ogoszen-starszych-niz-podana-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rozwiazywanie-problemow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rozwiązywanie problemów
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licencja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Licencja
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autorzy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorzy
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Display
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-dokumentacji" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Struktura Dokumentacji
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stos-technologiczny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stos technologiczny
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stos technologiczny">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#baza-danych" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baza danych
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#przeglad-projektu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przegląd projektu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-katalogow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struktura katalogów
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moduy-i-integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moduły i integracje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#szybki-start-lokalnie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Szybki start (lokalnie)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#konfiguracja-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfiguracja .env
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfiguracja .env">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wymagane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wymagane
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#najczesciej-uzywane-opcjonalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Najczęściej używane opcjonalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#szybki-start-produkcja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Szybki start (produkcja)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Szybki start (produkcja)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stworz-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stwórz .env
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-cron-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw cron jobs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ustaw cron jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-pobieranie-dziennego-sowa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw pobieranie dziennego słowa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-pobieranie-dziennego-cytatu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw pobieranie dziennego cytatu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ustaw-usuwanie-odrzucanie-ogoszen-starszych-niz-podana-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rozwiazywanie-problemow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rozwiązywanie problemów
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licencja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Licencja
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autorzy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorzy
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="dodomudojade-dokumentacja-architektury-i-api">DoDomuDojadę — Dokumentacja architektury i API</h1>
+<p>Witaj w dokumentacji projektu <strong>DoDomuDojadę</strong>! Ta strona stanowi punkt wyjścia do zrozumienia struktury i architektury aplikacji.</p>
+<h2 id="struktura-dokumentacji">📚 Struktura Dokumentacji</h2>
+<ul>
+<li><strong><a href="code/index.html">Autogenerowana dokumentacja kodu</a></strong></li>
+<li><strong><a href="architecture/">Architektura</a></strong> — opisuje architekturę aplikacji</li>
+<li><strong><a href="display/">Display</a></strong> — opisuje działanie najważniejszej funkcjonalności aplikacji</li>
+<li><strong><a href="development/">Development</a></strong> — opisuje założenia dalszego rozwoju projektu</li>
+</ul>
+<h2 id="stos-technologiczny">Stos technologiczny</h2>
+<h3 id="backend">Backend</h3>
+<ul>
+<li>PHP 8.5</li>
+</ul>
+<h3 id="frontend">Frontend</h3>
+<ul>
+<li>Tailwind CSS</li>
+<li>Alpine.js</li>
+</ul>
+<h3 id="baza-danych">Baza danych</h3>
+<ul>
+<li>Postgres</li>
+</ul>
+<h2 id="przeglad-projektu">Przegląd projektu</h2>
+<p>DoDomuDojadę to aplikacja webowa pełniąca rolę wirtualnej tablicy informacyjnej. Składa się z:
+- <strong>Display</strong> — publiczna strona z danymi (odjazdy, pogoda, cytat, słowo, wydarzenia). Renderowana w przeglądarce i zasilana przez API <code>GET /display/*</code>.
+- <strong>Panel administracyjny</strong> — część chroniona (logowanie), w której zarządzasz użytkownikami, ogłoszeniami, modułami i odliczeniami.
+- <strong>Warstwa CLI</strong> — komendy do zadań cyklicznych (pobieranie cytatu, słowa dnia, sprzątanie odrzuconych ogłoszeń).</p>
+<h2 id="struktura-katalogow">Struktura katalogów</h2>
+<p>Najważniejsze elementy repozytorium:
+- <code>public/</code> — wejście aplikacji (<code>index.php</code>) i statyczne assety.
+- <code>src/</code> — kod aplikacji (Application/Domain/Infrastructure/Presentation).
+- <code>resources/docs/</code> — dokumentacja hostowana przez MkDocs.
+- <code>resources/lang/</code> — tłumaczenia.
+- <code>schema/</code> — schemat i migracje bazy danych.
+- <code>bin/app</code> — CLI aplikacji.</p>
+<h2 id="moduy-i-integracje">Moduły i integracje</h2>
+<p>W aplikacji działają moduły:
+- <strong>tram</strong> — odjazdy tramwajów (ZTM/PEKA).
+- <strong>weather</strong> — pogoda i jakość powietrza (IMGW + Airly).
+- <strong>quote</strong> — cytat dnia.
+- <strong>word</strong> — słowo dnia.
+- <strong>calendar</strong> — wydarzenia z Google Calendar.
+- <strong>announcements</strong> — ogłoszenia.
+- <strong>countdown</strong> — odliczanie.</p>
+<p>Widoczność modułów jest kontrolowana w tabeli <code>module</code> i sprawdzana po stronie API.</p>
+<h2 id="szybki-start-lokalnie">Szybki start (lokalnie)</h2>
+<ol>
+<li>Zainstaluj zależności:
+   <div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>composer<span class="w"> </span>install<span class="w"> </span>--dev
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>npm<span class="w"> </span>ci
+</span></code></pre></div></li>
+<li>Skonfiguruj środowisko:
+   <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</span></code></pre></div></li>
+<li>Uzupełnij wymagane zmienne środowiskowe (patrz sekcja niżej).</li>
+<li>Utwórz bazę danych i wgraj schemat z <code>schema/schema.sql</code>.</li>
+<li>Uruchom backend:
+   <div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>php<span class="w"> </span>-S<span class="w"> </span>localhost:8080<span class="w"> </span>-t<span class="w"> </span>public/<span class="w"> </span>public/index.php
+</span></code></pre></div></li>
+<li>Uruchom front:
+   <div class="language-shell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>npm<span class="w"> </span>run<span class="w"> </span>dev
+</span></code></pre></div></li>
+</ol>
+<h2 id="konfiguracja-env">Konfiguracja <code>.env</code></h2>
+<p>Poniżej lista kluczowych zmiennych środowiskowych. Wymagane zmienne muszą być ustawione, inaczej aplikacja przerwie start.</p>
+<h3 id="wymagane">Wymagane</h3>
+<ul>
+<li><code>LOGGING_DIRECTORY_PATH</code> — katalog na logi (np. <code>./logs</code>)</li>
+<li><code>TWIG_CACHE_PATH</code> — katalog cache dla Twiga (np. <code>./var/cache/twig</code>)</li>
+<li><code>AIRLY_API_KEY</code>, <code>AIRLY_ENDPOINT</code> — dane jakości powietrza</li>
+<li><code>IMGW_WEATHER_URL</code> — endpoint IMGW</li>
+<li><code>DB_USERNAME</code>, <code>DB_PASSWORD</code> — dane dostępu do bazy</li>
+<li><code>TRAM_URL</code> — endpoint ZTM (Peka)</li>
+<li><code>CALENDAR_API_KEY_PATH</code> — ścieżka do klucza Google Calendar</li>
+<li><code>CALENDAR_ID</code> — ID kalendarza Google</li>
+<li><code>QUOTE_API_URL</code>, <code>WORD_API_URL</code> — endpointy cytatu i słowa dnia</li>
+</ul>
+<h3 id="najczesciej-uzywane-opcjonalne">Najczęściej używane opcjonalne</h3>
+<ul>
+<li><code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code> (domyślnie host <code>localhost</code>, port <code>5432</code>, baza <code>dodomudojade</code>)</li>
+<li><code>LOGGING_CHANNEL_NAME</code> (domyślnie <code>APP</code>)</li>
+<li><code>LOGGING_LEVEL</code> (domyślnie <code>INFO</code>)</li>
+<li><code>TWIG_DEBUG</code> (domyślnie <code>false</code>)</li>
+<li><code>AIRLY_LOCATION_ID</code> (wymagane do pobierania danych z Airly)</li>
+<li><code>STOP_ID</code> — lista przystanków, np. <code>AWF41,AWF05</code></li>
+</ul>
+<h3 id="szybki-start-produkcja">Szybki start (produkcja)</h3>
+<ul>
+<li>Ustaw document root na <code>public/</code> (np. w Apache/Nginx).</li>
+<li>Konfiguruj PHP-FPM.</li>
+<li>Upewnij się, że katalog z logami (<code>LOGGING_DIRECTORY_PATH</code>) jest zapisywalny, ale nie publiczny.</li>
+<li>Zablokuj dostęp do katalogów źródłowych oraz .env.</li>
+</ul>
+<h4 id="stworz-env">Stwórz .env</h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cp .env.example .env
+</span></code></pre></div>
+<p>Ustaw <code>LOGGING_LEVEL=info</code> oraz odpowiednie ścieżki do logów i cache.</p>
+<h4 id="ustaw-cron-jobs">Ustaw cron jobs</h4>
+<h5 id="ustaw-pobieranie-dziennego-sowa">Ustaw pobieranie dziennego słowa</h5>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/app<span class="w"> </span>word:fetch
+</span></code></pre></div>
+<h5 id="ustaw-pobieranie-dziennego-cytatu">Ustaw pobieranie dziennego cytatu</h5>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/app<span class="w"> </span>quote:fetch
+</span></code></pre></div>
+<h5 id="ustaw-usuwanie-odrzucanie-ogoszen-starszych-niz-podana-data">Ustaw usuwanie odrzucanie ogłoszeń starszych niż podana data</h5>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/app<span class="w"> </span>announcement-rejected:delete<span class="w"> </span><span class="o">{</span>YYYY-MM-DD<span class="o">}</span>
+</span></code></pre></div>
+<h2 id="rozwiazywanie-problemow">Rozwiązywanie problemów</h2>
+<p>Rozwiązanie większości problemów staje się oczywiste po spojrzeniu do logów. Dlatego zacznij właśnie tam.</p>
+<ul>
+<li><strong>Błąd 500</strong>: Sprawdź logi (<code>LOGGING_DIRECTORY_PATH/app.log</code>); sprawdź logi PHP-FPM.</li>
+<li><strong>Brak danych API</strong>: Weryfikuj klucze w .env.</li>
+<li><strong>CSS się nie ładuje</strong>: Uruchom <code>npm run build</code>; sprawdź, czy statyczne pliki są serwowane.</li>
+<li><strong>Baza się nie łączy</strong>: Upewnij się, że podałeś/aś poprawny username i hasło.</li>
+<li><strong>Błąd bazy danych</strong>: Sprawdź, czy baza danych ma prawidłową strukturę i zawiera wszystkie tabele;</li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<ul>
+<li><strong>Dlaczego projekt nie używa framework-a?</strong> Głównym celem jest lekkość projektu oraz nauka PHP.</li>
+</ul>
+<h2 id="licencja">Licencja</h2>
+<p>Ten projekt jest licencjonowany na warunkach <strong>CC-BY-NC-4.0</strong></p>
+<p>Oznacza to, że:</p>
+<ul>
+<li>✅ możesz używać, modyfikować i dzielić się kodem</li>
+<li>✅ musisz przypisać autorstwo</li>
+<li>❌ nie możesz użytkować kodu komercyjnie bez zgody</li>
+</ul>
+<h2 id="autorzy">Autorzy</h2>
+<p>© <strong>SLOths4</strong> 2025</p>
+<p>@AirScorpionK
+@hexer7</p>
+<hr />
+<p><strong>Masz pytania?</strong> Otwórz <a href="https://github.com/SLOths4/DoDomuDojade/issues">Issue</a> lub skontaktuj się z nami na <a href="mailto:sloths4@spolecznaczworka.pl">sloths4@spolecznaczworka.pl</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
