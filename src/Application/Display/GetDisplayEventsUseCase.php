@@ -35,8 +35,8 @@ readonly class GetDisplayEventsUseCase
                 $eventsArray[] = [
                     'summary' => $event->getSummary() === null ? "Wydarzenie bez tytułu" : $event->getSummary(),
                     'description' => $event->getDescription() === null ? "Wydarzenie bez opisu" : $event->getDescription(),
-                    'start' => isset($event->getStart()->dateTime) === true ? new DateTime(($event->getStart()->dateTime))->format('H:i') : "Wydarzenie całodniowe",
-                    'end' => isset($event->getEnd()->dateTime) === true ? new DateTime(($event->getEnd()->dateTime))->format('H:i') : null,
+                    'start' => isset($event->getStart()->dateTime) === true ? new DateTime(($event->getStart()->dateTime))->format('d.m.Y H:i') : new DateTime(($event->getStart()->date))->format('d.m.Y'),
+                    'end' => isset($event->getEnd()->dateTime) === true ? new DateTime(($event->getEnd()->dateTime))->format('H:i') : new DateTime(($event->getEnd()->date))->format('d.m.Y'),
                 ];
             }
 

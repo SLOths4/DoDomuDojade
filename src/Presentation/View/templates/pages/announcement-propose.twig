@@ -43,13 +43,13 @@
                             type="text"
                             id="title"
                             name="title"
-                            maxlength="255"
+                            maxlength="50"
                             required
                             placeholder="Np. Potrzebuję pomocy z zadaniem z matematyki"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white"
                     >
                     <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        <span id="title_counter">0</span> / 255 znaków
+                        <span id="title_counter">0</span> / 50 znaków
                     </div>
                 </div>
 
@@ -61,14 +61,14 @@
                     <textarea
                             id="text"
                             name="text"
-                            maxlength="5000"
+                            maxlength="500"
                             required
                             rows="6"
                             placeholder="Opisz szczegóły swojego ogłoszenia. Gdzie? Kiedy? Dodatkowe informacje..."
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"
                     ></textarea>
                     <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        <span id="text_counter">0</span> / 5000 znaków
+                        <span id="text_counter">0</span> / 500 znaków
                     </div>
                 </div>
 
@@ -119,9 +119,6 @@
             const submitBtn = document.getElementById('submitBtn');
             const submitSpinner = document.getElementById('submitSpinner');
 
-            // ============================================
-            // NOTIFICATION HELPER
-            // ============================================
             const showNotification = (message, type = 'error') => {
                 const notificationDiv = document.createElement('div');
                 const bgClass = type === 'success'
@@ -134,18 +131,13 @@
                     ${message}
                 `;
 
-                // Insert at top of form
                 form.parentNode.insertBefore(notificationDiv, form);
 
-                // Auto-remove after 5 seconds
                 setTimeout(() => {
                     notificationDiv.remove();
                 }, 5000);
             };
 
-            // ============================================
-            // CHARACTER COUNTERS
-            // ============================================
             const updateCounterFactory = (input, counter) => () => {
                 counter.textContent = input.value.length;
             };
@@ -171,9 +163,6 @@
             initCounter(titleInput, titleCounter);
             initCounter(textInput, textCounter);
 
-            // ============================================
-            // DATE HANDLING
-            // ============================================
             const today = new Date().toISOString().split('T')[0];
             expiresAtInput.setAttribute('min', today);
 
@@ -181,14 +170,9 @@
             defaultDate.setDate(defaultDate.getDate() + 30);
             expiresAtInput.value = defaultDate.toISOString().split('T')[0];
 
-            // ============================================
-            // FORM SUBMISSION - AJAX
-            // POST /api/announcement/propose
-            // ============================================
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
 
-                // Validation
                 if (!titleInput.value.trim()) {
                     showNotification('Tytuł jest wymagany', 'error');
                     return;
@@ -209,7 +193,6 @@
                     return;
                 }
 
-                // Disable button and show spinner
                 submitBtn.disabled = true;
                 submitSpinner.classList.remove('hidden');
 
@@ -237,12 +220,10 @@
                         initCounter(titleInput, titleCounter);
                         initCounter(textInput, textCounter);
 
-                        // Reset date to default
                         const newDefaultDate = new Date();
                         newDefaultDate.setDate(newDefaultDate.getDate() + 30);
                         expiresAtInput.value = newDefaultDate.toISOString().split('T')[0];
 
-                        // Redirect after 2 seconds
                         setTimeout(() => {
                             window.location.href = '/';
                         }, 2000);

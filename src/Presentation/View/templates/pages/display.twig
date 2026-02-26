@@ -11,441 +11,278 @@
     <link href="/assets/styles/output.css" rel="stylesheet" type="text/css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body x-data="layout()" x-init="init()" class="bg-primary-200 font-lato text-gray-800">
-
-<div x-ref="header" class="flex mx-1 my-2">
-    <div x-data="clock()" x-init="init()" class="flex flex-auto bg-white h-20 rounded-l-2xl shadow-custom justify-around items-center max-sm:hidden">
-        <img src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40">
-        <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
-            <i class="fa-solid fa-calendar text-primary-400"></i>
-            <span x-text="date"></span>
-        </div>
-        <div class="font-mono text-lg md:text-2xl font-extrabold flex items-center space-x-2">
-            <i class="fa-solid fa-clock text-primary-400"></i>
-            <span x-text="time"></span>
+<body x-data="layout()" x-init="load()" class="bg-primary-200 font-lato text-gray-800">
+    <div x-ref="header" class="flex mx-1 my-2">
+        <div x-data="{clock: clock(), weather: weather()}" x-init="clock.load(); weather.load()" class="flex flex-auto bg-white h-20 rounded-2xl shadow-custom justify-around items-center">
+            <img src="/assets/resources/logo_samo_kolor.png" alt="logo" class="h-5 w-5 md:max-lg:h-10 md:max-lg:w-10 lg:h-15 lg:w-15">
+            <div class="font-mono max-sm:hidden max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold flex items-center space-x-2">
+                <i class="fa-solid fa-calendar text-primary-400"></i>
+                <span x-text="clock.date"></span>
+            </div>
+            <div class="font-mono max-sm:hidden max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold flex items-center space-x-2">
+                <i class="fa-solid fa-clock text-primary-400"></i>
+                <span x-text="clock.time"></span>
+            </div>
+            <template x-if="weather.loading">
+                <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
+                    <p class="font-extrabold text-center">Ładowanie...</p>
+                </div>
+            </template>
+            <template x-if="weather.error">
+                <div class="bg-red-100 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg items-center space-x-2 flex flex-grow w-full">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
+                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="weather.error"></p>
+                </div>
+            </template>
+            <template x-if="!weather.loading && !weather.error && weather.weather">
+                <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
+                    <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${weather.tempColor}`"></i>
+                    <span x-text="`${weather.weather.temperature}°C`"></span>
+                </div>
+            </template>
+            <template x-if="!weather.loading && !weather.error && weather.weather">
+                <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
+                    <i class="fa-solid fa-gauge text-primary-400"></i>
+                    <span x-text="`${weather.weather.pressure} hPa`"></span>
+                </div>
+            </template>
+            <template x-if="!weather.loading && !weather.error && weather.weather">
+                <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
+                    <i class="fas fa-air-freshener" :style="`color: ${weather.weather.airlyColour}`"></i>
+                    <span x-text="weather.weather.airlyDescription"></span>
+                </div>
+            </template>
         </div>
     </div>
 
-    <div x-data="weather()" x-init="load()" class="flex flex-auto bg-white h-20 rounded-r-2xl shadow-custom justify-around items-center font-mono text-xl font-extrabold">
-        <template x-if="loading">
-            <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
+    <div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2 overflow-hidden" :style="`height: ${gridHeight}px;`">
+        <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
+            <div x-show="loading" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center">
                 <p class="font-extrabold text-center">Ładowanie...</p>
             </div>
-        </template>
-        <template x-if="error">
-            <div class="bg-red-100 mx-3 text-xl border border-red-500 rounded-lg items-center space-x-2 flex flex-grow w-full">
-                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-            </div>
-        </template>
-        <template x-if="!loading && !error && weather">
-            <div class="flex w-full justify-around text-xl">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${tempColor}`"></i>
-                    <span x-text="`${weather.temperature}°C`"></span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-gauge text-primary-400"></i>
-                    <span x-text="`${weather.pressure} hPa`"></span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-air-freshener" :style="`color: ${weather.airlyColour}`"></i>
-                    <span x-text="weather.airlyAdvice"></span>
-                </div>
-            </div>
-        </template>
-    </div>
-</div>
-
-<div class="grid grid-flow-col auto-cols-fr w-full overflow-x-auto px-1 gap-2 overflow-hidden" :style="`height: ${gridHeight}px;`">
-
-    <div x-data="tramDepartures()" x-init="init()" x-ref="tramDiv" @tram-data-loaded.window="console.log('Tram departures refreshed')" class="bg-white rounded-2xl shadow-custom py-2 px-1" :style="`height: ${tramHeight}px;`">
-        <div x-show="loading" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
-            <p class="font-extrabold text-center">Ładowanie...</p>
-        </div>
-        <div id="tramGrid" x-show="!loading && !error && departures.length">
-            <div class="grid grid-cols-4 w-full text-center">
-                <div class="pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
-                    <i class="fa-solid fa-train-tram"></i> Linia
-                </div>
-                <div class="col-span-2 pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
-                    <i class="fa-solid fa-location-dot"></i> Kierunek
-                </div>
-                <div class="pb-2 text-xs md:max-lg:text-base lg:text-lg font-bold text-primary-400">
-                    <i class="fa-solid fa-clock"></i> Odjazd
-                </div>
-            </div>
-            <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
-                <div class="demo grid grid-cols-4 w-full text-center">
-                    <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg">
-                        <div
-                                x-text="tram.line"
-                                :class="[
-                                      (count[tram.line] || 'bg-white'),
-                                      tram.line < 20
-                                        ? 'h-6 w-6 md:max-lg:h-8 md:max-lg:w-8 lg:h-9 lg:w-9 rounded-full'
-                                        : 'h-6 w-8 md:max-lg:h-8 md:max-lg:w-10 lg:h-9 lg:w-11 border'
-                                    ]"
-                                class="font-bold inline-flex items-center justify-center"
-                        ></div>
+            <div id="tramGrid" x-show="!loading && !error && departures.length">
+                <div class="grid grid-cols-4 w-full text-center">
+                    <div class="pb-2 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-primary-400">
+                        <i class="fa-solid fa-train-tram"></i> Linia
                     </div>
-                    <div class="col-span-2 py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg"><a x-text="tram.direction"></a></div>
-                    <div class="py-2 border-t border-gray-200 text-xs md:max-lg:text-base lg:text-lg"><a x-html="formatMinutes(tram.minutes)"></a></div>
+                    <div class="col-span-2 pb-2 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-primary-400">
+                        <i class="fa-solid fa-location-dot"></i> Kierunek
+                    </div>
+                    <div class="pb-2 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-primary-400">
+                        <i class="fa-solid fa-clock"></i> Odjazd
+                    </div>
+                </div>
+                <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
+                    <div class="demo grid grid-cols-4 w-full text-center">
+                        <div class="py-2 border-t border-gray-200 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
+                            <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-5 max-sm:w-5 max-md:h-6 max-md:w-6 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-5 max-sm:w-6 max-md:h-6 max-md:w-8 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 border' ]" class="font-bold inline-flex items-center justify-center"></div>
+                        </div>
+                        <div class="col-span-2 py-2 border-t border-gray-200 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
+                            <a x-text="tram.direction"></a>
+                        </div>
+                        <div class="py-2 border-t border-gray-200 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
+                            <a x-html="formatMinutes(tram.minutes)"></a>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <template x-if="error">
+                <div class="bg-red-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
+                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
+                </div>
+            </template>
+            <template x-if="info">
+                <div class="bg-amber-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
+                    <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
                 </div>
             </template>
         </div>
 
-
-        <template x-if="error">
-            <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
-                <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-            </div>
-        </template>
-    </div>
-
-            <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col">
-
-                <!-- ODLICZANIE -->
-               <!-- <div x-data="countdown()" x-init="load()">
-
-                    <template x-if="loading || data">
-                        <div class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono text-xl font-extrabold text-center">
-                            <p x-show="loading" class="text-center">Ładowanie...</p>
-                            <p x-show="!loading && data" x-text="message"></p>
-                        </div>
-                    </template>
-
-
-                    <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-                        </div>
-                    </template>
-
-
-                    <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
-                        </div>
-                    </template>
-                </div>
-
-                <div x-data="quote()" x-init="load()">
-
-                    <template x-if="loading || data">
-                        <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
-                            <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                            <div x-show="!loading && data" class="space-y-2">
-                                <p class="font-mono text-lg italic text-center" x-text="data.quote.quote"></p>
-                                <p class="text-right text-sm text-gray-600" x-text="data.quote.from ? `— ${data.quote.from}` : ''"></p>
-                            </div>
-                        </div>
-                    </template>
-
-
-                    <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-                        </div>
-                    </template>
-
-
-                    <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
-                        </div>
-                    </template>
-                </div>
-
-                <div x-data="word()" x-init="load()">
-
-                    <template x-if="loading || data">
-                        <div class="bg-beige rounded-2xl m-2 p-4 shadow-custom">
-                            <p x-show="loading" class="text-center text-gray-500">Ładowanie...</p>
-                            <div x-show="!loading && data" class="space-y-2">
-                                <p class="font-mono text-lg italic text-center" x-text="data.word.word"></p>
-                                <p class="font-mono text-lg italic text-center" x-text="data.word.ipa"></p>
-                                <p class="font-mono text-lg italic text-center" x-text="data.word.definition"></p>
-                            </div>
-                        </div>
-                    </template>
-
-
-                    <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-                        </div>
-                    </template>
-
-
-                    <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
-                        </div>
-                    </template>
-                </div>
-
-                <div x-data="events()" x-init="load()">
-
-                    <div class="rounded-2xl m-2">
-                        <p x-show="loading" class="bg-beige shadow-custom text-center text-gray-500">Ładowanie...</p>
-                        <div x-show="!loading && data.length" class="space-y-2">
-                            <template x-for="(group, index) in grouped1" :key="index">
-                                <div x-show="current1 === index">
-                                    <template x-for="(eventvar, index) in group" :key="`${eventvar.start}-${index}`" >
-                                        <div class="my-2 py-2 bg-beige shadow-custom text-center rounded-2xl">
-                                            <p><i class="fa-solid fa-calendar"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.summary"></span></p>
-                                            <p><i class="fa-solid fa-clock"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.end ? `${eventvar.start} - ${eventvar.end}` : `${eventvar.start}`"></span></p>
-                                            <p><i class="fa-solid fa-align-justify"></i> <span class="font-mono text-lg italic text-center" x-text="eventvar.description"></span></p>
-                                        </div>
-                                    </template>
+        <div class="bg-white rounded-2xl shadow-custom py-2 px-2 flex flex-col" :style="`height: ${tramHeight}px;`">
+            <div x-data="multiModuleRotator()" x-init="load()" class="overflow-y-auto py-2">
+                <template x-if="loading">
+                    <div class="bg-beige rounded-2xl p-4 m-2 shadow-custom">
+                        <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-mono font-extrabold text-gray-500">Ładowanie...</p>
+                    </div>
+                </template>
+                <template x-if="!loading && modules.length">
+                    <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
+                        <div x-show="current2 === index" class="bg-beige rounded-2xl p-2 m-2 shadow-custom mb-4">
+                            <template x-if="mod.type === 'countdown'">
+                                <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center" x-text="message"></p>
+                            </template>
+                            <template x-if="mod.type === 'quote'">
+                                <div class="space-y-2 text-center">
+                                    <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl italic" x-text="mod.data.quote"></p>
+                                    <p class="text-right max-sm:text-[10px] max-md:text-xs max-lg:text-sm max-xl:text-base text-lg text-gray-600 mt-2" x-text="mod.data.from ? `— ${mod.data.from}` : ''"></p>
+                                </div>
+                            </template>
+                            <template x-if="mod.type === 'word'">
+                                <div class="space-y-2 text-center">
+                                    <p class="font-mono max-sm:text-sm max-md:text-base md:max-lg:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold italic" x-text="mod.data.word"></p>
+                                    <p class="font-mono max-sm:text-[10px] max-md:text-xs max-lg:text-sm max-xl:text-base text-lg italic text-gray-600" x-text="mod.data.ipa"></p>
+                                    <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl italic" x-text="mod.data.definition"></p>
+                                </div>
+                            </template>
+                            <template x-if="mod.type === 'event'">
+                                <div>
+                                    <div class="text-center flex items-center justify-around">
+                                        <p class="px-2">
+                                            <i class="fa-solid fa-calendar mr-1 text-primary-400"></i>
+                                            <span class="font-bold max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl" x-text="mod.data.summary"></span>
+                                        </p>
+                                        <p class="px-2">
+                                            <i class="fa-solid fa-clock mr-1 text-primary-400"></i>
+                                            <span class="font-bold max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl" x-text="mod.data.end ? `${mod.data.start} - ${mod.data.end}` : mod.data.start"></span>
+                                        </p>
+                                    </div>
+                                    <p>
+                                        <i class="fa-solid fa-align-justify mr-1 text-primary-400"></i>
+                                        <span class="max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl" x-text="mod.data.description"></span>
+                                    </p>
                                 </div>
                             </template>
                         </div>
+                    </template>
+                </template>
+                <template x-show="!loading && !modules.length">
+                    <div class="bg-beige rounded-2xl p-4 m-2 shadow-custom">
+                        <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">Brak danych do wyświetlenia</p>
                     </div>
-
-
-                    <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
+                </template>
+                <template x-if="error">
+                    <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
+                        <div class="bg-red-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
+                            <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="errors"></p>
                         </div>
                     </template>
-
-
-                    <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium" x-text="info"></p>
+                </template>
+                <template x-if="info">
+                    <template x-for="(infos, index) in info" :key="`info-${index}-${info}`">
+                        <div class="bg-amber-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
+                            <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="infos"></p>
                         </div>
                     </template>
-                </div> -->
-
-
-                <div x-data="multiModuleRotator()" x-init="load()" class="overflow-y-auto py-2">
-
+                </template>
+            </div>
+            <div x-data="announcements()" x-init="load()">
+                <div x-show="!error && !info" class="overflow-y-auto py-2">
                     <template x-if="loading">
-                        <div class="bg-beige rounded-2xl p-4 m-2 shadow-custom">
-                            <p class="text-center text-xl font-mono font-extrabold text-gray-500">Ładowanie...</p>
-                        </div>
+                        <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-mono font-extrabold">Ładowanie...</p>
                     </template>
-
-                    <template x-if="!loading && modules.length">
-                        <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
-                            <div x-show="current2 === index" class="bg-beige rounded-2xl p-4 m-2 shadow-custom mb-4">
-                                <template x-if="mod.type === 'countdown'">
-                                    <p class="font-mono text-xl font-extrabold text-center" x-text="message"></p>
-                                </template>
-
-                                <template x-if="mod.type === 'quote'">
-                                    <div class="space-y-2 text-center">
-                                        <p class="font-mono text-lg italic" x-text="mod.data.quote"></p>
-                                        <p class="text-right text-sm text-gray-600 mt-2" x-text="mod.data.from ? `— ${mod.data.from}` : ''"></p>
-                                    </div>
-                                </template>
-
-                                <template x-if="mod.type === 'word'">
-                                    <div class="space-y-2 text-center">
-                                        <p class="font-mono text-xl font-bold italic" x-text="mod.data.word"></p>
-                                        <p class="font-mono text-sm italic text-gray-600" x-text="mod.data.ipa"></p>
-                                        <p class="font-mono text-lg italic" x-text="mod.data.definition"></p>
-                                    </div>
-                                </template>
-
-                                <template x-if="mod.type === 'event'">
-                                    <div class="text-center">
-                                        <div class="flex items-center">
-                                            <p class="px-2">
-                                                <i class="fa-solid fa-calendar mr-1 text-primary-400"></i>
-                                                <span class="text-lg" x-text="mod.data.summary"></span>
-                                            </p>
-                                            <p class="px-2">
-                                                <i class="fa-solid fa-clock mr-1 text-primary-400"></i>
-                                                <span class="text-lg"
-                                                      x-text="mod.data.end ? `${mod.data.start} - ${mod.data.end}` : mod.data.start"></span>
-                                            </p>
-                                        </div>
-                                        <p>
-                                            <i class="fa-solid fa-align-justify mr-1 text-primary-400"></i>
-                                            <span class="text-lg" x-text="mod.data.description"></span>
+                    <template x-if="!loading && announcements">
+                        <template x-for="(group, index) in grouped" :key="index">
+                            <div class="" x-show="current === index">
+                                <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
+                                <div class="bg-beige rounded-2xl p-2 shadow-custom mb-4">
+                                        <h3 class="font-bold max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl" x-text="a.title"></h3>
+                                        <p class="max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl" x-text="a.text"></p>
+                                        <p class="max-sm:text-[10px] max-md:text-xs max-lg:text-sm max-xl:text-base text-lg text-gray-600 mt-1">
+                                            <i class="fa-solid fa-user pl-2 text-primary-400"></i>
+                                            <span x-text="a.author"></span>
                                         </p>
                                     </div>
                                 </template>
                             </div>
                         </template>
                     </template>
-
-                    <template x-show="!loading && !modules.length">
-                        <div class="bg-beige rounded-2xl p-4 m-2 shadow-custom">
-                            <p class="text-center text-gray-500 text-lg">Brak danych do wyświetlenia</p>
-                        </div>
-                    </template>
-                    <template x-if="error">
-                        <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
-                            <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                                <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                                <p class="text-red-500 text-sm font-medium" x-text="errors"></p>
-                            </div>
-                        </template>
-                    </template>
-                    <template x-if="info">
-                        <template x-for="(infos, index) in info" :key="`info-${index}-${info}`">
-                            <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                                <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                                <p class="text-yellow-500 text-sm font-medium" x-text="infos"></p>
-                            </div>
-                        </template>
-                    </template>
                 </div>
-
-
-
-                <div x-data="announcements()" x-init="load()">
-                    <div x-show="!error && !info" class="overflow-y-auto py-2">
-                        <template x-if="loading">
-                            <p class="text-center text-xl font-mono font-extrabold">Ładowanie...</p>
-                        </template>
-                        <template x-if="!loading && announcements">
-                            <template x-for="(group, index) in grouped" :key="index">
-                                <div class="" x-show="current === index">
-                                    <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
-                                    <div class="bg-beige rounded-2xl p-3 shadow-custom mb-4">
-                                            <h3 class="font-bold text-lg" x-text="a.title"></h3>
-                                            <p class="text-lg" x-text="a.text"></p>
-                                            <p class="text-sm text-gray-600 mt-1">
-                                                <i class="fa-solid fa-user pl-2 text-primary-400"></i>
-                                                <span x-text="a.author"></span>
-                                            </p>
-                                        </div>
-                                    </template>
-                                </div>
-                            </template>
-                        </template>
+                <template x-if="error">
+                    <div class="bg-red-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
+                        <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
                     </div>
-                    <template x-if="error">
-                        <div class="bg-red-100 mt-3 mx-3 text-xl border border-red-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-red-500 text-sm font-medium" x-text="error"></p>
-                        </div>
-                    </template>
-                    <template x-if="info">
-                        <div class="bg-amber-100 mt-3 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                            <p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p>
-                        </div>
-                    </template>
-                </div>
+                </template>
+                <template x-if="info">
+                    <div class="bg-amber-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
+                        <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
+                    </div>
+                </template>
             </div>
         </div>
+    </div>
 
-        <!-- 🔹 KOMPONENTY ALPINE -->
-        <script>
-            function layout() {
-                return {
-                    gridHeight: 0,
-                    init() {
-                        this.calcGridHeight();
-                        window.addEventListener('resize', () => this.calcGridHeight());
-                        requestAnimationFrame(() => this.calcGridHeight());
-                    },
-                    calcGridHeight() {
-                        const headerRect = this.$refs.header?.getBoundingClientRect() || { height: 0, top: 0, bottom: 0 };
-                        const marginTop = parseFloat(getComputedStyle(this.$refs.header).marginTop) || 0;
-                        const marginBottom = parseFloat(getComputedStyle(this.$refs.header).marginBottom) || 0;
-                        const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
+    <script>
+        function layout() {
+            return {
+                gridHeight: 0,
+                load() {
+                    this.calcGridHeight();
+                    window.addEventListener('resize', () => this.calcGridHeight());
+                    requestAnimationFrame(() => this.calcGridHeight());
+                },
+                calcGridHeight() {
+                    const headerRect = this.$refs.header?.getBoundingClientRect() || { height: 0, top: 0, bottom: 0 };
+                    const marginTop = parseFloat(getComputedStyle(this.$refs.header).marginTop) || 0;
+                    const marginBottom = parseFloat(getComputedStyle(this.$refs.header).marginBottom) || 0;
+                    const totalHeaderHeight = headerRect.height + marginTop + marginBottom;
 
-                        this.gridHeight = window.innerHeight - totalHeaderHeight;
-                        this.tramHeight = this.gridHeight - 1;
-                    }
+                    this.gridHeight = window.innerHeight - totalHeaderHeight;
+                    this.tramHeight = this.gridHeight - 4;
                 }
             }
+        }
 
-            function clock() {
-                return {
-                    date: '',
-                    time: '',
-                    init() {
-                        this.update();
-                        setInterval(() => this.update(), 1000);
-                    },
-                    update() {
-                        const now = new Date();
-                        this.date = now.toLocaleDateString('pl-PL');
-                        this.time = now.toLocaleTimeString('pl-PL');
-                    }
+        function clock() {
+            return {
+                date: '',
+                time: '',
+                load() {
+                    this.update();
+                    setInterval(() => this.update(), 1000);
+                },
+                update() {
+                    const now = new Date();
+                    this.date = now.toLocaleDateString('pl-PL');
+                    this.time = now.toLocaleTimeString('pl-PL');
                 }
             }
+        }
 
     function weather() {
         return {
             weather: null,
             tempColor: '#000',
             error: null,
+            info: null,
             loading: true,
-            _firstLoadDone: false,
-            _isDifferent(a, b) {
-                if (!a || !b) return true;
-                return (
-                    a.temperature !== b.temperature ||
-                    a.pressure !== b.pressure ||
-                    a.airlyColour !== b.airlyColour ||
-                    a.airlyAdvice !== b.airlyAdvice
-                );
-            },
-            _setTempColor(t) {
-                this.tempColor = t <= -10 ? '#AECBFA' :
-                    t <= 0 ? '#A0F0ED' :
-                        t <= 5 ? '#000000' :
-                            t <= 15 ? '#FFF9A6' :
-                                t <= 25 ? '#FFD1A4' : '#FFB3B3';
+            setTempColor(t) {
+                this.tempColor = t <= -10 ? '#1E40AF' :
+                t <= 0 ? '#0EA5E9' :
+                t <= 5 ? '#FFB3B3' :
+                t <= 15 ? '#FCD34D':
+                t <= 25 ? '#F97316' :'#DC2626';
             },
             async load() {
-                if (!this._firstLoadDone) {
-                    this.loading = true;
-                    this.error = null;
-                }
                 try {
                     const res = await fetch('/display/weather', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu weather`);
                     let json;
                     try {
                         json = await res.json();
                     } catch (e) {
-                        throw new Error('Niepoprawny JSON');
+                        this.error = ('Niepoprawny JSON');
                     }
-
-                    if (!json || !json.weather) {
-                        this.error = 'Błąd ładowania pogody';
-                        this.loading = false;
-                        this._firstLoadDone = true;
-                        return;
+                    if (json && typeof json.weather === 'object') {
+                        if (JSON.stringify(this.weather) !== JSON.stringify(json.weather)) {
+                            this.weather = json.weather;
+                            if (!Number.isNaN(Number(this.weather.temperature))) this.setTempColor(this.weather.temperature);
+                        }
+                    } else {
+                        this.info = 'Brak dostępnych odczytów pogodowych';
                     }
-
-                    const weather = json.weather;
-
-                    if (this._isDifferent(this.weather, weather)) {
-                        this.weather = weather;
-                        const t = Number(weather.temperature);
-                        if (!Number.isNaN(t)) this._setTempColor(t);
-                    }
-                    this.error = null;
-                    this.loading = false;
-                    this._firstLoadDone = true;
                 } catch (e) {
-                    console.error(e);
-                    this.error = 'Błąd ładowania pogody';
+                    this.error = 'Błąd wyświetlania modułu weather';
+                } finally {
                     this.loading = false;
-                    this._firstLoadDone = true;
                 }
                 setTimeout(() => this.load(), 60000);
             }
@@ -456,6 +293,7 @@
         return {
             departures: [],
             error: null,
+            info: null,
             loading: true,
             count: {
                 '1': 'bg-pink-700',
@@ -479,26 +317,28 @@
             },
 
             async fetchDepartures() {
-                this.error = null;
                 try {
                     const res = await fetch('/display/departure', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-
-                    const json = await res.json();
+                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu departures`);
+                    let json;
+                    try {
+                        json = await res.json();
+                    } catch (e) {
+                        this.error = ('Niepoprawny JSON odjazdów');
+                    }
 
                     if (json && Array.isArray(json.departures)) {
-                        const newData = json.departures;
-                        if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
-                            this.departures = newData;
+                        if (JSON.stringify(this.departures) !== JSON.stringify(json.departures)) {
+                            this.departures = json.departures;
                         }
                     } else {
-                        this.error = 'Błąd ładowania odjazdów';
+                        this.info = 'Brak dostępnych odjazdów';
                     }
                 } catch (e) {
-                    console.error(e);
-                    this.error = 'Błąd ładowania odjazdów';
+                    this.error = 'Błąd działania modułu departures';
                 } finally {
                     this.loading = false;
                 }
@@ -514,8 +354,6 @@
             calcExcessTram() {
                 var parentEl = this.$refs.tramDiv;
                 var els = document.getElementsByClassName('demo');
-
-                // Iterate backwards to remove last elements until no overflow
                 for (var i = els.length - 1; i >= 0; i--) {
                     if (!(parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth)) {
                         break;
@@ -534,7 +372,7 @@
                 }
             },
 
-            async init() {
+            async load() {
                 await this.fetchDepartures();
                 const refreshData = async () => {
                     await this.fetchDepartures();
@@ -546,487 +384,178 @@
         };
     }
 
-        /*    function countdown() {
-                return {
-                    data: null,
-                    message: '',
-                    error: null,
-                    loading: true,
-                    info: null,
-                    intervalId: null,
-                    async load() {
+    function multiModuleRotator() {
+        return {
+            modules: [],
+            current2: 0,
+            loading: true,
+            error: [],
+            info: [],
+            rotateId: null,
+            countdownData: null,
+            countdownIntervalId: null,
+            message: '',
+
+            endpoints: [
+                { name: 'countdown', url: '/display/countdown' },
+                { name: 'quote', url: '/display/quote' },
+                { name: 'word', url: '/display/word' },
+                { name: 'events', url: '/display/event' }
+            ],
+            names: {
+                countdown: 'odliczania',
+                quote: 'cytatu',
+                word: 'słowa dnia',
+                events: 'wydarzeń'
+            },
+
+            async load() {
+                try {
+                    const promises = this.endpoints.map(async ({name, url}) => {
                         try {
-                            const res = await fetch('/display/countdown', {
+                            const res = await fetch(url, {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
-                            const json = await res.json();
-
-                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
-                                this.loading = true;
-                                this.error = 'Błąd ładowania odliczania';
-                                this.info = null;
-                                if (this.intervalId) clearInterval(this.intervalId);
-                            } else if (json.data.is_active === false) {
-                                this.loading = false;
-                                this.error = null;
-                                this.info = null;
-                                this.data = null;
-                                this.message = '';
-                                if (this.intervalId) clearInterval(this.intervalId);
-                            } else if (!json.data.title || !json.data.count_to) {
-                                this.loading = false;
-                                this.info = 'Brak danych odliczania';
-                                this.error = null;
-                                this.data = null;
-                                this.message = '';
-                                if (this.intervalId) clearInterval(this.intervalId);
-                            } else {
-                                if (this.error || this.info) {
-                                    this.error = null;
-                                    this.info = null;
-                                }
-
-                                if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                                    this.data = json.data;
-                                    this.loading = false;
-                                    this.update();
-                                    if (this.intervalId) clearInterval(this.intervalId);
-                                    this.intervalId = setInterval(() => this.update(), 1000);
-                                }
+                            if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu ${name}`);
+                            let json;
+                            try {
+                                json = await res.json();
+                            } catch (e) {
+                                this.error = (`Niepoprawny JSON ${this.names[name]}`);
                             }
-                        } catch (e) {
-                            this.error = 'Błąd ładowania odliczania';
-                            if (this.intervalId) clearInterval(this.intervalId);
-                            this.loading = false;
-                            console.error('Fetch error:', e);
-                        }
-                        setTimeout(() => this.load(), 60000);
-                    },
-                    update() {
-                        if (!this.data) return;
-                        const end = new Date(this.data.count_to * 1000);
-                        const diff = end - Date.now();
-                        if (diff <= 0) {
-                            this.message = 'Zakończono!';
-                            if (this.intervalId) {
-                                clearInterval(this.intervalId);
-                                this.intervalId = null;
+
+                            if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
+                                this.error.push(`Brak danych w module ${name}`);
+                                return [];
                             }
-                            return;
-                        }
-                        const d = Math.floor(diff / 86400000),
-                            h = Math.floor(diff / 3600000) % 24,
-                            m = Math.floor(diff / 60000) % 60,
-                            s = Math.floor(diff / 1000) % 60;
-                        let odmianadni;
-                        let odmianagodzin;
-                        let odmianaminut;
-                        let odmianasekund;
-                        switch (d) {
-                            case 1:
-                                odmianadni = `1 dzień`;
-                                break;
-                            default:
-                                odmianadni = `${d} dni`;
-                        }
-                        switch (h) {
-                            case 1:
-                                odmianagodzin = `1 godzina`;
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 22:
-                            case 23:
-                                odmianagodzin = `${h} godziny`;
-                                break;
-                            default:
-                                odmianagodzin = `${h} godzin`;
-                        }
-                        switch (m) {
-                            case 1:
-                                odmianaminut = `1 minuta`;
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 22:
-                            case 23:
-                            case 24:
-                            case 32:
-                            case 33:
-                            case 34:
-                            case 42:
-                            case 43:
-                            case 44:
-                            case 52:
-                            case 53:
-                            case 54:
-                                odmianaminut = `${m} minuty`;
-                                break;
-                            default:
-                                odmianaminut = `${m} minut`;
-                        }
-                        switch (s) {
-                            case 1:
-                                odmianasekund = `1 sekunda`;
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 22:
-                            case 23:
-                            case 24:
-                            case 32:
-                            case 33:
-                            case 34:
-                            case 42:
-                            case 43:
-                            case 44:
-                            case 52:
-                            case 53:
-                            case 54:
-                                odmianasekund = `${s} sekundy`;
-                                break;
-                            default:
-                                odmianasekund = `${s} sekund`;
-                        }
-                        this.message = `Do ${this.data.title} : ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
-                    }
-                }
-            }
 
-            function quote() {
-                return {
-                    data: null,
-                    error: null,
-                    loading: true,
-                    info: null,
-                    async load() {
-                        try {
-                            const res = await fetch('/display/quote', {
-                                method: 'GET',
-                                headers: { 'Content-Type': 'application/json' },
-                            });
-                            const json = await res.json();
-
-                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
-                                this.loading = false;
-                                this.error = 'Błąd ładowania cytatu';
-                                this.info = null;
-                                this.data = null;
-                            } else if (json.data.is_active === false) {
-                                this.loading = false;
-                                this.error = null;
-                                this.info = null;
-                                this.data = null;
-                            } else if (!json.data.quote || !json.data.quote.quote) {
-                                this.loading = false;
-                                this.info = 'Brak dostępnego cytatu';
-                                this.error = null;
-                                this.data = null;
-                            } else {
-                                if (this.error || this.info) {
-                                    this.error = null;
-                                    this.info = null;
-                                }
-
-                                if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                                    this.data = json.data;
-                                    this.loading = false;
-                                }
-                            }
-                        } catch (e) {
-                            this.error = 'Błąd ładowania cytatu';
-                            this.loading = false;
-                            console.error('Fetch error:', e);
-                        }
-                        setTimeout(() => this.load(), 60000);
-                    }
-                }
-            }
-
-            function word() {
-                return {
-                    data: null,
-                    error: null,
-                    loading: true,
-                    info: null,
-                    async load() {
-                        try {
-                            const res = await fetch('/display/word', {
-                                method: 'GET',
-                                headers: { 'Content-Type': 'application/json' },
-                            });
-                            const json = await res.json();
-
-                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
-                                this.loading = false;
-                                this.error = 'Błąd ładowania słowa dnia';
-                                this.info = null;
-                                this.data = null;
-                            } else if (json.data.is_active === false) {
-                                this.loading = false;
-                                this.error = null;
-                                this.info = null;
-                                this.data = null;
-                            } else if (!json.data.word || !json.data.word.word) {
-                                this.loading = false;
-                                this.info = 'Brak dostępnego słowa dnia';
-                                this.error = null;
-                                this.data = null;
-                            } else {
-                                if (this.error || this.info) {
-                                    this.error = null;
-                                    this.info = null;
-                                }
-
-                                if (JSON.stringify(this.data) !== JSON.stringify(json.data)) {
-                                    this.data = json.data;
-                                    this.loading = false;
-                                }
-                            }
-                        } catch (e) {
-                            this.error = 'Błąd ładowania słowa';
-                            this.loading = false;
-                            console.error('Fetch error:', e);
-                        }
-                        setTimeout(() => this.load(), 60000);
-                    }
-                }
-            }
-
-            function events() {
-                return {
-                    data: [],
-                    grouped1: [],
-                    current1: 0,
-                    error: null,
-                    loading: true,
-                    info: null,
-                    rotateIntervalId1: null,
-                    async load() {
-                        try {
-                            const res = await fetch('/display/event', {
-                                method: 'GET',
-                                headers: { 'Content-Type': 'application/json' },
-                            });
-                            const json = await res.json();
-
-                            if (!json || json.status !== 'success' || typeof json.data !== 'object') {
-                                this.loading = false;
-                                this.error = 'Błąd ładowania wydarzeń';
-                                this.info = null;
-                                this.data = null;
-                                if (this.rotateIntervalId1) clearInterval(this.rotateIntervalId1);
-                            } else if (json.data.is_active === false) {
-                                this.loading = false;
-                                this.error = null;
-                                this.info = null;
-                                this.data = null;
-                                this.events = [];
-                                this.grouped1 = [];
-                                if (this.rotateIntervalId1) clearInterval(this.rotateIntervalId1);
-                            } else if (!json.data.events || !json.data.events.length) {
-                                this.loading = false;
-                                this.info = 'Brak dostępnego wydarzenia';
-                                this.error = null;
-                                this.data = null;
-                                if (this.rotateIntervalId1) clearInterval(this.rotateIntervalId1);
-                            } else {
-                                if (this.error || this.info) {
-                                    this.error = null;
-                                    this.info = null;
-                                }
-                                if (json.status === 'success' && Array.isArray(json.data.events)) {
-                                    const newData = json.data.events;
-                                    if (JSON.stringify(this.data) !== JSON.stringify(newData)) {
-                                        this.data = newData;
-                                        this.grouped1 = this.data.map(item => [item]);
-                                        if (this.rotateIntervalId1) clearInterval(this.rotateIntervalId1);
-                                        this.rotate1();
-                                    }
-                                }
-                            }
-                        } catch (e) {
-                            this.error = 'Błąd ładowania wydarzeń';
-                            this.loading = false;
-                            console.error('Fetch error:', e);
-                        } finally {
-                        this.loading = false;
-                        }
-                        setTimeout(() => this.load(), 8000);
-                    },
-                    rotate1() {
-                        this.rotateIntervalId1 = setInterval(() => {
-                            this.current1 = (this.current1 + 1) % this.grouped1.length
-                        }, 8000);
-                    }
-                }
-            } */
-
-            function multiModuleRotator() {
-                return {
-                    modules: [],
-                    current2: 0,
-                    loading: true,
-                    error: [],
-                    info: [],
-                    rotateId: null,
-                    countdownData: null,
-                    countdownIntervalId: null,
-                    message: '',
-
-                    endpoints: [
-                        { name: 'countdown', url: '/display/countdown' },
-                        { name: 'quote', url: '/display/quote' },
-                        { name: 'word', url: '/display/word' },
-                        { name: 'events', url: '/display/event' }
-                    ],
-
-                    async load() {
-                        try {
-                            const promises = this.endpoints.map(async ({name, url}) => {
-                                try {
-                                    const res = await fetch(url, {
-                                        method: 'GET',
-                                        headers: { 'Content-Type': 'application/json' },
-                                    });
-                                    const json = await res.json();
-
-                                    if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
-                                        this.error.push(`Brak danych w module ${name}`);
-                                        return [];
-                                    }
-
-                                    if (name === 'events') {
-                                        const events = json.events;
-                                        if (!events || !Array.isArray(events)) {
-                                            if (!this.info.includes('Brak dostępnego wydarzenia')) {
-                                                this.info.push('Brak dostępnego wydarzenia');
-                                            }
-                                            return [];
-                                        }
-                                        return Array.isArray(events) ?
-                                            events.map(e => ({type: 'event', data: e})) :
-                                            [{type: 'event', data: events}];
-                                    }
-
-                                    if (name === 'countdown') {
-                                        if (!json.countdown || !json.countdown.count_to) {
-                                            if (!this.info.includes('Brak dostępnego odliczania')) {
-                                                this.info.push('Brak dostępnego odliczania');
-                                            }
-                                            return [];
-                                        }
-                                        return [{type: 'countdown', data: json.countdown}];
-                                    }
-
-                                    if (name === 'word') {
-                                        if (!json.word || !json.word.word) {
-                                            if (!this.info.includes('Brak dostępnego słowa dnia')) {
-                                                this.info.push('Brak dostępnego słowa dnia');
-                                            }
-                                            return [];
-                                        }
-                                        return [{type: 'word', data: json.word}];
-                                    }
-
-                                    if (name === 'quote') {
-                                        if (!json.quote.quote || !json.quote.from) {
-                                            if (!this.info.includes('Brak dostępnego cytatu')) {
-                                                this.info.push('Brak dostępnego cytatu');
-                                            }
-                                            return [];
-                                        }
-                                        return [{type: 'quote', data: json.quote}];
-                                    }
-
-                                    return [];
-                                } catch(e) {
-                                    if (!this.error.includes(`Błąd pobierania danych w module ${name}`)) {
-                                        this.error.push(`Błąd pobierania danych w module ${name}`);
+                            if (name === 'events') {
+                                const events = json.events;
+                                if (!events || !Array.isArray(events)) {
+                                    if (!this.info.includes('Brak dostępnych wydarzeń')) {
+                                        this.info.push('Brak dostępnych wydarzeń');
                                     }
                                     return [];
                                 }
-                            });
+                                return Array.isArray(events) ?
+                                    events.map(e => ({type: 'event', data: e})) :
+                                    [{type: 'event', data: events}];
+                            }
 
-                            const results = await Promise.all(promises);
-                            this.modules = results.flat().filter(Boolean);
-                            console.log(this.modules);
-                            this.updateCountdown();
-                            this.loading = false;
-                            this.startRotation();
+                            if (name === 'countdown') {
+                                if (!json.countdown || !json.countdown.count_to) {
+                                    if (!this.info.includes('Brak dostępnego odliczania')) {
+                                        this.info.push('Brak dostępnego odliczania');
+                                    }
+                                    return [];
+                                }
+                                return [{type: 'countdown', data: json.countdown}];
+                            }
 
+                            if (name === 'word') {
+                                if (!json.word || !json.word.word) {
+                                    if (!this.info.includes('Brak dostępnego słowa dnia')) {
+                                        this.info.push('Brak dostępnego słowa dnia');
+                                    }
+                                    return [];
+                                }
+                                return [{type: 'word', data: json.word}];
+                            }
+
+                            if (name === 'quote') {
+                                if (!json.quote || !json.quote.from) {
+                                    if (!this.info.includes('Brak dostępnego cytatu')) {
+                                        this.info.push('Brak dostępnego cytatu');
+                                    }
+                                    return [];
+                                }
+                                return [{type: 'quote', data: json.quote}];
+                            }
+
+                            return [];
                         } catch(e) {
-                            this.error.push('Błąd ładowania');
-                            console.log(e);
-                            this.loading = false;
-                        }
-                        setTimeout(() => this.load(), 40000);
-                    },
-
-
-                    startRotation() {
-                        if (this.rotateId) clearInterval(this.rotateId);
-                        this.current2 = 0;
-                        if (this.modules.length > 1) {
-                            this.rotateId = setInterval(() => {
-                                this.current2 = (this.current2 + 1) % this.modules.length;
-                            }, 10000);
-                        }
-                    },
-
-                    updateCountdown() {
-                        if (this.countdownIntervalId) clearInterval(this.countdownIntervalId);
-
-                        const countdownModule = this.modules.find(m => m.type === 'countdown');
-                        if (!countdownModule?.data?.count_to) {
-                            this.countdownData = null;
-                            this.message = '';
-                            return;
-                        }
-
-                        this.countdownData = countdownModule.data;
-                        this.update();
-                        this.countdownIntervalId = setInterval(() => this.update(), 1000);
-                    },
-
-                    update() {
-                        if (!this.countdownData) return;
-
-                        const end = new Date(this.countdownData.count_to * 1000);
-                        const diff = end - Date.now();
-
-                        if (diff <= 0) {
-                            this.message = 'Zakończono!';
-                            if (this.countdownIntervalId) {
-                                clearInterval(this.countdownIntervalId);
-                                this.countdownIntervalId = null;
+                            if (!this.error.includes(`Błąd wyświetlania modułu ${name}`)) {
+                                this.error.push(`Błąd wyświetlania modułu ${name}`);
                             }
-                            return;
+                            return [];
                         }
+                    });
 
-                        const d = Math.floor(diff / 86400000),
-                        h = Math.floor((diff % 86400000) / 3600000),
-                        m = Math.floor((diff % 3600000) / 60000),
-                        s = Math.floor((diff % 60000) / 1000);
+                    const results = await Promise.all(promises);
+                    this.modules = results.flat().filter(Boolean);
+                    console.log(this.modules);
+                    this.updateCountdown();
+                    this.loading = false;
+                    this.startRotation();
 
-                        const odmianadni = d === 1 ? '1 dzień' : `${d} dni`;
-                        const odmianagodzin = [1].includes(h) ? '1 godzina' :
-                        [2,3,4,22,23].includes(h) ? `${h} godziny` : `${h} godzin`;
-                        const odmianaminut = [1].includes(m) ? '1 minuta' :
-                        [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(m) ? `${m} minuty` : `${m} minut`;
-                        const odmianasekund = [1].includes(s) ? '1 sekunda' :
-                        [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(s) ? `${s} sekundy` : `${s} sekund`;
-
-                        this.message = `Do ${this.countdownData.title}: ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
+                } catch(e) {
+                    if (!this.error.push('Błąd działania modułu rotacji')) {
+                        this.error.push('Błąd działania modułu rotacji');
                     }
+                    this.loading = false;
                 }
+                setTimeout(() => this.load(), 40000);
+            },
+
+
+            startRotation() {
+                if (this.rotateId) clearInterval(this.rotateId);
+                this.current2 = 0;
+                if (this.modules.length > 1) {
+                    this.rotateId = setInterval(() => {
+                        this.current2 = (this.current2 + 1) % this.modules.length;
+                    }, 10000);
+                }
+            },
+
+            updateCountdown() {
+                if (this.countdownIntervalId) clearInterval(this.countdownIntervalId);
+
+                const countdownModule = this.modules.find(m => m.type === 'countdown');
+                if (!countdownModule?.data?.count_to) {
+                    this.countdownData = null;
+                    this.message = '';
+                    return;
+                }
+
+                this.countdownData = countdownModule.data;
+                this.update();
+                this.countdownIntervalId = setInterval(() => this.update(), 1000);
+            },
+
+            update() {
+                if (!this.countdownData) return;
+
+                const end = new Date(this.countdownData.count_to * 1000);
+                const diff = end - Date.now();
+
+                if (diff <= 0) {
+                    this.message = 'Zakończono!';
+                    if (this.countdownIntervalId) {
+                        clearInterval(this.countdownIntervalId);
+                        this.countdownIntervalId = null;
+                    }
+                    return;
+                }
+
+                const d = Math.floor(diff / 86400000),
+                h = Math.floor((diff % 86400000) / 3600000),
+                m = Math.floor((diff % 3600000) / 60000),
+                s = Math.floor((diff % 60000) / 1000);
+
+                const odmianadni = d === 1 ? '1 dzień' : `${d} dni`;
+                const odmianagodzin = [1].includes(h) ? '1 godzina' :
+                [2,3,4,22,23].includes(h) ? `${h} godziny` : `${h} godzin`;
+                const odmianaminut = [1].includes(m) ? '1 minuta' :
+                [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(m) ? `${m} minuty` : `${m} minut`;
+                const odmianasekund = [1].includes(s) ? '1 sekunda' :
+                [2,3,4,22,23,24,32,33,34,42,43,44,52,53,54].includes(s) ? `${s} sekundy` : `${s} sekund`;
+
+                this.message = `Do ${this.countdownData.title}: ${odmianadni} ${odmianagodzin} ${odmianaminut} ${odmianasekund}`;
             }
-
-
+        }
+    }
 
     function announcements() {
         return {
@@ -1043,58 +572,29 @@
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-
-                    const json = await res.json();
-
-                    if (!json || typeof json.announcements !== 'object') {
-                        this.loading = false;
-                        this.error = 'Błąd ładowania ogłoszeń';
-                        this.info = null;
-                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                        return;
+                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu announcements`);
+                    let json;
+                    try {
+                        json = await res.json();
+                    } catch (e) {
+                        this.error = ('Niepoprawny JSON ogłoszeń');
                     }
-
-                    if (json.is_active === false) {
-                        this.loading = false;
-                        this.error = null;
-                        this.info = null;
-                        this.announcements = [];
-                        this.grouped = [];
-                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                        return;
-                    }
-
-                    const list = Array.isArray(json.announcements) ? json.announcements : [];
-
-                    if (!list.length) {
-                        this.loading = false;
-                        this.info = 'Brak danych ogłoszeń';
-                        this.error = null;
-                        this.announcements = [];
-                        this.grouped = [];
-                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                        return;
-                    }
-
-                    if (this.error || this.info) {
-                        this.error = null;
-                        this.info = null;
-                    }
-
-                    if (JSON.stringify(this.announcements) === JSON.stringify(list)) {
-                        this.loading = false;
+                    if (json && Array.isArray(json.announcements)) {
+                        if (JSON.stringify(this.announcements) !== JSON.stringify(json.announcements)) {
+                            this.announcements = json.announcements;
+                            this.loading = false;
+                            this.grouped = this.chunk(this.announcements, 1);
+                            if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                            this.rotate();
+                        }
                     } else {
-                        this.announcements = list;
-                        this.loading = false;
-                        this.grouped = this.chunk(list, 1);
-                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                        this.rotate();
+                            this.info = 'Brak dostępnych ogłoszeń';
                     }
                 } catch (e) {
-                    this.error = 'Błąd ładowania ogłoszeń';
-                    this.loading = false;
+                    this.error = 'Błąd działania modułu announcements';
                     if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                    console.error(e);
+                } finally {
+                    this.loading = false;
                 }
                 setTimeout(() => this.load(), 8000);
             },
