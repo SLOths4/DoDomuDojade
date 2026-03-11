@@ -192,14 +192,14 @@
                     </template>
                 </div>
                 <template x-if="error">
-                    <div class="bg-red-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
-                        <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
+                    <div class="bg-red-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
                         <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
                     </div>
                 </template>
                 <template x-if="info">
-                    <div class="bg-amber-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
-                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
+                    <div class="bg-amber-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
                         <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
                     </div>
                 </template>
@@ -484,7 +484,6 @@
 
                     const results = await Promise.all(promises);
                     this.modules = results.flat().filter(Boolean);
-                    console.log(this.modules);
                     this.updateCountdown();
                     this.loading = false;
                     this.startRotation();
