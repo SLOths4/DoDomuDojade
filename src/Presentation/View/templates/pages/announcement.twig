@@ -197,14 +197,14 @@
 
                     <div class="mb-4">
                         <label for="edit_title" class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Tytuł</label>
-                        <input type="text" id="edit_title" name="title" maxlength="255" class="w-full p-2 border rounded dark:bg-gray-950 dark:border-gray-700 dark:text-white">
-                        <span id="edit_title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 255 znaków</span>
+                        <input type="text" id="edit_title" name="title" maxlength="50" class="w-full p-2 border rounded dark:bg-gray-950 dark:border-gray-700 dark:text-white">
+                        <span id="edit_title_char_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 50 znaków</span>
                     </div>
 
                     <div class="mb-4">
                         <label for="edit_text" class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Treść</label>
-                        <textarea id="edit_text" name="text" maxlength="5000" rows="5" class="w-full p-2 border rounded dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"></textarea>
-                        <span id="edit_text_char_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 5000 znaków</span>
+                        <textarea id="edit_text" name="text" maxlength="500" rows="5" class="w-full p-2 border rounded dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"></textarea>
+                        <span id="edit_text_char_counter" class="text-sm text-gray-600 dark:text-gray-400">0 / 500 znaków</span>
                     </div>
 
                     <div class="mb-4">
@@ -271,9 +271,6 @@
                     });
                 };
 
-                // ============================================
-                // NOTIFICATION HELPER
-                // ============================================
                 const showFormNotification = (message, type = 'error') => {
                     const notification = document.getElementById('formNotification');
                     const bgClass = type === 'success'
@@ -282,15 +279,11 @@
 
                     notification.innerHTML = `<div class="p-3 rounded border ${bgClass} mb-4">${message}</div>`;
 
-                    // Auto-remove after 5 seconds
                     setTimeout(() => {
                         notification.innerHTML = '';
                     }, 5000);
                 };
 
-                // ============================================
-                // HELPER: Refresh announcements from API
-                // ============================================
                 const refreshAnnouncementsTable = async () => {
                     try {
                         const response = await fetch('/api/announcement', {
@@ -361,15 +354,10 @@
                         tbody.insertAdjacentHTML('beforeend', row);
                     });
 
-                    // Re-attach event listeners for new buttons
                     addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                     addClickEventToButtons('.edit-btn', handleEditButtonClick);
                 };
 
-                // ============================================
-                // ADD ANNOUNCEMENT - AJAX
-                // POST /api/announcement
-                // ============================================
                 forms.addAnnouncement.addEventListener('submit', async (e) => {
                     e.preventDefault();
 
@@ -378,7 +366,6 @@
                     const spinner = document.getElementById('addAnnouncementSpinner');
                     const csrfToken = formData.get('_token');
 
-                    // Disable button and show spinner
                     submitBtn.disabled = true;
                     spinner.classList.remove('hidden');
 
@@ -419,10 +406,6 @@
                     }
                 });
 
-                // ============================================
-                // DELETE ANNOUNCEMENT - AJAX
-                // DELETE /api/announcement/{id}
-                // ============================================
                 const handleDeleteButtonClick = (event) => {
                     event.preventDefault();
                     document.getElementById('confirmationModal').dataset.announcementId = event.currentTarget.getAttribute('data-announcement-id');
@@ -458,10 +441,6 @@
                     }
                 });
 
-                // ============================================
-                // EDIT ANNOUNCEMENT - AJAX
-                // PATCH /api/announcement/{id}
-                // ============================================
                 const handleEditButtonClick = (event) => {
                     event.preventDefault();
                     const btn = event.currentTarget;
@@ -518,13 +497,8 @@
 
                 buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
 
-                // ============================================
-                // APPROVE/REJECT BUTTONS
-                // POST /api/announcement/{id}/approve
-                // POST /api/announcement/{id}/reject
-                // ============================================
+
                 document.addEventListener('click', async (e) => {
-                    // APPROVE
                     if (e.target.closest('.approve-btn')) {
                         const btn = e.target.closest('.approve-btn');
                         const announcementId = btn.getAttribute('data-announcement-id');
@@ -547,7 +521,6 @@
                         }
                     }
 
-                    // REJECT
                     if (e.target.closest('.reject-btn')) {
                         const btn = e.target.closest('.reject-btn');
                         const announcementId = btn.getAttribute('data-announcement-id');
@@ -571,9 +544,6 @@
                     }
                 });
 
-                // ============================================
-                // CHARACTER COUNTERS
-                // ============================================
                 const updateCounterFactory = (field, counter) => () => {
                     const maxLength = field.getAttribute("maxlength") || field.parentElement.querySelector('span').textContent.split(' / ')[1];
                     const currentLength = field.value.length || 0;
@@ -607,9 +577,6 @@
                     initCounter(addTextInput, addTextCounter);
                 }
 
-                // ============================================
-                // EVENT LISTENERS - DELETE & EDIT BUTTONS
-                // ============================================
                 addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                 addClickEventToButtons('.edit-btn', handleEditButtonClick);
             });
