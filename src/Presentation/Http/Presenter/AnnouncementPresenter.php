@@ -18,9 +18,9 @@ final class AnnouncementPresenter
                 text: $a->text,
                 status: $a->status->value,
                 authorId: $a->getUserId(),
-                createdAt: $a->getCreatedAt()->format(DATE_ATOM),
-                validUntil: $a->validUntil->format(DATE_ATOM),
-                decidedAt: $a->decidedAt?->format(DATE_ATOM),
+                createdAt: $a->getCreatedAt()->format('Y-m-d'),
+                validUntil: $a->validUntil->format('Y-m-d'),
+                decidedAt: $a->decidedAt?->format('Y-m-d'),
                 decidedBy: $a->decidedBy,
             ),
             $announcements
@@ -38,9 +38,9 @@ final class AnnouncementPresenter
                 title: $a->title,
                 text: $a->text,
                 status: $a->status->value,
-                createdAt: $a->getCreatedAt()->format('Y-m-d H:i'),
+                createdAt: $a->getCreatedAt()->format('Y-m-d'),
                 validUntil: $a->validUntil->format('Y-m-d'),
-                decidedAt: $a->decidedAt?->format('Y-m-d H:i'),
+                decidedAt: $a->decidedAt?->format('Y-m-d'),
                 authorUsername: $a->getUserId() !== null
                     ? ($usernames[$a->getUserId()] ?? null)
                     : null,

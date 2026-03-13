@@ -44,7 +44,6 @@
                             id="title"
                             name="title"
                             maxlength="50"
-                            required
                             placeholder="Np. Potrzebuję pomocy z zadaniem z matematyki"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white"
                     >
@@ -62,7 +61,6 @@
                             id="text"
                             name="text"
                             maxlength="500"
-                            required
                             rows="6"
                             placeholder="Opisz szczegóły swojego ogłoszenia. Gdzie? Kiedy? Dodatkowe informacje..."
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-400 dark:bg-gray-950 dark:border-gray-700 dark:text-white resize-none"
@@ -183,16 +181,6 @@
                     return;
                 }
 
-                if (titleInput.value.length < 5) {
-                    showNotification('Tytuł musi mieć co najmniej 5 znaków', 'error');
-                    return;
-                }
-
-                if (textInput.value.length < 10) {
-                    showNotification('Treść ogłoszenia musi mieć co najmniej 10 znaków', 'error');
-                    return;
-                }
-
                 submitBtn.disabled = true;
                 submitSpinner.classList.remove('hidden');
 
@@ -215,7 +203,7 @@
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        showNotification('✅ ' + data.message, 'success');
+                        showNotification(data.message, 'success');
                         form.reset();
                         initCounter(titleInput, titleCounter);
                         initCounter(textInput, textCounter);
@@ -231,7 +219,7 @@
                         showNotification(data.message || 'Błąd: ' + data.error, 'error');
                     }
                 } catch (error) {
-                    showNotification('❌ Błąd połączenia: ' + error.message, 'error');
+                    showNotification('Błąd połączenia: ' + error.message, 'error');
                 } finally {
                     submitBtn.disabled = false;
                     submitSpinner.classList.add('hidden');

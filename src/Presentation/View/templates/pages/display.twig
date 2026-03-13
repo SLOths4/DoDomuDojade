@@ -46,12 +46,6 @@
                     <span x-text="`${weather.weather.pressure} hPa`"></span>
                 </div>
             </template>
-            <template x-if="!weather.loading && !weather.error && weather.weather">
-                <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
-                    <i class="fas fa-air-freshener" :style="`color: ${weather.weather.airlyColour}`"></i>
-                    <span x-text="weather.weather.airlyDescription"></span>
-                </div>
-            </template>
         </div>
     </div>
 
