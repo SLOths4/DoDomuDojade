@@ -46,7 +46,7 @@
                         <tr>
                             <td class="px-4 py-2 border">{{ countdown.title }}</td>
                             <td class="px-4 py-2 border">{{ usernames[countdown.userId] ?? 'Nieznany użytkownik' }}</td>
-                            <td class="px-4 py-2 border">{{ countdown.countTo }}</td>
+                            <td class="px-4 py-2 border">{{ countdown.countToDisplay }}</td>
                             <td class="px-4 py-2 border space-x-2">
                                 <button type="button"
                                         class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
@@ -57,7 +57,7 @@
                                         class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
                                         data-countdown-id="{{ countdown.id }}"
                                         data-title="{{ countdown.title }}"
-                                        data-count-to="{{ countdown.countTo }}">
+                                        data-count-to="{{ countdown.countToInput }}">
                                     Edytuj
                                 </button>
                             </td>
@@ -200,6 +200,36 @@
                     }
                 };
 
+                const formatCountdownDisplayValue = (value) => {
+                    if (!value) {
+                        return '';
+                    }
+
+                    const parsedDate = new Date(value);
+                    if (Number.isNaN(parsedDate.getTime())) {
+                        return value;
+                    }
+
+                    const pad = (number) => String(number).padStart(2, '0');
+
+                    return `${parsedDate.getFullYear()}-${pad(parsedDate.getMonth() + 1)}-${pad(parsedDate.getDate())} ${pad(parsedDate.getHours())}:${pad(parsedDate.getMinutes())}`;
+                };
+
+                const formatCountdownInputValue = (value) => {
+                    if (!value) {
+                        return '';
+                    }
+
+                    const parsedDate = new Date(value);
+                    if (Number.isNaN(parsedDate.getTime())) {
+                        return value;
+                    }
+
+                    const pad = (number) => String(number).padStart(2, '0');
+
+                    return `${parsedDate.getFullYear()}-${pad(parsedDate.getMonth() + 1)}-${pad(parsedDate.getDate())}T${pad(parsedDate.getHours())}:${pad(parsedDate.getMinutes())}`;
+                };
+
                 const updateTableRows = (countdowns) => {
                     const tbody = document.querySelector('#countdownsTable tbody');
                     if (!tbody) return;
@@ -207,11 +237,13 @@
                     tbody.innerHTML = '';
 
                     countdowns.forEach(countdown => {
+                        const countToDisplay = countdown.countToDisplay || formatCountdownDisplayValue(countdown.countTo);
+                        const countToInput = countdown.countToInput || formatCountdownInputValue(countdown.countTo);
                         const row = `
                     <tr>
                         <td class="px-4 py-2 border">${countdown.title}</td>
                         <td class="px-4 py-2 border">${countdown.authorName || 'Nieznany użytkownik'}</td>
-                        <td class="px-4 py-2 border">${countdown.countTo}</td>
+                        <td class="px-4 py-2 border">${countToDisplay}</td>
                         <td class="px-4 py-2 border space-x-2">
                             <button type="button"
                                     class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
@@ -222,7 +254,7 @@
                                     class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
                                     data-countdown-id="${countdown.id}"
                                     data-title="${countdown.title}"
-                                    data-count-to="${countdown.countTo}">
+                                    data-count-to="${countToInput}">
                                 Edytuj
                             </button>
                         </td>
