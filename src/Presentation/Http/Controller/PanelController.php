@@ -63,13 +63,20 @@ class PanelController extends BaseController
     {
         $formatted = [];
         foreach ($countdowns as $countdown) {
+            $countToDisplay = $countdown->countTo;
+            $countToInput = $countdown->countTo;
+
+            if ($countdown->countTo instanceof DateTimeImmutable) {
+                $countToDisplay = $countdown->countTo->format('Y-m-d H:i');
+                $countToInput = $countdown->countTo->format('Y-m-d\TH:i');
+            }
+
             $formatted[] = (object)[
                 'id' => $countdown->id,
                 'title' => $countdown->title,
                 'userId' => $countdown->userId,
-                'countTo' => $countdown->countTo instanceof DateTimeImmutable
-                    ? $countdown->countTo->format('Y-m-d')
-                    : $countdown->countTo,
+                'countToDisplay' => $countToDisplay,
+                'countToInput' => $countToInput,
             ];
         }
         return $formatted;
