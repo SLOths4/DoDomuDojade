@@ -134,7 +134,7 @@ final readonly class Config
     public static function fromEnv(): self
     {
         try {
-            $stopIdString = self::optionalEnv('STOP_ID', '');
+            $stopIdString = self::trimWrappingQuotes(self::optionalEnv('STOP_ID', ''));
 
             return new self(
             // Logging
@@ -191,10 +191,8 @@ final readonly class Config
 
                 // Tram
                 tramUrl: self::requiredEnv('TRAM_URL'),
-                stopID: array_values(array_filter(
-                    array_map('trim', explode(',', $stopIdString)),
-                    static fn(string $v): bool => $v !== ''
-                )),
+                // STOP_ID accepts comma-separated values with or without wrapping quotes.
+                stopID: self::normalizeStopIds($stopIdString),
 
                 // Calendar
                 googleCalendarApiKey: self::requiredEnv('CALENDAR_API_KEY_PATH'),
@@ -244,6 +242,38 @@ final readonly class Config
     private static function optionalEnv(string $key, string $default): string
     {
         return self::fetchEnv($key) ?? $default;
+    }
+
+    /**
+     * Normalizes STOP_ID env format to a clean list of stop identifiers.
+     * @return string[]
+     */
+    private static function normalizeStopIds(string $stopIdString): array
+    {
+        return array_values(array_filter(
+            array_map(
+                static fn(string $value): string => self::trimWrappingQuotes(trim($value)),
+                explode(',', $stopIdString)
+            ),
+            static fn(string $value): bool => $value !== ''
+        ));
+    }
+
+    private static function trimWrappingQuotes(string $value): string
+    {
+        $value = trim($value);
+
+        if (
+            strlen($value) >= 2
+            && (
+                (str_starts_with($value, '"') && str_ends_with($value, '"'))
+                || (str_starts_with($value, '\'') && str_ends_with($value, '\''))
+            )
+        ) {
+            return substr($value, 1, -1);
+        }
+
+        return $value;
     }
 
     /**
