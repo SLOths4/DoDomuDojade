@@ -3,6 +3,7 @@
 namespace App\Presentation\Http\Controller;
 
 use App\Application\Module\EditModuleDTO;
+use App\Application\Module\UseCase\GetAllModulesUseCase;
 use App\Application\Module\UseCase\ToggleModuleUseCase;
 use App\Application\Module\UseCase\UpdateModuleUseCase;
 use App\Presentation\Http\Context\RequestContext;
@@ -20,10 +21,30 @@ final class ModuleController extends BaseController
          private readonly ServerRequestInterface $request,
         private readonly LoggerInterface $logger,
         private readonly Translator $translator,
+        private readonly GetAllModulesUseCase $getAllModulesUseCase,
         private readonly ToggleModuleUseCase $toggleModuleUseCase,
         private readonly UpdateModuleUseCase $updateModuleUseCase,
     ) {
         parent::__construct($requestContext, $renderer);
+    }
+
+    /**
+     * GET /api/module
+     * @throws \Exception
+     */
+    public function getAll(): ResponseInterface
+    {
+        $this->logger->debug("Received get all modules request");
+
+        $modules = $this->getAllModulesUseCase->execute();
+
+        return $this->jsonResponse(200, array_map(fn($module) => [
+            'id' => $module->id,
+            'moduleNameLabel' => $this->translator->translate('module_name.' . $module->moduleName->value),
+            'startTime' => $module->startTime->format('H:i'),
+            'endTime' => $module->endTime->format('H:i'),
+            'isActive' => $module->isActive,
+        ], $modules));
     }
 
     /**

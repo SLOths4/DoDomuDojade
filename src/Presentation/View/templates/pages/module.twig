@@ -7,56 +7,59 @@
 
         {% include 'components/success.twig' with { success: flash.success} %}
 
-        {# Modules table #}
-        {% if modules is not empty %}
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <div id="formNotification"></div>
+        <div id="formNotification" class="mx-1"></div>
 
-                <table id="modulesTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Nazwa modułu</th>
-                        <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
-                        <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
-                        <th class="px-4 py-2 border">Stan</th>
-                        <th class="px-4 py-2 border">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for module in modules %}
+        {# Modules table #}
+        <div id="modulesTableSection" class="mx-1 mb-2">
+            {% if modules is not empty %}
+                <div class="rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                    <table id="modulesTable" class="w-full table-fixed border-collapse">
+                        <thead class="bg-gray-200 dark:bg-gray-700">
                         <tr>
-                            <td class="px-4 py-2 border">{{ module.moduleNameLabel }}</td>
-                            <td class="px-4 py-2 border">{{ module.startTime.format('H:i') }}</td>
-                            <td class="px-4 py-2 border">{{ module.endTime.format('H:i') }}</td>
-                            <td class="px-4 py-2 border space-x-2">
-                                <span class="toggle-status px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-green-500{% else %}bg-red-500{% endif %}"
-                                      data-module-id="{{ module.id }}">
-                                    {% if module.isActive %}Włączony{% else %}Wyłączony{% endif %}
-                                </span>
-                                <button type="button"
-                                        class="toggle-btn px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-red-500 hover:bg-red-600{% else %}bg-green-500 hover:bg-green-600{% endif %}"
-                                        data-module-id="{{ module.id }}"
-                                        data-csrf-token="{{ csrf.token }}">
-                                    {% if module.isActive %}Wyłącz{% else %}Włącz{% endif %}
-                                </button>
-                            </td>
-                            <td class="px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
-                                        data-module-id="{{ module.id }}"
-                                        data-start-time="{{ module.startTime.format('H:i') }}"
-                                        data-end-time="{{ module.endTime.format('H:i') }}">
-                                    Edytuj
-                                </button>
-                            </td>
+                            <th class="px-4 py-2 border">Nazwa modułu</th>
+                            <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
+                            <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
+                            <th class="px-4 py-2 border">Stan</th>
+                            <th class="px-4 py-2 border">Akcje</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            {% include 'components/error.twig' with { error: "Brak modułów do wyświetlenia." } %}
-        {% endif %}
+                        </thead>
+                        <tbody>
+                        {% for module in modules %}
+                            <tr>
+                                <td class="px-4 py-2 border">{{ module.moduleNameLabel }}</td>
+                                <td class="px-4 py-2 border">{{ module.startTime.format('H:i') }}</td>
+                                <td class="px-4 py-2 border">{{ module.endTime.format('H:i') }}</td>
+                                <td class="px-4 py-2 border space-x-2">
+                                    <span class="toggle-status px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-green-500{% else %}bg-red-500{% endif %}"
+                                          data-module-id="{{ module.id }}">
+                                        {% if module.isActive %}Włączony{% else %}Wyłączony{% endif %}
+                                    </span>
+                                    <button type="button"
+                                            class="toggle-btn px-2 py-1 rounded text-white font-bold {% if module.isActive %}bg-red-500 hover:bg-red-600{% else %}bg-green-500 hover:bg-green-600{% endif %}"
+                                            data-module-id="{{ module.id }}">
+                                        {% if module.isActive %}Wyłącz{% else %}Włącz{% endif %}
+                                    </button>
+                                </td>
+                                <td class="px-4 py-2 border space-x-2">
+                                    <button type="button"
+                                            class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                            data-module-id="{{ module.id }}"
+                                            data-start-time="{{ module.startTime.format('H:i') }}"
+                                            data-end-time="{{ module.endTime.format('H:i') }}">
+                                        Edytuj
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="rounded-2xl shadow bg-white dark:bg-gray-900 dark:text-white p-4 text-center">
+                    Brak modułów do wyświetlenia.
+                </div>
+            {% endif %}
+        </div>
 
         {# Edit modal #}
         <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
@@ -106,9 +109,86 @@
                     submitEdit: document.getElementById('submitEditBtn')
                 };
 
+                const csrfToken = forms.edit.querySelector('input[name="_token"]').value;
+                const modulesTableSection = document.getElementById('modulesTableSection');
+
                 const toggleModal = (modal, show) => {
                     modal.classList.toggle('hidden', !show);
                 };
+
+                const addClickEventToButtons = (selector, handler) => {
+                    document.querySelectorAll(selector).forEach(btn => {
+                        btn.addEventListener('click', handler);
+                    });
+                };
+
+                const escapeHtml = (value) => {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                };
+
+                const renderTableState = (items, tableMarkup, emptyMessage) => {
+                    modulesTableSection.innerHTML = items.length > 0
+                        ? tableMarkup(items)
+                        : `
+                            <div class="rounded-2xl shadow bg-white dark:bg-gray-900 dark:text-white p-4 text-center">
+                                ${emptyMessage}
+                            </div>
+                        `;
+                };
+
+                const buildModulesTableMarkup = (modules) => `
+                    <div class="rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                        <table id="modulesTable" class="w-full table-fixed border-collapse">
+                            <thead class="bg-gray-200 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2 border">Nazwa modułu</th>
+                                <th class="px-4 py-2 border" data-type="time">Godzina rozpoczęcia</th>
+                                <th class="px-4 py-2 border" data-type="time">Godzina zakończenia</th>
+                                <th class="px-4 py-2 border">Stan</th>
+                                <th class="px-4 py-2 border">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                ${modules.map(module => {
+                                    const statusClasses = module.isActive ? 'bg-green-500' : 'bg-red-500';
+                                    const toggleClasses = module.isActive
+                                        ? 'bg-red-500 hover:bg-red-600'
+                                        : 'bg-green-500 hover:bg-green-600';
+
+                                    return `
+                                        <tr>
+                                            <td class="px-4 py-2 border">${escapeHtml(module.moduleNameLabel)}</td>
+                                            <td class="px-4 py-2 border">${module.startTime}</td>
+                                            <td class="px-4 py-2 border">${module.endTime}</td>
+                                            <td class="px-4 py-2 border space-x-2">
+                                                <span class="toggle-status px-2 py-1 rounded text-white font-bold ${statusClasses}"
+                                                      data-module-id="${module.id}">
+                                                    ${module.isActive ? 'Włączony' : 'Wyłączony'}
+                                                </span>
+                                                <button type="button"
+                                                        class="toggle-btn px-2 py-1 rounded text-white font-bold ${toggleClasses}"
+                                                        data-module-id="${module.id}">
+                                                    ${module.isActive ? 'Wyłącz' : 'Włącz'}
+                                                </button>
+                                            </td>
+                                            <td class="px-4 py-2 border space-x-2">
+                                                <button type="button"
+                                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                                        data-module-id="${module.id}"
+                                                        data-start-time="${module.startTime}"
+                                                        data-end-time="${module.endTime}">
+                                                    Edytuj
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
 
                 // ============================================
                 // NOTIFICATION HELPER
@@ -126,44 +206,31 @@
                     }, 5000);
                 };
 
-                // ============================================
-                // TOGGLE MODULE - AJAX
-                // POST /api/module/{id}/toggle
-                // ============================================
-                document.querySelectorAll('.toggle-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        const moduleId = btn.getAttribute('data-module-id');
-                        const csrfToken = btn.getAttribute('data-csrf-token');
+                const handleToggleButtonClick = async (event) => {
+                    event.preventDefault();
+                    const moduleId = event.currentTarget.getAttribute('data-module-id');
 
-                        try {
-                            const response = await fetch(`/api/module/${moduleId}/toggle`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-Token': csrfToken
-                                }
-                            });
-
-                            const data = await response.json();
-
-                            if (response.ok && data.success) {
-                                showFormNotification('✅ ' + data.message, 'success');
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                showFormNotification(data.message || 'Błąd', 'error');
+                    try {
+                        const response = await fetch(`/api/module/${moduleId}/toggle`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-Token': csrfToken
                             }
-                        } catch (error) {
-                            showFormNotification('❌ Błąd: ' + error.message, 'error');
-                        }
-                    });
-                });
+                        });
 
-                // ============================================
-                // EDIT MODULE - AJAX
-                // PATCH /api/module/{id}
-                // ============================================
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showFormNotification('✅ ' + data.message, 'success');
+                            await refreshModulesTable();
+                        } else {
+                            showFormNotification(data.message || 'Błąd', 'error');
+                        }
+                    } catch (error) {
+                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                    }
+                };
+
                 const handleEditButtonClick = (event) => {
                     event.preventDefault();
 
@@ -179,10 +246,43 @@
                     toggleModal(modals.edition, true);
                 };
 
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', handleEditButtonClick);
-                });
+                const attachTableEventListeners = () => {
+                    addClickEventToButtons('.toggle-btn', handleToggleButtonClick);
+                    addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                };
 
+                const updateModulesTable = (modules) => {
+                    renderTableState(modules, buildModulesTableMarkup, 'Brak modułów do wyświetlenia.');
+                    attachTableEventListeners();
+                };
+
+                // ============================================
+                // HELPER: Refresh modules from API
+                // ============================================
+                const refreshModulesTable = async () => {
+                    try {
+                        const response = await fetch('/api/module', {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const modules = await response.json();
+                            updateModulesTable(modules);
+                        }
+                    } catch (error) {
+                        console.error('Błąd przy pobieraniu modułów:', error);
+                    }
+                };
+
+                attachTableEventListeners();
+
+                // ============================================
+                // EDIT MODULE - AJAX
+                // PATCH /api/module/{id}
+                // ============================================
                 forms.edit.addEventListener('submit', async (e) => {
                     e.preventDefault();
 
@@ -199,8 +299,6 @@
                     document.getElementById('submitEditSpinner').classList.remove('hidden');
 
                     try {
-                        const csrfToken = forms.edit.querySelector('input[name="_token"]').value;
-
                         const response = await fetch(`/api/module/${moduleId}`, {
                             method: 'PATCH',
                             headers: {
@@ -216,10 +314,9 @@
                         const data = await response.json();
 
                         if (response.ok && data.success) {
+                            toggleModal(modals.edition, false);
                             showFormNotification('✅ ' + data.message, 'success');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                            await refreshModulesTable();
                         } else {
                             showFormNotification(data.message || 'Błąd', 'error');
                         }
@@ -228,7 +325,6 @@
                     } finally {
                         buttons.submitEdit.disabled = false;
                         document.getElementById('submitEditSpinner').classList.add('hidden');
-                        toggleModal(modals.edition, false);
                     }
                 });
 
