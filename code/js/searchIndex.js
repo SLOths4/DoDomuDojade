@@ -5736,6 +5736,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-ModuleController.html#method___construct"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\ModuleController\u003A\u003AgetAll\u0028\u0029",
+            "name": "getAll",
+            "summary": "GET\u0020\/api\/module",
+            "url": "classes/App-Presentation-Http-Controller-ModuleController.html#method_getAll"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\ModuleController\u003A\u003Atoggle\u0028\u0029",
             "name": "toggle",
             "summary": "Toggle\u0020module\u0020via\u0020API\nPOST\u0020\/api\/module\/\u007Bid\u007D\/toggle",
@@ -5760,6 +5765,11 @@ Search.appendIndex(
             "name": "translator",
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-ModuleController.html#property_translator"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\ModuleController\u003A\u003A\u0024getAllModulesUseCase",
+            "name": "getAllModulesUseCase",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-ModuleController.html#property_getAllModulesUseCase"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\ModuleController\u003A\u003A\u0024toggleModuleUseCase",
             "name": "toggleModuleUseCase",
@@ -5866,6 +5876,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-UserController.html#method___construct"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\UserController\u003A\u003AgetAll\u0028\u0029",
+            "name": "getAll",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-UserController.html#method_getAll"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\UserController\u003A\u003Aadd\u0028\u0029",
             "name": "add",
             "summary": "",
@@ -5905,6 +5920,11 @@ Search.appendIndex(
             "name": "createUserUseCase",
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-UserController.html#property_createUserUseCase"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\UserController\u003A\u003A\u0024getAllUsersUseCase",
+            "name": "getAllUsersUseCase",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-UserController.html#property_getAllUsersUseCase"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\UserController\u003A\u003A\u0024deleteUserUseCase",
             "name": "deleteUserUseCase",
