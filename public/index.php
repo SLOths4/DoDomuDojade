@@ -86,6 +86,7 @@ try {
 
         // 2.4. Akcje licznika
         $r->addRoute('POST', '/api/countdown', [CountdownController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/countdowns', [CountdownController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
 

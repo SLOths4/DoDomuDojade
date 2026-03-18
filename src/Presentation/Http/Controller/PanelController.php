@@ -59,7 +59,7 @@ class PanelController extends BaseController
      * Format countdown objects for display
      * Ensures consistent date formatting
      */
-    private function formatCountdowns(array $countdowns): array
+    private function formatCountdowns(array $countdowns, array $usernames): array
     {
         $formatted = [];
         foreach ($countdowns as $countdown) {
@@ -75,8 +75,13 @@ class PanelController extends BaseController
                 'id' => $countdown->id,
                 'title' => $countdown->title,
                 'userId' => $countdown->userId,
-                'countToDisplay' => $countToDisplay,
-                'countToInput' => $countToInput,
+                'authorName' => $usernames[$countdown->userId] ?? 'Nieznany użytkownik',
+                'countTo' => $countdown->countTo instanceof DateTimeImmutable
+                    ? $countdown->countTo->format('Y-m-d H:i')
+                    : $countdown->countTo,
+                'countToEdit' => $countdown->countTo instanceof DateTimeImmutable
+                    ? $countdown->countTo->format('Y-m-d\TH:i')
+                    : $countdown->countTo,
             ];
         }
         return $formatted;
@@ -111,7 +116,7 @@ class PanelController extends BaseController
         $countdowns = $this->getAllCountdownsUseCase->execute();
 
         $usernames = $this->buildUsernamesMap($users);
-        $formattedCountdowns = $this->formatCountdowns($countdowns);
+        $formattedCountdowns = $this->formatCountdowns($countdowns, $usernames);
 
         $this->logger->info("Countdowns page loaded");
 
