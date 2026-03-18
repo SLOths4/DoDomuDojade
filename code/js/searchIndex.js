@@ -5481,6 +5481,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-CountdownController.html#method___construct"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003AbuildUsernamesMap\u0028\u0029",
+            "name": "buildUsernamesMap",
+            "summary": "Build\u0020map\u0020of\u0020user\u0020IDs\u0020to\u0020usernames\u0020for\u0020display\u0020purposes.",
+            "url": "classes/App-Presentation-Http-Controller-CountdownController.html#method_buildUsernamesMap"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003AformatCountdowns\u0028\u0029",
+            "name": "formatCountdowns",
+            "summary": "Format\u0020countdown\u0020objects\u0020for\u0020API\u0020response.",
+            "url": "classes/App-Presentation-Http-Controller-CountdownController.html#method_formatCountdowns"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003AgetAll\u0028\u0029",
+            "name": "getAll",
+            "summary": "Get\u0020all\u0020countdowns\u0020via\u0020API.",
+            "url": "classes/App-Presentation-Http-Controller-CountdownController.html#method_getAll"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003Aadd\u0028\u0029",
             "name": "add",
             "summary": "Create\u0020countdown\u0020via\u0020API\nPOST\u0020\/api\/countdown",
@@ -5525,6 +5540,16 @@ Search.appendIndex(
             "name": "updateCountdownUseCase",
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-CountdownController.html#property_updateCountdownUseCase"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003A\u0024getAllCountdownsUseCase",
+            "name": "getAllCountdownsUseCase",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllCountdownsUseCase"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\CountdownController\u003A\u003A\u0024getAllUsersUseCase",
+            "name": "getAllUsersUseCase",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllUsersUseCase"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController",
             "name": "DisplayController",

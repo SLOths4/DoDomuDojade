@@ -141,7 +141,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">18</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
@@ -203,6 +203,18 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllCountdownsUseCase">$getAllCountdownsUseCase</a>
+    <span>
+                        &nbsp;: <a href="classes/App-Application-Countdown-UseCase-GetAllCountdownsUseCase.html"><abbr title="\App\Application\Countdown\UseCase\GetAllCountdownsUseCase">GetAllCountdownsUseCase</abbr></a>            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllUsersUseCase">$getAllUsersUseCase</a>
+    <span>
+                        &nbsp;: <a href="classes/App-Application-User-UseCase-GetAllUsersUseCase.html"><abbr title="\App\Application\User\UseCase\GetAllUsersUseCase">GetAllUsersUseCase</abbr></a>            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#property_logger">$logger</a>
     <span>
                         &nbsp;: <abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>            </span>
@@ -257,6 +269,13 @@ POST /api/countdown</dd>
 DELETE /api/countdown/{id}</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#method_getAll">getAll()</a>
+    <span>
+                                &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+</dt>
+<dd>Get all countdowns via API.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#method_update">update()</a>
     <span>
                                 &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
@@ -303,6 +322,20 @@ PATCH /api/countdown/{id}</dd>
                                 &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
 </dt>
 <dd>Render view and return as response</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -private">
+    <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#method_buildUsernamesMap">buildUsernamesMap()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+<dd>Build map of user IDs to usernames for display purposes.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -private">
+    <a class="" href="classes/App-Presentation-Http-Controller-CountdownController.html#method_formatCountdowns">formatCountdowns()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+<dd>Format countdown objects for API response.</dd>
 
     </dl>
 
@@ -445,7 +478,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">26</span>
+    <span class="phpdocumentor-element-found-in__line">28</span>
 
     </aside>
 
@@ -482,7 +515,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">29</span>
 
     </aside>
 
@@ -492,6 +525,80 @@ PATCH /api/countdown/{id}</dd>
         <span class="phpdocumentor-signature__visibility">private</span>
             <span class="phpdocumentor-signature__type"><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\DeleteCountdownUseCase">DeleteCountdownUseCase</abbr></a></span>
     <span class="phpdocumentor-signature__name">$deleteCountdownUseCase</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                -read-only                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_getAllCountdownsUseCase">
+        $getAllCountdownsUseCase
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllCountdownsUseCase" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">31</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/App-Application-Countdown-UseCase-GetAllCountdownsUseCase.html"><abbr title="\App\Application\Countdown\UseCase\GetAllCountdownsUseCase">GetAllCountdownsUseCase</abbr></a></span>
+    <span class="phpdocumentor-signature__name">$getAllCountdownsUseCase</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                -read-only                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_getAllUsersUseCase">
+        $getAllUsersUseCase
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllUsersUseCase" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">32</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/App-Application-User-UseCase-GetAllUsersUseCase.html"><abbr title="\App\Application\User\UseCase\GetAllUsersUseCase">GetAllUsersUseCase</abbr></a></span>
+    <span class="phpdocumentor-signature__name">$getAllUsersUseCase</span>
     </code>
 
     
@@ -519,7 +626,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">26</span>
 
     </aside>
 
@@ -556,7 +663,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
@@ -593,7 +700,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">25</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 
     </aside>
 
@@ -630,7 +737,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">28</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
@@ -672,14 +779,14 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Context-RequestContext.html"><abbr title="\App\Presentation\Http\Context\RequestContext">RequestContext</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$requestContext</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Shared-ViewRendererInterface.html"><abbr title="\App\Presentation\Http\Shared\ViewRendererInterface">ViewRendererInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$renderer</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$logger</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Shared-Translator.html"><abbr title="\App\Presentation\Http\Shared\Translator">Translator</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$translator</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-CreateCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\CreateCountdownUseCase">CreateCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$createCountdownUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\DeleteCountdownUseCase">DeleteCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$deleteCountdownUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\UpdateCountdownUseCase">UpdateCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$updateCountdownUseCase</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Context-RequestContext.html"><abbr title="\App\Presentation\Http\Context\RequestContext">RequestContext</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$requestContext</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Shared-ViewRendererInterface.html"><abbr title="\App\Presentation\Http\Shared\ViewRendererInterface">ViewRendererInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$renderer</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$logger</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Presentation-Http-Shared-Translator.html"><abbr title="\App\Presentation\Http\Shared\Translator">Translator</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$translator</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-CreateCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\CreateCountdownUseCase">CreateCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$createCountdownUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\DeleteCountdownUseCase">DeleteCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$deleteCountdownUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html"><abbr title="\App\Application\Countdown\UseCase\UpdateCountdownUseCase">UpdateCountdownUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$updateCountdownUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-Countdown-UseCase-GetAllCountdownsUseCase.html"><abbr title="\App\Application\Countdown\UseCase\GetAllCountdownsUseCase">GetAllCountdownsUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getAllCountdownsUseCase</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Application-User-UseCase-GetAllUsersUseCase.html"><abbr title="\App\Application\User\UseCase\GetAllUsersUseCase">GetAllUsersUseCase</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getAllUsersUseCase</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -743,6 +850,20 @@ PATCH /api/countdown/{id}</dd>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$getAllCountdownsUseCase</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Application-Countdown-UseCase-GetAllCountdownsUseCase.html"><abbr title="\App\Application\Countdown\UseCase\GetAllCountdownsUseCase">GetAllCountdownsUseCase</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$getAllUsersUseCase</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Application-User-UseCase-GetAllUsersUseCase.html"><abbr title="\App\Application\User\UseCase\GetAllUsersUseCase">GetAllUsersUseCase</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
             </dl>
 
     
@@ -765,7 +886,7 @@ PATCH /api/countdown/{id}</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">39</span>
+    <span class="phpdocumentor-element-found-in__line">93</span>
 
     </aside>
 
@@ -828,7 +949,7 @@ POST /api/countdown</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">82</span>
+    <span class="phpdocumentor-element-found-in__line">136</span>
 
     </aside>
 
@@ -870,6 +991,62 @@ DELETE /api/countdown/{id}</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getAll">
+        getAll()
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_getAll" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">76</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Get all countdowns via API.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getAll</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>GET /api/countdowns</p>
+</section>
+
+    
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_getAll#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\Exception">Exception</abbr></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+        
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_update">
         update()
         <a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_update" class="headerlink"><i class="fas fa-link"></i></a>
@@ -878,7 +1055,7 @@ DELETE /api/countdown/{id}</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">115</span>
 
     </aside>
 
@@ -1265,6 +1442,111 @@ PATCH /api/countdown/{id}</p>
             </section>
 
 </article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_buildUsernamesMap">
+        buildUsernamesMap()
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_buildUsernamesMap" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">40</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Build map of user IDs to usernames for display purposes.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+                    <span class="phpdocumentor-signature__name">buildUsernamesMap</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$users</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$users</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_formatCountdowns">
+        formatCountdowns()
+        <a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_formatCountdowns" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Presentation/Http/Controller/CountdownController.php"><a href="files/src-presentation-http-controller-countdowncontroller.html"><abbr title="src/Presentation/Http/Controller/CountdownController.php">CountdownController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">53</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Format countdown objects for API response.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+                    <span class="phpdocumentor-signature__name">formatCountdowns</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$countdowns</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$usernames</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$countdowns</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$usernames</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
+</article>
             </section>
 
         <div class="phpdocumentor-modal" id="source-view">
@@ -1385,6 +1667,8 @@ PATCH /api/countdown/{id}</p>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#property_requestContext">$requestContext</a></li>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_createCountdownUseCase">$createCountdownUseCase</a></li>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_deleteCountdownUseCase">$deleteCountdownUseCase</a></li>
+                                                    <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllCountdownsUseCase">$getAllCountdownsUseCase</a></li>
+                                                    <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_getAllUsersUseCase">$getAllUsersUseCase</a></li>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_logger">$logger</a></li>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_request">$request</a></li>
                                                     <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#property_translator">$translator</a></li>
@@ -1398,6 +1682,7 @@ PATCH /api/countdown/{id}</p>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method___construct">__construct()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_add">add()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_delete">delete()</a></li>
+                                            <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_getAll">getAll()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_update">update()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#method_flash">flash()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#method_getCurrentUserId">getCurrentUserId()</a></li>
@@ -1405,6 +1690,8 @@ PATCH /api/countdown/{id}</p>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#method_noContentResponse">noContentResponse()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#method_redirect">redirect()</a></li>
                                             <li class=""><a href="classes/App-Presentation-Http-Controller-BaseController.html#method_render">render()</a></li>
+                                            <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_buildUsernamesMap">buildUsernamesMap()</a></li>
+                                            <li class=""><a href="classes/App-Presentation-Http-Controller-CountdownController.html#method_formatCountdowns">formatCountdowns()</a></li>
                                     </ul>
             </li>
                     </ul>
