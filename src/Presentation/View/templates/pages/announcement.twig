@@ -81,7 +81,7 @@
                                         data-title="{{ announcement.title }}"
                                         data-text="{{ announcement.text }}"
                                         data-valid-until="{{ announcement.validUntil }}"
-                                        data-status="{% if announcement.status == 'APPROVED' %}APPROVED{% elseif announcement.status == 'REJECTED' %}REJECTED{% else %}PENDING{% endif %}">
+                                        data-status="{{ announcement.status }}">
                                     <i class="fa-solid fa-edit mr-1"></i>Edytuj
                                 </button>
                             </td>
@@ -128,7 +128,7 @@
                             <td class="break-words whitespace-normal px-4 py-2 border text-xs">
                                 {% if announcement.decidedAt %}
                                     {{ announcement.decidedAt }}<br>
-                                    przez: {{ usernames[announcement.decidedByName] ?? 'Admin' }}
+                                    przez: {{ announcement.decidedByName ?? 'Admin' }}
                                 {% else %}
                                     <span class="text-gray-400 dark:text-gray-500">-</span>
                                 {% endif %}
@@ -146,7 +146,7 @@
                                         data-title="{{ announcement.title }}"
                                         data-text="{{ announcement.text }}"
                                         data-valid-until="{{ announcement.validUntil }}"
-                                        data-status="{% if announcement.status == 'APPROVED' %}1{% elseif announcement.status == 'REJECTED' %}2{% else %}0{% endif %}">
+                                        data-status="{{ announcement.status }}">
                                     Edytuj
                                 </button>
                             </td>
@@ -318,7 +318,7 @@
                         const row = `
                     <tr>
                         <td class="break-words whitespace-normal px-4 py-2 border">${announcement.title}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.authorName || 'Nieznany użytkownik'}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.authorUsername || 'Nieznany użytkownik'}</td>
                         <td class="break-words whitespace-normal px-4 py-2 border">${announcement.createdAt}</td>
                         <td class="break-words whitespace-normal px-4 py-2 border">${announcement.validUntil}</td>
                         <td class="break-words whitespace-normal px-4 py-2 border">
@@ -345,7 +345,7 @@
                                     data-title="${announcement.title}"
                                     data-text="${announcement.text}"
                                     data-valid-until="${announcement.validUntil}"
-                                    data-status="${announcement.status === 'APPROVED' ? '1' : announcement.status === 'REJECTED' ? '2' : '0'}">
+                                    data-status="${announcement.status}">
                                 Edytuj
                             </button>
                         </td>
@@ -449,7 +449,8 @@
                     forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
                     forms.edit.querySelector('#edit_text').value = btn.getAttribute('data-text');
                     forms.edit.querySelector('#edit_valid_until').value = btn.getAttribute('data-valid-until');
-                    forms.edit.querySelector('#edit_status').value = btn.getAttribute('data-status') || '0';
+                    const status = btn.getAttribute('data-status') ?? 'PENDING';
+                    forms.edit.querySelector('#edit_status').value = status;
 
                     initCounter(titleInput, titleCounter);
                     initCounter(textarea, textCounter);

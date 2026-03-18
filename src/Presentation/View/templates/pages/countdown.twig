@@ -216,6 +216,36 @@
                     }
                 };
 
+                const formatCountdownDisplayValue = (value) => {
+                    if (!value) {
+                        return '';
+                    }
+
+                    const parsedDate = new Date(value);
+                    if (Number.isNaN(parsedDate.getTime())) {
+                        return value;
+                    }
+
+                    const pad = (number) => String(number).padStart(2, '0');
+
+                    return `${parsedDate.getFullYear()}-${pad(parsedDate.getMonth() + 1)}-${pad(parsedDate.getDate())} ${pad(parsedDate.getHours())}:${pad(parsedDate.getMinutes())}`;
+                };
+
+                const formatCountdownInputValue = (value) => {
+                    if (!value) {
+                        return '';
+                    }
+
+                    const parsedDate = new Date(value);
+                    if (Number.isNaN(parsedDate.getTime())) {
+                        return value;
+                    }
+
+                    const pad = (number) => String(number).padStart(2, '0');
+
+                    return `${parsedDate.getFullYear()}-${pad(parsedDate.getMonth() + 1)}-${pad(parsedDate.getDate())}T${pad(parsedDate.getHours())}:${pad(parsedDate.getMinutes())}`;
+                };
+
                 const updateTableRows = (countdowns) => {
                     tableBody.innerHTML = '';
 
@@ -225,6 +255,8 @@
                     }
 
                     countdowns.forEach(countdown => {
+                        const countToDisplay = countdown.countToDisplay || formatCountdownDisplayValue(countdown.countTo);
+                        const countToInput = countdown.countToInput || formatCountdownInputValue(countdown.countTo);
                         const row = `
                     <tr>
                         <td class="px-4 py-2 border">${escapeHtml(countdown.title)}</td>
