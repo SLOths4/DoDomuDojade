@@ -3551,6 +3551,16 @@ Search.appendIndex(
             "summary": "Returns\u0020default\u0020value\u0020if\u0020variable\u0020is\u0020not\u0020found\u0020in\u0020.env",
             "url": "classes/App-Infrastructure-Configuration-Config.html#method_optionalEnv"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003AnormalizeStopIds\u0028\u0029",
+            "name": "normalizeStopIds",
+            "summary": "Normalizes\u0020STOP_ID\u0020env\u0020format\u0020to\u0020a\u0020clean\u0020list\u0020of\u0020stop\u0020identifiers.",
+            "url": "classes/App-Infrastructure-Configuration-Config.html#method_normalizeStopIds"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003AtrimWrappingQuotes\u0028\u0029",
+            "name": "trimWrappingQuotes",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Configuration-Config.html#method_trimWrappingQuotes"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003AintEnv\u0028\u0029",
             "name": "intEnv",
             "summary": "Fetches\u0020integer\u0020variable\u0020type\u0020from\u0020.env",
