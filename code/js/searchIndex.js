@@ -5411,6 +5411,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-AnnouncementController.html#property_getAllAnnouncementsUseCase"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\AnnouncementController\u003A\u003A\u0024getAllUsersUseCase",
+            "name": "getAllUsersUseCase",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-AnnouncementController.html#property_getAllUsersUseCase"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\AnnouncementController\u003A\u003A\u0024presenter",
             "name": "presenter",
             "summary": "",
@@ -5961,6 +5966,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-DTO-AnnouncementApiDTO.html#property_authorId"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\DTO\\AnnouncementApiDTO\u003A\u003A\u0024authorUsername",
+            "name": "authorUsername",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-DTO-AnnouncementApiDTO.html#property_authorUsername"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\DTO\\AnnouncementApiDTO\u003A\u003A\u0024createdAt",
             "name": "createdAt",
             "summary": "",
@@ -5980,6 +5990,11 @@ Search.appendIndex(
             "name": "decidedBy",
             "summary": "",
             "url": "classes/App-Presentation-Http-DTO-AnnouncementApiDTO.html#property_decidedBy"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\DTO\\AnnouncementApiDTO\u003A\u003A\u0024decidedByName",
+            "name": "decidedByName",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-DTO-AnnouncementApiDTO.html#property_decidedByName"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\DTO\\AnnouncementViewDTO",
             "name": "AnnouncementViewDTO",
@@ -6285,6 +6300,21 @@ Search.appendIndex(
             "name": "toView",
             "summary": "",
             "url": "classes/App-Presentation-Http-Presenter-AnnouncementPresenter.html#method_toView"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Presenter\\AnnouncementPresenter\u003A\u003AmapAnnouncementToApiDto\u0028\u0029",
+            "name": "mapAnnouncementToApiDto",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Presenter-AnnouncementPresenter.html#method_mapAnnouncementToApiDto"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Presenter\\AnnouncementPresenter\u003A\u003AmapAnnouncementToViewDto\u0028\u0029",
+            "name": "mapAnnouncementToViewDto",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Presenter-AnnouncementPresenter.html#method_mapAnnouncementToViewDto"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Presenter\\AnnouncementPresenter\u003A\u003AresolveUsername\u0028\u0029",
+            "name": "resolveUsername",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Presenter-AnnouncementPresenter.html#method_resolveUsername"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Shared\\FlashMessengerInterface",
             "name": "FlashMessengerInterface",
