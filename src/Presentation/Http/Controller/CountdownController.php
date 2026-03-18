@@ -5,12 +5,14 @@ namespace App\Presentation\Http\Controller;
 use App\Application\Countdown\AddEditCountdownDTO;
 use App\Application\Countdown\UseCase\CreateCountdownUseCase;
 use App\Application\Countdown\UseCase\DeleteCountdownUseCase;
+use App\Application\Countdown\UseCase\GetAllCountdownsUseCase;
 use App\Application\Countdown\UseCase\UpdateCountdownUseCase;
+use App\Application\User\UseCase\GetAllUsersUseCase;
 use App\Domain\User\UserException;
 use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
-use GuzzleHttp\Psr7\Response;
+use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -26,8 +28,60 @@ final class CountdownController extends BaseController
         private readonly CreateCountdownUseCase $createCountdownUseCase,
         private readonly DeleteCountdownUseCase $deleteCountdownUseCase,
         private readonly UpdateCountdownUseCase $updateCountdownUseCase,
+        private readonly GetAllCountdownsUseCase $getAllCountdownsUseCase,
+        private readonly GetAllUsersUseCase $getAllUsersUseCase,
     ) {
         parent::__construct($requestContext, $renderer);
+    }
+
+    /**
+     * Build map of user IDs to usernames for display purposes.
+     */
+    private function buildUsernamesMap(array $users): array
+    {
+        $usernames = [];
+        foreach ($users as $user) {
+            $usernames[$user->id] = $user->username;
+        }
+
+        return $usernames;
+    }
+
+    /**
+     * Format countdown objects for API response.
+     */
+    private function formatCountdowns(array $countdowns, array $usernames): array
+    {
+        return array_map(
+            static fn ($countdown) => [
+                'id' => $countdown->id,
+                'title' => $countdown->title,
+                'countTo' => $countdown->countTo instanceof DateTimeImmutable
+                    ? $countdown->countTo->format('Y-m-d H:i')
+                    : (string) $countdown->countTo,
+                'countToEdit' => $countdown->countTo instanceof DateTimeImmutable
+                    ? $countdown->countTo->format('Y-m-d\TH:i')
+                    : (string) $countdown->countTo,
+                'authorName' => $usernames[$countdown->userId] ?? 'Nieznany użytkownik',
+            ],
+            $countdowns,
+        );
+    }
+
+    /**
+     * Get all countdowns via API.
+     * GET /api/countdowns
+     * @throws \Exception
+     */
+    public function getAll(): ResponseInterface
+    {
+        $users = $this->getAllUsersUseCase->execute();
+        $countdowns = $this->getAllCountdownsUseCase->execute();
+
+        return $this->jsonResponse(200, $this->formatCountdowns(
+            $countdowns,
+            $this->buildUsernamesMap($users),
+        ));
     }
 
     /**

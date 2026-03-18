@@ -30,48 +30,46 @@
         </form>
 
         {# Countdowns Table #}
-        {% if countdowns is not empty %}
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <table id="countdownsTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
+        <div id="countdownsTableWrapper" class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white {% if countdowns is empty %}hidden{% endif %}">
+            <table id="countdownsTable" class="w-full table-fixed border-collapse">
+                <thead class="bg-gray-200 dark:bg-gray-700">
+                <tr>
+                    <th class="px-4 py-2 border">Nazwa wydarzenia</th>
+                    <th class="px-4 py-2 border">Autor</th>
+                    <th class="px-4 py-2 border" data-type="datetime-local">Data</th>
+                    <th class="px-4 py-2 border">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for countdown in countdowns %}
                     <tr>
-                        <th class="px-4 py-2 border">Nazwa wydarzenia</th>
-                        <th class="px-4 py-2 border">Autor</th>
-                        <th class="px-4 py-2 border" data-type="datetime-local">Data</th>
-                        <th class="px-4 py-2 border">Akcje</th>
+                        <td class="px-4 py-2 border">{{ countdown.title }}</td>
+                        <td class="px-4 py-2 border">{{ countdown.authorName }}</td>
+                        <td class="px-4 py-2 border">{{ countdown.countTo }}</td>
+                        <td class="px-4 py-2 border space-x-2">
+                            <button type="button"
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                    data-countdown-id="{{ countdown.id }}">
+                                Usuń
+                            </button>
+                            <button type="button"
+                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
+                                    data-countdown-id="{{ countdown.id }}"
+                                    data-title="{{ countdown.title }}"
+                                    data-count-to-edit="{{ countdown.countToEdit }}">
+                                Edytuj
+                            </button>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for countdown in countdowns %}
-                        <tr>
-                            <td class="px-4 py-2 border">{{ countdown.title }}</td>
-                            <td class="px-4 py-2 border">{{ usernames[countdown.userId] ?? 'Nieznany użytkownik' }}</td>
-                            <td class="px-4 py-2 border">{{ countdown.countTo }}</td>
-                            <td class="px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-countdown-id="{{ countdown.id }}">
-                                    Usuń
-                                </button>
-                                <button type="button"
-                                        class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                        data-countdown-id="{{ countdown.id }}"
-                                        data-title="{{ countdown.title }}"
-                                        data-count-to="{{ countdown.countTo }}">
-                                    Edytuj
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                <p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p>
-            </div>
-        {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="emptyCountdownsState" class="bg-amber-100 mx-3 text-[20px] border border-yellow-500 rounded-lg flex items-center space-x-2 {% if countdowns is not empty %}hidden{% endif %}">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+            <p class="text-yellow-500 text-sm font-medium">Brak odliczań do wyświetlania</p>
+        </div>
 
         {# Confirmation Modal (Delete) #}
         <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
@@ -127,13 +125,18 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const titleCounter = document.getElementById("title_char_counter");
-                const titleInput = document.getElementById("edit_title");
-                const addTitleInput = document.getElementById("add_title");
-                const addTitleCounter = document.getElementById("add_title_counter");
+                const COUNTDOWNS_API_URL = '/api/countdowns';
+                const EMPTY_AUTHOR_LABEL = 'Nieznany użytkownik';
+                const titleCounter = document.getElementById('title_char_counter');
+                const titleInput = document.getElementById('edit_title');
+                const addTitleInput = document.getElementById('add_title');
+                const addTitleCounter = document.getElementById('add_title_counter');
                 const addCountdownForm = document.getElementById('addCountdownForm');
                 const addCountdownBtn = document.getElementById('addCountdownBtn');
                 const addCountdownSpinner = document.getElementById('addCountdownSpinner');
+                const tableWrapper = document.getElementById('countdownsTableWrapper');
+                const emptyState = document.getElementById('emptyCountdownsState');
+                const tableBody = document.querySelector('#countdownsTable tbody');
 
                 const modals = {
                     confirmation: document.getElementById('confirmationModal'),
@@ -162,6 +165,17 @@
                     });
                 };
 
+                const escapeHtml = (value) => {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                };
+
+                const toggleCountdownsState = (hasCountdowns) => {
+                    tableWrapper.classList.toggle('hidden', !hasCountdowns);
+                    emptyState.classList.toggle('hidden', hasCountdowns);
+                };
+
                 // ============================================
                 // NOTIFICATION HELPER
                 // ============================================
@@ -173,7 +187,6 @@
 
                     notification.innerHTML = `<div class="p-3 rounded border ${bgClass} mb-4">${message}</div>`;
 
-                    // Auto-remove after 5 seconds
                     setTimeout(() => {
                         notification.innerHTML = '';
                     }, 5000);
@@ -184,54 +197,59 @@
                 // ============================================
                 const refreshCountdownsTable = async () => {
                     try {
-                        const response = await fetch('/api/countdowns', {
+                        const response = await fetch(COUNTDOWNS_API_URL, {
                             method: 'GET',
                             headers: {
                                 'Accept': 'application/json'
                             }
                         });
 
-                        if (response.ok) {
-                            const countdowns = await response.json();
-                            updateTableRows(countdowns);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
                         }
+
+                        const countdowns = await response.json();
+                        updateTableRows(countdowns);
                     } catch (error) {
                         console.error('Błąd przy pobieraniu odliczań:', error);
+                        throw error;
                     }
                 };
 
                 const updateTableRows = (countdowns) => {
-                    const tbody = document.querySelector('#countdownsTable tbody');
-                    if (!tbody) return;
+                    tableBody.innerHTML = '';
 
-                    tbody.innerHTML = '';
+                    if (!Array.isArray(countdowns) || countdowns.length === 0) {
+                        toggleCountdownsState(false);
+                        return;
+                    }
 
                     countdowns.forEach(countdown => {
                         const row = `
                     <tr>
-                        <td class="px-4 py-2 border">${countdown.title}</td>
-                        <td class="px-4 py-2 border">${countdown.authorName || 'Nieznany użytkownik'}</td>
-                        <td class="px-4 py-2 border">${countdown.countTo}</td>
+                        <td class="px-4 py-2 border">${escapeHtml(countdown.title)}</td>
+                        <td class="px-4 py-2 border">${escapeHtml(countdown.authorName || EMPTY_AUTHOR_LABEL)}</td>
+                        <td class="px-4 py-2 border">${escapeHtml(countdown.countTo)}</td>
                         <td class="px-4 py-2 border space-x-2">
                             <button type="button"
                                     class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                    data-countdown-id="${countdown.id}">
+                                    data-countdown-id="${escapeHtml(String(countdown.id))}">
                                 Usuń
                             </button>
                             <button type="button"
                                     class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded"
-                                    data-countdown-id="${countdown.id}"
-                                    data-title="${countdown.title}"
-                                    data-count-to="${countdown.countTo}">
+                                    data-countdown-id="${escapeHtml(String(countdown.id))}"
+                                    data-title="${escapeHtml(countdown.title)}"
+                                    data-count-to-edit="${escapeHtml(countdown.countToEdit)}">
                                 Edytuj
                             </button>
                         </td>
                     </tr>
                 `;
-                        tbody.insertAdjacentHTML('beforeend', row);
+                        tableBody.insertAdjacentHTML('beforeend', row);
                     });
 
-                    // Re-attach event listeners for new buttons
+                    toggleCountdownsState(true);
                     addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                     addClickEventToButtons('.edit-btn', handleEditButtonClick);
                 };
@@ -280,10 +298,7 @@
                             showFormNotification('✅ Odliczanie dodane pomyślnie!', 'success');
                             forms.add.reset();
                             initCounter(addTitleInput, addTitleCounter);
-
-                            setTimeout(() => {
-                                refreshCountdownsTable();
-                            }, 500);
+                            await refreshCountdownsTable();
                         } else {
                             showFormNotification(data.message || 'Błąd: ' + data.error, 'error');
                         }
@@ -322,16 +337,13 @@
 
                         if (response.status === 204) {
                             showFormNotification('✅ Odliczanie usunięte!', 'success');
-                            setTimeout(() => {
-                                refreshCountdownsTable();
-                            }, 500);
+                            toggleModal(modals.confirmation, false);
+                            await refreshCountdownsTable();
                         } else {
                             showFormNotification('❌ Błąd usuwania', 'error');
                         }
                     } catch (error) {
                         showFormNotification('❌ Błąd: ' + error.message, 'error');
-                    } finally {
-                        toggleModal(modals.confirmation, false);
                     }
                 });
 
@@ -345,7 +357,7 @@
 
                     forms.edit.querySelector('#edit_countdown_id').value = btn.getAttribute('data-countdown-id');
                     forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
-                    forms.edit.querySelector('#edit_count_to').value = btn.getAttribute('data-count-to');
+                    forms.edit.querySelector('#edit_count_to').value = btn.getAttribute('data-count-to-edit');
 
                     initCounter(titleInput, titleCounter);
 
@@ -391,9 +403,8 @@
 
                         if (response.ok && data.success) {
                             showFormNotification('✅ Odliczanie zaktualizowane!', 'success');
-                            setTimeout(() => {
-                                refreshCountdownsTable();
-                            }, 500);
+                            toggleModal(modals.edition, false);
+                            await refreshCountdownsTable();
                         } else {
                             showFormNotification(data.message || 'Błąd', 'error');
                         }
@@ -402,7 +413,6 @@
                     } finally {
                         buttons.submitEdit.disabled = false;
                         document.getElementById('submitEditSpinner').classList.add('hidden');
-                        toggleModal(modals.edition, false);
                     }
                 });
 
@@ -412,7 +422,7 @@
                 // CHARACTER COUNTERS
                 // ============================================
                 const updateCounterFactory = (field, counter) => () => {
-                    const maxLength = field.getAttribute("maxlength");
+                    const maxLength = field.getAttribute('maxlength');
                     const currentLength = field.value.length || 0;
                     counter.textContent = `${currentLength} / ${maxLength} znaków`;
                 };
@@ -427,9 +437,9 @@
                 const initCounter = (field, counter) => {
                     const updateCounter = updateCounterFactory(field, counter);
 
-                    field.removeEventListener("input", updateCounter);
+                    field.removeEventListener('input', updateCounter);
 
-                    field.addEventListener("input", () => {
+                    field.addEventListener('input', () => {
                         enforceMaxLength(field);
                         updateCounter();
                     });
