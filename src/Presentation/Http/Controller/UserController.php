@@ -8,6 +8,7 @@ use App\Application\User\EditUserDTO;
 use App\Application\User\UseCase\ChangePasswordUseCase;
 use App\Application\User\UseCase\CreateUserUseCase;
 use App\Application\User\UseCase\DeleteUserUseCase;
+use App\Application\User\UseCase\GetAllUsersUseCase;
 use App\Application\User\UseCase\UpdateUserUseCase;
 use App\Domain\Shared\MissingParameterException;
 use App\Domain\User\UserException;
@@ -28,12 +29,29 @@ final class UserController extends BaseController
         private readonly LoggerInterface $logger,
         private readonly Translator $translator,
         private readonly CreateUserUseCase $createUserUseCase,
+        private readonly GetAllUsersUseCase $getAllUsersUseCase,
         private readonly DeleteUserUseCase $deleteUserUseCase,
         private readonly UpdateUserUseCase $updateUserUseCase,
         private readonly ChangePasswordUseCase $changePasswordUseCase,
         private readonly UserValidationHelper $userValidationHelper,
     ) {
         parent::__construct($requestContext, $renderer);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getAll(): ResponseInterface
+    {
+        $users = $this->getAllUsersUseCase->execute();
+
+        return $this->jsonResponse(200, array_map(
+            static fn($user) => [
+                'id' => $user->id,
+                'username' => $user->username,
+            ],
+            $users
+        ));
     }
 
     /**
