@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace App\Application\Display;
 
 use App\Application\Quote\FetchActiveQuoteUseCase;
+use App\Domain\Shared\DomainException;
+use App\Infrastructure\Shared\InfrastructureException;
 use Psr\Log\LoggerInterface;
-use Exception;
 
 /**
  * Provides quote data formatted for display page
@@ -28,7 +29,7 @@ readonly class GetDisplayQuoteUseCase
     {
         try {
             $quote = $this->fetchActiveQuoteUseCase->execute();
-        } catch (Exception $e) {
+        } catch (DomainException|InfrastructureException $e) {
             $this->logger->error("Failed to fetch quote", ['error' => $e->getMessage()]);
             return null;
         }

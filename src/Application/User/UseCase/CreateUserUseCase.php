@@ -5,11 +5,11 @@ namespace App\Application\User\UseCase;
 
 use App\Application\User\CreateUserDTO;
 use App\Domain\User\User;
+use App\Domain\User\UserAlreadyExistsException;
 use App\Domain\User\ValueObject\Password;
 use App\Domain\User\ValueObject\Username;
 use App\Infrastructure\Persistence\PDOUserRepository;
 use DateTimeImmutable;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -24,10 +24,7 @@ readonly class CreateUserUseCase
         private int               $minPasswordLength = 8
     ) {}
 
-    /**
-     * @throws Exception
-     */
-    public function execute(CreateUserDTO $dto): int
+        public function execute(CreateUserDTO $dto): int
     {
         $this->logger->info('Executing CreateUserUseCase');
 
@@ -36,7 +33,7 @@ readonly class CreateUserUseCase
 
         if ($this->repository->findByExactUsername($username->value)) {
             $this->logger->warning('User already exists');
-            throw new Exception("User already exists");
+            throw new UserAlreadyExistsException($username->value);
         }
 
         $user = new User(
