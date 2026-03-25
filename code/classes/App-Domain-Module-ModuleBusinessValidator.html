@@ -108,14 +108,13 @@
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="namespaces/app.html">App</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application.html">Application</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application-user.html">User</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application-user-usecase.html">UseCase</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-domain.html">Domain</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-domain-module.html">Module</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    GetUserByIdUseCase
+    ModuleBusinessValidator
 
     
             <div class="phpdocumentor-element__package">
@@ -129,21 +128,20 @@
     </h2>
 
 <div class="phpdocumentor-label-line">
-    <div class="phpdocumentor-label phpdocumentor-label--success"><span>Read only</span><span>Yes</span></div>
 
+    <div class="phpdocumentor-label phpdocumentor-label--success"><span>Final</span><span>Yes</span></div>
 
 
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/User/UseCase/GetUserByIdUseCase.php"><a href="files/src-application-user-usecase-getuserbyidusecase.html"><abbr title="src/Application/User/UseCase/GetUserByIdUseCase.php">GetUserByIdUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Module/ModuleBusinessValidator.php"><a href="files/src-domain-module-modulebusinessvalidator.html"><abbr title="src/Domain/Module/ModuleBusinessValidator.php">ModuleBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">9</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Fetches user by id</p>
-
+        
 
 
 
@@ -152,7 +150,7 @@
     
 <h3 id="toc">
     Table of Contents
-    <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -164,42 +162,35 @@
 
 
 
-<h4 id="toc-properties">
-    Properties
-    <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
-
-</h4>
-<dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_logger">$logger</a>
-    <span>
-                        &nbsp;: <abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_repository">$repository</a>
-    <span>
-                        &nbsp;: <a href="classes/App-Domain-User-UserRepositoryInterface.html"><abbr title="\App\Domain\User\UserRepositoryInterface">UserRepositoryInterface</abbr></a>            </span>
-</dt>
-
-    </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method___construct">__construct()</a>
+    <a class="" href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateEndTime">validateEndTime()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: void    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method_execute">execute()</a>
+    <a class="" href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateId">validateId()</a>
     <span>
-                                &nbsp;: <a href="classes/App-Domain-User-User.html"><abbr title="\App\Domain\User\User">User</abbr></a>    </span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTime">validateStartTime()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTimeNotGreaterThanEndTime">validateStartTimeNotGreaterThanEndTime()</a>
+    <span>
+                                &nbsp;: void    </span>
 </dt>
 
     </dl>
@@ -209,92 +200,11 @@
         
 
         
-    <section class="phpdocumentor-properties">
-        <h3 class="phpdocumentor-elements__header" id="properties">
-            Properties
-            <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
-
-        </h3>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_logger">
-        $logger
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_logger" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/User/UseCase/GetUserByIdUseCase.php"><a href="files/src-application-user-usecase-getuserbyidusecase.html"><abbr title="src/Application/User/UseCase/GetUserByIdUseCase.php">GetUserByIdUseCase.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">22</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr></span>
-    <span class="phpdocumentor-signature__name">$logger</span>
-    </code>
-
-    
-    
-    
-
-        
-        
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_repository">
-        $repository
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_repository" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/User/UseCase/GetUserByIdUseCase.php"><a href="files/src-application-user-usecase-getuserbyidusecase.html"><abbr title="src/Application/User/UseCase/GetUserByIdUseCase.php">GetUserByIdUseCase.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">21</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/App-Domain-User-UserRepositoryInterface.html"><abbr title="\App\Domain\User\UserRepositoryInterface">UserRepositoryInterface</abbr></a></span>
-    <span class="phpdocumentor-signature__name">$repository</span>
-    </code>
-
-    
-    
-    
-
-        
-        
-
-</article>
-            </section>
 
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -303,22 +213,22 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method___construct">
-        __construct()
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_validateEndTime">
+        validateEndTime()
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateEndTime" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/User/UseCase/GetUserByIdUseCase.php"><a href="files/src-application-user-usecase-getuserbyidusecase.html"><abbr title="src/Application/User/UseCase/GetUserByIdUseCase.php">GetUserByIdUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Module/ModuleBusinessValidator.php"><a href="files/src-domain-module-modulebusinessvalidator.html"><abbr title="src/Domain/Module/ModuleBusinessValidator.php">ModuleBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-User-UserRepositoryInterface.html"><abbr title="\App\Domain\User\UserRepositoryInterface">UserRepositoryInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$repository</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$logger</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">validateEndTime</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$endTime</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -327,15 +237,8 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$repository</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-User-UserRepositoryInterface.html"><abbr title="\App\Domain\User\UserRepositoryInterface">UserRepositoryInterface</abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$logger</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr></span>
+                <span class="phpdocumentor-argument-list__argument__name">$endTime</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -343,6 +246,21 @@
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateEndTime#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/App-Domain-Module-ModuleException.html"><abbr title="\App\Domain\Module\ModuleException">ModuleException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
 
         
     
@@ -354,22 +272,22 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_execute">
-        execute()
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method_execute" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_validateId">
+        validateId()
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateId" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/User/UseCase/GetUserByIdUseCase.php"><a href="files/src-application-user-usecase-getuserbyidusecase.html"><abbr title="src/Application/User/UseCase/GetUserByIdUseCase.php">GetUserByIdUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Module/ModuleBusinessValidator.php"><a href="files/src-domain-module-modulebusinessvalidator.html"><abbr title="src/Domain/Module/ModuleBusinessValidator.php">ModuleBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">30</span>
+    <span class="phpdocumentor-element-found-in__line">52</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">execute</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Domain-User-User.html"><abbr title="\App\Domain\User\User">User</abbr></a></span></code>
+                    <span class="phpdocumentor-signature__name">validateId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -389,7 +307,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method_execute#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateId#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -397,7 +315,7 @@
                     <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><abbr title="\Exception">Exception</abbr></span>
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/App-Domain-Module-ModuleException.html"><abbr title="\App\Domain\Module\ModuleException">ModuleException</abbr></a></span>
                                                             
                                              
                                     </dd>
@@ -405,11 +323,132 @@
 
         
     
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/App-Domain-User-User.html"><abbr title="\App\Domain\User\User">User</abbr></a></span>
-            </section>
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_validateStartTime">
+        validateStartTime()
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTime" class="headerlink"><i class="fas fa-link"></i></a>
 
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Module/ModuleBusinessValidator.php"><a href="files/src-domain-module-modulebusinessvalidator.html"><abbr title="src/Domain/Module/ModuleBusinessValidator.php">ModuleBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">14</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">validateStartTime</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$startTime</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$startTime</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTime#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/App-Domain-Module-ModuleException.html"><abbr title="\App\Domain\Module\ModuleException">ModuleException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_validateStartTimeNotGreaterThanEndTime">
+        validateStartTimeNotGreaterThanEndTime()
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTimeNotGreaterThanEndTime" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Module/ModuleBusinessValidator.php"><a href="files/src-domain-module-modulebusinessvalidator.html"><abbr title="src/Domain/Module/ModuleBusinessValidator.php">ModuleBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">40</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">validateStartTimeNotGreaterThanEndTime</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$startTime</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$endTime</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$startTime</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$endTime</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTimeNotGreaterThanEndTime#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/App-Domain-Module-ModuleException.html"><abbr title="\App\Domain\Module\ModuleException">ModuleException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+        
+    
+    
 </article>
             </section>
 
@@ -417,7 +456,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Application/User/UseCase/GetUserByIdUseCase.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Domain/Module/ModuleBusinessValidator.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -518,24 +557,18 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#toc-methods">Methods</a></li>
+                                                                                <li><a href="classes/App-Domain-Module-ModuleBusinessValidator.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
-                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
-                <li>
-                    <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_logger">$logger</a></li>
-                                                    <li class=""><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#property_repository">$repository</a></li>
-                                            </ul>
-                </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#method_execute">execute()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateEndTime">validateEndTime()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateId">validateId()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTime">validateStartTime()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTimeNotGreaterThanEndTime">validateStartTimeNotGreaterThanEndTime()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -555,7 +588,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/App-Application-User-UseCase-GetUserByIdUseCase.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/App-Domain-Module-ModuleBusinessValidator.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

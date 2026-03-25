@@ -108,13 +108,13 @@
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="namespaces/app.html">App</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-infrastructure.html">Infrastructure</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-infrastructure-helper.html">Helper</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-domain.html">Domain</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-domain-announcement.html">Announcement</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    AnnouncementValidationHelper
+    AnnouncementBusinessValidator
 
     
             <div class="phpdocumentor-element__package">
@@ -137,14 +137,13 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">10</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Helper class for validating announcements</p>
-
+        
 
 
 
@@ -153,7 +152,7 @@
     
 <h3 id="toc">
     Table of Contents
-    <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -167,57 +166,77 @@
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#property_validator">$validator</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTextLength">$maxTextLength</a>
     <span>
-                        &nbsp;: <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html"><abbr title="\App\Domain\Announcement\AnnouncementBusinessValidator">AnnouncementBusinessValidator</abbr></a>            </span>
+                        &nbsp;: int            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTitleLength">$maxTitleLength</a>
+    <span>
+                        &nbsp;: int            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxValidDate">$maxValidDate</a>
+    <span>
+                        &nbsp;: string            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTextLength">$minTextLength</a>
+    <span>
+                        &nbsp;: int            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTitleLength">$minTitleLength</a>
+    <span>
+                        &nbsp;: int            </span>
 </dt>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method___construct">__construct()</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateId">validateId()</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateId">validateId()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Validates announcement&#039;s id</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateText">validateText()</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateText">validateText()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Waliduje tekst ogłoszenia.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateTitle">validateTitle()</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateTitle">validateTitle()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Validates announcement&#039;s title</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateValidUntilDate">validateValidUntilDate()</a>
+    <a class="" href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateValidUntilDate">validateValidUntilDate()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Validates expiry date</dd>
 
     </dl>
 
@@ -229,7 +248,7 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -239,15 +258,89 @@
             -private
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_validator">
-        $validator
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#property_validator" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_maxTextLength">
+        $maxTextLength
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTextLength" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">16</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type">int</span>
+    <span class="phpdocumentor-signature__name">$maxTextLength</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_maxTitleLength">
+        $maxTitleLength
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTitleLength" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">14</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type">int</span>
+    <span class="phpdocumentor-signature__name">$maxTitleLength</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_maxValidDate">
+        $maxValidDate
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxValidDate" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
     <span class="phpdocumentor-element-found-in__line">17</span>
 
@@ -257,8 +350,82 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html"><abbr title="\App\Domain\Announcement\AnnouncementBusinessValidator">AnnouncementBusinessValidator</abbr></a></span>
-    <span class="phpdocumentor-signature__name">$validator</span>
+            <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$maxValidDate</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_minTextLength">
+        $minTextLength
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTextLength" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">15</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type">int</span>
+    <span class="phpdocumentor-signature__name">$minTextLength</span>
+    </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_minTitleLength">
+        $minTitleLength
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTitleLength" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">13</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type">int</span>
+    <span class="phpdocumentor-signature__name">$minTitleLength</span>
     </code>
 
     
@@ -274,7 +441,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -285,20 +452,20 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">12</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html"><abbr title="\App\Domain\Announcement\AnnouncementBusinessValidator">AnnouncementBusinessValidator</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$validator</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$minTitleLength</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxTitleLength</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$minTextLength</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxTextLength</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxValidDate</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -307,8 +474,36 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$validator</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html"><abbr title="\App\Domain\Announcement\AnnouncementBusinessValidator">AnnouncementBusinessValidator</abbr></a></span>
+                <span class="phpdocumentor-argument-list__argument__name">$minTitleLength</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$maxTitleLength</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$minTextLength</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$maxTextLength</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$maxValidDate</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -329,18 +524,17 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_validateId">
         validateId()
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateId" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateId" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">82</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Validates announcement&#039;s id</p>
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">validateId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Announcement-AnnouncementId.html"><abbr title="\App\Domain\Announcement\AnnouncementId">AnnouncementId</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
@@ -363,7 +557,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateId#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateId#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -389,18 +583,17 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_validateText">
         validateText()
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateText" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateText" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">43</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Waliduje tekst ogłoszenia.</p>
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">validateText</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$text</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
@@ -423,7 +616,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateText#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateText#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -449,18 +642,17 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_validateTitle">
         validateTitle()
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateTitle" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateTitle" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Validates announcement&#039;s title</p>
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">validateTitle</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$title</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
@@ -483,7 +675,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateTitle#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateTitle#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -509,18 +701,17 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_validateValidUntilDate">
         validateValidUntilDate()
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateValidUntilDate" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateValidUntilDate" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Helper/AnnouncementValidationHelper.php"><a href="files/src-infrastructure-helper-announcementvalidationhelper.html"><abbr title="src/Infrastructure/Helper/AnnouncementValidationHelper.php">AnnouncementValidationHelper.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Announcement/AnnouncementBusinessValidator.php"><a href="files/src-domain-announcement-announcementbusinessvalidator.html"><abbr title="src/Domain/Announcement/AnnouncementBusinessValidator.php">AnnouncementBusinessValidator.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">51</span>
+    <span class="phpdocumentor-element-found-in__line">64</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Validates expiry date</p>
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">validateValidUntilDate</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$validUntil</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
@@ -528,12 +719,7 @@
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Preconditions</p>
-<ul>
-<li>Max 1 into the future</li>
-</ul>
-</section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -548,7 +734,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateValidUntilDate#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateValidUntilDate#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -580,7 +766,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Infrastructure/Helper/AnnouncementValidationHelper.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Domain/Announcement/AnnouncementBusinessValidator.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -681,26 +867,30 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#toc-methods">Methods</a></li>
+                                                            <li><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#property_validator">$validator</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTextLength">$maxTextLength</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTitleLength">$maxTitleLength</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxValidDate">$maxValidDate</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTextLength">$minTextLength</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTitleLength">$minTitleLength</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateId">validateId()</a></li>
-                                            <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateText">validateText()</a></li>
-                                            <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateTitle">validateTitle()</a></li>
-                                            <li class=""><a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateValidUntilDate">validateValidUntilDate()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateId">validateId()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateText">validateText()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateTitle">validateTitle()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateValidUntilDate">validateValidUntilDate()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -720,7 +910,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

@@ -1846,6 +1846,61 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Announcement-Announcement.html#property_decidedBy"
         },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator",
+            "name": "AnnouncementBusinessValidator",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003AvalidateTitle\u0028\u0029",
+            "name": "validateTitle",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateTitle"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003AvalidateText\u0028\u0029",
+            "name": "validateText",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateText"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003AvalidateValidUntilDate\u0028\u0029",
+            "name": "validateValidUntilDate",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateValidUntilDate"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003AvalidateId\u0028\u0029",
+            "name": "validateId",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#method_validateId"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A\u0024minTitleLength",
+            "name": "minTitleLength",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTitleLength"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A\u0024maxTitleLength",
+            "name": "maxTitleLength",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTitleLength"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A\u0024minTextLength",
+            "name": "minTextLength",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_minTextLength"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A\u0024maxTextLength",
+            "name": "maxTextLength",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxTextLength"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementBusinessValidator\u003A\u003A\u0024maxValidDate",
+            "name": "maxValidDate",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementBusinessValidator.html#property_maxValidDate"
+        },                {
             "fqsen": "\\App\\Domain\\Announcement\\AnnouncementException",
             "name": "AnnouncementException",
             "summary": "Announcement\u0020domain\u0020exceptions",
@@ -2236,6 +2291,41 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Countdown-Countdown.html#property_userId"
         },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator",
+            "name": "CountdownBusinessValidator",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003AvalidateTitle\u0028\u0029",
+            "name": "validateTitle",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#method_validateTitle"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003AvalidateCountToDate\u0028\u0029",
+            "name": "validateCountToDate",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#method_validateCountToDate"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003AvalidateId\u0028\u0029",
+            "name": "validateId",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#method_validateId"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003A\u0024minTitleLength",
+            "name": "minTitleLength",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#property_minTitleLength"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\CountdownBusinessValidator\u003A\u003A\u0024maxTitleLength",
+            "name": "maxTitleLength",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-CountdownBusinessValidator.html#property_maxTitleLength"
+        },                {
             "fqsen": "\\App\\Domain\\Countdown\\CountdownException",
             "name": "CountdownException",
             "summary": "Countdown\u0020domain\u0020exceptions\u0020\u002D\u0020contains\u0020translation\u0020KEYS",
@@ -2515,6 +2605,31 @@ Search.appendIndex(
             "name": "endTime",
             "summary": "",
             "url": "classes/App-Domain-Module-Module.html#property_endTime"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\ModuleBusinessValidator",
+            "name": "ModuleBusinessValidator",
+            "summary": "",
+            "url": "classes/App-Domain-Module-ModuleBusinessValidator.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\ModuleBusinessValidator\u003A\u003AvalidateStartTime\u0028\u0029",
+            "name": "validateStartTime",
+            "summary": "",
+            "url": "classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTime"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\ModuleBusinessValidator\u003A\u003AvalidateEndTime\u0028\u0029",
+            "name": "validateEndTime",
+            "summary": "",
+            "url": "classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateEndTime"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\ModuleBusinessValidator\u003A\u003AvalidateStartTimeNotGreaterThanEndTime\u0028\u0029",
+            "name": "validateStartTimeNotGreaterThanEndTime",
+            "summary": "",
+            "url": "classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateStartTimeNotGreaterThanEndTime"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\ModuleBusinessValidator\u003A\u003AvalidateId\u0028\u0029",
+            "name": "validateId",
+            "summary": "",
+            "url": "classes/App-Domain-Module-ModuleBusinessValidator.html#method_validateId"
         },                {
             "fqsen": "\\App\\Domain\\Module\\ModuleException",
             "name": "ModuleException",
@@ -4466,10 +4581,10 @@ Search.appendIndex(
             "summary": "Validates\u0020announcement\u0027s\u0020id",
             "url": "classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#method_validateId"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Helper\\AnnouncementValidationHelper\u003A\u003A\u0024config",
-            "name": "config",
+            "fqsen": "\\App\\Infrastructure\\Helper\\AnnouncementValidationHelper\u003A\u003A\u0024validator",
+            "name": "validator",
             "summary": "",
-            "url": "classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#property_config"
+            "url": "classes/App-Infrastructure-Helper-AnnouncementValidationHelper.html#property_validator"
         },                {
             "fqsen": "\\App\\Infrastructure\\Helper\\CountdownValidationHelper",
             "name": "CountdownValidationHelper",
@@ -4496,15 +4611,20 @@ Search.appendIndex(
             "summary": "Validates\u0020countdown\u0027s\u0020id",
             "url": "classes/App-Infrastructure-Helper-CountdownValidationHelper.html#method_validateId"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Helper\\CountdownValidationHelper\u003A\u003A\u0024config",
-            "name": "config",
+            "fqsen": "\\App\\Infrastructure\\Helper\\CountdownValidationHelper\u003A\u003A\u0024validator",
+            "name": "validator",
             "summary": "",
-            "url": "classes/App-Infrastructure-Helper-CountdownValidationHelper.html#property_config"
+            "url": "classes/App-Infrastructure-Helper-CountdownValidationHelper.html#property_validator"
         },                {
             "fqsen": "\\App\\Infrastructure\\Helper\\ModuleValidationHelper",
             "name": "ModuleValidationHelper",
             "summary": "Helper\u0020class\u0020for\u0020validating\u0020modules",
             "url": "classes/App-Infrastructure-Helper-ModuleValidationHelper.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Helper\\ModuleValidationHelper\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Helper-ModuleValidationHelper.html#method___construct"
         },                {
             "fqsen": "\\App\\Infrastructure\\Helper\\ModuleValidationHelper\u003A\u003AvalidateStartTime\u0028\u0029",
             "name": "validateStartTime",
@@ -4525,6 +4645,11 @@ Search.appendIndex(
             "name": "validateId",
             "summary": "",
             "url": "classes/App-Infrastructure-Helper-ModuleValidationHelper.html#method_validateId"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Helper\\ModuleValidationHelper\u003A\u003A\u0024validator",
+            "name": "validator",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Helper-ModuleValidationHelper.html#property_validator"
         },                {
             "fqsen": "\\App\\Infrastructure\\Helper\\SessionHelper",
             "name": "SessionHelper",
