@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Module\UseCase;
 
+use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\PDOModuleRepository;
@@ -16,6 +17,7 @@ readonly class ToggleModuleUseCase
 {
     public function __construct(
         private PDOModuleRepository    $repository,
+        private EventPublisher         $eventPublisher,
         private LoggerInterface        $logger,
         private ModuleValidationHelper $validator,
     ) {}
@@ -43,6 +45,10 @@ readonly class ToggleModuleUseCase
         if (!$result) {
             throw ModuleException::failedToToggle();
         }
+
+        $events = $module->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $module->clearDomainEvents();
 
         $this->logger->info('Module toggle finished', [
             'module_id' => $id,

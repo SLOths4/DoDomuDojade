@@ -6,6 +6,7 @@ namespace App\Application\Announcement\UseCase;
 use App\Application\Announcement\DTO\EditAnnouncementDTO;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
@@ -24,6 +25,7 @@ readonly class EditAnnouncementUseCase
      */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
+        private EventPublisher               $eventPublisher,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
     ) {}
@@ -66,6 +68,9 @@ readonly class EditAnnouncementUseCase
         if (!$success) {
             throw AnnouncementException::failedToUpdate();
         }
+
+        $events = $announcement->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
 
         $announcement->clearDomainEvents();
 

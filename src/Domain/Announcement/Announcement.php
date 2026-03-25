@@ -4,6 +4,7 @@ namespace App\Domain\Announcement;
 
 use App\Domain\Announcement\Event\AnnouncementApprovedEvent;
 use App\Domain\Announcement\Event\AnnouncementCreatedEvent;
+use App\Domain\Announcement\Event\AnnouncementDeletedEvent;
 use App\Domain\Announcement\Event\AnnouncementProposedEvent;
 use App\Domain\Announcement\Event\AnnouncementRejectedEvent;
 use App\Domain\Announcement\Event\AnnouncementUpdatedEvent;
@@ -176,6 +177,15 @@ final class Announcement
                 announcementId: $this->id->getValue(),
                 approvedBy: $decidedBy,
                 approvedAt: $this->decidedAt,
+            )
+        );
+    }
+
+    public function markDeleted(): void
+    {
+        $this->recordEvent(
+            new AnnouncementDeletedEvent(
+                announcementId: $this->id->getValue(),
             )
         );
     }

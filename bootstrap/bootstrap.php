@@ -90,10 +90,13 @@ use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
 use App\Domain\User\UserRepositoryInterface;
+use App\Domain\Event\EventPublisher;
+use App\Domain\Event\EventStoreRepositoryInterface;
 use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\Database\DatabaseService;
 use App\Infrastructure\Database\PDOFactory;
+use App\Infrastructure\Event\SyncEventPublisher;
 use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
 use App\Infrastructure\ExternalApi\Tram\TramService;
@@ -110,6 +113,7 @@ use App\Infrastructure\Persistence\PDOQuoteRepository;
 use App\Infrastructure\Persistence\PDOUserRepository;
 use App\Infrastructure\Persistence\PDOWeatherRepository;
 use App\Infrastructure\Persistence\PDOWordRepository;
+use App\Infrastructure\Persistence\PDOEventStoreRepository;
 use App\Infrastructure\Security\AuthenticationService;
 use App\Infrastructure\Service\CsrfTokenService;
 use App\Infrastructure\Service\FlashMessengerService;
@@ -215,6 +219,16 @@ $container->set(ViewRendererInterface::class, fn(Container $c) => new TwigRender
 
 $container->set(FlashMessengerInterface::class, fn() => new FlashMessengerService());
 
+$container->set(EventStoreRepositoryInterface::class, fn(Container $c) => new PDOEventStoreRepository(
+    $c->get(DatabaseService::class),
+    'events',
+));
+
+$container->set(EventPublisher::class, fn(Container $c) => new SyncEventPublisher(
+    $c->get(EventStoreRepositoryInterface::class),
+    $c->get(LoggerInterface::class),
+));
+
 // ============ ANNOUNCEMENTS ============
 
 $container->set(PDOAnnouncementRepository::class, function (Container $c): PDOAnnouncementRepository {
@@ -228,12 +242,14 @@ $container->set(PDOAnnouncementRepository::class, function (Container $c): PDOAn
 
 $container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
 ));
 
 $container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
 ));
@@ -245,6 +261,7 @@ $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) 
 
 $container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
 ));
@@ -261,6 +278,7 @@ $container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new Get
 
 $container->set(ApproveRejectAnnouncementUseCase::class, fn(Container $c) => new ApproveRejectAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(AnnouncementValidationHelper::class),
 ));
@@ -354,12 +372,14 @@ $container->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleV
 
 $container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase(
     $c->get(PDOModuleRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(ModuleValidationHelper::class),
 ));
 
 $container->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase(
     $c->get(PDOModuleRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(ModuleValidationHelper::class),
 ));
@@ -377,12 +397,14 @@ $container->set(PDOCountdownRepository::class, function (Container $c): PDOCount
 
 $container->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
 ));
 
 $container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
 ));
@@ -405,6 +427,7 @@ $container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCu
 
 $container->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
+    $c->get(EventPublisher::class),
     $c->get(LoggerInterface::class),
     $c->get(CountdownValidationHelper::class),
 ));
@@ -462,6 +485,7 @@ $container->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseC
     $c->get(LoggerInterface::class),
     $c->get(QuoteApiService::class),
     $c->get(PDOQuoteRepository::class),
+    $c->get(EventPublisher::class),
 ));
 
 $container->set(PDOWordRepository::class, fn(Container $c) => new PDOWordRepository(

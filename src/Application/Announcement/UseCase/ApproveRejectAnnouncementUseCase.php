@@ -7,6 +7,7 @@ namespace App\Application\Announcement\UseCase;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Announcement\AnnouncementStatus;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Psr\Log\LoggerInterface;
@@ -23,6 +24,7 @@ readonly class ApproveRejectAnnouncementUseCase
      */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
+        private EventPublisher               $eventPublisher,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
     ) {}
@@ -62,6 +64,9 @@ readonly class ApproveRejectAnnouncementUseCase
         if (!$result) {
             throw AnnouncementException::failedToUpdateStatus();
         }
+
+        $events = $announcement->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
 
         $announcement->clearDomainEvents();
 

@@ -7,6 +7,7 @@ use App\Application\Announcement\DTO\ProposeAnnouncementDTO;
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use DateMalformedStringException;
@@ -25,6 +26,7 @@ readonly class ProposeAnnouncementUseCase
      */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
+        private EventPublisher               $eventPublisher,
         private AnnouncementValidationHelper $validator,
         private LoggerInterface              $logger,
     ) {}
@@ -49,6 +51,10 @@ readonly class ProposeAnnouncementUseCase
         $announcement = $this->mapDtoToEntity($dto);
 
         $id = $this->repository->add($announcement);
+
+        $events = $announcement->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement proposed successfully', ['id' => $id]);
 

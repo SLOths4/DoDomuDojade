@@ -5,6 +5,7 @@ namespace App\Application\Announcement\UseCase;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Exception;
@@ -22,6 +23,7 @@ readonly class DeleteAnnouncementUseCase
      */
     public function __construct(
         private PDOAnnouncementRepository    $repository,
+        private EventPublisher               $eventPublisher,
         private LoggerInterface              $logger,
         private AnnouncementValidationHelper $validator,
     ) {}
@@ -38,11 +40,21 @@ readonly class DeleteAnnouncementUseCase
 
         $this->validator->validateId($announcementId);
 
+        $announcement = $this->repository->findById($announcementId);
+        if ($announcement === null) {
+            throw AnnouncementException::notFound($announcementId);
+        }
+
         $result = $this->repository->delete($announcementId);
 
         if (!$result) {
             throw AnnouncementException::failedToDelete($announcementId);
         }
+
+        $announcement->markDeleted();
+        $events = $announcement->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement deleted successfully', [
             'announcement_id' => $announcementId,

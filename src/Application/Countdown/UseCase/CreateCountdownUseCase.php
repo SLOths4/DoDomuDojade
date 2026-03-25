@@ -6,6 +6,7 @@ namespace App\Application\Countdown\UseCase;
 use App\Application\Countdown\AddEditCountdownDTO;
 use App\Domain\Countdown\Countdown;
 use App\Domain\Countdown\CountdownException;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
 use Exception;
@@ -23,6 +24,7 @@ readonly class CreateCountdownUseCase
      */
     public function __construct(
         private PDOCountdownRepository    $repository,
+        private EventPublisher            $eventPublisher,
         private LoggerInterface           $logger,
         private CountdownValidationHelper $validator,
     ) {}
@@ -48,6 +50,12 @@ readonly class CreateCountdownUseCase
         if (!$id) {
             throw CountdownException::failedToCreate();
         }
+
+        $new->assignId($id);
+        $new->markCreated();
+        $events = $new->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $new->clearDomainEvents();
 
         $this->logger->info('Countdown creation finished', [
             'admin_id' => $adminId,

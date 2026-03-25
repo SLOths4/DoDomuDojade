@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Module\UseCase;
 
 use App\Application\Module\EditModuleDTO;
-use App\Domain\Module\Module;
+use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Persistence\PDOModuleRepository;
@@ -18,6 +18,7 @@ readonly class UpdateModuleUseCase
 {
     public function __construct(
         private PDOModuleRepository    $repository,
+        private EventPublisher         $eventPublisher,
         private LoggerInterface        $logger,
         private ModuleValidationHelper $validator,
     ) {}
@@ -43,38 +44,23 @@ readonly class UpdateModuleUseCase
 
         $this->validateBusinessRules($dto);
 
-        $updated = $this->mapDtoToEntity($dto, $module);
+        $module->updateSchedule($dto->startTime, $dto->endTime);
 
-        $result = $this->repository->update($updated);
+        $result = $this->repository->update($module);
 
         if (!$result) {
             throw ModuleException::failedToUpdate();
         }
+
+        $events = $module->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $module->clearDomainEvents();
 
         $this->logger->info('Module update finished', [
             'module_id' => $id,
         ]);
 
         return true;
-    }
-
-    /**
-     * Maps DTO to entity
-     * @param EditModuleDTO $dto
-     * @param Module $existing
-     * @return Module
-     */
-    private function mapDtoToEntity(
-        EditModuleDTO $dto,
-        Module $existing,
-    ): Module {
-        return new Module(
-            id: $existing->id,
-            moduleName: $existing->moduleName,
-            isActive: $existing->isActive,
-            startTime: $dto->startTime,
-            endTime: $dto->endTime,
-        );
     }
 
     /**
