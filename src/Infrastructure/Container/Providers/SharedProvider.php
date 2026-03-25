@@ -90,7 +90,7 @@ final class SharedProvider implements ServiceProviderInterface
 
         $c->set(Environment::class, function (Container $c): Environment {
             $cfg = $c->get(Config::class);
-            return $c->get(TwigFactory::class)->create(dirname(__DIR__, 5), $cfg->twigCachePath, $cfg->twigDebug);
+            return $c->get(TwigFactory::class)->create(dirname(__DIR__, 4), $cfg->twigCachePath, $cfg->twigDebug);
         });
 
         $c->set(ViewRendererInterface::class, fn(Container $c) => new TwigRenderer(
