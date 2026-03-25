@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Helper;
 
 use App\Domain\Module\ModuleException;
+use App\Domain\Module\ModuleBusinessValidator;
 use DateTimeImmutable;
 
 /**
@@ -10,17 +11,16 @@ use DateTimeImmutable;
  */
 final readonly class ModuleValidationHelper
 {
+    public function __construct(
+        private ModuleBusinessValidator $validator,
+    ) {}
+
     /**
      * @throws ModuleException
      */
     public function validateStartTime(DateTimeImmutable $startTime): void
     {
-        $hour = (int)$startTime->format('H');
-        $minute = (int)$startTime->format('i');
-
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
-            throw ModuleException::invalidStartTime($startTime);
-        }
+        $this->validator->validateStartTime($startTime);
     }
 
     /**
@@ -28,12 +28,7 @@ final readonly class ModuleValidationHelper
      */
     public function validateEndTime(DateTimeImmutable $endTime): void
     {
-        $hour = (int)$endTime->format('H');
-        $minute = (int)$endTime->format('i');
-
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
-            throw ModuleException::invalidEndTime($endTime);
-        }
+        $this->validator->validateEndTime($endTime);
     }
 
     /**
@@ -46,9 +41,7 @@ final readonly class ModuleValidationHelper
         DateTimeImmutable $endTime
     ): void
     {
-        if ($startTime > $endTime) {
-            throw ModuleException::startTimeGreaterThanEndTime($startTime, $endTime);
-        }
+        $this->validator->validateStartTimeNotGreaterThanEndTime($startTime, $endTime);
     }
 
     /**
@@ -56,8 +49,6 @@ final readonly class ModuleValidationHelper
      */
     public function validateId(int $id): void
     {
-        if ($id <= 0) {
-            throw ModuleException::invalidId($id);
-        }
+        $this->validator->validateId($id);
     }
 }

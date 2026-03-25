@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Countdown\UseCase;
 
-use App\Infrastructure\Persistence\PDOCountdownRepository;
+use App\Domain\Countdown\CountdownRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetAllCountdownsUseCase
 {
     /**
-     * @param PDOCountdownRepository $repository
+     * @param CountdownRepositoryInterface $repository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOCountdownRepository $repository,
+        private CountdownRepositoryInterface $repository,
         private LoggerInterface        $logger
     ) {}
 

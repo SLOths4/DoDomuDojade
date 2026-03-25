@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\User\UseCase;
 
 use App\Domain\User\ValueObject\Password;
-use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -14,12 +14,12 @@ use Psr\Log\LoggerInterface;
 readonly class ChangePasswordUseCase
 {
     /**
-     * @param PDOUserRepository $repository
+     * @param UserRepositoryInterface $repository
      * @param LoggerInterface $logger
      * @param int $minPasswordLength
      */
     public function __construct(
-        private PDOUserRepository $repository,
+        private UserRepositoryInterface $repository,
         private LoggerInterface   $logger,
         private int               $minPasswordLength
     ) {}

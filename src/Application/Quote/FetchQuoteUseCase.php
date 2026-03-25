@@ -5,7 +5,7 @@ namespace App\Application\Quote;
 use App\Domain\Quote\Quote;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiException;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
-use App\Infrastructure\Persistence\PDOQuoteRepository;
+use App\Domain\Quote\QuoteRepositoryInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 
@@ -17,12 +17,12 @@ readonly class FetchQuoteUseCase
     /**
      * @param LoggerInterface $logger
      * @param QuoteApiService $apiService
-     * @param PDOQuoteRepository $repository
+     * @param QuoteRepositoryInterface $repository
      */
     public function __construct(
         private LoggerInterface    $logger,
         private QuoteApiService    $apiService,
-        private PDOQuoteRepository $repository,
+        private QuoteRepositoryInterface $repository,
     ) {}
 
     /**

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\User\UseCase;
 
-use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class DeleteUserUseCase
 {
     /**
-     * @param PDOUserRepository $repository
+     * @param UserRepositoryInterface $repository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOUserRepository $repository,
+        private UserRepositoryInterface $repository,
         private LoggerInterface   $logger
     ) {}
 
