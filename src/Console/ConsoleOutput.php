@@ -19,17 +19,6 @@ final class ConsoleOutput
     private const string YELLOW = "\033[33m";
     /** @var string ANSI blue color */
     private const string BLUE = "\033[36m";
-    /** @var string ANSI grey color */
-    private const string GRAY = "\033[90m";
-
-    public function __construct()
-    {
-        // Force usage of GRAY if it was reported as unused
-        // But better is to just leave it if it might be used in future, 
-        // or remove it if PHPStan complains.
-        // User's output says: Constant App\Console\ConsoleOutput::GRAY is unused.
-    }
-
     /**
      * Outputs success to console
      * @param string $message

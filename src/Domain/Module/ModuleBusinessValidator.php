@@ -13,10 +13,9 @@ final class ModuleBusinessValidator
      */
     public function validateStartTime(DateTimeImmutable $startTime): void
     {
-        $hour = (int)$startTime->format('H');
         $minute = (int)$startTime->format('i');
 
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
+        if ($minute < 0 || $minute > 59) {
             throw ModuleException::invalidStartTime($startTime);
         }
     }
@@ -26,10 +25,9 @@ final class ModuleBusinessValidator
      */
     public function validateEndTime(DateTimeImmutable $endTime): void
     {
-        $hour = (int)$endTime->format('H');
         $minute = (int)$endTime->format('i');
 
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
+        if ($minute < 0 || $minute > 59) {
             throw ModuleException::invalidEndTime($endTime);
         }
     }
@@ -52,7 +50,7 @@ final class ModuleBusinessValidator
     public function validateId(int $id): void
     {
         if ($id <= 0) {
-            throw ModuleException::invalidId($id);
+            throw ModuleException::invalidId();
         }
     }
 }

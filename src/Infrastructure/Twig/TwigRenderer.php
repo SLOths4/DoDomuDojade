@@ -10,8 +10,6 @@ use App\Presentation\Http\Shared\ViewRendererInterface;
 use Throwable;
 use Twig\Environment;
 use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 readonly class TwigRenderer implements ViewRendererInterface
 {
@@ -39,7 +37,7 @@ readonly class TwigRenderer implements ViewRendererInterface
 
         } catch (LoaderError) {
             throw TwigException::templateNotFound($template);
-        } catch (RuntimeError | SyntaxError|Throwable $e) {
+        } catch (Throwable $e) {
             throw TwigException::renderingFailed($template, $e);
         }
     }
