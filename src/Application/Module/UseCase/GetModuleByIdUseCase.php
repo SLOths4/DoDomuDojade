@@ -5,6 +5,7 @@ namespace App\Application\Module\UseCase;
 
 use App\Domain\Module\Module;
 use App\Domain\Module\ModuleException;
+use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
 use Exception;

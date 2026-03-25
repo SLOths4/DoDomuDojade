@@ -23,7 +23,7 @@ readonly class ProposeAnnouncementUseCase
 {
     /**
      * @param AnnouncementRepositoryInterface $repository
-     * @param AnnouncementBusinessValidator $validator
+     * @param AnnouncementValidationHelper $validator
      * @param LoggerInterface $logger
      */
     public function __construct(
