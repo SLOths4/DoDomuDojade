@@ -4,7 +4,7 @@ namespace App\Application\User\UseCase;
 use App\Application\User\AuthenticateUserDTO;
 use App\Domain\Shared\AuthenticationException;
 use App\Domain\User\User;
-use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -14,11 +14,11 @@ use Psr\Log\LoggerInterface;
 final readonly class AuthenticateUserUseCase
 {
     /**
-     * @param PDOUserRepository $userRepository
+     * @param UserRepositoryInterface $userRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOUserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private LoggerInterface   $logger
     ){}
 

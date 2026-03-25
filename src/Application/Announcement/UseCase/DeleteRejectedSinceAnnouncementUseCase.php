@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Announcement\UseCase;
 
-use App\Infrastructure\Persistence\PDOAnnouncementRepository;
-use App\Domain\Shared\InvalidDateTimeException;
+use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 
@@ -14,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class DeleteRejectedSinceAnnouncementUseCase
 {
     /**
-     * @param PDOAnnouncementRepository $repository
+     * @param AnnouncementRepositoryInterface $repository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOAnnouncementRepository $repository,
+        private AnnouncementRepositoryInterface $repository,
         private LoggerInterface           $logger,
     ){}
 

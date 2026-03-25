@@ -89,7 +89,16 @@ use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
+use App\Domain\Announcement\AnnouncementBusinessValidator;
+use App\Domain\Announcement\AnnouncementRepositoryInterface;
+use App\Domain\Countdown\CountdownBusinessValidator;
+use App\Domain\Countdown\CountdownRepositoryInterface;
+use App\Domain\Module\ModuleBusinessValidator;
+use App\Domain\Module\ModuleRepositoryInterface;
+use App\Domain\Quote\QuoteRepositoryInterface;
 use App\Domain\User\UserRepositoryInterface;
+use App\Domain\Weather\WeatherRepositoryInterface;
+use App\Domain\Word\WordRepositoryInterface;
 use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\Database\DatabaseService;
@@ -99,9 +108,6 @@ use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
 use App\Infrastructure\ExternalApi\Tram\TramService;
 use App\Infrastructure\ExternalApi\Weather\WeatherService;
 use App\Infrastructure\ExternalApi\Word\WordApiService;
-use App\Infrastructure\Helper\AnnouncementValidationHelper;
-use App\Infrastructure\Helper\CountdownValidationHelper;
-use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Logger\LoggerFactory;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
@@ -226,16 +232,25 @@ $container->set(PDOAnnouncementRepository::class, function (Container $c): PDOAn
     );
 });
 
+$container->set(AnnouncementRepositoryInterface::class, fn(Container $c) => $c->get(PDOAnnouncementRepository::class));
+$container->set(AnnouncementBusinessValidator::class, fn(Container $c) => new AnnouncementBusinessValidator(
+    $c->get(Config::class)->announcementMinTitleLength,
+    $c->get(Config::class)->announcementMaxTitleLength,
+    $c->get(Config::class)->announcementMinTextLength,
+    $c->get(Config::class)->announcementMaxTextLength,
+    $c->get(Config::class)->announcementMaxValidDate,
+));
+
 $container->set(CreateAnnouncementUseCase::class, fn(Container $c) => new CreateAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(AnnouncementValidationHelper::class),
+    $c->get(AnnouncementBusinessValidator::class),
 ));
 
 $container->set(DeleteAnnouncementUseCase::class, fn(Container $c) => new DeleteAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(AnnouncementValidationHelper::class),
+    $c->get(AnnouncementBusinessValidator::class),
 ));
 
 $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) => new DeleteRejectedSinceAnnouncementUseCase(
@@ -246,7 +261,7 @@ $container->set(DeleteRejectedSinceAnnouncementUseCase::class, fn(Container $c) 
 $container->set(EditAnnouncementUseCase::class, fn(Container $c) => new EditAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(AnnouncementValidationHelper::class),
+    $c->get(AnnouncementBusinessValidator::class),
 ));
 
 $container->set(GetAllAnnouncementsUseCase::class, fn(Container $c) => new GetAllAnnouncementsUseCase(
@@ -262,7 +277,7 @@ $container->set(GetValidAnnouncementsUseCase::class, fn(Container $c) => new Get
 $container->set(ApproveRejectAnnouncementUseCase::class, fn(Container $c) => new ApproveRejectAnnouncementUseCase(
     $c->get(PDOAnnouncementRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(AnnouncementValidationHelper::class),
+    $c->get(AnnouncementBusinessValidator::class),
 ));
 
 // ============ USERS ============
@@ -275,6 +290,8 @@ $container->set(PDOUserRepository::class, function (Container $c): PDOUserReposi
         $cfg->userDateFormat,
     );
 });
+
+$container->set(UserRepositoryInterface::class, fn(Container $c) => $c->get(PDOUserRepository::class));
 
 $container->set(CreateUserUseCase::class, function(Container $c) {
     $cfg = $c->get(Config::class);
@@ -336,6 +353,9 @@ $container->set(PDOModuleRepository::class, function (Container $c): PDOModuleRe
     );
 });
 
+$container->set(ModuleRepositoryInterface::class, fn(Container $c) => $c->get(PDOModuleRepository::class));
+$container->set(ModuleBusinessValidator::class, fn() => new ModuleBusinessValidator());
+
 $container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase(
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
@@ -344,7 +364,7 @@ $container->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModul
 $container->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase(
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(ModuleValidationHelper::class),
+    $c->get(ModuleBusinessValidator::class),
 ));
 
 $container->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleVisibleUseCase(
@@ -355,13 +375,13 @@ $container->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleV
 $container->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase(
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(ModuleValidationHelper::class),
+    $c->get(ModuleBusinessValidator::class),
 ));
 
 $container->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase(
     $c->get(PDOModuleRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(ModuleValidationHelper::class),
+    $c->get(ModuleBusinessValidator::class),
 ));
 
 // ============ COUNTDOWNS ============
@@ -375,16 +395,22 @@ $container->set(PDOCountdownRepository::class, function (Container $c): PDOCount
     );
 });
 
+$container->set(CountdownRepositoryInterface::class, fn(Container $c) => $c->get(PDOCountdownRepository::class));
+$container->set(CountdownBusinessValidator::class, fn(Container $c) => new CountdownBusinessValidator(
+    $c->get(Config::class)->announcementMinTitleLength,
+    $c->get(Config::class)->announcementMaxTitleLength,
+));
+
 $container->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(CountdownValidationHelper::class),
+    $c->get(CountdownBusinessValidator::class),
 ));
 
 $container->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(CountdownValidationHelper::class),
+    $c->get(CountdownBusinessValidator::class),
 ));
 
 $container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase(
@@ -395,7 +421,7 @@ $container->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCo
 $container->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase(
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(CountdownValidationHelper::class),
+    $c->get(CountdownBusinessValidator::class),
 ));
 
 $container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase(
@@ -406,7 +432,7 @@ $container->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCu
 $container->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCountdownUseCase(
     $c->get(PDOCountdownRepository::class),
     $c->get(LoggerInterface::class),
-    $c->get(CountdownValidationHelper::class),
+    $c->get(CountdownBusinessValidator::class),
 ));
 
 // ============ EXTERNAL APIS ============
@@ -422,6 +448,8 @@ $container->set(PDOWeatherRepository::class, fn(Container $c) => new PDOWeatherR
     $c->get(Config::class)->weatherTableName,
     $c->get(Config::class)->weatherDateFormat,
 ));
+
+$container->set(WeatherRepositoryInterface::class, fn(Container $c) => $c->get(PDOWeatherRepository::class));
 
 $container->set(WeatherService::class, fn(Container $c) => new WeatherService(
     $c->get(LoggerInterface::class),
@@ -458,6 +486,8 @@ $container->set(PDOQuoteRepository::class, fn(Container $c) => new PDOQuoteRepos
     $c->get(Config::class)->quoteDateFormat,
 ));
 
+$container->set(QuoteRepositoryInterface::class, fn(Container $c) => $c->get(PDOQuoteRepository::class));
+
 $container->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseCase(
     $c->get(LoggerInterface::class),
     $c->get(QuoteApiService::class),
@@ -469,6 +499,8 @@ $container->set(PDOWordRepository::class, fn(Container $c) => new PDOWordReposit
     $c->get(Config::class)->wordTableName,
     $c->get(Config::class)->wordDateFormat,
 ));
+
+$container->set(WordRepositoryInterface::class, fn(Container $c) => $c->get(PDOWordRepository::class));
 
 $container->set(FetchWordUseCase::class, fn(Container $c) => new FetchWordUseCase(
     $c->get(LoggerInterface::class),
