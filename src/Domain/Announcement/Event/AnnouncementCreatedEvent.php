@@ -50,6 +50,9 @@ final class AnnouncementCreatedEvent extends DomainEvent
         return 'announcement.created';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getPayload(): array
     {
         return [

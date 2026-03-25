@@ -43,13 +43,13 @@ abstract class DomainEvent {
     /**
      * Returns payload
      *
-     * @return array
+     * @return array<string, mixed>
      */
     abstract protected function getPayload(): array;
 
     /**
      * Returns events contents as an array
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

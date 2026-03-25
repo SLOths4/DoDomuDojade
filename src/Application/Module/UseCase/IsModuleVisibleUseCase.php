@@ -38,7 +38,7 @@ readonly class IsModuleVisibleUseCase
         $module = $this->repository->findByName($moduleName);
 
         if (!$module) {
-            throw ModuleException::notFound($module->id);
+            throw ModuleException::notFound();
         }
 
         if (!$module->isActive) {

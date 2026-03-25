@@ -19,6 +19,9 @@ readonly class GetDisplayAnnouncementsUseCase
         private LoggerInterface $logger
     ) {}
 
+    /**
+     * @return array<int, array{title: string, author: string, text: string}>
+     */
     public function execute(): array
     {
         $announcements = $this->getValidAnnouncementsUseCase->execute();

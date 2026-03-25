@@ -22,7 +22,7 @@ readonly class GetAllCountdownsUseCase
     ) {}
 
     /**
-     * @return array
+     * @return array<\App\Domain\Countdown\Countdown>
      * @throws Exception
      */
     public function execute(): array

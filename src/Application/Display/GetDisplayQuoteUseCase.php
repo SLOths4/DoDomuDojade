@@ -22,7 +22,7 @@ readonly class GetDisplayQuoteUseCase
     ) {}
 
     /**
-     * @return array|null
+     * @return array{from: string, quote: string}|null
      */
     public function execute(): ?array
     {

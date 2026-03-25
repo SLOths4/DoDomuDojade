@@ -27,7 +27,7 @@ final readonly class ProposeAnnouncementDTO
 
     /**
      * Creates DTO from an array
-     * @param array $array
+     * @param array<string, mixed> $array
      * @param DateTimeImmutable $defaultValidUntil
      * @return self
      * @throws InvalidDateTimeException

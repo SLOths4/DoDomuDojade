@@ -23,6 +23,7 @@ final readonly class AddEditCountdownDTO
     ){}
 
     /**
+     * @param array<string, mixed> $array
      * @throws InvalidDateTimeException
      * @throws MissingParameterException
      */

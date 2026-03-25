@@ -23,7 +23,7 @@ readonly class GetDisplayEventsUseCase
     ) {}
 
     /**
-     * @return array|null
+     * @return array<int, array{summary: string, description: string, start: string, end: string}>|null
      */
     public function execute(): ?array
     {
@@ -33,10 +33,10 @@ readonly class GetDisplayEventsUseCase
 
             foreach ($events->getItems() as $event) {
                 $eventsArray[] = [
-                    'summary' => $event->getSummary() === null ? "Wydarzenie bez tytułu" : $event->getSummary(),
-                    'description' => $event->getDescription() === null ? "Wydarzenie bez opisu" : $event->getDescription(),
-                    'start' => isset($event->getStart()->dateTime) === true ? new DateTime(($event->getStart()->dateTime))->format('d.m.Y H:i') : new DateTime(($event->getStart()->date))->format('d.m.Y'),
-                    'end' => isset($event->getEnd()->dateTime) === true ? new DateTime(($event->getEnd()->dateTime))->format('H:i') : new DateTime(($event->getEnd()->date))->format('d.m.Y'),
+                    'summary' => $event->getSummary() ?? "Wydarzenie bez tytułu",
+                    'description' => $event->getDescription() ?? "Wydarzenie bez opisu",
+                    'start' => ($event->getStart()->dateTime ?? null) !== null ? new DateTime(($event->getStart()->dateTime))->format('d.m.Y H:i') : new DateTime(($event->getStart()->date))->format('d.m.Y'),
+                    'end' => ($event->getEnd()->dateTime ?? null) !== null ? new DateTime(($event->getEnd()->dateTime))->format('H:i') : new DateTime(($event->getEnd()->date))->format('d.m.Y'),
                 ];
             }
 

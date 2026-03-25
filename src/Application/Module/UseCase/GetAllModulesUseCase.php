@@ -22,7 +22,7 @@ readonly class GetAllModulesUseCase
     ) {}
 
     /**
-     * @return array
+     * @return array<\App\Domain\Module\Module>
      * @throws Exception
      */
     public function execute(): array

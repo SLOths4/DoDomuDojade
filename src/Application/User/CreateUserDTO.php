@@ -21,7 +21,7 @@ final readonly class CreateUserDTO
 
     /**
      * Create DTO from an array
-     * @param array $array
+     * @param array<string, mixed> $array
      * @return self
      * @throws MissingParameterException
      */

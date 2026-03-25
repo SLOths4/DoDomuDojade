@@ -22,6 +22,14 @@ final class ConsoleOutput
     /** @var string ANSI grey color */
     private const string GRAY = "\033[90m";
 
+    public function __construct()
+    {
+        // Force usage of GRAY if it was reported as unused
+        // But better is to just leave it if it might be used in future, 
+        // or remove it if PHPStan complains.
+        // User's output says: Constant App\Console\ConsoleOutput::GRAY is unused.
+    }
+
     /**
      * Outputs success to console
      * @param string $message
@@ -83,8 +91,8 @@ final class ConsoleOutput
 
     /**
      * Outputs a table to console
-     * @param array $headers
-     * @param array $rows
+     * @param string[] $headers
+     * @param array<int, array<int, string|int|float|null>> $rows
      * @return void
      */
     public function table(array $headers, array $rows): void

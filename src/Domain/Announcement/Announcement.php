@@ -16,6 +16,7 @@ use DateTimeImmutable;
  */
 final class Announcement
 {
+    /** @var DomainEvent[] */
     private array $events = [];
 
     /**
@@ -234,6 +235,9 @@ final class Announcement
         $this->events[] = $event;
     }
 
+    /**
+     * @return DomainEvent[]
+     */
     public function getDomainEvents(): array
     {
         return $this->events;
@@ -246,6 +250,7 @@ final class Announcement
 
     /**
      * Serialize to array (for database storage)
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -264,6 +269,7 @@ final class Announcement
 
     /**
      * Hydrate from database array
+     * @param array<string, mixed> $data
      */
     public static function fromArray(array $data): self
     {

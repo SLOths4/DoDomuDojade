@@ -27,6 +27,6 @@ enum AnnouncementStatus: string
             }
         }
 
-        throw AnnouncementException::invalidStatus($value);
+        throw AnnouncementException::invalidStatus((string)$value);
     }
 }

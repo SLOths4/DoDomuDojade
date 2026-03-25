@@ -20,7 +20,7 @@ readonly class GetDisplayCountdownUseCase
     ) {}
 
     /**
-     * @return array|null
+     * @return array{title: string, count_to: int}|null
      * @throws Exception
      */
     public function execute(): ?array

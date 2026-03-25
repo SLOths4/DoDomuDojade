@@ -27,7 +27,7 @@ readonly class GetDisplayWeatherUseCase
     ) {}
 
     /**
-     * @return string[]|null
+     * @return array{temperature: string, pressure: string, airlyAdvice: string, airlyDescription: string, airlyColour: string}|null
      */
     public function execute(): ?array
     {
@@ -71,6 +71,10 @@ readonly class GetDisplayWeatherUseCase
         return $this->formatDisplay($weatherData);
     }
 
+    /**
+     * @param array<string, mixed> $weatherData
+     * @return array{temperature: string, pressure: string, airlyAdvice: string, airlyDescription: string, airlyColour: string}|null
+     */
     private function formatDisplay(array $weatherData): ?array
     {
         if (empty($weatherData)) {

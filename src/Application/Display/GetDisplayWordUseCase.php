@@ -22,7 +22,7 @@ readonly class GetDisplayWordUseCase
     ) {}
 
     /**
-     * @return array|null
+     * @return array{word: string, ipa: string, definition: string}|null
      */
     public function execute(): ?array
     {

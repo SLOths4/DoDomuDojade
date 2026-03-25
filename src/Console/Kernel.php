@@ -24,7 +24,7 @@ final class Kernel
 
     /**
      * Executes a command with given arguments
-     * @param array $argv
+     * @param string[] $argv
      * @return int
      */
     public function execute(array $argv): int

@@ -11,7 +11,7 @@ interface Command
 {
     /**
      * Executes command
-     * @param array $arguments
+     * @param array<string|int, string> $arguments
      * @param ConsoleOutput $output
      * @return void
      */
