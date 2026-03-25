@@ -7,6 +7,7 @@ use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -19,12 +20,12 @@ readonly class GetAnnouncementByIdUseCase
     /**
      * @param AnnouncementRepositoryInterface $repository
      * @param LoggerInterface $logger
-     * @param AnnouncementValidationHelper $validator
+     * @param AnnouncementBusinessValidator $validator
      */
     public function __construct(
         private AnnouncementRepositoryInterface    $repository,
         private LoggerInterface              $logger,
-        private AnnouncementValidationHelper $validator,
+        private AnnouncementBusinessValidator $validator,
     ){}
 
     /**

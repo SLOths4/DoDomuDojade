@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace App\Application\Module\UseCase;
 
 use App\Application\Module\EditModuleDTO;
-use App\Domain\Module\Module;
+use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
+use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -17,9 +18,10 @@ use Psr\Log\LoggerInterface;
 readonly class UpdateModuleUseCase
 {
     public function __construct(
+        private EventPublisher         $eventPublisher,
         private ModuleRepositoryInterface    $repository,
         private LoggerInterface        $logger,
-        private ModuleValidationHelper $validator,
+        private ModuleBusinessValidator $validator,
     ) {}
 
     /**
@@ -43,38 +45,23 @@ readonly class UpdateModuleUseCase
 
         $this->validateBusinessRules($dto);
 
-        $updated = $this->mapDtoToEntity($dto, $module);
+        $module->updateSchedule($dto->startTime, $dto->endTime);
 
-        $result = $this->repository->update($updated);
+        $result = $this->repository->update($module);
 
         if (!$result) {
             throw ModuleException::failedToUpdate();
         }
+
+        $events = $module->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $module->clearDomainEvents();
 
         $this->logger->info('Module update finished', [
             'module_id' => $id,
         ]);
 
         return true;
-    }
-
-    /**
-     * Maps DTO to entity
-     * @param EditModuleDTO $dto
-     * @param Module $existing
-     * @return Module
-     */
-    private function mapDtoToEntity(
-        EditModuleDTO $dto,
-        Module $existing,
-    ): Module {
-        return new Module(
-            id: $existing->id,
-            moduleName: $existing->moduleName,
-            isActive: $existing->isActive,
-            startTime: $dto->startTime,
-            endTime: $dto->endTime,
-        );
     }
 
     /**

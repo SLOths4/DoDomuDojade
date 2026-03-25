@@ -1,16 +1,140 @@
 {% extends "layout/base.twig" %}
+{% import _self as tables %}
+
+{% macro pendingAnnouncementsTable(pendingAnnouncements, csrfToken) %}
+    {% if pendingAnnouncements is not empty %}
+        <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+            <h2 class="text-2xl font-bold p-4 bg-yellow-50 dark:bg-yellow-900 border-b dark:border-yellow-700">
+                <i class="fa-solid fa-clock mr-2"></i>Ogłoszenia oczekujące na akceptację ({{ pendingAnnouncements|length }})
+            </h2>
+            <table id="pendingAnnouncementsTable" class="w-full table-fixed border-collapse">
+                <thead class="bg-gray-200 dark:bg-gray-700">
+                <tr>
+                    <th class="px-4 py-2 border">Tytuł</th>
+                    <th class="px-4 py-2 border">Autor</th>
+                    <th class="px-4 py-2 border">Data publikacji</th>
+                    <th class="px-4 py-2 border">Ważne do</th>
+                    <th class="px-4 py-2 border">Treść</th>
+                    <th class="px-4 py-2 border">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for announcement in pendingAnnouncements %}
+                    <tr>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
+                            <button type="button"
+                                    class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="{{ announcement.id }}"
+                                    data-csrf-token="{{ csrfToken }}">
+                                <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
+                            </button>
+                            <button type="button"
+                                    class="reject-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="{{ announcement.id }}"
+                                    data-csrf-token="{{ csrfToken }}">
+                                <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
+                            </button>
+                            <button type="button"
+                                    class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="{{ announcement.id }}"
+                                    data-title="{{ announcement.title }}"
+                                    data-text="{{ announcement.text }}"
+                                    data-valid-until="{{ announcement.validUntil }}"
+                                    data-status="{{ announcement.status }}">
+                                <i class="fa-solid fa-edit mr-1"></i>Edytuj
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro announcementsTable(announcements) %}
+    {% if announcements is not empty %}
+        <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+            <h2 class="text-2xl font-bold p-4 bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
+                <i class="fa-solid fa-list mr-2"></i>Wszystkie ogłoszenia
+            </h2>
+            <table id="announcementsTable" class="w-full table-fixed border-collapse">
+                <thead class="bg-gray-200 dark:bg-gray-700">
+                <tr>
+                    <th class="px-4 py-2 border">Tytuł</th>
+                    <th class="px-4 py-2 border">Autor</th>
+                    <th class="px-4 py-2 border">Data publikacji</th>
+                    <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
+                    <th class="px-4 py-2 border">Status</th>
+                    <th class="px-4 py-2 border">Decyzja</th>
+                    <th class="px-4 py-2 border">Treść</th>
+                    <th class="px-4 py-2 border">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for announcement in announcements %}
+                    {% set statusClass = announcement.status == 'APPROVED' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : announcement.status == 'REJECTED' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' %}
+                    <tr>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">
+                            <span class="px-2 py-1 rounded text-xs font-semibold {{ statusClass }}">
+                                {{ announcement.status }}
+                            </span>
+                        </td>
+                        <td class="break-words whitespace-normal px-4 py-2 border text-xs">
+                            {% if announcement.decidedAt %}
+                                {{ announcement.decidedAt }}<br>
+                                przez: {{ announcement.decidedByName ?? 'Admin' }}
+                            {% else %}
+                                <span class="text-gray-400 dark:text-gray-500">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
+                        <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
+                            <button type="button"
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="{{ announcement.id }}">
+                                Usuń
+                            </button>
+                            <button type="button"
+                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                    data-announcement-id="{{ announcement.id }}"
+                                    data-title="{{ announcement.title }}"
+                                    data-text="{{ announcement.text }}"
+                                    data-valid-until="{{ announcement.validUntil }}"
+                                    data-status="{{ announcement.status }}">
+                                Edytuj
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+            <p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p>
+        </div>
+    {% endif %}
+{% endmacro %}
 
 {% block content %}
     <main class="flex-grow">
-        {# Flash messages #}
         {% include 'components/error.twig' with { error: flash.error} %}
-
         {% include 'components/success.twig' with { success: flash.success} %}
 
-        {# SECTION 1: Add announcement form #}
         <form id="addAnnouncementForm" class="mb-3 p-4 bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-custom mx-1">
             <div id="formNotification"></div>
-            
+
             <div class="mb-2">
                 <label>
                     <input type="text" id="add_title" name="title" placeholder="Tytuł" class="w-full p-2 border rounded dark:bg-gray-950 dark:text-white" maxlength="50" required>
@@ -37,132 +161,14 @@
             </div>
         </form>
 
-        {# SECTION 2: Pending announcements #}
-        {% if pendingAnnouncements is not empty %}
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <h2 class="text-2xl font-bold p-4 bg-yellow-50 dark:bg-yellow-900 border-b dark:border-yellow-700">
-                    <i class="fa-solid fa-clock mr-2"></i>Ogłoszenia oczekujące na akceptację ({{ pendingAnnouncements|length }})
-                </h2>
-                <table id="pendingAnnouncementsTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Tytuł</th>
-                        <th class="px-4 py-2 border">Autor</th>
-                        <th class="px-4 py-2 border">Data publikacji</th>
-                        <th class="px-4 py-2 border">Ważne do</th>
-                        <th class="px-4 py-2 border">Treść</th>
-                        <th class="px-4 py-2 border">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for announcement in pendingAnnouncements %}
-                        <tr>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                        data-announcement-id="{{ announcement.id }}"
-                                        data-csrf-token="{{ csrf.token }}">
-                                    <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
-                                </button>
-                                <button type="button"
-                                        class="reject-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                        data-announcement-id="{{ announcement.id }}"
-                                        data-csrf-token="{{ csrf.token }}">
-                                    <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
-                                </button>
-                                <button type="button"
-                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                        data-announcement-id="{{ announcement.id }}"
-                                        data-title="{{ announcement.title }}"
-                                        data-text="{{ announcement.text }}"
-                                        data-valid-until="{{ announcement.validUntil }}"
-                                        data-status="{{ announcement.status }}">
-                                    <i class="fa-solid fa-edit mr-1"></i>Edytuj
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
+        <div id="pendingAnnouncementsSection">
+            {{ tables.pendingAnnouncementsTable(pendingAnnouncements, csrf.token) }}
+        </div>
 
+        <div id="announcementsSection">
+            {{ tables.announcementsTable(announcements) }}
+        </div>
 
-        {# SECTION 3: All announcements #}
-        {% if announcements is not empty %}
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <h2 class="text-2xl font-bold p-4 bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
-                    <i class="fa-solid fa-list mr-2"></i>Wszystkie ogłoszenia
-                </h2>
-                <table id="announcementsTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Tytuł</th>
-                        <th class="px-4 py-2 border">Autor</th>
-                        <th class="px-4 py-2 border">Data publikacji</th>
-                        <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
-                        <th class="px-4 py-2 border">Status</th>
-                        <th class="px-4 py-2 border">Decyzja</th>
-                        <th class="px-4 py-2 border">Treść</th>
-                        <th class="px-4 py-2 border">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for announcement in announcements %}
-                        <tr>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.title }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.authorUsername ?? 'Nieznany użytkownik' }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.createdAt }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.validUntil }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">
-                                {% set statusClass = announcement.status == 'APPROVED' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : announcement.status == 'REJECTED' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100' %}
-                                <span class="px-2 py-1 rounded text-xs font-semibold {{ statusClass }}">
-                                {{ announcement.status }}
-                            </span>
-                            </td>
-                            <td class="break-words whitespace-normal px-4 py-2 border text-xs">
-                                {% if announcement.decidedAt %}
-                                    {{ announcement.decidedAt }}<br>
-                                    przez: {{ announcement.decidedByName ?? 'Admin' }}
-                                {% else %}
-                                    <span class="text-gray-400 dark:text-gray-500">-</span>
-                                {% endif %}
-                            </td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">{{ announcement.text }}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                        data-announcement-id="{{ announcement.id }}">
-                                    Usuń
-                                </button>
-                                <button type="button"
-                                        class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                        data-announcement-id="{{ announcement.id }}"
-                                        data-title="{{ announcement.title }}"
-                                        data-text="{{ announcement.text }}"
-                                        data-valid-until="{{ announcement.validUntil }}"
-                                        data-status="{{ announcement.status }}">
-                                    Edytuj
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
-                <p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p>
-            </div>
-        {% endif %}
-
-        {# Delete Modal #}
         <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
@@ -178,14 +184,8 @@
                     </button>
                 </div>
             </div>
-
-            <form method="POST" action="/panel/delete_announcement" class="delete-form hidden">
-                <input type="hidden" name="_token" value="{{ csrf.token }}">
-                <input type="hidden" name="announcement_id" value="">
-            </form>
         </div>
 
-        {# Edit Modal #}
         <div id="editionModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
             <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
 
@@ -235,30 +235,37 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const textarea = document.getElementById("edit_text");
-                const titleInput = document.getElementById("edit_title");
-                const textCounter = document.getElementById("edit_text_char_counter");
-                const titleCounter = document.getElementById("edit_title_char_counter");
-                const addTitleInput = document.getElementById("add_title");
-                const addTextInput = document.getElementById("add_text");
-                const addTitleCounter = document.getElementById("add_title_counter");
-                const addTextCounter = document.getElementById("add_text_counter");
+                const textarea = document.getElementById('edit_text');
+                const titleInput = document.getElementById('edit_title');
+                const textCounter = document.getElementById('edit_text_char_counter');
+                const titleCounter = document.getElementById('edit_title_char_counter');
+                const addTitleInput = document.getElementById('add_title');
+                const addTextInput = document.getElementById('add_text');
+                const addTitleCounter = document.getElementById('add_title_counter');
+                const addTextCounter = document.getElementById('add_text_counter');
+                const csrfToken = document.querySelector('input[name="_token"]').value;
+                const usernames = {{ usernames|json_encode|raw }};
+
+                const sections = {
+                    pending: document.getElementById('pendingAnnouncementsSection'),
+                    announcements: document.getElementById('announcementsSection'),
+                };
 
                 const modals = {
                     confirmation: document.getElementById('confirmationModal'),
-                    edition: document.getElementById('editionModal')
+                    edition: document.getElementById('editionModal'),
                 };
 
                 const forms = {
                     edit: document.getElementById('editAnnouncementForm'),
-                    addAnnouncement: document.getElementById('addAnnouncementForm')
+                    addAnnouncement: document.getElementById('addAnnouncementForm'),
                 };
 
                 const buttons = {
                     cancelDelete: document.getElementById('cancelDeleteBtn'),
                     confirmDelete: document.getElementById('confirmDeleteBtn'),
                     cancelEdit: document.getElementById('cancelEditBtn'),
-                    addAnnouncement: document.getElementById('addAnnouncementBtn')
+                    addAnnouncement: document.getElementById('addAnnouncementBtn'),
                 };
 
                 const toggleModal = (modal, show) => {
@@ -267,8 +274,161 @@
 
                 const addClickEventToButtons = (selector, callback) => {
                     document.querySelectorAll(selector).forEach(btn => {
+                        btn.removeEventListener('click', callback);
                         btn.addEventListener('click', callback);
                     });
+                };
+
+                const escapeHtml = (value) => String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+
+                const getStatusClass = (status) => {
+                    if (status === 'APPROVED') {
+                        return 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100';
+                    }
+
+                    if (status === 'REJECTED') {
+                        return 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100';
+                    }
+
+                    return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
+                };
+
+                const resolveUsername = (userId) => usernames[userId] || 'Nieznany użytkownik';
+                const resolveDecidedByName = (userId) => usernames[userId] || 'Admin';
+
+                const pendingAnnouncementsTable = (pendingAnnouncements) => {
+                    if (!pendingAnnouncements.length) {
+                        return '';
+                    }
+
+                    const rows = pendingAnnouncements.map((announcement) => `
+                        <tr>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.title)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(resolveUsername(announcement.authorId))}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.createdAt)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.validUntil)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.text)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
+                                <button type="button"
+                                        class="approve-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="${escapeHtml(announcement.id)}"
+                                        data-csrf-token="${escapeHtml(csrfToken)}">
+                                    <i class="fa-solid fa-check mr-1"></i>Zaakceptuj
+                                </button>
+                                <button type="button"
+                                        class="reject-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="${escapeHtml(announcement.id)}"
+                                        data-csrf-token="${escapeHtml(csrfToken)}">
+                                    <i class="fa-solid fa-xmark mr-1"></i>Odrzuć
+                                </button>
+                                <button type="button"
+                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="${escapeHtml(announcement.id)}"
+                                        data-title="${escapeHtml(announcement.title)}"
+                                        data-text="${escapeHtml(announcement.text)}"
+                                        data-valid-until="${escapeHtml(announcement.validUntil)}"
+                                        data-status="${escapeHtml(announcement.status)}">
+                                    <i class="fa-solid fa-edit mr-1"></i>Edytuj
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    return `
+                        <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                            <h2 class="text-2xl font-bold p-4 bg-yellow-50 dark:bg-yellow-900 border-b dark:border-yellow-700">
+                                <i class="fa-solid fa-clock mr-2"></i>Ogłoszenia oczekujące na akceptację (${pendingAnnouncements.length})
+                            </h2>
+                            <table id="pendingAnnouncementsTable" class="w-full table-fixed border-collapse">
+                                <thead class="bg-gray-200 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-2 border">Tytuł</th>
+                                        <th class="px-4 py-2 border">Autor</th>
+                                        <th class="px-4 py-2 border">Data publikacji</th>
+                                        <th class="px-4 py-2 border">Ważne do</th>
+                                        <th class="px-4 py-2 border">Treść</th>
+                                        <th class="px-4 py-2 border">Akcje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>
+                    `;
+                };
+
+                const announcementsTable = (announcements) => {
+                    if (!announcements.length) {
+                        return `
+                            <div class="bg-amber-100 mx-3 text-xl border border-yellow-500 rounded-lg flex items-center space-x-2">
+                                <i class="fa-solid fa-triangle-exclamation text-yellow-500 p-2.5" aria-hidden="true"></i>
+                                <p class="text-yellow-500 text-sm font-medium">Brak ogłoszeń do wyświetlania</p>
+                            </div>
+                        `;
+                    }
+
+                    const rows = announcements.map((announcement) => `
+                        <tr>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.title)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(resolveUsername(announcement.authorId))}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.createdAt)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.validUntil)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">
+                                <span class="px-2 py-1 rounded text-xs font-semibold ${getStatusClass(announcement.status)}">
+                                    ${escapeHtml(announcement.status)}
+                                </span>
+                            </td>
+                            <td class="break-words whitespace-normal px-4 py-2 border text-xs">
+                                ${announcement.decidedAt
+                                    ? `${escapeHtml(announcement.decidedAt)}<br>przez: ${escapeHtml(resolveDecidedByName(announcement.decidedBy))}`
+                                    : '<span class="text-gray-400 dark:text-gray-500">-</span>'}
+                            </td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.text)}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
+                                <button type="button"
+                                        class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="${escapeHtml(announcement.id)}">
+                                    Usuń
+                                </button>
+                                <button type="button"
+                                        class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
+                                        data-announcement-id="${escapeHtml(announcement.id)}"
+                                        data-title="${escapeHtml(announcement.title)}"
+                                        data-text="${escapeHtml(announcement.text)}"
+                                        data-valid-until="${escapeHtml(announcement.validUntil)}"
+                                        data-status="${escapeHtml(announcement.status)}">
+                                    Edytuj
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    return `
+                        <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                            <h2 class="text-2xl font-bold p-4 bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
+                                <i class="fa-solid fa-list mr-2"></i>Wszystkie ogłoszenia
+                            </h2>
+                            <table id="announcementsTable" class="w-full table-fixed border-collapse">
+                                <thead class="bg-gray-200 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-2 border">Tytuł</th>
+                                        <th class="px-4 py-2 border">Autor</th>
+                                        <th class="px-4 py-2 border">Data publikacji</th>
+                                        <th class="px-4 py-2 border" data-type="date" data-format="YYYY-MM-DD">Ważne do</th>
+                                        <th class="px-4 py-2 border">Status</th>
+                                        <th class="px-4 py-2 border">Decyzja</th>
+                                        <th class="px-4 py-2 border">Treść</th>
+                                        <th class="px-4 py-2 border">Akcje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>
+                    `;
                 };
 
                 const showFormNotification = (message, type = 'error') => {
@@ -284,78 +444,44 @@
                     }, 5000);
                 };
 
-                const refreshAnnouncementsTable = async () => {
-                    try {
-                        const response = await fetch('/api/announcement', {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        });
-
-                        if (response.ok) {
-                            const announcements = await response.json();
-                            updateTableRows(announcements);
-                        }
-                    } catch (error) {
-                        console.error('Błąd przy pobieraniu ogłoszeń:', error);
-                    }
-                };
-
-                const updateTableRows = (announcements) => {
-                    const tbody = document.querySelector('#announcementsTable tbody');
-                    if (!tbody) return;
-
-                    tbody.innerHTML = '';
-
-                    announcements.forEach(announcement => {
-                        const statusClass = announcement.status === 'APPROVED'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                            : announcement.status === 'REJECTED'
-                                ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
-
-                        const row = `
-                    <tr>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.title}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.authorUsername || 'Nieznany użytkownik'}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.createdAt}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.validUntil}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">
-                            <span class="px-2 py-1 rounded text-xs font-semibold ${statusClass}">
-                                ${announcement.status}
-                            </span>
-                        </td>
-                        <td class="break-words whitespace-normal px-4 py-2 border text-xs">
-                            ${announcement.decidedAt
-                            ? `${announcement.decidedAt}<br>przez: ${announcement.decidedByName || 'Admin'}`
-                            : '<span class="text-gray-400 dark:text-gray-500">-</span>'
-                        }
-                        </td>
-                        <td class="break-words whitespace-normal px-4 py-2 border">${announcement.text}</td>
-                        <td class="break-words whitespace-normal px-4 py-2 border space-x-2">
-                            <button type="button"
-                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                    data-announcement-id="${announcement.id}">
-                                Usuń
-                            </button>
-                            <button type="button"
-                                    class="edit-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded text-sm"
-                                    data-announcement-id="${announcement.id}"
-                                    data-title="${announcement.title}"
-                                    data-text="${announcement.text}"
-                                    data-valid-until="${announcement.validUntil}"
-                                    data-status="${announcement.status}">
-                                Edytuj
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-
+                const bindTableActionButtons = () => {
                     addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
                     addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                };
+
+                const renderAnnouncementSections = (announcements) => {
+                    const pendingAnnouncements = announcements.filter((announcement) => announcement.status === 'PENDING');
+                    const decidedAnnouncements = announcements.filter((announcement) => announcement.status !== 'PENDING');
+
+                    sections.pending.innerHTML = pendingAnnouncementsTable(pendingAnnouncements);
+                    sections.announcements.innerHTML = announcementsTable(decidedAnnouncements);
+
+                    bindTableActionButtons();
+                };
+
+                const fetchAnnouncements = async () => {
+                    const response = await fetch('/api/announcement', {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/json',
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Nie udało się pobrać ogłoszeń.');
+                    }
+
+                    return response.json();
+                };
+
+                const refreshAnnouncementSections = async () => {
+                    try {
+                        const announcements = await fetchAnnouncements();
+                        renderAnnouncementSections(announcements);
+                    } catch (error) {
+                        console.error('Błąd przy pobieraniu ogłoszeń:', error);
+                        showFormNotification(`❌ ${error.message}`, 'error');
+                    }
                 };
 
                 forms.addAnnouncement.addEventListener('submit', async (e) => {
@@ -364,7 +490,6 @@
                     const formData = new FormData(forms.addAnnouncement);
                     const submitBtn = buttons.addAnnouncement;
                     const spinner = document.getElementById('addAnnouncementSpinner');
-                    const csrfToken = formData.get('_token');
 
                     submitBtn.disabled = true;
                     spinner.classList.remove('hidden');
@@ -374,13 +499,13 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-Token': csrfToken
+                                'X-CSRF-Token': formData.get('_token'),
                             },
                             body: JSON.stringify({
                                 title: formData.get('title'),
                                 text: formData.get('text'),
-                                valid_until: formData.get('valid_until')
-                            })
+                                valid_until: formData.get('valid_until'),
+                            }),
                         });
 
                         const data = await response.json();
@@ -390,16 +515,12 @@
                             forms.addAnnouncement.reset();
                             initCounter(addTitleInput, addTitleCounter);
                             initCounter(addTextInput, addTextCounter);
-
-                            // Odśwież tabelę bez pełnego refresh
-                            setTimeout(() => {
-                                refreshAnnouncementsTable();
-                            }, 500);
+                            await refreshAnnouncementSections();
                         } else {
-                            showFormNotification(data.message || 'Błąd: ' + data.error, 'error');
+                            showFormNotification(data.message || `Błąd: ${data.error}`, 'error');
                         }
                     } catch (error) {
-                        showFormNotification('❌ Błąd połączenia: ' + error.message, 'error');
+                        showFormNotification(`❌ Błąd połączenia: ${error.message}`, 'error');
                     } finally {
                         submitBtn.disabled = false;
                         spinner.classList.add('hidden');
@@ -408,34 +529,31 @@
 
                 const handleDeleteButtonClick = (event) => {
                     event.preventDefault();
-                    document.getElementById('confirmationModal').dataset.announcementId = event.currentTarget.getAttribute('data-announcement-id');
+                    modals.confirmation.dataset.announcementId = event.currentTarget.getAttribute('data-announcement-id');
                     toggleModal(modals.confirmation, true);
                 };
 
                 buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
 
                 buttons.confirmDelete.addEventListener('click', async () => {
-                    const announcementId = document.getElementById('confirmationModal').dataset.announcementId;
-                    const csrfToken = document.querySelector('input[name="_token"]').value;
+                    const announcementId = modals.confirmation.dataset.announcementId;
 
                     try {
                         const response = await fetch(`/api/announcement/${announcementId}`, {
                             method: 'DELETE',
                             headers: {
-                                'X-CSRF-Token': csrfToken
-                            }
+                                'X-CSRF-Token': csrfToken,
+                            },
                         });
 
                         if (response.status === 204) {
                             showFormNotification('✅ Ogłoszenie usunięte!', 'success');
-                            setTimeout(() => {
-                                refreshAnnouncementsTable();
-                            }, 500);
+                            await refreshAnnouncementSections();
                         } else {
                             showFormNotification('❌ Błąd usuwania', 'error');
                         }
                     } catch (error) {
-                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                        showFormNotification(`❌ Błąd: ${error.message}`, 'error');
                     } finally {
                         toggleModal(modals.confirmation, false);
                     }
@@ -449,8 +567,7 @@
                     forms.edit.querySelector('#edit_title').value = btn.getAttribute('data-title');
                     forms.edit.querySelector('#edit_text').value = btn.getAttribute('data-text');
                     forms.edit.querySelector('#edit_valid_until').value = btn.getAttribute('data-valid-until');
-                    const status = btn.getAttribute('data-status') ?? 'PENDING';
-                    forms.edit.querySelector('#edit_status').value = status;
+                    forms.edit.querySelector('#edit_status').value = btn.getAttribute('data-status') || 'PENDING';
 
                     initCounter(titleInput, titleCounter);
                     initCounter(textarea, textCounter);
@@ -462,35 +579,32 @@
                     e.preventDefault();
 
                     const announcementId = forms.edit.querySelector('#edit_announcement_id').value;
-                    const csrfToken = forms.edit.querySelector('input[name="_token"]').value;
 
                     try {
                         const response = await fetch(`/api/announcement/${announcementId}`, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-Token': csrfToken
+                                'X-CSRF-Token': csrfToken,
                             },
                             body: JSON.stringify({
                                 title: forms.edit.querySelector('#edit_title').value,
                                 text: forms.edit.querySelector('#edit_text').value,
                                 valid_until: forms.edit.querySelector('#edit_valid_until').value,
-                                status: forms.edit.querySelector('#edit_status').value
-                            })
+                                status: forms.edit.querySelector('#edit_status').value,
+                            }),
                         });
 
                         const data = await response.json();
 
                         if (response.ok && data.success) {
                             showFormNotification('✅ Ogłoszenie zaktualizowane!', 'success');
-                            setTimeout(() => {
-                                refreshAnnouncementsTable();
-                            }, 500);
+                            await refreshAnnouncementSections();
                         } else {
                             showFormNotification(data.message || 'Błąd', 'error');
                         }
                     } catch (error) {
-                        showFormNotification('❌ Błąd: ' + error.message, 'error');
+                        showFormNotification(`❌ Błąd: ${error.message}`, 'error');
                     } finally {
                         toggleModal(modals.edition, false);
                     }
@@ -498,55 +612,52 @@
 
                 buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edition, false));
 
-
                 document.addEventListener('click', async (e) => {
                     if (e.target.closest('.approve-btn')) {
                         const btn = e.target.closest('.approve-btn');
                         const announcementId = btn.getAttribute('data-announcement-id');
-                        const csrfToken = btn.getAttribute('data-csrf-token');
 
                         try {
                             const response = await fetch(`/api/announcement/${announcementId}/approve`, {
                                 method: 'POST',
                                 headers: {
-                                    'X-CSRF-Token': csrfToken
-                                }
+                                    'X-CSRF-Token': btn.getAttribute('data-csrf-token'),
+                                },
                             });
 
                             if (response.ok) {
                                 showFormNotification('✅ Zatwierdzone!', 'success');
-                                setTimeout(() => window.location.reload(), 1500);
+                                await refreshAnnouncementSections();
                             }
                         } catch (error) {
-                            showFormNotification('❌ Błąd: ' + error.message, 'error');
+                            showFormNotification(`❌ Błąd: ${error.message}`, 'error');
                         }
                     }
 
                     if (e.target.closest('.reject-btn')) {
                         const btn = e.target.closest('.reject-btn');
                         const announcementId = btn.getAttribute('data-announcement-id');
-                        const csrfToken = btn.getAttribute('data-csrf-token');
 
                         try {
                             const response = await fetch(`/api/announcement/${announcementId}/reject`, {
                                 method: 'POST',
                                 headers: {
-                                    'X-CSRF-Token': csrfToken
-                                }
+                                    'X-CSRF-Token': btn.getAttribute('data-csrf-token'),
+                                },
                             });
 
                             if (response.ok) {
                                 showFormNotification('✅ Odrzucone!', 'success');
-                                setTimeout(() => window.location.reload(), 1500);
+                                await refreshAnnouncementSections();
                             }
                         } catch (error) {
-                            showFormNotification('❌ Błąd: ' + error.message, 'error');
+                            showFormNotification(`❌ Błąd: ${error.message}`, 'error');
                         }
                     }
                 });
 
                 const updateCounterFactory = (field, counter) => () => {
-                    const maxLength = field.getAttribute("maxlength") || field.parentElement.querySelector('span').textContent.split(' / ')[1];
+                    const maxLength = field.getAttribute('maxlength') || field.parentElement.querySelector('span').textContent.split(' / ')[1];
                     const currentLength = field.value.length || 0;
                     counter.textContent = `${currentLength} / ${maxLength}`;
                 };
@@ -560,8 +671,8 @@
 
                 const initCounter = (field, counter) => {
                     const updateCounter = updateCounterFactory(field, counter);
-                    field.removeEventListener("input", updateCounter);
-                    field.addEventListener("input", () => {
+                    field.removeEventListener('input', updateCounter);
+                    field.addEventListener('input', () => {
                         enforceMaxLength(field);
                         updateCounter();
                     });
@@ -578,8 +689,7 @@
                     initCounter(addTextInput, addTextCounter);
                 }
 
-                addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
-                addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                bindTableActionButtons();
             });
         </script>
     </main>
