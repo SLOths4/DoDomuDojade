@@ -13,6 +13,10 @@ final readonly class AuthenticateUserDTO
         public string $password
     ) {}
 
+    /**
+     * @param array<string, mixed> $data
+     * @return self
+     */
     public static function fromArray(array $data): self
     {
         $username = trim((string)($data['username'] ?? ''));

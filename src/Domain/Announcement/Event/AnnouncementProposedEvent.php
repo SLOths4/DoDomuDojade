@@ -19,6 +19,9 @@ final class AnnouncementProposedEvent extends DomainEvent
         return 'announcement.proposed';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getPayload(): array
     {
         return [

@@ -63,6 +63,7 @@ final class AnnouncementApprovedEvent extends DomainEvent
      *
      * Contains domain-specific data for this event
      * Will be stored as JSON in database
+     * @return array<string, mixed>
      */
     public function getPayload(): array
     {

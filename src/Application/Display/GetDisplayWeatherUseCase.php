@@ -6,8 +6,9 @@ namespace App\Application\Display;
 use App\Domain\Weather\WeatherRepositoryInterface;
 use App\Domain\Weather\WeatherSnapshot;
 use App\Infrastructure\ExternalApi\Weather\WeatherService;
+use App\Infrastructure\ExternalApi\Weather\WeatherApiException;
+use App\Infrastructure\Database\DatabaseException;
 use DateTimeImmutable;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -27,7 +28,7 @@ readonly class GetDisplayWeatherUseCase
     ) {}
 
     /**
-     * @return string[]|null
+     * @return array{temperature: string, pressure: string, airlyAdvice: string, airlyDescription: string, airlyColour: string}|null
      */
     public function execute(): ?array
     {
@@ -42,7 +43,7 @@ readonly class GetDisplayWeatherUseCase
 
         try {
             $weatherData = $this->weatherService->getWeather();
-        } catch (Exception $e) {
+        } catch (WeatherApiException $e) {
             $this->logger->error("Failed to fetch weather data", ['error' => $e->getMessage()]);
             if ($cached !== null && !empty($cached->payload)) {
                 $this->logger->warning('Returning stale cached weather data after fetch failure', [
@@ -64,13 +65,17 @@ readonly class GetDisplayWeatherUseCase
                 payload: $weatherData,
                 fetchedOn: new DateTimeImmutable('now')
             ));
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             $this->logger->warning('Failed to persist weather cache', ['error' => $e->getMessage()]);
         }
 
         return $this->formatDisplay($weatherData);
     }
 
+    /**
+     * @param array<string, mixed> $weatherData
+     * @return array{temperature: string, pressure: string, airlyAdvice: string, airlyDescription: string, airlyColour: string}|null
+     */
     private function formatDisplay(array $weatherData): ?array
     {
         if (empty($weatherData)) {

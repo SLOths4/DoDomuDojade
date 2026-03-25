@@ -2,10 +2,11 @@
 
 namespace App\Application\Quote;
 
+use App\Domain\Event\EventPublisher;
 use App\Domain\Quote\Quote;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiException;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
-use App\Infrastructure\Persistence\PDOQuoteRepository;
+use App\Domain\Quote\QuoteRepositoryInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 
@@ -17,12 +18,13 @@ readonly class FetchQuoteUseCase
     /**
      * @param LoggerInterface $logger
      * @param QuoteApiService $apiService
-     * @param PDOQuoteRepository $repository
+     * @param QuoteRepositoryInterface $repository
      */
     public function __construct(
         private LoggerInterface    $logger,
         private QuoteApiService    $apiService,
-        private PDOQuoteRepository $repository,
+        private EventPublisher     $eventPublisher,
+        private QuoteRepositoryInterface $repository,
     ) {}
 
     /**
@@ -44,6 +46,11 @@ readonly class FetchQuoteUseCase
             new DateTimeImmutable(),
         );
         $id = $this->repository->add($quote);
+        $quote->assignId($id);
+        $quote->markCreated();
+        $events = $quote->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $quote->clearDomainEvents();
         $this->logger->info("Quote saved successfully");
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Helper;
 
 use App\Domain\Countdown\CountdownException;
-use App\Infrastructure\Configuration\Config;
+use App\Domain\Countdown\CountdownBusinessValidator;
 use DateTimeImmutable;
 
 /**
@@ -11,7 +11,7 @@ use DateTimeImmutable;
  */
 final readonly class CountdownValidationHelper {
     public function __construct(
-        private Config $config,
+        private CountdownBusinessValidator $validator,
     ) {}
 
 
@@ -24,21 +24,7 @@ final readonly class CountdownValidationHelper {
      */
     public function validateTitle(string $title): void
     {
-        if (empty($title)) {
-            throw CountdownException::emptyFields();
-        }
-
-        $minLength = $this->config->announcementMinTitleLength;
-        $maxLength = $this->config->announcementMaxTitleLength;
-        $length = mb_strlen($title);
-
-        if ($length < $minLength) {
-            throw CountdownException::titleTooShort($minLength);
-        }
-
-        if ($length > $maxLength) {
-            throw CountdownException::titleTooLong($maxLength);
-        }
+        $this->validator->validateTitle($title);
     }
 
     /**
@@ -51,10 +37,7 @@ final readonly class CountdownValidationHelper {
      */
     public function validateCountToDate(DateTimeImmutable $countTo): void
     {
-        $today = new DateTimeImmutable();
-        if ($countTo < $today) {
-            throw CountdownException::countToInThePast();
-        }
+        $this->validator->validateCountToDate($countTo);
     }
 
     /**
@@ -64,8 +47,6 @@ final readonly class CountdownValidationHelper {
      */
     public function validateId(int $id): void
     {
-        if ($id <= 0) {
-            throw CountdownException::invalidId($id);
-        }
+        $this->validator->validateId($id);
     }
 }

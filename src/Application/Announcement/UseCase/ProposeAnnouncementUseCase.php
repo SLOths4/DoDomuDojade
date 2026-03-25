@@ -7,8 +7,11 @@ use App\Application\Announcement\DTO\ProposeAnnouncementDTO;
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
+use App\Domain\Announcement\AnnouncementBusinessValidator;
+use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use DateMalformedStringException;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -19,13 +22,14 @@ use Psr\Log\LoggerInterface;
 readonly class ProposeAnnouncementUseCase
 {
     /**
-     * @param PDOAnnouncementRepository $repository
-     * @param AnnouncementValidationHelper $validator
+     * @param AnnouncementRepositoryInterface $repository
+     * @param AnnouncementBusinessValidator $validator
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOAnnouncementRepository    $repository,
+        private EventPublisher               $eventPublisher,
         private AnnouncementValidationHelper $validator,
+        private AnnouncementRepositoryInterface    $repository,
         private LoggerInterface              $logger,
     ) {}
 
@@ -49,6 +53,10 @@ readonly class ProposeAnnouncementUseCase
         $announcement = $this->mapDtoToEntity($dto);
 
         $id = $this->repository->add($announcement);
+
+        $events = $announcement->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $announcement->clearDomainEvents();
 
         $this->logger->info('Announcement proposed successfully', ['id' => $id]);
 

@@ -27,47 +27,36 @@ readonly class TramService
 
     private function isValidCoordinates(float $lat, float $lon): bool
     {
-        return $lat >= -90 && $lat <= 90 && $lon >= -180 && $lon <= 180;
+        // Greater Poznań area:
+        // Lat: 52.2 to 52.6 (approx.)
+        // Lon: 16.7 to 17.1 (approx.)
+        return $lat >= 52.0 && $lat <= 53.0 && $lon >= 16.0 && $lon <= 18.0;
     }
 
     protected function makeApiRequest(string $method, array $params): array
     {
-        try {
-            $this->logger->debug("Making ZTM API request", ['method' => $method]);
+        $this->logger->debug("Making ZTM API request", ['method' => $method]);
 
-            $response = $this->httpClient->request(
-                'POST',
-                $this->ztmUrl,
-                [
-                    'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                    'body' => [
-                        'method' => $method,
-                        'p0' => json_encode($params),
-                    ],
-                ]
-            );
+        $response = $this->httpClient->request(
+            'POST',
+            $this->ztmUrl,
+            [
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body' => [
+                    'method' => $method,
+                    'p0' => json_encode($params),
+                ],
+            ]
+        );
 
-            return $response->toArray();
+        $responseArray = $response->toArray();
 
-        } catch (TransportExceptionInterface $e) {
-            $this->logger->error('ZTM API transport error', ['method' => $method]);
-            throw TramApiException::transportError($e);
-        } catch (DecodingExceptionInterface $e) {
-            $this->logger->error('ZTM API response decoding error', ['method' => $method]);
-            throw TramApiException::decodingError($e);
-        } catch (ClientExceptionInterface $e) {
-            $this->logger->error('ZTM API client error', ['method' => $method]);
-            throw TramApiException::clientError($e);
-        } catch (ServerExceptionInterface $e) {
-            $this->logger->error('ZTM API server error', ['method' => $method]);
-            throw TramApiException::serverError($e);
-        } catch (RedirectionExceptionInterface $e) {
-            $this->logger->error('ZTM API redirection error', ['method' => $method]);
-            throw TramApiException::redirectionError($e);
-        } catch (Throwable $e) {
-            $this->logger->error('ZTM API unexpected error', ['method' => $method, 'error' => $e->getMessage()]);
-            throw TramApiException::apiCallFailed($method, $e);
+        if (isset($responseArray['success']) && $responseArray['success'] === false) {
+            $errorMessage = $responseArray['error']['message'] ?? 'Unknown API logic error';
+            throw TramApiException::apiLogicError($errorMessage);
         }
+
+        return $responseArray;
     }
 
     /**
@@ -89,16 +78,30 @@ readonly class TramService
 
             $response = $this->makeApiRequest('getTimes', ['symbol' => $stopId]);
 
-            if (!isset($response['success']['times'])) {
+            if (!isset($response['success']) || !is_array($response['success'])) {
                 throw TramApiException::noDepartureData($stopId);
+            }
+
+            if (!isset($response['success']['times']) || !is_array($response['success']['times'])) {
+                $this->logger->info("No departure times in response", ['stopId' => $stopId]);
+                return ['times' => []];
             }
 
             $this->logger->info("Departure times successfully fetched", ['stopId' => $stopId]);
 
             return $response['success'];
 
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->error('ZTM API transport error', ['stopId' => $stopId]);
+            throw TramApiException::transportError($e);
+        } catch (DecodingExceptionInterface $e) {
+            $this->logger->error('ZTM API response decoding error', ['stopId' => $stopId]);
+            throw TramApiException::decodingError($e);
         } catch (Throwable $e) {
-            $this->logger->error('Failed to fetch departure times', ['stopId' => $stopId]);
+            if ($e instanceof TramApiException) {
+                throw $e;
+            }
+            $this->logger->error('Failed to fetch departure times', ['stopId' => $stopId, 'error' => $e->getMessage()]);
             throw TramApiException::apiCallFailed('getTimes', $e);
         }
     }
@@ -131,8 +134,17 @@ readonly class TramService
 
             return $response['success'];
 
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->error('ZTM API transport error', ['lat' => $lat, 'lon' => $lon]);
+            throw TramApiException::transportError($e);
+        } catch (DecodingExceptionInterface $e) {
+            $this->logger->error('ZTM API response decoding error', ['lat' => $lat, 'lon' => $lon]);
+            throw TramApiException::decodingError($e);
         } catch (Throwable $e) {
-            $this->logger->error('Failed to fetch nearby stops', ['lat' => $lat, 'lon' => $lon]);
+            if ($e instanceof TramApiException) {
+                throw $e;
+            }
+            $this->logger->error('Failed to fetch nearby stops', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
             throw TramApiException::apiCallFailed('getStops', $e);
         }
     }
@@ -161,7 +173,10 @@ readonly class TramService
             return $response;
 
         } catch (Throwable $e) {
-            $this->logger->error('Failed to fetch line information', ['lineNumber' => $lineNumber]);
+            if ($e instanceof TramApiException) {
+                throw $e;
+            }
+            $this->logger->error('Failed to fetch line information', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
             throw TramApiException::apiCallFailed('getLines', $e);
         }
     }
@@ -190,7 +205,10 @@ readonly class TramService
             return $response;
 
         } catch (Throwable $e) {
-            $this->logger->error('Failed to fetch line routes', ['lineNumber' => $lineNumber]);
+            if ($e instanceof TramApiException) {
+                throw $e;
+            }
+            $this->logger->error('Failed to fetch line routes', ['lineNumber' => $lineNumber, 'error' => $e->getMessage()]);
             throw TramApiException::apiCallFailed('getRoutes', $e);
         }
     }
@@ -214,7 +232,10 @@ readonly class TramService
             return $response;
 
         } catch (Throwable $e) {
-            $this->logger->error('Failed to fetch messages for bollard', ['bollardSymbol' => $bollardSymbol]);
+            if ($e instanceof TramApiException) {
+                throw $e;
+            }
+            $this->logger->error('Failed to fetch messages for bollard', ['bollardSymbol' => $bollardSymbol, 'error' => $e->getMessage()]);
             throw TramApiException::apiCallFailed('findMessagesForBollard', $e);
         }
     }

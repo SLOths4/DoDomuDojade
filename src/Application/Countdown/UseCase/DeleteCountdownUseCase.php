@@ -4,8 +4,11 @@ declare(strict_types=1);
 namespace App\Application\Countdown\UseCase;
 
 use App\Domain\Countdown\CountdownException;
+use App\Domain\Event\EventPublisher;
 use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
+use App\Domain\Countdown\CountdownBusinessValidator;
+use App\Domain\Countdown\CountdownRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -14,14 +17,15 @@ use Psr\Log\LoggerInterface;
 readonly class DeleteCountdownUseCase
 {
     /**
-     * @param PDOCountdownRepository $repository
+     * @param CountdownRepositoryInterface $repository
      * @param LoggerInterface $logger
-     * @param CountdownValidationHelper $validator
+     * @param CountdownBusinessValidator $validator
      */
     public function __construct(
-        private PDOCountdownRepository    $repository,
+        private EventPublisher            $eventPublisher,
+        private CountdownRepositoryInterface    $repository,
         private LoggerInterface           $logger,
-        private CountdownValidationHelper $validator,
+        private CountdownBusinessValidator $validator,
     ){}
 
     /**
@@ -39,11 +43,21 @@ readonly class DeleteCountdownUseCase
 
         $this->validator->validateId($id);
 
+        $countdown = $this->repository->findById($id);
+        if ($countdown === null) {
+            throw CountdownException::notFound($id);
+        }
+
         $result = $this->repository->delete($id);
 
         if (!$result) {
             throw CountdownException::failedToDelete();
         }
+
+        $countdown->markDeleted();
+        $events = $countdown->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $countdown->clearDomainEvents();
 
         $this->logger->info('Countdown delete finished',
             [

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Infrastructure\ExternalApi\Tram\TramApiException;
 use App\Infrastructure\ExternalApi\Tram\TramService;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,8 +22,8 @@ readonly class GetDeparturesUseCase
     ) {}
 
     /**
-     * @param array $stopIds
-     * @return array
+     * @param string[] $stopIds
+     * @return array<int, array{stopId: string, line: string, minutes: int, direction: string}>
      */
     public function execute(array $stopIds): array
     {
@@ -31,17 +31,24 @@ readonly class GetDeparturesUseCase
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (Exception) {
+            } catch (TramApiException) {
                 $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
                 continue;
             }
 
+            // PHPStan: $stopDepartures is guaranteed to have 'times' key based on TramService::getTimes() PHPDoc
+            // but we keep the checks for runtime safety if PHPDoc is not fully trusted by reality
             if (!isset($stopDepartures['times']) || !is_array($stopDepartures['times'])) {
                 $this->logger->warning("Invalid departure data format", ['stopId' => $stopId]);
                 continue;
             }
 
             foreach ($stopDepartures['times'] as $departure) {
+                if (!isset($departure['line'], $departure['minutes'], $departure['direction'])) {
+                    $this->logger->warning("Incomplete departure data", ['stopId' => $stopId, 'departure' => $departure]);
+                    continue;
+                }
+
                 $departures[] = [
                     'stopId' => $stopId,
                     'line' => (string)$departure['line'],

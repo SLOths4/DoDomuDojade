@@ -29,49 +29,52 @@
         </form>
 
         {# Users Table #}
-        {% if users is not empty %}
-            <div class="mx-1 mb-2 rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
-                <table id="usersTable" class="w-full table-fixed border-collapse">
-                    <thead class="bg-gray-200 dark:bg-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">Id</th>
-                        <th class="px-4 py-2 border">Nazwa użytkownika</th>
-                        <th class="px-4 py-2 border">Akcje</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users %}
+        <div id="usersTableSection" class="mx-1 mb-2">
+            {% if users is not empty %}
+                <div class="rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                    <table id="usersTable" class="w-full table-fixed border-collapse">
+                        <thead class="bg-gray-200 dark:bg-gray-700">
                         <tr>
-                            <td class="px-4 py-2 border">{{ user.id }}</td>
-                            <td class="px-4 py-2 border">{{ user.username }}</td>
-                            <td class="px-4 py-2 border space-x-2">
-                                <button type="button"
-                                        class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
-                                        data-user-id="{{ user.id }}"
-                                        data-username="{{ user.username }}">
-                                    Edytuj
-                                </button>
-                                <button type="button"
-                                        class="reset-password-btn bg-amber-500 hover:bg-amber-600 text-white font-bold py-1 px-2 rounded"
-                                        data-user-id="{{ user.id }}"
-                                        data-username="{{ user.username }}">
-                                    Resetuj hasło
-                                </button>
-                                <button type="button"
-                                        class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                                        data-user-id="{{ user.id }}"
-                                        data-csrf-token="{{ csrf.token }}">
-                                    Usuń
-                                </button>
-                            </td>
+                            <th class="px-4 py-2 border">Id</th>
+                            <th class="px-4 py-2 border">Nazwa użytkownika</th>
+                            <th class="px-4 py-2 border">Akcje</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>Brak użytkowników do wyświetlenia.</p>
-        {% endif %}
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="px-4 py-2 border">{{ user.id }}</td>
+                                <td class="px-4 py-2 border">{{ user.username }}</td>
+                                <td class="px-4 py-2 border space-x-2">
+                                    <button type="button"
+                                            class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                            data-user-id="{{ user.id }}"
+                                            data-username="{{ user.username }}">
+                                        Edytuj
+                                    </button>
+                                    <button type="button"
+                                            class="reset-password-btn bg-amber-500 hover:bg-amber-600 text-white font-bold py-1 px-2 rounded"
+                                            data-user-id="{{ user.id }}"
+                                            data-username="{{ user.username }}">
+                                        Resetuj hasło
+                                    </button>
+                                    <button type="button"
+                                            class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                            data-user-id="{{ user.id }}">
+                                        Usuń
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="rounded-2xl shadow bg-white dark:bg-gray-900 dark:text-white p-4 text-center">
+                    Brak użytkowników do wyświetlenia.
+                </div>
+            {% endif %}
+        </div>
 
         {# Confirmation Modal #}
         <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
@@ -163,9 +166,75 @@
                     confirmReset: document.getElementById('confirmResetBtn')
                 };
 
+                const csrfToken = document.querySelector('input[name="_token"]').value;
+                const usersTableSection = document.getElementById('usersTableSection');
+
                 const toggleModal = (modal, show) => {
                     modal.classList.toggle('hidden', !show);
                 };
+
+                const addClickEventToButtons = (selector, handler) => {
+                    document.querySelectorAll(selector).forEach(btn => {
+                        btn.addEventListener('click', handler);
+                    });
+                };
+
+                const escapeHtml = (value) => {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                };
+
+                const renderTableState = (items, tableMarkup, emptyMessage) => {
+                    usersTableSection.innerHTML = items.length > 0
+                        ? tableMarkup(items)
+                        : `
+                            <div class="rounded-2xl shadow bg-white dark:bg-gray-900 dark:text-white p-4 text-center">
+                                ${emptyMessage}
+                            </div>
+                        `;
+                };
+
+                const buildUsersTableMarkup = (users) => `
+                    <div class="rounded-2xl overflow-hidden shadow bg-white dark:bg-gray-900 dark:text-white">
+                        <table id="usersTable" class="w-full table-fixed border-collapse">
+                            <thead class="bg-gray-200 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2 border">Id</th>
+                                <th class="px-4 py-2 border">Nazwa użytkownika</th>
+                                <th class="px-4 py-2 border">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(user => `
+                                    <tr>
+                                        <td class="px-4 py-2 border">${user.id}</td>
+                                        <td class="px-4 py-2 border">${escapeHtml(user.username)}</td>
+                                        <td class="px-4 py-2 border space-x-2">
+                                            <button type="button"
+                                                    class="edit-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+                                                    data-user-id="${user.id}"
+                                                    data-username="${escapeHtml(user.username)}">
+                                                Edytuj
+                                            </button>
+                                            <button type="button"
+                                                    class="reset-password-btn bg-amber-500 hover:bg-amber-600 text-white font-bold py-1 px-2 rounded"
+                                                    data-user-id="${user.id}"
+                                                    data-username="${escapeHtml(user.username)}">
+                                                Resetuj hasło
+                                            </button>
+                                            <button type="button"
+                                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                                                    data-user-id="${user.id}">
+                                                Usuń
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
 
                 // ============================================
                 // NOTIFICATION HELPER
@@ -182,6 +251,70 @@
                         notification.innerHTML = '';
                     }, 5000);
                 };
+
+                const handleDeleteButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    modals.confirmation.dataset.userId = userId;
+                    toggleModal(modals.confirmation, true);
+                };
+
+                const handleEditButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    const username = event.currentTarget.getAttribute('data-username');
+                    modals.edit.dataset.userId = userId;
+                    document.getElementById('editUsername').value = username || '';
+                    toggleModal(modals.edit, true);
+                };
+
+                const handleResetButtonClick = (event) => {
+                    event.preventDefault();
+                    const userId = event.currentTarget.getAttribute('data-user-id');
+                    const username = event.currentTarget.getAttribute('data-username');
+                    modals.reset.dataset.userId = userId;
+                    modals.reset.dataset.username = username || '';
+                    document.getElementById('resetPassword').value = '';
+                    toggleModal(modals.reset, true);
+                };
+
+                const attachTableEventListeners = () => {
+                    addClickEventToButtons('.delete-btn', handleDeleteButtonClick);
+                    addClickEventToButtons('.edit-btn', handleEditButtonClick);
+                    addClickEventToButtons('.reset-password-btn', handleResetButtonClick);
+                };
+
+                const updateUsersTable = (users) => {
+                    renderTableState(users, buildUsersTableMarkup, 'Brak użytkowników do wyświetlenia.');
+                    attachTableEventListeners();
+                };
+
+                // ============================================
+                // HELPER: Refresh users from API
+                // ============================================
+                const refreshUsersTable = async () => {
+                    try {
+                        const response = await fetch('/api/user', {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const users = await response.json();
+                            updateUsersTable(users);
+                        }
+                    } catch (error) {
+                        console.error('Błąd przy pobieraniu użytkowników:', error);
+                    }
+                };
+
+                attachTableEventListeners();
+
+                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
+                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edit, false));
+                buttons.cancelReset.addEventListener('click', () => toggleModal(modals.reset, false));
 
                 // ============================================
                 // ADD USER - AJAX
@@ -202,8 +335,6 @@
                     document.getElementById('addUserSpinner').classList.remove('hidden');
 
                     try {
-                        const csrfToken = document.querySelector('input[name="_token"]').value;
-
                         const response = await fetch('/api/user', {
                             method: 'POST',
                             headers: {
@@ -211,20 +342,17 @@
                                 'X-CSRF-Token': csrfToken
                             },
                             body: JSON.stringify({
-                                username: username,
-                                password: password
+                                username,
+                                password
                             })
                         });
 
                         const data = await response.json();
 
                         if (response.ok && data.success) {
-                            showFormNotification('✅ ' + data.message, 'success');
                             forms.add.reset();
-
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                            showFormNotification('✅ ' + data.message, 'success');
+                            await refreshUsersTable();
                         } else {
                             showFormNotification(data.message || 'Błąd', 'error');
                         }
@@ -240,22 +368,8 @@
                 // DELETE USER - AJAX
                 // DELETE /api/user/{id}
                 // ============================================
-                const handleDeleteButtonClick = (event) => {
-                    event.preventDefault();
-                    const userId = event.currentTarget.getAttribute('data-user-id');
-                    document.getElementById('confirmationModal').dataset.userId = userId;
-                    toggleModal(modals.confirmation, true);
-                };
-
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', handleDeleteButtonClick);
-                });
-
-                buttons.cancelDelete.addEventListener('click', () => toggleModal(modals.confirmation, false));
-
                 buttons.confirmDelete.addEventListener('click', async () => {
-                    const userId = document.getElementById('confirmationModal').dataset.userId;
-                    const csrfToken = document.querySelector('input[name="_token"]').value;
+                    const userId = modals.confirmation.dataset.userId;
 
                     try {
                         const response = await fetch(`/api/user/${userId}`, {
@@ -266,17 +380,14 @@
                         });
 
                         if (response.status === 204) {
+                            toggleModal(modals.confirmation, false);
                             showFormNotification('✅ Użytkownik usunięty!', 'success');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                            await refreshUsersTable();
                         } else {
                             showFormNotification('❌ Błąd usuwania', 'error');
                         }
                     } catch (error) {
                         showFormNotification('❌ Błąd: ' + error.message, 'error');
-                    } finally {
-                        toggleModal(modals.confirmation, false);
                     }
                 });
 
@@ -284,21 +395,6 @@
                 // EDIT USER - AJAX
                 // PATCH /api/user/{id}
                 // ============================================
-                const handleEditButtonClick = (event) => {
-                    event.preventDefault();
-                    const userId = event.currentTarget.getAttribute('data-user-id');
-                    const username = event.currentTarget.getAttribute('data-username');
-                    modals.edit.dataset.userId = userId;
-                    document.getElementById('editUsername').value = username || '';
-                    toggleModal(modals.edit, true);
-                };
-
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', handleEditButtonClick);
-                });
-
-                buttons.cancelEdit.addEventListener('click', () => toggleModal(modals.edit, false));
-
                 forms.edit.addEventListener('submit', async (event) => {
                     event.preventDefault();
 
@@ -314,7 +410,6 @@
                     document.getElementById('editUserSpinner').classList.remove('hidden');
 
                     try {
-                        const csrfToken = document.querySelector('input[name="_token"]').value;
                         const response = await fetch(`/api/user/${userId}`, {
                             method: 'PATCH',
                             headers: {
@@ -327,12 +422,9 @@
                         const data = await response.json();
 
                         if (response.ok && data.success) {
-                            showFormNotification('✅ ' + data.message, 'success');
                             toggleModal(modals.edit, false);
-
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                            showFormNotification('✅ ' + data.message, 'success');
+                            await refreshUsersTable();
                         } else {
                             showFormNotification(data.message || 'Błąd edycji', 'error');
                         }
@@ -348,22 +440,6 @@
                 // RESET PASSWORD - AJAX
                 // POST /api/user/{id}/change-password
                 // ============================================
-                const handleResetButtonClick = (event) => {
-                    event.preventDefault();
-                    const userId = event.currentTarget.getAttribute('data-user-id');
-                    const username = event.currentTarget.getAttribute('data-username');
-                    modals.reset.dataset.userId = userId;
-                    modals.reset.dataset.username = username || '';
-                    document.getElementById('resetPassword').value = '';
-                    toggleModal(modals.reset, true);
-                };
-
-                document.querySelectorAll('.reset-password-btn').forEach(btn => {
-                    btn.addEventListener('click', handleResetButtonClick);
-                });
-
-                buttons.cancelReset.addEventListener('click', () => toggleModal(modals.reset, false));
-
                 forms.reset.addEventListener('submit', async (event) => {
                     event.preventDefault();
 
@@ -379,7 +455,6 @@
                     document.getElementById('resetPasswordSpinner').classList.remove('hidden');
 
                     try {
-                        const csrfToken = document.querySelector('input[name="_token"]').value;
                         const response = await fetch(`/api/user/${userId}/change-password`, {
                             method: 'POST',
                             headers: {
@@ -392,12 +467,9 @@
                         const data = await response.json();
 
                         if (response.ok && data.success) {
-                            showFormNotification('✅ ' + data.message, 'success');
                             toggleModal(modals.reset, false);
-
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
+                            showFormNotification('✅ ' + data.message, 'success');
+                            await refreshUsersTable();
                         } else {
                             showFormNotification(data.message || 'Błąd resetu hasła', 'error');
                         }

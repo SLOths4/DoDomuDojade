@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace App\Application\Display;
 
 use App\Application\Word\FetchActiveWordUseCase;
+use App\Domain\Shared\DomainException;
+use App\Infrastructure\Shared\InfrastructureException;
 use Psr\Log\LoggerInterface;
-use Exception;
 
 /**
  * Provides word data formatted for display page
@@ -22,13 +23,13 @@ readonly class GetDisplayWordUseCase
     ) {}
 
     /**
-     * @return array|null
+     * @return array{word: string, ipa: string, definition: string}|null
      */
     public function execute(): ?array
     {
         try {
             $word = $this->fetchActiveWordUseCase->execute();
-        } catch (Exception $e) {
+        } catch (DomainException|InfrastructureException $e) {
             $this->logger->error("Failed to fetch word", ['error' => $e->getMessage()]);
             return null;
         }

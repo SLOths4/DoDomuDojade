@@ -16,6 +16,9 @@ final class AnnouncementDeletedEvent extends DomainEvent
         return 'announcement.deleted';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getPayload(): array
     {
         return [

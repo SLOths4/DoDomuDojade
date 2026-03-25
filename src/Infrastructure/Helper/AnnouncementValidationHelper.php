@@ -3,8 +3,8 @@
 namespace App\Infrastructure\Helper;
 
 use App\Domain\Announcement\AnnouncementException;
+use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementId;
-use App\Infrastructure\Configuration\Config;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
@@ -14,7 +14,7 @@ use DateTimeImmutable;
 final readonly class AnnouncementValidationHelper {
 
     public function __construct(
-        private Config $config,
+        private AnnouncementBusinessValidator $validator,
     ) {}
 
     /**
@@ -26,21 +26,7 @@ final readonly class AnnouncementValidationHelper {
      */
     public function validateTitle(string $title): void
     {
-        if (empty($title)) {
-            throw AnnouncementException::emptyTitle();
-        }
-
-        $minLength = $this->config->announcementMinTitleLength;
-        $maxLength = $this->config->announcementMaxTitleLength;
-        $length = mb_strlen($title);
-
-        if ($length < $minLength) {
-            throw AnnouncementException::titleTooShort($minLength);
-        }
-
-        if ($length > $maxLength) {
-            throw AnnouncementException::titleTooLong($maxLength);
-        }
+        $this->validator->validateTitle($title);
     }
 
     /**
@@ -50,21 +36,7 @@ final readonly class AnnouncementValidationHelper {
      */
     public function validateText(string $text): void
     {
-        if (empty($text)) {
-            throw AnnouncementException::emptyText();
-        }
-
-        $minLength = $this->config->announcementMinTextLength;
-        $maxLength = $this->config->announcementMaxTextLength;
-        $length = mb_strlen($text);
-
-        if ($length < $minLength) {
-            throw AnnouncementException::textTooShort($minLength);
-        }
-
-        if ($length > $maxLength) {
-            throw AnnouncementException::textTooLong($maxLength);
-        }
+        $this->validator->validateText($text);
     }
 
     /**
@@ -78,17 +50,7 @@ final readonly class AnnouncementValidationHelper {
      */
     public function validateValidUntilDate(DateTimeImmutable $validUntil): void
     {
-        $today = new DateTimeImmutable();
-
-        if ($validUntil < $today) {
-            throw AnnouncementException::expirationInThePast();
-        }
-
-        $maxDate = $this->config->announcementMaxValidDate;
-        $maxDate = $today->modify($maxDate);
-        if ($validUntil > $maxDate) {
-            throw AnnouncementException::expirationTooFarInFuture();
-        }
+        $this->validator->validateValidUntilDate($validUntil);
     }
 
     /**
@@ -98,8 +60,6 @@ final readonly class AnnouncementValidationHelper {
      */
     public function validateId(AnnouncementId $id): void
     {
-        if (!str_starts_with($id, 'ann_')) {
-            throw AnnouncementException::invalidId($id);
-        }
+        $this->validator->validateId($id);
     }
 }

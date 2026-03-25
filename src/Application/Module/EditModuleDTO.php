@@ -21,7 +21,7 @@ final readonly class EditModuleDTO
     ){}
 
     /**
-     * @param array $array
+     * @param array<string, mixed> $array
      * @return self
      * @throws InvalidDateTimeException
      */

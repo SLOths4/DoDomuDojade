@@ -5,8 +5,8 @@ namespace App\Application\Countdown\UseCase;
 
 use App\Domain\Countdown\Countdown;
 use App\Domain\Countdown\CountdownException;
-use App\Infrastructure\Helper\CountdownValidationHelper;
-use App\Infrastructure\Persistence\PDOCountdownRepository;
+use App\Domain\Countdown\CountdownBusinessValidator;
+use App\Domain\Countdown\CountdownRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -16,14 +16,14 @@ use Psr\Log\LoggerInterface;
 readonly class GetCountdownByIdUseCase
 {
     /**
-     * @param PDOCountdownRepository $repository
+     * @param CountdownRepositoryInterface $repository
      * @param LoggerInterface $logger
-     * @param CountdownValidationHelper $validator
+     * @param CountdownBusinessValidator $validator
      */
     public function __construct(
-        private PDOCountdownRepository    $repository,
+        private CountdownRepositoryInterface    $repository,
         private LoggerInterface           $logger,
-        private CountdownValidationHelper $validator,
+        private CountdownBusinessValidator $validator,
     ) {}
 
     /**

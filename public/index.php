@@ -62,6 +62,7 @@ try {
         // 2. Trasy panelu administracyjnego
         // 2.1. Akcje użytkownika
         $r->addRoute('POST', '/api/authenticate', [LoginController::class, 'authenticate']);
+        $r->addRoute('GET', '/api/user', [UserController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/api/user', [UserController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
@@ -79,11 +80,13 @@ try {
 
 
         // 2.3. Akcje powiązane z modułami
+        $r->addRoute('GET', '/api/module', [ModuleController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/module/{id:[a-z0-9_.]+}', [ModuleController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/api/module/{id:[a-z0-9_.]+}/toggle', [ModuleController::class, 'toggle', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.4. Akcje licznika
         $r->addRoute('POST', '/api/countdown', [CountdownController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/api/countdowns', [CountdownController::class, 'getAll', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/countdown/{id:[a-z0-9_.]+}', [CountdownController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
 

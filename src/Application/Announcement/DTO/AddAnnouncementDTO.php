@@ -27,7 +27,7 @@ final readonly class AddAnnouncementDTO
 
     /**
      * Creates DTO from an array
-     * @param array $array
+     * @param array<string, mixed> $array
      * @return self
      * @throws InvalidDateTimeException
      * @throws MissingParameterException

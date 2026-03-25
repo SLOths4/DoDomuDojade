@@ -102,6 +102,15 @@ final class TramApiException extends InfrastructureException
         );
     }
 
+    public static function apiLogicError(string $message): self
+    {
+        return new self(
+            sprintf('ZTM API logic error: %s', $message),
+            'TRAM_API_LOGIC_ERROR',
+            500
+        );
+    }
+
     public static function apiCallFailed(string $method, Throwable $previous): self
     {
         return new self(
