@@ -244,6 +244,7 @@
                 const addTitleCounter = document.getElementById('add_title_counter');
                 const addTextCounter = document.getElementById('add_text_counter');
                 const csrfToken = document.querySelector('input[name="_token"]').value;
+                const usernames = {{ usernames|json_encode|raw }};
 
                 const sections = {
                     pending: document.getElementById('pendingAnnouncementsSection'),
@@ -297,6 +298,9 @@
                     return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100';
                 };
 
+                const resolveUsername = (userId) => usernames[userId] || 'Nieznany użytkownik';
+                const resolveDecidedByName = (userId) => usernames[userId] || 'Admin';
+
                 const pendingAnnouncementsTable = (pendingAnnouncements) => {
                     if (!pendingAnnouncements.length) {
                         return '';
@@ -305,7 +309,7 @@
                     const rows = pendingAnnouncements.map((announcement) => `
                         <tr>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.title)}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.authorUsername || 'Nieznany użytkownik')}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(resolveUsername(announcement.authorId))}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.createdAt)}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.validUntil)}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.text)}</td>
@@ -370,7 +374,7 @@
                     const rows = announcements.map((announcement) => `
                         <tr>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.title)}</td>
-                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.authorUsername || 'Nieznany użytkownik')}</td>
+                            <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(resolveUsername(announcement.authorId))}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.createdAt)}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.validUntil)}</td>
                             <td class="break-words whitespace-normal px-4 py-2 border">
@@ -380,7 +384,7 @@
                             </td>
                             <td class="break-words whitespace-normal px-4 py-2 border text-xs">
                                 ${announcement.decidedAt
-                                    ? `${escapeHtml(announcement.decidedAt)}<br>przez: ${escapeHtml(announcement.decidedByName || 'Admin')}`
+                                    ? `${escapeHtml(announcement.decidedAt)}<br>przez: ${escapeHtml(resolveDecidedByName(announcement.decidedBy))}`
                                     : '<span class="text-gray-400 dark:text-gray-500">-</span>'}
                             </td>
                             <td class="break-words whitespace-normal px-4 py-2 border">${escapeHtml(announcement.text)}</td>

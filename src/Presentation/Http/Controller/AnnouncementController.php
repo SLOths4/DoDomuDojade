@@ -11,7 +11,6 @@ use App\Application\Announcement\UseCase\DeleteAnnouncementUseCase;
 use App\Application\Announcement\UseCase\EditAnnouncementUseCase;
 use App\Application\Announcement\UseCase\GetAllAnnouncementsUseCase;
 use App\Application\Announcement\UseCase\GetAnnouncementByIdUseCase;
-use App\Application\User\UseCase\GetAllUsersUseCase;
 use App\Application\Announcement\UseCase\ProposeAnnouncementUseCase;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
@@ -46,20 +45,9 @@ final class AnnouncementController extends BaseController
         private readonly ApproveRejectAnnouncementUseCase $approveRejectAnnouncementUseCase,
         private readonly GetAnnouncementByIdUseCase       $getAnnouncementByIdUseCase,
         private readonly GetAllAnnouncementsUseCase       $getAllAnnouncementsUseCase,
-        private readonly GetAllUsersUseCase               $getAllUsersUseCase,
         private readonly AnnouncementPresenter            $presenter,
     ) {
         parent::__construct($requestContext, $viewRenderer);
-    }
-
-    private function buildUsernamesMap(array $users): array
-    {
-        $usernames = [];
-        foreach ($users as $user) {
-            $usernames[$user->id] = $user->username;
-        }
-
-        return $usernames;
     }
 
     /**
@@ -92,12 +80,8 @@ final class AnnouncementController extends BaseController
     public function getAll(): ResponseInterface
     {
         $announcements = $this->getAllAnnouncementsUseCase->execute();
-        $users = $this->getAllUsersUseCase->execute();
 
-        return $this->jsonResponse(200, $this->presenter->toApi(
-            $announcements,
-            $this->buildUsernamesMap($users),
-        ));
+        return $this->jsonResponse(200, $this->presenter->toApi($announcements));
     }
 
     /**

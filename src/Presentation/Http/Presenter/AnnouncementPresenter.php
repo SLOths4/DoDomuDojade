@@ -9,7 +9,7 @@ use App\Presentation\Http\DTO\AnnouncementViewDTO;
 final class AnnouncementPresenter
 {
     /** @return AnnouncementApiDTO[] */
-    public function toApi(array $announcements, array $usernames = []): array
+    public function toApi(array $announcements): array
     {
         return array_map(
             fn (Announcement $a) => new AnnouncementApiDTO(
@@ -18,18 +18,12 @@ final class AnnouncementPresenter
                 text: $a->text,
                 status: $a->status->value,
                 authorId: $a->getUserId(),
-                authorUsername: $a->getUserId() !== null
-                    ? ($usernames[$a->getUserId()] ?? null)
-                    : null,
                 createdAt: $a->getCreatedAt()->format('Y-m-d'),
                 validUntil: $a->validUntil->format('Y-m-d'),
                 decidedAt: $a->decidedAt?->format('Y-m-d'),
                 decidedBy: $a->decidedBy,
-                decidedByName: $a->decidedBy !== null
-                    ? ($usernames[$a->decidedBy] ?? null)
-                    : null,
             ),
-            $announcements,
+            $announcements
         );
     }
 
@@ -54,7 +48,7 @@ final class AnnouncementPresenter
                     ? ($usernames[$a->decidedBy] ?? null)
                     : null,
             ),
-            $announcements,
+            $announcements
         );
     }
 }
