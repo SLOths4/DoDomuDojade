@@ -3201,6 +3201,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Shared-DomainExceptionCodes.html#enumcase_DISPLAY_FETCH_WORD_FAILED"
         },                {
+            "fqsen": "\\App\\Domain\\Shared\\EntityNotFoundException",
+            "name": "EntityNotFoundException",
+            "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
+            "url": "classes/App-Domain-Shared-EntityNotFoundException.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Shared\\EntityNotFoundException\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-Shared-EntityNotFoundException.html#method___construct"
+        },                {
             "fqsen": "\\App\\Domain\\Shared\\InvalidDateTimeException",
             "name": "InvalidDateTimeException",
             "summary": "Invalid\u0020date\/time\u0020format",
@@ -3271,6 +3281,16 @@ Search.appendIndex(
             "summary": "Data\u0020required\u0020for\u0020view\u0020is\u0020missing",
             "url": "classes/App-Domain-Shared-ViewException.html#method_missingData"
         },                {
+            "fqsen": "\\App\\Domain\\User\\ForbiddenSelfDeleteException",
+            "name": "ForbiddenSelfDeleteException",
+            "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
+            "url": "classes/App-Domain-User-ForbiddenSelfDeleteException.html"
+        },                {
+            "fqsen": "\\App\\Domain\\User\\ForbiddenSelfDeleteException\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-User-ForbiddenSelfDeleteException.html#method___construct"
+        },                {
             "fqsen": "\\App\\Domain\\User\\User",
             "name": "User",
             "summary": "User\u0020entity",
@@ -3300,6 +3320,16 @@ Search.appendIndex(
             "name": "createdAt",
             "summary": "",
             "url": "classes/App-Domain-User-User.html#property_createdAt"
+        },                {
+            "fqsen": "\\App\\Domain\\User\\UserAlreadyExistsException",
+            "name": "UserAlreadyExistsException",
+            "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
+            "url": "classes/App-Domain-User-UserAlreadyExistsException.html"
+        },                {
+            "fqsen": "\\App\\Domain\\User\\UserAlreadyExistsException\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-User-UserAlreadyExistsException.html#method___construct"
         },                {
             "fqsen": "\\App\\Domain\\User\\UserException",
             "name": "UserException",
@@ -6240,6 +6270,21 @@ Search.appendIndex(
             "name": "respond",
             "summary": "",
             "url": "classes/App-Presentation-Http-Middleware-ExceptionMiddleware.html#method_respond"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Middleware\\ExceptionMiddleware\u003A\u003AlogException\u0028\u0029",
+            "name": "logException",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Middleware-ExceptionMiddleware.html#method_logException"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Middleware\\ExceptionMiddleware\u003A\u003AresolveErrorCode\u0028\u0029",
+            "name": "resolveErrorCode",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Middleware-ExceptionMiddleware.html#method_resolveErrorCode"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Middleware\\ExceptionMiddleware\u003A\u003AextractRequestId\u0028\u0029",
+            "name": "extractRequestId",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Middleware-ExceptionMiddleware.html#method_extractRequestId"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Middleware\\ExceptionMiddleware\u003A\u003AisJsonRequest\u0028\u0029",
             "name": "isJsonRequest",
