@@ -5,7 +5,7 @@ namespace App\Application\Display;
 
 use App\Application\Announcement\UseCase\GetValidAnnouncementsUseCase;
 use App\Application\User\UseCase\GetUserByIdUseCase;
-use Exception;
+use App\Domain\Shared\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -34,7 +34,7 @@ readonly class GetDisplayAnnouncementsUseCase
                 try {
                     $user = $this->getUserByIdUseCase->execute($announcement->getUserId());
                     $author = $user->username;
-                } catch (Exception $e) {
+                } catch (EntityNotFoundException $e) {
                     $this->logger->warning("Failed to fetch announcement author", [
                         'userId' => $announcement->getUserId(),
                         'error' => $e->getMessage()

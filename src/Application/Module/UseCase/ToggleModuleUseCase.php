@@ -5,8 +5,8 @@ namespace App\Application\Module\UseCase;
 
 use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
-use App\Infrastructure\Helper\ModuleValidationHelper;
-use App\Infrastructure\Persistence\PDOModuleRepository;
+use App\Domain\Module\ModuleBusinessValidator;
+use App\Domain\Module\ModuleRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -16,10 +16,10 @@ use Psr\Log\LoggerInterface;
 readonly class ToggleModuleUseCase
 {
     public function __construct(
-        private PDOModuleRepository    $repository,
         private EventPublisher         $eventPublisher,
+        private ModuleRepositoryInterface    $repository,
         private LoggerInterface        $logger,
-        private ModuleValidationHelper $validator,
+        private ModuleBusinessValidator $validator,
     ) {}
 
     /**
