@@ -2,7 +2,7 @@
 create type  announcement_status as enum ('PENDING', 'APPROVED', 'REJECTED');
 
 -- Users table
-create table if not exists users (
+create table if not exists "user" (
     id            serial primary key,
     username      varchar(255) not null unique,
     password_hash varchar(255) not null,
@@ -25,7 +25,7 @@ create table if not exists announcement (
     status      announcement_status default 'PENDING'::announcement_status,
 
     constraint announcements_user_id_fkey
-        foreign key (user_id) references "users"(id) on delete set null on update cascade,
+        foreign key (user_id) references "user"(id) on delete set null on update cascade,
 
     constraint announcements_decided_consistency
         check ((decided_at is not null and decided_by is not null)
@@ -79,7 +79,7 @@ create table if not exists countdown (
     user_id  integer not null,
 
     constraint countdowns_user_id_fkey
-        foreign key (user_id) references "users"(id) on delete cascade on update cascade
+        foreign key (user_id) references "user"(id) on delete cascade on update cascade
 );
 
 -- Indexes for performance
