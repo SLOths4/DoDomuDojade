@@ -1661,11 +1661,6 @@ Search.appendIndex(
             "summary": "Defines\u0020console\u0020output\u0020helper\u0020functions",
             "url": "classes/App-Console-ConsoleOutput.html"
         },                {
-            "fqsen": "\\App\\Console\\ConsoleOutput\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/App-Console-ConsoleOutput.html#method___construct"
-        },                {
             "fqsen": "\\App\\Console\\ConsoleOutput\u003A\u003Asuccess\u0028\u0029",
             "name": "success",
             "summary": "Outputs\u0020success\u0020to\u0020console",
@@ -1725,11 +1720,6 @@ Search.appendIndex(
             "name": "BLUE",
             "summary": "",
             "url": "classes/App-Console-ConsoleOutput.html#constant_BLUE"
-        },                {
-            "fqsen": "\\App\\Console\\ConsoleOutput\u003A\u003AGRAY",
-            "name": "GRAY",
-            "summary": "",
-            "url": "classes/App-Console-ConsoleOutput.html#constant_GRAY"
         },                {
             "fqsen": "\\App\\Console\\Kernel",
             "name": "Kernel",
@@ -5850,11 +5840,6 @@ Search.appendIndex(
             "name": "__construct",
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-BaseController.html#method___construct"
-        },                {
-            "fqsen": "\\App\\Presentation\\Http\\Controller\\BaseController\u003A\u003Aflash\u0028\u0029",
-            "name": "flash",
-            "summary": "",
-            "url": "classes/App-Presentation-Http-Controller-BaseController.html#method_flash"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\BaseController\u003A\u003Aredirect\u0028\u0029",
             "name": "redirect",
