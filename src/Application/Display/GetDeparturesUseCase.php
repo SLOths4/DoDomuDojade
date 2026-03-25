@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Infrastructure\ExternalApi\Tram\TramApiException;
 use App\Infrastructure\ExternalApi\Tram\TramService;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -31,7 +31,7 @@ readonly class GetDeparturesUseCase
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (Exception) {
+            } catch (TramApiException) {
                 $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
                 continue;
             }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Infrastructure\ExternalApi\Calendar\CalendarApiException;
 use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use DateTime;
 use Exception;
@@ -41,7 +42,7 @@ readonly class GetDisplayEventsUseCase
             }
 
             return $eventsArray;
-        } catch (Exception $e) {
+        } catch (CalendarApiException|Exception $e) {
             $this->logger->error('Error processing calendar data', ['error' => $e->getMessage()]);
             return null;
         }

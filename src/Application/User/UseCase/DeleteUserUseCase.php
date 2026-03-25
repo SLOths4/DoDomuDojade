@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\User\UseCase;
 
+use App\Domain\User\ForbiddenSelfDeleteException;
 use App\Infrastructure\Persistence\PDOUserRepository;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -25,7 +25,6 @@ readonly class DeleteUserUseCase
      * @param int $activeUserId
      * @param int $targetUserId
      * @return bool
-     * @throws Exception
      */
     public function execute(int $activeUserId, int $targetUserId): bool
     {
@@ -36,7 +35,7 @@ readonly class DeleteUserUseCase
 
         if ($activeUserId === $targetUserId) {
             $this->logger->warning("User attempted to delete themselves", ['user_id' => $targetUserId]);
-            throw new Exception("User can't delete themselves.");
+            throw new ForbiddenSelfDeleteException($targetUserId);
         }
 
         $this->repository->findById($targetUserId);

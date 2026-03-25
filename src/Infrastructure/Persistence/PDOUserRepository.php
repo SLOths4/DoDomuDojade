@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Persistence;
 
+use App\Domain\Shared\EntityNotFoundException;
+use App\Domain\Shared\DomainExceptionCodes;
 use App\Domain\User\User;
 use App\Domain\User\UserRepositoryInterface;
 use App\Infrastructure\Database\DatabaseService;
@@ -86,7 +88,11 @@ readonly class PDOUserRepository implements UserRepositoryInterface
         );
 
         if ($row === null) {
-            throw new Exception("User with ID $id not found");
+            throw new EntityNotFoundException(
+                message: "user.not_found",
+                errorCode: DomainExceptionCodes::USER_NOT_FOUND->value,
+                context: ['user_id' => $id]
+            );
         }
 
         return $this->mapRow($row);
