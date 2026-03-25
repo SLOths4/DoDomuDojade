@@ -1616,6 +1616,11 @@ Search.appendIndex(
             "summary": "Defines\u0020console\u0020output\u0020helper\u0020functions",
             "url": "classes/App-Console-ConsoleOutput.html"
         },                {
+            "fqsen": "\\App\\Console\\ConsoleOutput\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Console-ConsoleOutput.html#method___construct"
+        },                {
             "fqsen": "\\App\\Console\\ConsoleOutput\u003A\u003Asuccess\u0028\u0029",
             "name": "success",
             "summary": "Outputs\u0020success\u0020to\u0020console",
@@ -4190,6 +4195,11 @@ Search.appendIndex(
             "name": "noStopsData",
             "summary": "",
             "url": "classes/App-Infrastructure-ExternalApi-Tram-TramApiException.html#method_noStopsData"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\ExternalApi\\Tram\\TramApiException\u003A\u003AapiLogicError\u0028\u0029",
+            "name": "apiLogicError",
+            "summary": "",
+            "url": "classes/App-Infrastructure-ExternalApi-Tram-TramApiException.html#method_apiLogicError"
         },                {
             "fqsen": "\\App\\Infrastructure\\ExternalApi\\Tram\\TramApiException\u003A\u003AapiCallFailed\u0028\u0029",
             "name": "apiCallFailed",
