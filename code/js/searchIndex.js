@@ -4111,6 +4111,56 @@ Search.appendIndex(
             "summary": "Thrown\u0020when\u0020unable\u0020to\u0020load\u0020config",
             "url": "classes/App-Infrastructure-Configuration-ConfigException.html#method_loadingFailed"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\AnnouncementProvider",
+            "name": "AnnouncementProvider",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-AnnouncementProvider.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\AnnouncementProvider\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-AnnouncementProvider.html#method_register"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\DisplayProvider",
+            "name": "DisplayProvider",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-DisplayProvider.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\DisplayProvider\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-DisplayProvider.html#method_register"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\ServiceProviderInterface",
+            "name": "ServiceProviderInterface",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-ServiceProviderInterface.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\ServiceProviderInterface\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-ServiceProviderInterface.html#method_register"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\SharedProvider",
+            "name": "SharedProvider",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-SharedProvider.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\SharedProvider\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-SharedProvider.html#method_register"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\UserProvider",
+            "name": "UserProvider",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-UserProvider.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers\\UserProvider\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Container-Providers-UserProvider.html#method_register"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Container",
             "name": "Container",
             "summary": "",
@@ -7070,6 +7120,16 @@ Search.appendIndex(
             "name": "Configuration",
             "summary": "",
             "url": "namespaces/app-infrastructure-configuration.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container\\Providers",
+            "name": "Providers",
+            "summary": "",
+            "url": "namespaces/app-infrastructure-container-providers.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Container",
+            "name": "Container",
+            "summary": "",
+            "url": "namespaces/app-infrastructure-container.html"
         },                {
             "fqsen": "\\App\\Infrastructure",
             "name": "Infrastructure",
