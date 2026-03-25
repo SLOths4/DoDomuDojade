@@ -7,6 +7,9 @@ use App\Application\Announcement\DTO\AddAnnouncementDTO;
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Event\EventPublisher;
+use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use DateMalformedStringException;
@@ -23,6 +26,7 @@ readonly class CreateAnnouncementUseCase
      * @param AnnouncementBusinessValidator $validator
      */
     public function __construct(
+        private EventPublisher               $eventPublisher,
         private AnnouncementRepositoryInterface    $repository,
         private LoggerInterface              $logger,
         private AnnouncementBusinessValidator $validator,
@@ -48,6 +52,8 @@ readonly class CreateAnnouncementUseCase
         $id = $this->repository->add($new);
 
         $events = $new->getDomainEvents();
+
+        $this->eventPublisher->publishAll($events);
 
         $new->clearDomainEvents();
 

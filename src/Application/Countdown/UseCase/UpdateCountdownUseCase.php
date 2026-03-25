@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Countdown\UseCase;
 
 use App\Application\Countdown\AddEditCountdownDTO;
-use App\Domain\Countdown\Countdown;
 use App\Domain\Countdown\CountdownException;
-use App\Domain\Countdown\Event\CountdownUpdatedEvent;
 use App\Domain\Event\EventPublisher;
 use App\Domain\Countdown\CountdownBusinessValidator;
 use App\Domain\Countdown\CountdownRepositoryInterface;
@@ -24,6 +22,7 @@ readonly class UpdateCountdownUseCase
      * @param CountdownBusinessValidator $validator
      */
     public function __construct(
+        private EventPublisher            $eventPublisher,
         private CountdownRepositoryInterface    $repository,
         private LoggerInterface           $logger,
         private CountdownBusinessValidator $validator,
@@ -52,13 +51,17 @@ readonly class UpdateCountdownUseCase
             throw CountdownException::notFound($id);
         }
 
-        $updated = $this->mapDtoToEntity($dto, $existing, $adminId);
+        $existing->updateDetails($dto->title, $dto->countTo, $adminId);
 
-        $result = $this->repository->update($updated);
+        $result = $this->repository->update($existing);
 
         if (!$result){
             throw CountdownException::failedToUpdate();
         }
+
+        $events = $existing->getDomainEvents();
+        $this->eventPublisher->publishAll($events);
+        $existing->clearDomainEvents();
 
         $this->logger->info('Countdown update finished', [
             'countdown_id' => $id,
@@ -66,26 +69,6 @@ readonly class UpdateCountdownUseCase
         ]);
 
         return true;
-    }
-
-    /**
-     * Maps DTO to entity
-     * @param AddEditCountdownDTO $dto
-     * @param Countdown $existing
-     * @param int $adminId
-     * @return Countdown
-     */
-    private function mapDtoToEntity(
-        AddEditCountdownDTO $dto,
-        Countdown $existing,
-        int $adminId,
-    ): Countdown {
-        return new Countdown(
-          id: $existing->id,
-          title: $dto->title,
-          countTo: $dto->countTo,
-          userId: $adminId,
-        );
     }
 
     /**
