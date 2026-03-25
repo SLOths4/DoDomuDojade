@@ -25,6 +25,7 @@ use App\Console\Kernel;
 use App\Domain\Countdown\CountdownBusinessValidator;
 use App\Domain\Countdown\CountdownRepositoryInterface;
 use App\Domain\Event\EventPublisher;
+use App\Domain\Event\EventStoreRepositoryInterface;
 use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
 use App\Domain\Quote\QuoteRepositoryInterface;
@@ -34,6 +35,7 @@ use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\Database\DatabaseService;
 use App\Infrastructure\Database\PDOFactory;
+use App\Infrastructure\Event\SyncEventPublisher;
 use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use App\Infrastructure\ExternalApi\Quote\QuoteApiService;
 use App\Infrastructure\ExternalApi\Tram\TramService;
@@ -43,6 +45,7 @@ use App\Infrastructure\Helper\CountdownValidationHelper;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Infrastructure\Logger\LoggerFactory;
 use App\Infrastructure\Persistence\PDOCountdownRepository;
+use App\Infrastructure\Persistence\PDOEventStoreRepository;
 use App\Infrastructure\Persistence\PDOModuleRepository;
 use App\Infrastructure\Persistence\PDOQuoteRepository;
 use App\Infrastructure\Persistence\PDOWeatherRepository;
@@ -87,6 +90,8 @@ final class SharedProvider implements ServiceProviderInterface
         });
 
         $c->set(DatabaseService::class, fn(Container $c) => new DatabaseService($c->get(PDO::class), $c->get(LoggerInterface::class)));
+        $c->set(EventStoreRepositoryInterface::class, fn(Container $c) => new PDOEventStoreRepository($c->get(DatabaseService::class), 'events'));
+        $c->set(EventPublisher::class, fn(Container $c) => new SyncEventPublisher($c->get(EventStoreRepositoryInterface::class), $c->get(LoggerInterface::class)));
 
         $c->set(Environment::class, function (Container $c): Environment {
             $cfg = $c->get(Config::class);
