@@ -108,14 +108,13 @@
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="namespaces/app.html">App</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application.html">Application</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application-countdown.html">Countdown</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-application-countdown-usecase.html">UseCase</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-infrastructure.html">Infrastructure</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/app-infrastructure-persistence.html">Persistence</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    DeleteCountdownUseCase
+    PDOEventStoreRepository
 
     
             <div class="phpdocumentor-element__package">
@@ -125,6 +124,9 @@
                             </ul>
         </div>
     
+            <span class="phpdocumentor-element__implements">
+            implements
+                            <a href="classes/App-Domain-Event-EventStoreRepositoryInterface.html"><abbr title="\App\Domain\Event\EventStoreRepositoryInterface">EventStoreRepositoryInterface</abbr></a>                    </span>
     
     </h2>
 
@@ -136,14 +138,13 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Persistence/PDOEventStoreRepository.php"><a href="files/src-infrastructure-persistence-pdoeventstorerepository.html"><abbr title="src/Infrastructure/Persistence/PDOEventStoreRepository.php">PDOEventStoreRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">12</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Deletes specified countdown</p>
-
+        
 
 
 
@@ -152,12 +153,19 @@
     
 <h3 id="toc">
     Table of Contents
-    <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
 
 
+    <h4 id="toc-interfaces">
+        Interfaces
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc-interfaces" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <dl class="phpdocumentor-table-of-contents">
+                    <dt class="phpdocumentor-table-of-contents__entry -interface"><a href="classes/App-Domain-Event-EventStoreRepositoryInterface.html"><abbr title="\App\Domain\Event\EventStoreRepositoryInterface">EventStoreRepositoryInterface</abbr></a></dt>    </dl>
 
 
 
@@ -166,50 +174,38 @@
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_eventPublisher">$eventPublisher</a>
+    <a class="" href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_dbHelper">$dbHelper</a>
     <span>
-                        &nbsp;: <a href="classes/App-Domain-Event-EventPublisher.html"><abbr title="\App\Domain\Event\EventPublisher">EventPublisher</abbr></a>            </span>
+                        &nbsp;: <a href="classes/App-Infrastructure-Database-DatabaseService.html"><abbr title="\App\Infrastructure\Database\DatabaseService">DatabaseService</abbr></a>            </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_logger">$logger</a>
+    <a class="" href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_tableName">$tableName</a>
     <span>
-                        &nbsp;: <abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_repository">$repository</a>
-    <span>
-                        &nbsp;: <a href="classes/App-Domain-Countdown-CountdownRepositoryInterface.html"><abbr title="\App\Domain\Countdown\CountdownRepositoryInterface">CountdownRepositoryInterface</abbr></a>            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_validator">$validator</a>
-    <span>
-                        &nbsp;: <a href="classes/App-Domain-Countdown-CountdownBusinessValidator.html"><abbr title="\App\Domain\Countdown\CountdownBusinessValidator">CountdownBusinessValidator</abbr></a>            </span>
+                        &nbsp;: string            </span>
 </dt>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method___construct">__construct()</a>
+    <a class="" href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method_execute">execute()</a>
+    <a class="" href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method_append">append()</a>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
@@ -224,7 +220,7 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -234,17 +230,17 @@
             -private
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_eventPublisher">
-        $eventPublisher
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_eventPublisher" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_dbHelper">
+        $dbHelper
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_dbHelper" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Persistence/PDOEventStoreRepository.php"><a href="files/src-infrastructure-persistence-pdoeventstorerepository.html"><abbr title="src/Infrastructure/Persistence/PDOEventStoreRepository.php">PDOEventStoreRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">25</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
@@ -252,8 +248,8 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/App-Domain-Event-EventPublisher.html"><abbr title="\App\Domain\Event\EventPublisher">EventPublisher</abbr></a></span>
-    <span class="phpdocumentor-signature__name">$eventPublisher</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/App-Infrastructure-Database-DatabaseService.html"><abbr title="\App\Infrastructure\Database\DatabaseService">DatabaseService</abbr></a></span>
+    <span class="phpdocumentor-signature__name">$dbHelper</span>
     </code>
 
     
@@ -271,17 +267,17 @@
             -private
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_logger">
-        $logger
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_logger" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_tableName">
+        $tableName
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_tableName" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Persistence/PDOEventStoreRepository.php"><a href="files/src-infrastructure-persistence-pdoeventstorerepository.html"><abbr title="src/Infrastructure/Persistence/PDOEventStoreRepository.php">PDOEventStoreRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">16</span>
 
     </aside>
 
@@ -289,82 +285,8 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr></span>
-    <span class="phpdocumentor-signature__name">$logger</span>
-    </code>
-
-    
-    
-    
-
-        
-        
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_repository">
-        $repository
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_repository" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">26</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/App-Domain-Countdown-CountdownRepositoryInterface.html"><abbr title="\App\Domain\Countdown\CountdownRepositoryInterface">CountdownRepositoryInterface</abbr></a></span>
-    <span class="phpdocumentor-signature__name">$repository</span>
-    </code>
-
-    
-    
-    
-
-        
-        
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_validator">
-        $validator
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_validator" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">28</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/App-Domain-Countdown-CountdownBusinessValidator.html"><abbr title="\App\Domain\Countdown\CountdownBusinessValidator">CountdownBusinessValidator</abbr></a></span>
-    <span class="phpdocumentor-signature__name">$validator</span>
+            <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$tableName</span>
     </code>
 
     
@@ -380,7 +302,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -391,20 +313,20 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Persistence/PDOEventStoreRepository.php"><a href="files/src-infrastructure-persistence-pdoeventstorerepository.html"><abbr title="src/Infrastructure/Persistence/PDOEventStoreRepository.php">PDOEventStoreRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">14</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Event-EventPublisher.html"><abbr title="\App\Domain\Event\EventPublisher">EventPublisher</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$eventPublisher</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Countdown-CountdownRepositoryInterface.html"><abbr title="\App\Domain\Countdown\CountdownRepositoryInterface">CountdownRepositoryInterface</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$repository</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$logger</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Countdown-CountdownBusinessValidator.html"><abbr title="\App\Domain\Countdown\CountdownBusinessValidator">CountdownBusinessValidator</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$validator</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Infrastructure-Database-DatabaseService.html"><abbr title="\App\Infrastructure\Database\DatabaseService">DatabaseService</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbHelper</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tableName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -413,29 +335,15 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$eventPublisher</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Event-EventPublisher.html"><abbr title="\App\Domain\Event\EventPublisher">EventPublisher</abbr></a></span>
+                <span class="phpdocumentor-argument-list__argument__name">$dbHelper</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Infrastructure-Database-DatabaseService.html"><abbr title="\App\Infrastructure\Database\DatabaseService">DatabaseService</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$repository</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Countdown-CountdownRepositoryInterface.html"><abbr title="\App\Domain\Countdown\CountdownRepositoryInterface">CountdownRepositoryInterface</abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$logger</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\Psr\Log\LoggerInterface">LoggerInterface</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$validator</span>
-                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Countdown-CountdownBusinessValidator.html"><abbr title="\App\Domain\Countdown\CountdownBusinessValidator">CountdownBusinessValidator</abbr></a></span>
+                <span class="phpdocumentor-argument-list__argument__name">$tableName</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -454,22 +362,22 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_execute">
-        execute()
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method_execute" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_append">
+        append()
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method_append" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php"><a href="files/src-application-countdown-usecase-deletecountdownusecase.html"><abbr title="src/Application/Countdown/UseCase/DeleteCountdownUseCase.php">DeleteCountdownUseCase.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/Persistence/PDOEventStoreRepository.php"><a href="files/src-infrastructure-persistence-pdoeventstorerepository.html"><abbr title="src/Infrastructure/Persistence/PDOEventStoreRepository.php">PDOEventStoreRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">36</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">execute</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">append</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$event</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -478,8 +386,8 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-argument-list__argument__name">$id</span>
-                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                <span class="phpdocumentor-argument-list__argument__name">$event</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -487,21 +395,6 @@
             </dl>
 
     
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method_execute#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/App-Domain-Countdown-CountdownException.html"><abbr title="\App\Domain\Countdown\CountdownException">CountdownException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
 
         
     
@@ -517,7 +410,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Application/Countdown/UseCase/DeleteCountdownUseCase.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/Infrastructure/Persistence/PDOEventStoreRepository.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -618,26 +511,24 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#toc-methods">Methods</a></li>
+                                                            <li><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_eventPublisher">$eventPublisher</a></li>
-                                                    <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_logger">$logger</a></li>
-                                                    <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_repository">$repository</a></li>
-                                                    <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_validator">$validator</a></li>
+                                                    <li class=""><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_dbHelper">$dbHelper</a></li>
+                                                    <li class=""><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_tableName">$tableName</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method_execute">execute()</a></li>
+                                            <li class=""><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method_append">append()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -657,7 +548,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

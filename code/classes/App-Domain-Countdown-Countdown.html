@@ -128,8 +128,6 @@
     </h2>
 
 <div class="phpdocumentor-label-line">
-    <div class="phpdocumentor-label phpdocumentor-label--success"><span>Read only</span><span>Yes</span></div>
-
 
 
 </div>
@@ -137,7 +135,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10</span>
+    <span class="phpdocumentor-element-found-in__line">14</span>
 
     </aside>
 
@@ -193,6 +191,12 @@
                         &nbsp;: int            </span>
 </dt>
 
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#property_events">$events</a>
+    <span>
+                        &nbsp;: array&lt;string|int, <a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&gt;            </span>
+</dt>
+
     </dl>
 
 <h4 id="toc-methods">
@@ -205,6 +209,48 @@
     <a class="" href="classes/App-Domain-Countdown-Countdown.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_assignId">assignId()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_clearDomainEvents">clearDomainEvents()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_getDomainEvents">getDomainEvents()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&gt;    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_markCreated">markCreated()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_markDeleted">markDeleted()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_updateDetails">updateDetails()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -private">
+    <a class="" href="classes/App-Domain-Countdown-Countdown.html#method_recordEvent">recordEvent()</a>
+    <span>
+                                &nbsp;: void    </span>
 </dt>
 
     </dl>
@@ -237,7 +283,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
     </aside>
 
@@ -274,7 +320,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">13</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
@@ -311,7 +357,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
@@ -348,7 +394,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
@@ -359,6 +405,43 @@
             <span class="phpdocumentor-signature__type">int</span>
     <span class="phpdocumentor-signature__name">$userId</span>
     </code>
+
+    
+    
+    
+
+        
+        
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_events">
+        $events
+        <a href="classes/App-Domain-Countdown-Countdown.html#property_events" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">17</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__type">array&lt;string|int, <a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&gt;</span>
+    <span class="phpdocumentor-signature__name">$events</span>
+     = <span class="phpdocumentor-signature__default-value">[]</span></code>
 
     
     
@@ -390,7 +473,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">12</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
@@ -429,6 +512,292 @@
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-argument-list__argument__name">$userId</span>
                 : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_assignId">
+        assignId()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_assignId" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">26</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">assignId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$id</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_clearDomainEvents">
+        clearDomainEvents()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_clearDomainEvents" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">57</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">clearDomainEvents</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getDomainEvents">
+        getDomainEvents()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_getDomainEvents" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">52</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getDomainEvents</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_markCreated">
+        markCreated()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_markCreated" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">39</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">markCreated</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_markDeleted">
+        markDeleted()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_markDeleted" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">44</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">markDeleted</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_updateDetails">
+        updateDetails()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_updateDetails" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">31</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">updateDetails</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$title</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$countTo</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$userId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$title</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$countTo</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$userId</span>
+                : <span class="phpdocumentor-argument-list__argument__type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        
+    
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_recordEvent">
+        recordEvent()
+        <a href="classes/App-Domain-Countdown-Countdown.html#method_recordEvent" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Domain/Countdown/Countdown.php"><a href="files/src-domain-countdown-countdown.html"><abbr title="src/Domain/Countdown/Countdown.php">Countdown.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">62</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+                    <span class="phpdocumentor-signature__name">recordEvent</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$event</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$event</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><a href="classes/App-Domain-Shared-DomainEvent.html"><abbr title="\App\Domain\Shared\DomainEvent">DomainEvent</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -560,6 +929,7 @@
                                                     <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#property_id">$id</a></li>
                                                     <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#property_title">$title</a></li>
                                                     <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#property_userId">$userId</a></li>
+                                                    <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#property_events">$events</a></li>
                                             </ul>
                 </li>
             
@@ -567,6 +937,13 @@
             <li>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_assignId">assignId()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_clearDomainEvents">clearDomainEvents()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_getDomainEvents">getDomainEvents()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_markCreated">markCreated()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_markDeleted">markDeleted()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_updateDetails">updateDetails()</a></li>
+                                            <li class=""><a href="classes/App-Domain-Countdown-Countdown.html#method_recordEvent">recordEvent()</a></li>
                                     </ul>
             </li>
                     </ul>

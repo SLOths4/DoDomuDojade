@@ -111,6 +111,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Application-Announcement-UseCase-ApproveRejectAnnouncementUseCase.html#method_execute"
         },                {
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\ApproveRejectAnnouncementUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Announcement-UseCase-ApproveRejectAnnouncementUseCase.html#property_eventPublisher"
+        },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\ApproveRejectAnnouncementUseCase\u003A\u003A\u0024repository",
             "name": "repository",
             "summary": "",
@@ -151,6 +156,11 @@ Search.appendIndex(
             "summary": "Validates\u0020business\u0020logic",
             "url": "classes/App-Application-Announcement-UseCase-CreateAnnouncementUseCase.html#method_validateBusinessRules"
         },                {
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\CreateAnnouncementUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Announcement-UseCase-CreateAnnouncementUseCase.html#property_eventPublisher"
+        },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\CreateAnnouncementUseCase\u003A\u003A\u0024repository",
             "name": "repository",
             "summary": "",
@@ -180,6 +190,11 @@ Search.appendIndex(
             "name": "execute",
             "summary": "Deletes\u0020announcement",
             "url": "classes/App-Application-Announcement-UseCase-DeleteAnnouncementUseCase.html#method_execute"
+        },                {
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\DeleteAnnouncementUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Announcement-UseCase-DeleteAnnouncementUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\DeleteAnnouncementUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -240,6 +255,11 @@ Search.appendIndex(
             "name": "validateBusinessRules",
             "summary": "Validates\u0020business\u0020logic",
             "url": "classes/App-Application-Announcement-UseCase-EditAnnouncementUseCase.html#method_validateBusinessRules"
+        },                {
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\EditAnnouncementUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Announcement-UseCase-EditAnnouncementUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\EditAnnouncementUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -361,15 +381,20 @@ Search.appendIndex(
             "summary": "Validates\u0020business\u0020logic",
             "url": "classes/App-Application-Announcement-UseCase-ProposeAnnouncementUseCase.html#method_validateBusinessRules"
         },                {
-            "fqsen": "\\App\\Application\\Announcement\\UseCase\\ProposeAnnouncementUseCase\u003A\u003A\u0024repository",
-            "name": "repository",
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\ProposeAnnouncementUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
             "summary": "",
-            "url": "classes/App-Application-Announcement-UseCase-ProposeAnnouncementUseCase.html#property_repository"
+            "url": "classes/App-Application-Announcement-UseCase-ProposeAnnouncementUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\ProposeAnnouncementUseCase\u003A\u003A\u0024validator",
             "name": "validator",
             "summary": "",
             "url": "classes/App-Application-Announcement-UseCase-ProposeAnnouncementUseCase.html#property_validator"
+        },                {
+            "fqsen": "\\App\\Application\\Announcement\\UseCase\\ProposeAnnouncementUseCase\u003A\u003A\u0024repository",
+            "name": "repository",
+            "summary": "",
+            "url": "classes/App-Application-Announcement-UseCase-ProposeAnnouncementUseCase.html#property_repository"
         },                {
             "fqsen": "\\App\\Application\\Announcement\\UseCase\\ProposeAnnouncementUseCase\u003A\u003A\u0024logger",
             "name": "logger",
@@ -426,6 +451,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Application-Countdown-UseCase-CreateCountdownUseCase.html#method_validateBusinessRules"
         },                {
+            "fqsen": "\\App\\Application\\Countdown\\UseCase\\CreateCountdownUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Countdown-UseCase-CreateCountdownUseCase.html#property_eventPublisher"
+        },                {
             "fqsen": "\\App\\Application\\Countdown\\UseCase\\CreateCountdownUseCase\u003A\u003A\u0024repository",
             "name": "repository",
             "summary": "",
@@ -455,6 +485,11 @@ Search.appendIndex(
             "name": "execute",
             "summary": "",
             "url": "classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#method_execute"
+        },                {
+            "fqsen": "\\App\\Application\\Countdown\\UseCase\\DeleteCountdownUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Countdown-UseCase-DeleteCountdownUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Countdown\\UseCase\\DeleteCountdownUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -566,15 +601,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html#method_execute"
         },                {
-            "fqsen": "\\App\\Application\\Countdown\\UseCase\\UpdateCountdownUseCase\u003A\u003AmapDtoToEntity\u0028\u0029",
-            "name": "mapDtoToEntity",
-            "summary": "Maps\u0020DTO\u0020to\u0020entity",
-            "url": "classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html#method_mapDtoToEntity"
-        },                {
             "fqsen": "\\App\\Application\\Countdown\\UseCase\\UpdateCountdownUseCase\u003A\u003AvalidateBusinessRules\u0028\u0029",
             "name": "validateBusinessRules",
             "summary": "Validates\u0020business\u0020logic",
             "url": "classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html#method_validateBusinessRules"
+        },                {
+            "fqsen": "\\App\\Application\\Countdown\\UseCase\\UpdateCountdownUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Countdown-UseCase-UpdateCountdownUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Countdown\\UseCase\\UpdateCountdownUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -906,6 +941,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Application-Module-UseCase-ToggleModuleUseCase.html#method_execute"
         },                {
+            "fqsen": "\\App\\Application\\Module\\UseCase\\ToggleModuleUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Module-UseCase-ToggleModuleUseCase.html#property_eventPublisher"
+        },                {
             "fqsen": "\\App\\Application\\Module\\UseCase\\ToggleModuleUseCase\u003A\u003A\u0024repository",
             "name": "repository",
             "summary": "",
@@ -936,15 +976,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Application-Module-UseCase-UpdateModuleUseCase.html#method_execute"
         },                {
-            "fqsen": "\\App\\Application\\Module\\UseCase\\UpdateModuleUseCase\u003A\u003AmapDtoToEntity\u0028\u0029",
-            "name": "mapDtoToEntity",
-            "summary": "Maps\u0020DTO\u0020to\u0020entity",
-            "url": "classes/App-Application-Module-UseCase-UpdateModuleUseCase.html#method_mapDtoToEntity"
-        },                {
             "fqsen": "\\App\\Application\\Module\\UseCase\\UpdateModuleUseCase\u003A\u003AvalidateBusinessRules\u0028\u0029",
             "name": "validateBusinessRules",
             "summary": "Validates\u0020business\u0020logic",
             "url": "classes/App-Application-Module-UseCase-UpdateModuleUseCase.html#method_validateBusinessRules"
+        },                {
+            "fqsen": "\\App\\Application\\Module\\UseCase\\UpdateModuleUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Module-UseCase-UpdateModuleUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Module\\UseCase\\UpdateModuleUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -1010,6 +1050,11 @@ Search.appendIndex(
             "name": "apiService",
             "summary": "",
             "url": "classes/App-Application-Quote-FetchQuoteUseCase.html#property_apiService"
+        },                {
+            "fqsen": "\\App\\Application\\Quote\\FetchQuoteUseCase\u003A\u003A\u0024eventPublisher",
+            "name": "eventPublisher",
+            "summary": "",
+            "url": "classes/App-Application-Quote-FetchQuoteUseCase.html#property_eventPublisher"
         },                {
             "fqsen": "\\App\\Application\\Quote\\FetchQuoteUseCase\u003A\u003A\u0024repository",
             "name": "repository",
@@ -1746,6 +1791,11 @@ Search.appendIndex(
             "summary": "Change\u0020status\u0020to\u0020rejected",
             "url": "classes/App-Domain-Announcement-Announcement.html#method_reject"
         },                {
+            "fqsen": "\\App\\Domain\\Announcement\\Announcement\u003A\u003AmarkDeleted\u0028\u0029",
+            "name": "markDeleted",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-Announcement.html#method_markDeleted"
+        },                {
             "fqsen": "\\App\\Domain\\Announcement\\Announcement\u003A\u003Aupdate\u0028\u0029",
             "name": "update",
             "summary": "Updates\u0020announcement\u0020data",
@@ -2271,6 +2321,46 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Countdown-Countdown.html#method___construct"
         },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AassignId\u0028\u0029",
+            "name": "assignId",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_assignId"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AupdateDetails\u0028\u0029",
+            "name": "updateDetails",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_updateDetails"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AmarkCreated\u0028\u0029",
+            "name": "markCreated",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_markCreated"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AmarkDeleted\u0028\u0029",
+            "name": "markDeleted",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_markDeleted"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AgetDomainEvents\u0028\u0029",
+            "name": "getDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_getDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003AclearDomainEvents\u0028\u0029",
+            "name": "clearDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_clearDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003ArecordEvent\u0028\u0029",
+            "name": "recordEvent",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#method_recordEvent"
+        },                {
+            "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003A\u0024events",
+            "name": "events",
+            "summary": "",
+            "url": "classes/App-Domain-Countdown-Countdown.html#property_events"
+        },                {
             "fqsen": "\\App\\Domain\\Countdown\\Countdown\u003A\u003A\u0024id",
             "name": "id",
             "summary": "",
@@ -2506,6 +2596,16 @@ Search.appendIndex(
             "summary": "Publishes\u0020multiple\u0020events",
             "url": "classes/App-Domain-Event-EventPublisher.html#method_publishAll"
         },                {
+            "fqsen": "\\App\\Domain\\Event\\EventStoreRepositoryInterface",
+            "name": "EventStoreRepositoryInterface",
+            "summary": "",
+            "url": "classes/App-Domain-Event-EventStoreRepositoryInterface.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Event\\EventStoreRepositoryInterface\u003A\u003Aappend\u0028\u0029",
+            "name": "append",
+            "summary": "",
+            "url": "classes/App-Domain-Event-EventStoreRepositoryInterface.html#method_append"
+        },                {
             "fqsen": "\\App\\Domain\\Module\\Event\\ModuleToggledEvent",
             "name": "ModuleToggledEvent",
             "summary": "Describes\u0020a\u0020domain\u0020event",
@@ -2580,6 +2680,26 @@ Search.appendIndex(
             "name": "toggle",
             "summary": "Changes\u0020isActive\u0020field",
             "url": "classes/App-Domain-Module-Module.html#method_toggle"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\Module\u003A\u003AupdateSchedule\u0028\u0029",
+            "name": "updateSchedule",
+            "summary": "",
+            "url": "classes/App-Domain-Module-Module.html#method_updateSchedule"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\Module\u003A\u003AgetDomainEvents\u0028\u0029",
+            "name": "getDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Module-Module.html#method_getDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\Module\u003A\u003AclearDomainEvents\u0028\u0029",
+            "name": "clearDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Module-Module.html#method_clearDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Module\\Module\u003A\u003A\u0024events",
+            "name": "events",
+            "summary": "",
+            "url": "classes/App-Domain-Module-Module.html#property_events"
         },                {
             "fqsen": "\\App\\Domain\\Module\\Module\u003A\u003A\u0024id",
             "name": "id",
@@ -2755,6 +2875,31 @@ Search.appendIndex(
             "name": "__construct",
             "summary": "",
             "url": "classes/App-Domain-Quote-Quote.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003AassignId\u0028\u0029",
+            "name": "assignId",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-Quote.html#method_assignId"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003AmarkCreated\u0028\u0029",
+            "name": "markCreated",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-Quote.html#method_markCreated"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003AgetDomainEvents\u0028\u0029",
+            "name": "getDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-Quote.html#method_getDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003AclearDomainEvents\u0028\u0029",
+            "name": "clearDomainEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-Quote.html#method_clearDomainEvents"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003A\u0024events",
+            "name": "events",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-Quote.html#property_events"
         },                {
             "fqsen": "\\App\\Domain\\Quote\\Quote\u003A\u003A\u0024id",
             "name": "id",
@@ -4171,6 +4316,41 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Database-PDOFactory.html#method_create"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher",
+            "name": "SyncEventPublisher",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003Apublish\u0028\u0029",
+            "name": "publish",
+            "summary": "Publishes\u0020one\u0020event",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#method_publish"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003ApublishAll\u0028\u0029",
+            "name": "publishAll",
+            "summary": "Publishes\u0020multiple\u0020events",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#method_publishAll"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003A\u0024eventStore",
+            "name": "eventStore",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#property_eventStore"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003A\u0024logger",
+            "name": "logger",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#property_logger"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event\\SyncEventPublisher\u003A\u003A\u0024maxRetries",
+            "name": "maxRetries",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Event-SyncEventPublisher.html#property_maxRetries"
+        },                {
             "fqsen": "\\App\\Infrastructure\\ExternalApi\\Calendar\\CalendarApiException",
             "name": "CalendarApiException",
             "summary": "",
@@ -4910,6 +5090,31 @@ Search.appendIndex(
             "name": "DATE_FORMAT",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOCountdownRepository.html#property_DATE_FORMAT"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository",
+            "name": "PDOEventStoreRepository",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003Aappend\u0028\u0029",
+            "name": "append",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method_append"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003A\u0024dbHelper",
+            "name": "dbHelper",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_dbHelper"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003A\u0024tableName",
+            "name": "tableName",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_tableName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository",
             "name": "PDOModuleRepository",
@@ -6875,6 +7080,11 @@ Search.appendIndex(
             "name": "Database",
             "summary": "",
             "url": "namespaces/app-infrastructure-database.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Event",
+            "name": "Event",
+            "summary": "",
+            "url": "namespaces/app-infrastructure-event.html"
         },                {
             "fqsen": "\\App\\Infrastructure\\ExternalApi\\Calendar",
             "name": "Calendar",
