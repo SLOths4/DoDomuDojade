@@ -7,7 +7,7 @@ use App\Application\User\EditUserDTO;
 use App\Domain\User\User;
 use App\Domain\User\ValueObject\Password;
 use App\Domain\User\ValueObject\Username;
-use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -17,13 +17,13 @@ use Psr\Log\LoggerInterface;
 readonly class UpdateUserUseCase
 {
     /**
-     * @param PDOUserRepository $repository
+     * @param UserRepositoryInterface $repository
      * @param LoggerInterface $logger
      * @param int $maxUsernameLength
      * @param int $minPasswordLength
      */
     public function __construct(
-        private PDOUserRepository $repository,
+        private UserRepositoryInterface $repository,
         private LoggerInterface   $logger,
         private int               $maxUsernameLength,
         private int               $minPasswordLength

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Module\UseCase;
 
-use App\Infrastructure\Persistence\PDOModuleRepository;
+use App\Domain\Module\ModuleRepositoryInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetAllModulesUseCase
 {
     /**
-     * @param PDOModuleRepository $repository
+     * @param ModuleRepositoryInterface $repository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private PDOModuleRepository $repository,
+        private ModuleRepositoryInterface $repository,
         private LoggerInterface     $logger
     ) {}
 

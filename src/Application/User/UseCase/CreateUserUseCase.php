@@ -7,7 +7,7 @@ use App\Application\User\CreateUserDTO;
 use App\Domain\User\User;
 use App\Domain\User\ValueObject\Password;
 use App\Domain\User\ValueObject\Username;
-use App\Infrastructure\Persistence\PDOUserRepository;
+use App\Domain\User\UserRepositoryInterface;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 readonly class CreateUserUseCase
 {
     public function __construct(
-        private PDOUserRepository $repository,
+        private UserRepositoryInterface $repository,
         private LoggerInterface   $logger,
         private int               $maxUsernameLength = 255,
         private int               $minPasswordLength = 8
