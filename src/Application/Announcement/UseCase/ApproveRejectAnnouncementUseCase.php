@@ -8,7 +8,7 @@ use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Announcement\AnnouncementStatus;
 use App\Domain\Event\EventPublisher;
-use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use Psr\Log\LoggerInterface;
 

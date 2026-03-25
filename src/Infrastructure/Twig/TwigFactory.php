@@ -23,6 +23,8 @@ final class TwigFactory
         string $cachePath,
         bool $debug
     ): Environment {
+        $viewsPath = 'unknown';
+
         try {
             $viewsPath = $rootPath . '/' . self::TEMPLATES_DIR;
 
@@ -58,7 +60,7 @@ final class TwigFactory
             return $twig;
 
         } catch (Throwable $e) {
-            throw TwigException::initializationFailed($viewsPath ?? 'unknown', $e);
+            throw TwigException::initializationFailed($viewsPath, $e);
         }
     }
 }

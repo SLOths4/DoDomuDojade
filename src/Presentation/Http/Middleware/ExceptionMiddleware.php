@@ -158,7 +158,7 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
 
     private function resolveErrorCode(?Throwable $exception): string
     {
-        if ($exception instanceof DomainException || $exception instanceof AuthenticationException) {
+        if ($exception instanceof DomainException) {
             return $exception->errorCode;
         }
 

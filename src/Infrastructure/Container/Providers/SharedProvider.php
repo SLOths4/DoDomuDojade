@@ -22,7 +22,10 @@ use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
+use App\Domain\Countdown\CountdownBusinessValidator;
 use App\Domain\Countdown\CountdownRepositoryInterface;
+use App\Domain\Event\EventPublisher;
+use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
 use App\Domain\Quote\QuoteRepositoryInterface;
 use App\Domain\Weather\WeatherRepositoryInterface;
@@ -110,20 +113,20 @@ final class SharedProvider implements ServiceProviderInterface
         $c->set(WordApiService::class, fn(Container $c) => new WordApiService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->wordApiUrl));
         $c->set(CalendarService::class, fn(Container $c) => new CalendarService($c->get(LoggerInterface::class), $c->get(Config::class)->googleCalendarApiKey, $c->get(Config::class)->googleCalendarId));
 
-        $c->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCountdownUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class)));
-        $c->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class)));
+        $c->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
+        $c->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
         $c->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class)));
         $c->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class)));
         $c->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class)));
-        $c->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCountdownUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class)));
+        $c->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
 
         $c->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class)));
         $c->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class)));
         $c->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleVisibleUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class)));
-        $c->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class)));
-        $c->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class)));
+        $c->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(EventPublisher::class), $c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleBusinessValidator::class)));
+        $c->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase($c->get(EventPublisher::class), $c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleBusinessValidator::class)));
 
-        $c->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseCase($c->get(LoggerInterface::class), $c->get(QuoteApiService::class), $c->get(QuoteRepositoryInterface::class)));
+        $c->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseCase($c->get(LoggerInterface::class), $c->get(QuoteApiService::class), $c->get(EventPublisher::class), $c->get(QuoteRepositoryInterface::class)));
         $c->set(FetchWordUseCase::class, fn(Container $c) => new FetchWordUseCase($c->get(LoggerInterface::class), $c->get(WordApiService::class), $c->get(WordRepositoryInterface::class)));
 
         $c->set(CommandRegistry::class, function (Container $c) {

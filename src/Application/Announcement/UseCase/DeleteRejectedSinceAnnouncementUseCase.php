@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Announcement\UseCase;
 
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
+use App\Domain\Shared\InvalidDateTimeException;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 

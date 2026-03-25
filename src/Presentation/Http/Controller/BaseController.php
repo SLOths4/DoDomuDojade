@@ -3,14 +3,12 @@ namespace App\Presentation\Http\Controller;
 
 use App\Domain\User\UserException;
 use App\Presentation\Http\Context\RequestContext;
-use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @property ViewRendererInterface $renderer
- * @property FlashMessengerInterface $flash
  * @property RequestContext $requestContext
  */
 abstract class BaseController
@@ -21,10 +19,6 @@ abstract class BaseController
         protected  ViewRendererInterface $renderer,
     ) {}
 
-    protected function flash(string $key, string $message): void
-    {
-        $this->flash->flash($key, $message);
-    }
 
     /**
      * Redirect to URL

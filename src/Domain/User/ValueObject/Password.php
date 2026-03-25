@@ -8,7 +8,7 @@ use App\Domain\Shared\ValidationException;
 /**
  * Password value object
  */
-final readonly class Password
+final class Password
 {
     private string $hash;
 
