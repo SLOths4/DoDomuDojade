@@ -6006,6 +6006,36 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_getWord"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AactiveResponse\u0028\u0029",
+            "name": "activeResponse",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_activeResponse"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AinactiveResponse\u0028\u0029",
+            "name": "inactiveResponse",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_inactiveResponse"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AemptyResponse\u0028\u0029",
+            "name": "emptyResponse",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_emptyResponse"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AdisplayResponse\u0028\u0029",
+            "name": "displayResponse",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_displayResponse"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AisEmptyData\u0028\u0029",
+            "name": "isEmptyData",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_isEmptyData"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003AresolveRequestId\u0028\u0029",
+            "name": "resolveRequestId",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-DisplayController.html#method_resolveRequestId"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\DisplayController\u003A\u003A\u0024isModuleVisibleUseCase",
             "name": "isModuleVisibleUseCase",
             "summary": "",
