@@ -146,11 +146,11 @@
                         <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">Brak danych do wyświetlenia</p>
                     </div>
                 </template>
-                <template x-if="error">
-                    <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
+                <template x-if="error.length">
+                    <template x-for="(message, index) in error" :key="`error-${index}-${message}`">
                         <div class="bg-red-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
-                            <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="errors"></p>
+                            <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="message"></p>
                         </div>
                     </template>
                 </template>
@@ -389,6 +389,9 @@
             countdownData: null,
             countdownIntervalId: null,
             message: '',
+            pushError(msg) {
+                if (!this.error.includes(msg)) this.error.push(msg);
+            },
 
             endpoints: [
                 { name: 'countdown', url: '/display/countdown' },
@@ -411,16 +414,16 @@
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
-                            if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu ${name}`);
+                            if (!res.ok) this.pushError(`Błąd HTTP ${res.status} modułu ${name}`);
                             let json;
                             try {
                                 json = await res.json();
                             } catch (e) {
-                                this.error = (`Niepoprawny JSON ${this.names[name]}`);
+                                this.pushError(`Niepoprawny JSON ${this.names[name]}`);
                             }
 
-                            if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
-                                this.error.push(`Brak danych w module ${name}`);
+                            if (!json) {
+                                this.pushError(`Brak danych w module ${name}`);
                                 return [];
                             }
 
@@ -469,9 +472,7 @@
 
                             return [];
                         } catch(e) {
-                            if (!this.error.includes(`Błąd wyświetlania modułu ${name}`)) {
-                                this.error.push(`Błąd wyświetlania modułu ${name}`);
-                            }
+                            this.pushError(`Błąd wyświetlania modułu ${name}`);
                             return [];
                         }
                     });
@@ -483,9 +484,7 @@
                     this.startRotation();
 
                 } catch(e) {
-                    if (!this.error.push('Błąd działania modułu rotacji')) {
-                        this.error.push('Błąd działania modułu rotacji');
-                    }
+                    this.pushError('Błąd działania modułu rotacji');
                     this.loading = false;
                 }
                 setTimeout(() => this.load(), 40000);
