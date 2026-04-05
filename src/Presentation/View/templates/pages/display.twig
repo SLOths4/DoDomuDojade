@@ -34,6 +34,12 @@
                     <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="weather.error"></p>
                 </div>
             </template>
+            <template x-if="weather.inactive">
+                <div class="bg-slate-100 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-slate-400 rounded-lg items-center space-x-2 flex flex-grow w-full">
+                    <i class="fa-solid fa-power-off text-slate-500 p-2.5" aria-hidden="true"></i>
+                    <p class="text-slate-600 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="weather.inactive"></p>
+                </div>
+            </template>
             <template x-if="!weather.loading && !weather.error && weather.weather">
                 <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
                     <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${weather.tempColor}`"></i>
@@ -84,6 +90,12 @@
                 <div class="bg-red-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
                     <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
+                </div>
+            </template>
+            <template x-if="inactive">
+                <div class="bg-slate-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-slate-500 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-power-off text-slate-500 p-2.5"></i>
+                    <p class="text-slate-600 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="inactive"></p>
                 </div>
             </template>
             <template x-if="info">
@@ -154,6 +166,14 @@
                         </div>
                     </template>
                 </template>
+                <template x-if="inactive">
+                    <template x-for="(inactiveMsg, index) in inactive" :key="`inactive-${index}-${inactive}`">
+                        <div class="bg-slate-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-slate-500 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-power-off text-slate-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
+                            <p class="text-slate-600 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="inactiveMsg"></p>
+                        </div>
+                    </template>
+                </template>
                 <template x-if="info">
                     <template x-for="(infos, index) in info" :key="`info-${index}-${info}`">
                         <div class="bg-amber-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
@@ -164,7 +184,7 @@
                 </template>
             </div>
             <div x-data="announcements()" x-init="load()">
-                <div x-show="!error && !info" class="overflow-y-auto py-2">
+                <div x-show="!error && !info && !inactive" class="overflow-y-auto py-2">
                     <template x-if="loading">
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-mono font-extrabold">Ładowanie...</p>
                     </template>
@@ -197,11 +217,40 @@
                         <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
                     </div>
                 </template>
+                <template x-if="inactive">
+                    <div class="bg-slate-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-slate-500 rounded-lg flex items-center space-x-2">
+                        <i class="fa-solid fa-power-off text-slate-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
+                        <p class="text-slate-600 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="inactive"></p>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
 
     <script>
+        async function parseDisplayResponse(res) {
+            let json = null;
+            try {
+                json = await res.json();
+            } catch (e) {
+                return { status: 'error', data: null, message: 'Niepoprawny JSON' };
+            }
+
+            if (!res.ok) {
+                return {
+                    status: json?.status ?? 'error',
+                    data: json?.data ?? null,
+                    message: json?.message ?? `Błąd HTTP ${res.status}`,
+                };
+            }
+
+            return {
+                status: json?.status ?? 'error',
+                data: json?.data ?? null,
+                message: json?.message ?? null,
+            };
+        }
+
         function layout() {
             return {
                 gridHeight: 0,
@@ -244,6 +293,7 @@
             tempColor: '#000',
             error: null,
             info: null,
+            inactive: null,
             loading: true,
             setTempColor(t) {
                 this.tempColor = t <= -10 ? '#1E40AF' :
@@ -258,20 +308,25 @@
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu weather`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON');
-                    }
-                    if (json && typeof json.weather === 'object') {
-                        if (JSON.stringify(this.weather) !== JSON.stringify(json.weather)) {
-                            this.weather = json.weather;
+                    const response = await parseDisplayResponse(res);
+                    this.error = null;
+                    this.info = null;
+                    this.inactive = null;
+
+                    if (response.status === 'error') {
+                        this.error = response.message ?? 'Błąd wyświetlania modułu weather';
+                    } else if (response.status === 'inactive') {
+                        this.inactive = response.message ?? 'Moduł weather jest wyłączony';
+                    } else if (response.status === 'empty') {
+                        this.info = response.message ?? 'Brak dostępnych odczytów pogodowych';
+                        this.weather = null;
+                    } else if (response.status === 'active' && response.data && typeof response.data === 'object') {
+                        if (JSON.stringify(this.weather) !== JSON.stringify(response.data)) {
+                            this.weather = response.data;
                             if (!Number.isNaN(Number(this.weather.temperature))) this.setTempColor(this.weather.temperature);
                         }
                     } else {
-                        this.info = 'Brak dostępnych odczytów pogodowych';
+                        this.error = 'Nieznany status odpowiedzi modułu weather';
                     }
                 } catch (e) {
                     this.error = 'Błąd wyświetlania modułu weather';
@@ -288,6 +343,7 @@
             departures: [],
             error: null,
             info: null,
+            inactive: null,
             loading: true,
             count: {
                 '1': 'bg-pink-700',
@@ -316,20 +372,24 @@
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu departures`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON odjazdów');
-                    }
+                    const response = await parseDisplayResponse(res);
+                    this.error = null;
+                    this.info = null;
+                    this.inactive = null;
 
-                    if (json && Array.isArray(json.departures)) {
-                        if (JSON.stringify(this.departures) !== JSON.stringify(json.departures)) {
-                            this.departures = json.departures;
+                    if (response.status === 'active' && Array.isArray(response.data)) {
+                        if (JSON.stringify(this.departures) !== JSON.stringify(response.data)) {
+                            this.departures = response.data;
                         }
+                    } else if (response.status === 'empty') {
+                        this.departures = [];
+                        this.info = response.message ?? 'Brak dostępnych odjazdów';
+                    } else if (response.status === 'inactive') {
+                        this.departures = [];
+                        this.inactive = response.message ?? 'Moduł departures jest wyłączony';
                     } else {
-                        this.info = 'Brak dostępnych odjazdów';
+                        this.departures = [];
+                        this.error = response.message ?? 'Błąd działania modułu departures';
                     }
                 } catch (e) {
                     this.error = 'Błąd działania modułu departures';
@@ -385,6 +445,7 @@
             loading: true,
             error: [],
             info: [],
+            inactive: [],
             rotateId: null,
             countdownData: null,
             countdownIntervalId: null,
@@ -405,27 +466,43 @@
 
             async load() {
                 try {
+                    this.error = [];
+                    this.info = [];
+                    this.inactive = [];
+
                     const promises = this.endpoints.map(async ({name, url}) => {
                         try {
                             const res = await fetch(url, {
                                 method: 'GET',
                                 headers: { 'Content-Type': 'application/json' },
                             });
-                            if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu ${name}`);
-                            let json;
-                            try {
-                                json = await res.json();
-                            } catch (e) {
-                                this.error = (`Niepoprawny JSON ${this.names[name]}`);
-                            }
+                            const response = await parseDisplayResponse(res);
 
-                            if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
-                                this.error.push(`Brak danych w module ${name}`);
+                            if (response.status === 'error') {
+                                if (!this.error.includes(response.message ?? `Błąd wyświetlania modułu ${name}`)) {
+                                    this.error.push(response.message ?? `Błąd wyświetlania modułu ${name}`);
+                                }
                                 return [];
                             }
 
+                            if (response.status === 'inactive') {
+                                if (!this.inactive.includes(response.message ?? `Moduł ${this.names[name]} jest wyłączony`)) {
+                                    this.inactive.push(response.message ?? `Moduł ${this.names[name]} jest wyłączony`);
+                                }
+                                return [];
+                            }
+
+                            if (response.status === 'empty') {
+                                if (!this.info.includes(response.message ?? `Brak danych modułu ${name}`)) {
+                                    this.info.push(response.message ?? `Brak danych modułu ${name}`);
+                                }
+                                return [];
+                            }
+
+                            const payload = response.data;
+
                             if (name === 'events') {
-                                const events = json.events;
+                                const events = payload;
                                 if (!events || !Array.isArray(events)) {
                                     if (!this.info.includes('Brak dostępnych wydarzeń')) {
                                         this.info.push('Brak dostępnych wydarzeń');
@@ -438,33 +515,33 @@
                             }
 
                             if (name === 'countdown') {
-                                if (!json.countdown || !json.countdown.count_to) {
+                                if (!payload || !payload.count_to) {
                                     if (!this.info.includes('Brak dostępnego odliczania')) {
                                         this.info.push('Brak dostępnego odliczania');
                                     }
                                     return [];
                                 }
-                                return [{type: 'countdown', data: json.countdown}];
+                                return [{type: 'countdown', data: payload}];
                             }
 
                             if (name === 'word') {
-                                if (!json.word || !json.word.word) {
+                                if (!payload || !payload.word) {
                                     if (!this.info.includes('Brak dostępnego słowa dnia')) {
                                         this.info.push('Brak dostępnego słowa dnia');
                                     }
                                     return [];
                                 }
-                                return [{type: 'word', data: json.word}];
+                                return [{type: 'word', data: payload}];
                             }
 
                             if (name === 'quote') {
-                                if (!json.quote || !json.quote.from) {
+                                if (!payload || !payload.from) {
                                     if (!this.info.includes('Brak dostępnego cytatu')) {
                                         this.info.push('Brak dostępnego cytatu');
                                     }
                                     return [];
                                 }
-                                return [{type: 'quote', data: json.quote}];
+                                return [{type: 'quote', data: payload}];
                             }
 
                             return [];
@@ -558,6 +635,7 @@
             error: null,
             loading: true,
             info: null,
+            inactive: null,
             rotateIntervalId: null,
             async load() {
                 try {
@@ -565,23 +643,28 @@
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
                     });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu announcements`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON ogłoszeń');
-                    }
-                    if (json && Array.isArray(json.announcements)) {
-                        if (JSON.stringify(this.announcements) !== JSON.stringify(json.announcements)) {
-                            this.announcements = json.announcements;
+                    const response = await parseDisplayResponse(res);
+                    this.error = null;
+                    this.info = null;
+                    this.inactive = null;
+
+                    if (response.status === 'active' && Array.isArray(response.data)) {
+                        if (JSON.stringify(this.announcements) !== JSON.stringify(response.data)) {
+                            this.announcements = response.data;
                             this.loading = false;
                             this.grouped = this.chunk(this.announcements, 1);
                             if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
                             this.rotate();
                         }
+                    } else if (response.status === 'empty') {
+                        this.announcements = [];
+                        this.info = response.message ?? 'Brak dostępnych ogłoszeń';
+                    } else if (response.status === 'inactive') {
+                        this.announcements = [];
+                        this.inactive = response.message ?? 'Moduł announcements jest wyłączony';
                     } else {
-                            this.info = 'Brak dostępnych ogłoszeń';
+                        this.announcements = [];
+                        this.error = response.message ?? 'Błąd działania modułu announcements';
                     }
                 } catch (e) {
                     this.error = 'Błąd działania modułu announcements';

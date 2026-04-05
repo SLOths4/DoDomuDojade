@@ -15,6 +15,7 @@ use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use App\Presentation\View\TemplateNames;
 use Psr\Http\Message\ResponseInterface;
+use Random\RandomException;
 
 final class DisplayController extends BaseController
 {
@@ -42,126 +43,169 @@ final class DisplayController extends BaseController
     public function getDepartures(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::tram)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'departures' => null,
-            ]);
+            return $this->inactiveResponse('Moduł odjazdów jest wyłączony.');
         }
 
         $departures = $this->getDeparturesUseCase->execute($this->StopIDs);
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'departures' => $departures,
-        ]);
+        if ($this->isEmptyData($departures)) {
+            return $this->emptyResponse('Brak dostępnych odjazdów.');
+        }
+
+        return $this->activeResponse($departures);
     }
 
     public function getAnnouncements(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::announcement)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'announcements' => null,
-            ]);
+            return $this->inactiveResponse('Moduł ogłoszeń jest wyłączony.');
         }
 
         $announcements = $this->getDisplayAnnouncementsUseCase->execute();
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'announcements' => $announcements,
-        ]);
+        if ($this->isEmptyData($announcements)) {
+            return $this->emptyResponse('Brak dostępnych ogłoszeń.');
+        }
+
+        return $this->activeResponse($announcements);
     }
 
     public function getCountdown(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::countdown)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'countdown' => null,
-            ]);
+            return $this->inactiveResponse('Moduł odliczania jest wyłączony.');
         }
 
         $countdown = $this->getDisplayCountdownUseCase->execute();
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'countdown' => $countdown,
-        ]);
+        if ($this->isEmptyData($countdown)) {
+            return $this->emptyResponse('Brak dostępnego odliczania.');
+        }
+
+        return $this->activeResponse($countdown);
     }
 
     public function getWeather(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::weather)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'weather' => null,
-            ]);
+            return $this->inactiveResponse('Moduł pogody jest wyłączony.');
         }
 
         $weather = $this->getDisplayWeatherUseCase->execute();
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'weather' => $weather,
-        ]);
+        if ($this->isEmptyData($weather)) {
+            return $this->emptyResponse('Brak dostępnych odczytów pogodowych.');
+        }
+
+        return $this->activeResponse($weather);
     }
 
     public function getEvents(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::calendar)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'events' => null,
-            ]);
+            return $this->inactiveResponse('Moduł wydarzeń jest wyłączony.');
         }
 
         $eventsArray = $this->getDisplayEventsUseCase->execute();
 
-        if (!empty($eventsArray)) {
-            return $this->jsonResponse(200, [
-                'is_active' => true,
-                'events' => $eventsArray,
-            ]);
+        if ($this->isEmptyData($eventsArray)) {
+            return $this->emptyResponse('Brak dostępnych wydarzeń.');
         }
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'events' => null,
-        ]);
+        return $this->activeResponse($eventsArray);
     }
 
     public function getQuote(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::quote)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'quote' => null,
-            ]);
+            return $this->inactiveResponse('Moduł cytatu jest wyłączony.');
         }
 
         $quote = $this->getDisplayQuoteUseCase->execute();
 
-        return $this->jsonResponse(200, [
-            'is_active' => true,
-            'quote' => $quote,
-        ]);
+        if ($this->isEmptyData($quote)) {
+            return $this->emptyResponse('Brak dostępnego cytatu.');
+        }
+
+        return $this->activeResponse($quote);
     }
 
     public function getWord(): ResponseInterface
     {
         if (!$this->isModuleVisibleUseCase->execute(ModuleName::word)) {
-            return $this->jsonResponse(200, [
-                'is_active' => false,
-                'word' => null,
-            ]);
+            return $this->inactiveResponse('Moduł słowa dnia jest wyłączony.');
         }
 
         $word = $this->getDisplayWordUseCase->execute();
 
+        if ($this->isEmptyData($word)) {
+            return $this->emptyResponse('Brak dostępnego słowa dnia.');
+        }
+
+        return $this->activeResponse($word);
+    }
+
+    private function activeResponse(mixed $data, ?string $message = null): ResponseInterface
+    {
+        return $this->displayResponse('active', $data, $message);
+    }
+
+    private function inactiveResponse(string $message): ResponseInterface
+    {
+        return $this->displayResponse('inactive', null, $message);
+    }
+
+    private function emptyResponse(string $message): ResponseInterface
+    {
+        return $this->displayResponse('empty', null, $message);
+    }
+
+    private function displayResponse(string $status, mixed $data, ?string $message = null): ResponseInterface
+    {
+        $requestId = $this->resolveRequestId();
+
         return $this->jsonResponse(200, [
-            'is_active' => true,
-            'word' => $word,
+            'status' => $status,
+            'data' => $data,
+            'message' => $message,
+            'request_id' => $requestId,
+        ], [
+            'X-Request-Id' => $requestId,
         ]);
+    }
+
+    private function isEmptyData(mixed $data): bool
+    {
+        if ($data === null) {
+            return true;
+        }
+
+        if (is_array($data)) {
+            return $data === [];
+        }
+
+        if (is_string($data)) {
+            return trim($data) === '';
+        }
+
+        return false;
+    }
+
+    private function resolveRequestId(): string
+    {
+        $requestId = $this->requestContext->get('request_id');
+        if (is_string($requestId) && $requestId !== '') {
+            return $requestId;
+        }
+
+        try {
+            $generatedRequestId = bin2hex(random_bytes(8));
+        } catch (RandomException) {
+            $generatedRequestId = uniqid('', true);
+        }
+
+        $this->requestContext->set('request_id', $generatedRequestId);
+
+        return $generatedRequestId;
     }
 }

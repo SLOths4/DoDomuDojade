@@ -60,11 +60,13 @@ abstract class BaseController
     /**
      * JSON response helper
      */
-    protected function jsonResponse(int $statusCode, array $data): ResponseInterface
+    protected function jsonResponse(int $statusCode, array $data, array $headers = []): ResponseInterface
     {
+        $responseHeaders = array_merge(['Content-Type' => 'application/json'], $headers);
+
         return new Response(
             $statusCode,
-            ['Content-Type' => 'application/json'],
+            $responseHeaders,
             json_encode($data)
         );
     }
