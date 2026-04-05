@@ -28,22 +28,22 @@
                     <p class="font-extrabold text-center">Ładowanie...</p>
                 </div>
             </template>
-            <template x-if="weather.error">
+            <template x-if="weather.errorMessages.length">
                 <div class="bg-red-100 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg items-center space-x-2 flex flex-grow w-full">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5" aria-hidden="true"></i>
-                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="weather.error"></p>
+                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="weather.errorMessages[0]"></p>
                 </div>
             </template>
-            <template x-if="!weather.loading && !weather.error && weather.weather">
+            <template x-if="!weather.loading && !weather.errorMessages.length && weather.data">
                 <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
                     <i class="fa-solid fa-temperature-three-quarters" :style="`color: ${weather.tempColor}`"></i>
-                    <span x-text="`${weather.weather.temperature}°C`"></span>
+                    <span x-text="`${weather.data.temperature}°C`"></span>
                 </div>
             </template>
-            <template x-if="!weather.loading && !weather.error && weather.weather">
+            <template x-if="!weather.loading && !weather.errorMessages.length && weather.data">
                 <div class="flex items-center space-x-2 max-sm:text-sm max-md:text-base max-lg:text-lg max-xl:text-xl max-2xl:text-2xl text-3xl font-extrabold font-mono">
                     <i class="fa-solid fa-gauge text-primary-400"></i>
-                    <span x-text="`${weather.weather.pressure} hPa`"></span>
+                    <span x-text="`${weather.data.pressure} hPa`"></span>
                 </div>
             </template>
         </div>
@@ -54,7 +54,7 @@
             <div x-show="loading" class="bg-beige rounded-2xl m-2 p-2 shadow-custom font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center">
                 <p class="font-extrabold text-center">Ładowanie...</p>
             </div>
-            <div id="tramGrid" x-show="!loading && !error && departures.length">
+            <div id="tramGrid" x-show="!loading && !errorMessages.length && data.length">
                 <div class="grid grid-cols-4 w-full text-center">
                     <div class="pb-2 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-primary-400">
                         <i class="fa-solid fa-train-tram"></i> Linia
@@ -66,7 +66,7 @@
                         <i class="fa-solid fa-clock"></i> Odjazd
                     </div>
                 </div>
-                <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
+                <template x-for="(tram, index) in data" :key="`${tram.line}-${index}`">
                     <div class="demo grid grid-cols-4 w-full text-center">
                         <div class="py-2 border-t border-gray-200 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
                             <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-5 max-sm:w-5 max-md:h-6 max-md:w-6 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-5 max-sm:w-6 max-md:h-6 max-md:w-8 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 border' ]" class="font-bold inline-flex items-center justify-center"></div>
@@ -80,16 +80,16 @@
                     </div>
                 </template>
             </div>
-            <template x-if="error">
+            <template x-if="errorMessages.length">
                 <div class="bg-red-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-red-500 p-2.5"></i>
-                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
+                    <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="errorMessages[0]"></p>
                 </div>
             </template>
-            <template x-if="info">
+            <template x-if="infoMessages.length">
                 <div class="bg-amber-100 mt-3 mx-3 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1.5 max-md:p-2 p-2.5" aria-hidden="true"></i>
-                    <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
+                    <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="infoMessages[0]"></p>
                 </div>
             </template>
         </div>
@@ -101,8 +101,8 @@
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-mono font-extrabold text-gray-500">Ładowanie...</p>
                     </div>
                 </template>
-                <template x-if="!loading && modules.length">
-                    <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
+                <template x-if="!loading && data.length">
+                    <template x-for="(mod, index) in data" :key="`mod-${index}-${mod.type}`">
                         <div x-show="current2 === index" class="bg-beige rounded-2xl p-2 m-2 shadow-custom mb-4">
                             <template x-if="mod.type === 'countdown'">
                                 <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center" x-text="message"></p>
@@ -141,21 +141,21 @@
                         </div>
                     </template>
                 </template>
-                <template x-show="!loading && !modules.length">
+                <template x-show="!loading && !data.length">
                     <div class="bg-beige rounded-2xl p-4 m-2 shadow-custom">
                         <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">Brak danych do wyświetlenia</p>
                     </div>
                 </template>
-                <template x-if="error">
-                    <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
+                <template x-if="errorMessages.length">
+                    <template x-for="(errors, index) in errorMessages" :key="`error-${index}-${errors}`">
                         <div class="bg-red-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
                             <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="errors"></p>
                         </div>
                     </template>
                 </template>
-                <template x-if="info">
-                    <template x-for="(infos, index) in info" :key="`info-${index}-${info}`">
+                <template x-if="infoMessages.length">
+                    <template x-for="(infos, index) in infoMessages" :key="`info-${index}-${infos}`">
                         <div class="bg-amber-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
                             <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
                             <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="infos"></p>
@@ -164,11 +164,11 @@
                 </template>
             </div>
             <div x-data="announcements()" x-init="load()">
-                <div x-show="!error && !info" class="overflow-y-auto py-2">
+                <div x-show="!errorMessages.length && !infoMessages.length" class="overflow-y-auto py-2">
                     <template x-if="loading">
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-mono font-extrabold">Ładowanie...</p>
                     </template>
-                    <template x-if="!loading && announcements">
+                    <template x-if="!loading && data.length">
                         <template x-for="(group, index) in grouped" :key="index">
                             <div class="" x-show="current === index">
                                 <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
@@ -185,16 +185,16 @@
                         </template>
                     </template>
                 </div>
-                <template x-if="error">
+                <template x-if="errorMessages.length">
                     <div class="bg-red-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-red-500 rounded-lg flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-red-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
-                        <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="error"></p>
+                        <p class="text-red-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="errorMessages[0]"></p>
                     </div>
                 </template>
-                <template x-if="info">
+                <template x-if="infoMessages.length">
                     <div class="bg-amber-100 mt-2 mx-2 max-sm:hidden max-md:text-xs max-lg:text-sm text-base border border-yellow-500 rounded-lg flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-yellow-500 max-sm:p-1 max-md:p-1.5 p-2" aria-hidden="true"></i>
-                        <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="info"></p>
+                        <p class="text-yellow-500 max-md:text-[10px] max-lg:text-xs max-xl:text-sm text-base font-medium" x-text="infoMessages[0]"></p>
                     </div>
                 </template>
             </div>
@@ -202,6 +202,43 @@
     </div>
 
     <script>
+        async function fetchJsonModule(url, moduleName) {
+            try {
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (!res.ok) {
+                    return {
+                        ok: false,
+                        status: res.status,
+                        data: null,
+                        errorMessage: `Błąd HTTP ${res.status} modułu ${moduleName}`
+                    };
+                }
+
+                try {
+                    const data = await res.json();
+                    return { ok: true, status: res.status, data, errorMessage: null };
+                } catch (e) {
+                    return {
+                        ok: false,
+                        status: res.status,
+                        data: null,
+                        errorMessage: `Niepoprawny JSON modułu ${moduleName}`
+                    };
+                }
+            } catch (e) {
+                return {
+                    ok: false,
+                    status: null,
+                    data: null,
+                    errorMessage: `Błąd sieci modułu ${moduleName}`
+                };
+            }
+        }
+
         function layout() {
             return {
                 gridHeight: 0,
@@ -240,10 +277,10 @@
 
     function weather() {
         return {
-            weather: null,
+            data: null,
             tempColor: '#000',
-            error: null,
-            info: null,
+            errorMessages: [],
+            infoMessages: [],
             loading: true,
             setTempColor(t) {
                 this.tempColor = t <= -10 ? '#1E40AF' :
@@ -253,31 +290,30 @@
                 t <= 25 ? '#F97316' :'#DC2626';
             },
             async load() {
-                try {
-                    const res = await fetch('/display/weather', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu weather`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON');
-                    }
-                    if (json && typeof json.weather === 'object') {
-                        if (JSON.stringify(this.weather) !== JSON.stringify(json.weather)) {
-                            this.weather = json.weather;
-                            if (!Number.isNaN(Number(this.weather.temperature))) this.setTempColor(this.weather.temperature);
-                        }
-                    } else {
-                        this.info = 'Brak dostępnych odczytów pogodowych';
-                    }
-                } catch (e) {
-                    this.error = 'Błąd wyświetlania modułu weather';
-                } finally {
+                const result = await fetchJsonModule('/display/weather', 'weather');
+
+                if (!result.ok) {
+                    this.errorMessages = [result.errorMessage];
+                    this.infoMessages = [];
                     this.loading = false;
+                    setTimeout(() => this.load(), 60000);
+                    return;
                 }
+
+                this.errorMessages = [];
+                this.infoMessages = [];
+
+                if (result.data && typeof result.data.weather === 'object') {
+                    if (JSON.stringify(this.data) !== JSON.stringify(result.data.weather)) {
+                        this.data = result.data.weather;
+                        if (!Number.isNaN(Number(this.data.temperature))) this.setTempColor(this.data.temperature);
+                    }
+                } else {
+                    this.data = null;
+                    this.infoMessages = ['Brak dostępnych odczytów pogodowych'];
+                }
+
+                this.loading = false;
                 setTimeout(() => this.load(), 60000);
             }
         }
@@ -285,9 +321,9 @@
 
     function tramDepartures() {
         return {
-            departures: [],
-            error: null,
-            info: null,
+            data: [],
+            errorMessages: [],
+            infoMessages: [],
             loading: true,
             count: {
                 '1': 'bg-pink-700',
@@ -311,31 +347,28 @@
             },
 
             async fetchDepartures() {
-                try {
-                    const res = await fetch('/display/departure', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu departures`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON odjazdów');
-                    }
+                const result = await fetchJsonModule('/display/departure', 'departures');
 
-                    if (json && Array.isArray(json.departures)) {
-                        if (JSON.stringify(this.departures) !== JSON.stringify(json.departures)) {
-                            this.departures = json.departures;
-                        }
-                    } else {
-                        this.info = 'Brak dostępnych odjazdów';
-                    }
-                } catch (e) {
-                    this.error = 'Błąd działania modułu departures';
-                } finally {
+                if (!result.ok) {
+                    this.errorMessages = [result.errorMessage];
+                    this.infoMessages = [];
                     this.loading = false;
+                    return;
                 }
+
+                this.errorMessages = [];
+                this.infoMessages = [];
+
+                if (result.data && Array.isArray(result.data.departures)) {
+                    if (JSON.stringify(this.data) !== JSON.stringify(result.data.departures)) {
+                        this.data = result.data.departures;
+                    }
+                } else {
+                    this.data = [];
+                    this.infoMessages = ['Brak dostępnych odjazdów'];
+                }
+
+                this.loading = false;
             },
 
             formatMinutes(min) {
@@ -380,11 +413,11 @@
 
     function multiModuleRotator() {
         return {
-            modules: [],
+            data: [],
             current2: 0,
             loading: true,
-            error: [],
-            info: [],
+            errorMessages: [],
+            infoMessages: [],
             rotateId: null,
             countdownData: null,
             countdownIntervalId: null,
@@ -405,86 +438,73 @@
 
             async load() {
                 try {
+                    this.errorMessages = [];
+                    this.infoMessages = [];
                     const promises = this.endpoints.map(async ({name, url}) => {
-                        try {
-                            const res = await fetch(url, {
-                                method: 'GET',
-                                headers: { 'Content-Type': 'application/json' },
-                            });
-                            if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu ${name}`);
-                            let json;
-                            try {
-                                json = await res.json();
-                            } catch (e) {
-                                this.error = (`Niepoprawny JSON ${this.names[name]}`);
-                            }
-
-                            if (!json && !this.error.includes(`Brak danych w module ${name}`)) {
-                                this.error.push(`Brak danych w module ${name}`);
-                                return [];
-                            }
-
-                            if (name === 'events') {
-                                const events = json.events;
-                                if (!events || !Array.isArray(events)) {
-                                    if (!this.info.includes('Brak dostępnych wydarzeń')) {
-                                        this.info.push('Brak dostępnych wydarzeń');
-                                    }
-                                    return [];
-                                }
-                                return Array.isArray(events) ?
-                                    events.map(e => ({type: 'event', data: e})) :
-                                    [{type: 'event', data: events}];
-                            }
-
-                            if (name === 'countdown') {
-                                if (!json.countdown || !json.countdown.count_to) {
-                                    if (!this.info.includes('Brak dostępnego odliczania')) {
-                                        this.info.push('Brak dostępnego odliczania');
-                                    }
-                                    return [];
-                                }
-                                return [{type: 'countdown', data: json.countdown}];
-                            }
-
-                            if (name === 'word') {
-                                if (!json.word || !json.word.word) {
-                                    if (!this.info.includes('Brak dostępnego słowa dnia')) {
-                                        this.info.push('Brak dostępnego słowa dnia');
-                                    }
-                                    return [];
-                                }
-                                return [{type: 'word', data: json.word}];
-                            }
-
-                            if (name === 'quote') {
-                                if (!json.quote || !json.quote.from) {
-                                    if (!this.info.includes('Brak dostępnego cytatu')) {
-                                        this.info.push('Brak dostępnego cytatu');
-                                    }
-                                    return [];
-                                }
-                                return [{type: 'quote', data: json.quote}];
-                            }
-
-                            return [];
-                        } catch(e) {
-                            if (!this.error.includes(`Błąd wyświetlania modułu ${name}`)) {
-                                this.error.push(`Błąd wyświetlania modułu ${name}`);
+                        const result = await fetchJsonModule(url, name);
+                        if (!result.ok) {
+                            if (!this.errorMessages.includes(result.errorMessage)) {
+                                this.errorMessages.push(result.errorMessage);
                             }
                             return [];
                         }
+
+                        const json = result.data;
+                        if (!json) return [];
+
+                        if (name === 'events') {
+                            const events = json.events;
+                            if (!events || !Array.isArray(events)) {
+                                if (!this.infoMessages.includes('Brak dostępnych wydarzeń')) {
+                                    this.infoMessages.push('Brak dostępnych wydarzeń');
+                                }
+                                return [];
+                            }
+                            return events.map(e => ({type: 'event', data: e}));
+                        }
+
+                        if (name === 'countdown') {
+                            if (!json.countdown || !json.countdown.count_to) {
+                                if (!this.infoMessages.includes('Brak dostępnego odliczania')) {
+                                    this.infoMessages.push('Brak dostępnego odliczania');
+                                }
+                                return [];
+                            }
+                            return [{type: 'countdown', data: json.countdown}];
+                        }
+
+                        if (name === 'word') {
+                            if (!json.word || !json.word.word) {
+                                if (!this.infoMessages.includes('Brak dostępnego słowa dnia')) {
+                                    this.infoMessages.push('Brak dostępnego słowa dnia');
+                                }
+                                return [];
+                            }
+                            return [{type: 'word', data: json.word}];
+                        }
+
+                        if (name === 'quote') {
+                            if (!json.quote || !json.quote.from) {
+                                if (!this.infoMessages.includes('Brak dostępnego cytatu')) {
+                                    this.infoMessages.push('Brak dostępnego cytatu');
+                                }
+                                return [];
+                            }
+                            return [{type: 'quote', data: json.quote}];
+                        }
+
+                        return [];
                     });
 
                     const results = await Promise.all(promises);
-                    this.modules = results.flat().filter(Boolean);
+                    this.data = results.flat().filter(Boolean);
                     this.updateCountdown();
                     this.loading = false;
                     this.startRotation();
 
                 } catch(e) {
-                    if (!this.error.push('Błąd działania modułu rotacji')) {
-                        this.error.push('Błąd działania modułu rotacji');
+                    if (!this.errorMessages.includes('Błąd działania modułu rotacji')) {
+                        this.errorMessages.push('Błąd działania modułu rotacji');
                     }
                     this.loading = false;
                 }
@@ -495,9 +515,9 @@
             startRotation() {
                 if (this.rotateId) clearInterval(this.rotateId);
                 this.current2 = 0;
-                if (this.modules.length > 1) {
+                if (this.data.length > 1) {
                     this.rotateId = setInterval(() => {
-                        this.current2 = (this.current2 + 1) % this.modules.length;
+                        this.current2 = (this.current2 + 1) % this.data.length;
                     }, 10000);
                 }
             },
@@ -505,7 +525,7 @@
             updateCountdown() {
                 if (this.countdownIntervalId) clearInterval(this.countdownIntervalId);
 
-                const countdownModule = this.modules.find(m => m.type === 'countdown');
+                const countdownModule = this.data.find(m => m.type === 'countdown');
                 if (!countdownModule?.data?.count_to) {
                     this.countdownData = null;
                     this.message = '';
@@ -552,43 +572,39 @@
 
     function announcements() {
         return {
-            announcements: [],
+            data: [],
             grouped: [],
             current: 0,
-            error: null,
+            errorMessages: [],
             loading: true,
-            info: null,
+            infoMessages: [],
             rotateIntervalId: null,
             async load() {
-                try {
-                    const res = await fetch('/display/announcement', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-                    if (!res.ok) this.error = (`Błąd HTTP ${res.status} modułu announcements`);
-                    let json;
-                    try {
-                        json = await res.json();
-                    } catch (e) {
-                        this.error = ('Niepoprawny JSON ogłoszeń');
-                    }
-                    if (json && Array.isArray(json.announcements)) {
-                        if (JSON.stringify(this.announcements) !== JSON.stringify(json.announcements)) {
-                            this.announcements = json.announcements;
-                            this.loading = false;
-                            this.grouped = this.chunk(this.announcements, 1);
-                            if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                            this.rotate();
-                        }
-                    } else {
-                            this.info = 'Brak dostępnych ogłoszeń';
-                    }
-                } catch (e) {
-                    this.error = 'Błąd działania modułu announcements';
+                this.errorMessages = [];
+                this.infoMessages = [];
+
+                const result = await fetchJsonModule('/display/announcement', 'announcements');
+                if (!result.ok) {
+                    this.errorMessages = [result.errorMessage];
                     if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
-                } finally {
                     this.loading = false;
+                    setTimeout(() => this.load(), 8000);
+                    return;
                 }
+
+                if (result.data && Array.isArray(result.data.announcements)) {
+                    if (JSON.stringify(this.data) !== JSON.stringify(result.data.announcements)) {
+                        this.data = result.data.announcements;
+                        this.grouped = this.chunk(this.data, 1);
+                        if (this.rotateIntervalId) clearInterval(this.rotateIntervalId);
+                        this.rotate();
+                    }
+                } else {
+                    this.data = [];
+                    this.infoMessages = ['Brak dostępnych ogłoszeń'];
+                }
+
+                this.loading = false;
                 setTimeout(() => this.load(), 8000);
             },
             chunk(arr, size) {
