@@ -111,11 +111,12 @@ final readonly class ExceptionMiddleware implements MiddlewareInterface
                 $statusCode,
                 ['Content-Type' => 'application/json', 'X-Request-Id' => $requestId],
                 json_encode([
-                    'error' => [
+                    'status' => 'error',
+                    'data' => [
                         'code' => $code,
-                        'message' => $message,
                         'context' => $context,
                     ],
+                    'message' => $message,
                     'request_id' => $requestId,
                 ])
             );
