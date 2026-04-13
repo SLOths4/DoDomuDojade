@@ -136,6 +136,17 @@ final readonly class Config
         try {
             $stopIdString = self::trimWrappingQuotes(self::optionalEnv('STOP_ID', ''));
 
+            self::assertMinMax(
+                self::intEnv('ANNOUNCEMENT_MIN_TITLE_LENGTH', 5),
+                self::intEnv('ANNOUNCEMENT_MAX_TITLE_LENGTH', 255),
+                'ANNOUNCEMENT_TITLE_LENGTH'
+            );
+            self::assertMinMax(
+                self::intEnv('ANNOUNCEMENT_MIN_TEXT_LENGTH', 10),
+                self::intEnv('ANNOUNCEMENT_MAX_TEXT_LENGTH', 65535),
+                'ANNOUNCEMENT_TEXT_LENGTH'
+            );
+
             return new self(
             // Logging
                 loggingDirectoryPath: self::requiredEnv('LOGGING_DIRECTORY_PATH'),
@@ -213,6 +224,16 @@ final readonly class Config
             throw $e;
         } catch (Throwable $e) {
             throw ConfigException::loadingFailed($e);
+        }
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    private static function assertMinMax(int $min, int $max, string $prefix): void
+    {
+        if ($min >= $max) {
+            throw ConfigException::invalidRange($prefix, $min, $max);
         }
     }
 

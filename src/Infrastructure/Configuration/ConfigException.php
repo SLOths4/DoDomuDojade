@@ -24,6 +24,22 @@ final class ConfigException extends InfrastructureException
     }
 
     /**
+     * Thrown when min >= max for a range variable pair
+     * @param string $prefix
+     * @param int $min
+     * @param int $max
+     * @return self
+     */
+    public static function invalidRange(string $prefix, int $min, int $max): self
+    {
+        return new self(
+            sprintf('Invalid range for %s: min (%d) must be less than max (%d)', $prefix, $min, $max),
+            'CONFIG_INVALID_RANGE',
+            500
+        );
+    }
+
+    /**
      * Thrown when unable to load config
      * @param Throwable $previous
      * @return self

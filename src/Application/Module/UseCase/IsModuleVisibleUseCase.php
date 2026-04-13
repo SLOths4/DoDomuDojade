@@ -42,16 +42,20 @@ readonly class IsModuleVisibleUseCase
         }
 
         if (!$module->isActive) {
-            $this->logger->debug('Module is not active', ['module_name' => $moduleName]);
+            $this->logger->info('Module is not active', ['module_name' => $moduleName]);
             return false;
         }
 
         $visible = ($module->startTime <= $now && $now <= $module->endTime);
 
-        $this->logger->debug('Module visibility evaluated', [
-            'module_name' => $moduleName,
-            'visible' => $visible,
-        ]);
+        if (!$visible) {
+            $this->logger->info('Module outside time window', [
+                'module_name' => $moduleName,
+                'start_time'  => $module->startTime->format('H:i:s'),
+                'end_time'    => $module->endTime->format('H:i:s'),
+                'now'         => $now->format('H:i:s'),
+            ]);
+        }
 
         return $visible;
     }

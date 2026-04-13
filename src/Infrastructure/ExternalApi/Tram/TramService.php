@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Infrastructure\ExternalApi\Tram;
 
@@ -92,10 +93,10 @@ readonly class TramService
             return $response['success'];
 
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('ZTM API transport error', ['stopId' => $stopId]);
+            $this->logger->error('ZTM API transport error', ['stopId' => $stopId, 'error' => $e->getMessage()]);
             throw TramApiException::transportError($e);
         } catch (DecodingExceptionInterface $e) {
-            $this->logger->error('ZTM API response decoding error', ['stopId' => $stopId]);
+            $this->logger->error('ZTM API response decoding error', ['stopId' => $stopId, 'error' => $e->getMessage()]);
             throw TramApiException::decodingError($e);
         } catch (Throwable $e) {
             if ($e instanceof TramApiException) {
@@ -135,10 +136,10 @@ readonly class TramService
             return $response['success'];
 
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('ZTM API transport error', ['lat' => $lat, 'lon' => $lon]);
+            $this->logger->error('ZTM API transport error', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
             throw TramApiException::transportError($e);
         } catch (DecodingExceptionInterface $e) {
-            $this->logger->error('ZTM API response decoding error', ['lat' => $lat, 'lon' => $lon]);
+            $this->logger->error('ZTM API response decoding error', ['lat' => $lat, 'lon' => $lon, 'error' => $e->getMessage()]);
             throw TramApiException::decodingError($e);
         } catch (Throwable $e) {
             if ($e instanceof TramApiException) {

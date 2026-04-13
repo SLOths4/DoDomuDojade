@@ -27,12 +27,20 @@ readonly class GetDeparturesUseCase
      */
     public function execute(array $stopIds): array
     {
+        if (empty($stopIds)) {
+            $this->logger->warning("No stop IDs configured — check STOP_ID env var");
+            return [];
+        }
+
         $departures = [];
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (TramApiException) {
-                $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
+            } catch (TramApiException $e) {
+                $this->logger->warning("No departures found for stop", [
+                    'stopId' => $stopId,
+                    'reason' => $e->getMessage(),
+                ]);
                 continue;
             }
 
