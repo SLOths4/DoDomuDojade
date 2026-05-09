@@ -76,8 +76,9 @@ interface UserRepositoryInterface
      *
      * @param int $id The user ID
      * @param string $newPasswordHash The new password hash
+     * @param bool $mustChangePassword Whether user must change password on next login
      * @return bool True if update was successful, false otherwise
      * @throws Exception
      */
-    public function updatePassword(int $id, string $newPasswordHash): bool;
+    public function updatePassword(int $id, string $newPasswordHash, bool $mustChangePassword = false): bool;
 }

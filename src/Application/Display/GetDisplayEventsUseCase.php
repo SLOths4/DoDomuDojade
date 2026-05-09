@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Domain\Calendar\CalendarServiceInterface;
 use App\Infrastructure\ExternalApi\Calendar\CalendarApiException;
-use App\Infrastructure\ExternalApi\Calendar\CalendarService;
 use DateTime;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -15,11 +15,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetDisplayEventsUseCase
 {
     /**
-     * @param CalendarService $calendarService
+     * @param CalendarServiceInterface $calendarService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private CalendarService $calendarService,
+        private CalendarServiceInterface $calendarService,
         private LoggerInterface $logger
     ) {}
 
@@ -32,12 +32,12 @@ readonly class GetDisplayEventsUseCase
             $events = $this->calendarService->getEvents();
             $eventsArray = [];
 
-            foreach ($events->getItems() as $event) {
+            foreach ($events as $event) {
                 $eventsArray[] = [
-                    'summary' => $event->getSummary(),
-                    'description' => $event->getDescription(),
-                    'start' => new DateTime($event->getStart()->dateTime)->format('d.m.Y H:i'),
-                    'end' => new DateTime($event->getEnd()->dateTime)->format('H:i'),
+                    'summary' => $event->summary,
+                    'description' => $event->description,
+                    'start' => $event->start,
+                    'end' => $event->end,
                 ];
             }
 

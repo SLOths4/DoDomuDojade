@@ -57,6 +57,7 @@ try {
         $r->addRoute('GET', '/display', [DisplayController::class, 'index']);
         $r->addRoute('GET', '/panel', [PanelController::class, 'index', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/login', [LoginController::class, 'show']);
+        $r->addRoute('GET', '/change-password', [LoginController::class, 'showChangePassword', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/logout', [LoginController::class, 'logout']);
 
         // 2. Trasy panelu administracyjnego
@@ -66,6 +67,7 @@ try {
         $r->addRoute('POST', '/api/user', [UserController::class, 'add', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('DELETE', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'delete', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('PATCH', '/api/user/{id:[a-z0-9_.]+}', [UserController::class, 'update', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('POST', '/api/user/self/change-password', [UserController::class, 'changePassword', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('POST', '/api/user/{id:[a-z0-9_.]+}/change-password', [UserController::class, 'changePassword', 'middleware' => [AuthMiddleware::class]]);
 
         // 2.2. Akcje ogłoszeń
@@ -92,6 +94,7 @@ try {
 
         // 2.5. Wyświetlenie stron panelu
         $r->addRoute('GET', '/panel/users', [PanelController::class, 'users', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/panel/profile', [PanelController::class, 'profile', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/countdowns', [PanelController::class, 'countdowns', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/announcements', [PanelController::class, 'announcements', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules', 'middleware' => [AuthMiddleware::class]]);

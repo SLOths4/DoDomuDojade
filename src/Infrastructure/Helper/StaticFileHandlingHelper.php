@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Helper;
 
+use Uri\Rfc3986\Uri;
+
 /**
  * Helper for serving static files
  */
@@ -29,7 +31,7 @@ final class StaticFileHandlingHelper
      */
     public function serve(string $uriPath): bool
     {
-        $uriPath = rawurldecode(parse_url($uriPath, PHP_URL_PATH) ?: '/');
+        $uriPath = rawurldecode((new Uri($uriPath))->getPath() ?: '/');
 
         if ($uriPath === '/') {
             return false;

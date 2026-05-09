@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Infrastructure\ExternalApi\Weather;
+use App\Domain\Weather\WeatherServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -13,7 +14,7 @@ use Throwable;
 /**
  * Used to interact with IMGW API and airly API
  */
-readonly class WeatherService
+readonly class WeatherService implements WeatherServiceInterface
 {
     public function __construct(
         private LoggerInterface $logger,

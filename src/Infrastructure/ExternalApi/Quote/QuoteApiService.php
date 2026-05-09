@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\ExternalApi\Quote;
 
+use App\Domain\Quote\QuoteApiInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -14,7 +15,7 @@ use Throwable;
 /**
  * Used to interact with quotes API
  */
-readonly class QuoteApiService
+readonly class QuoteApiService implements QuoteApiInterface
 {
     public function __construct(
         private LoggerInterface $logger,

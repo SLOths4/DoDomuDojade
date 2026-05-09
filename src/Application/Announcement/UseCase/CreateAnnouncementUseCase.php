@@ -8,8 +8,6 @@ use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Event\EventPublisher;
-use App\Infrastructure\Helper\AnnouncementValidationHelper;
-use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use DateMalformedStringException;

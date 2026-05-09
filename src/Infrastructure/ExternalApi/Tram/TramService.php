@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\ExternalApi\Tram;
 
+use App\Domain\Transport\TramServiceInterface;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -17,7 +18,7 @@ use Throwable;
  *
  * @author Franciszek Kruszewski <franciszek@kruszew.ski>
  */
-readonly class TramService
+readonly class TramService implements TramServiceInterface
 {
     public function __construct(
         private LoggerInterface $logger,

@@ -48,35 +48,58 @@
         </li>
     </ul>
 
-    {# Profile Dropdown #}
-    <div id="profile" class="absolute right-0 z-10 max-w-md origin-top-right bg-white dark:bg-gray-800 flex items-center rounded-2xl mr-2">
-        <div id="profile-picture" class="rounded-md max-w-min max-h-min px-2">
-            <i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i>
-        </div>
-        <div x-data="{ open: false }" @click.outside="open = false">
-            <div class="mx-2 pr-2">
-                <button @click="open = !open" type="button" class="items-center justify-center w-full rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200" id="menu-button" aria-expanded="true" aria-haspopup="true">
-                    {{ user ? user.username : 'Gościu' }}
-                </button>
-            </div>
-            <div x-show="open"
-                 x-transition:enter="transition ease-out duration-100"
-                 x-transition:enter-start="transform opacity-0 scale-95"
-                 x-transition:enter-end="transform opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-75"
-                 x-transition:leave-start="transform opacity-100 scale-100"
-                 x-transition:leave-end="transform opacity-0 scale-95"
-                 class="flex justify-center origin-top-right absolute right-0 mt-4 w-full rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                <div class="py-3" role="none">
-                    <form action="/logout" method="post" class="mx-2">
-                        <input type="hidden" name="_token" value="{{ csrf.token }}">
-                        <button type="submit" class="bg-primary-200 px-2 rounded-lg text-gray-800 text-sm hover:bg-primary-400 hover:text-gray-900 dark:text-white">
-                            <i class="fa-solid fa-right-from-bracket"></i> Wyloguj się
-                        </button>
-                    </form>
+    {# Profile and Logout #}
+    <div class="absolute right-0 z-10 flex items-center mr-4 space-x-2">
+        {# Profile Dropdown #}
+        <div id="profile" class="relative flex items-center bg-white dark:bg-gray-800 rounded-2xl p-1">
+            <div x-data="{ open: false }" @click.outside="open = false" class="flex items-center">
+                <a href="/panel/profile" id="profile-picture" class="rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 p-1 transition-colors">
+                    <i class="fa-solid fa-circle-user fa-2xl dark:text-white"></i>
+                </a>
+                
+                <div class="mx-1">
+                    <button @click="open = !open" type="button" class="flex items-center justify-center rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200 transition-colors" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                        {{ user ? user.username : 'Gościu' }}
+                        <svg class="ml-1 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="origin-top-right absolute right-0 top-full mt-2 w-48 rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800 shadow-xl z-50" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                    <div class="py-2 px-2" role="none">
+                        <a href="/panel/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
+                            <i class="fa-solid fa-user mr-2"></i> Twój profil
+                        </a>
+                        <a href="/change-password" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
+                            <i class="fa-solid fa-key mr-2"></i> Zmień hasło
+                        </a>
+                        <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+                        <form action="/logout" method="post" class="w-full">
+                            <input type="hidden" name="_token" value="{{ csrf.token }}">
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" role="menuitem">
+                                <i class="fa-solid fa-right-from-bracket mr-2"></i> Wyloguj się
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {# Quick Logout Icon #}
+        <form action="/logout" method="post" class="flex items-center">
+            <input type="hidden" name="_token" value="{{ csrf.token }}">
+            <button type="submit" title="Wyloguj się" class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
+                <i class="fa-solid fa-power-off fa-xl"></i>
+            </button>
+        </form>
     </div>
 </div>
 

@@ -48,10 +48,14 @@ final class LoginController extends BaseController
 
         $user = $this->authenticateUserUseCase->execute($dto);
 
+        $serverParams = $this->request->getServerParams();
+        $remoteAddr = (string)($serverParams['REMOTE_ADDR'] ?? '');
+        $userAgent = $this->request->getHeaderLine('User-Agent');
+
         $this->logger->debug("Correct password for given username.");
         SessionHelper::start();
         SessionHelper::regenerateId();
-        SessionHelper::setWithFingerprint('user_id', $user->id);
+        SessionHelper::setWithFingerprint('user_id', $user->id, $remoteAddr, $userAgent);
         $this->logger->debug("Redirecting shortly to panel.");
 
         return $this->jsonResponse(200, [
@@ -65,6 +69,12 @@ final class LoginController extends BaseController
         $this->logger->debug("User logout requested.");
         SessionHelper::destroy();
         return $this->redirect("/login");
+    }
+
+    public function showChangePassword(): ResponseInterface
+    {
+        $this->logger->debug("Render change password page request received");
+        return $this->render(TemplateNames::CHANGE_PASSWORD->value);
     }
 
 }

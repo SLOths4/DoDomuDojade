@@ -8,8 +8,6 @@ use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
 use App\Domain\Event\EventPublisher;
-use App\Infrastructure\Helper\AnnouncementValidationHelper;
-use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use App\Domain\Announcement\AnnouncementBusinessValidator;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use DateMalformedStringException;
@@ -22,13 +20,14 @@ use Psr\Log\LoggerInterface;
 readonly class ProposeAnnouncementUseCase
 {
     /**
+     * @param EventPublisher $eventPublisher
+     * @param AnnouncementBusinessValidator $validator
      * @param AnnouncementRepositoryInterface $repository
-     * @param AnnouncementValidationHelper $validator
      * @param LoggerInterface $logger
      */
     public function __construct(
         private EventPublisher               $eventPublisher,
-        private AnnouncementValidationHelper $validator,
+        private AnnouncementBusinessValidator $validator,
         private AnnouncementRepositoryInterface    $repository,
         private LoggerInterface              $logger,
     ) {}

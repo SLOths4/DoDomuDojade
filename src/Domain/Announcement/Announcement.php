@@ -80,6 +80,7 @@ final class Announcement
      * Creates a new announcement <br>
      * Announcement is approved by default
      */
+    #[\NoDiscard]
     public static function create(
         string $title,
         string $text,
@@ -117,6 +118,7 @@ final class Announcement
      * Proposes a new announcement
      * @throws \DateMalformedStringException
      */
+    #[\NoDiscard]
     public static function proposeNew(
         string $title,
         string $text,
@@ -256,43 +258,5 @@ final class Announcement
     public function clearDomainEvents(): void
     {
         $this->events = [];
-    }
-
-    /**
-     * Serialize to array (for database storage)
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id?->getValue(),
-            'title' => $this->title,
-            'text' => $this->text,
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'validUntil' => $this->validUntil->format('Y-m-d H:i:s'),
-            'userId' => $this->userId,
-            'status' => $this->status->value,
-            'decidedAt' => $this->decidedAt?->format('Y-m-d H:i:s'),
-            'decidedBy' => $this->decidedBy,
-        ];
-    }
-
-    /**
-     * Hydrate from database array
-     * @param array<string, mixed> $data
-     */
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            id: $data['id'] ? new AnnouncementId($data['id']) : null,
-            title: $data['title'],
-            text: $data['text'],
-            createdAt: new DateTimeImmutable($data['created_at']),
-            validUntil: new DateTimeImmutable($data['valid_until']),
-            userId: $data['user_id'],
-            status: AnnouncementStatus::from($data['status']),
-            decidedAt: $data['decided_at'] ? new DateTimeImmutable($data['decided_at']) : null,
-            decidedBy: $data['decided_by'],
-        );
     }
 }

@@ -11,16 +11,17 @@ use PDO;
 
 readonly class PDOEventStoreRepository implements EventStoreRepositoryInterface
 {
+    private const string TABLE_NAME = 'event';
+
     public function __construct(
         private DatabaseService $dbHelper,
-        private string $tableName,
     ) {}
 
     public function append(DomainEvent $event): bool
     {
         $eventData = $event->toArray();
 
-        $query = "INSERT INTO {$this->tableName} (event_id, event_type, payload, occurred_at)\n"
+        $query = "INSERT INTO " . self::TABLE_NAME . " (event_id, event_type, payload, occurred_at)\n"
             . 'VALUES (:event_id, :event_type, :payload, :occurred_at) '
             . 'ON CONFLICT (event_id) DO NOTHING';
 

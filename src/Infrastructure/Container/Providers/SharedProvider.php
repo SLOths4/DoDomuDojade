@@ -22,14 +22,18 @@ use App\Console\Commands\AnnouncementRejectedDeleteCommand;
 use App\Console\Commands\QuoteFetchCommand;
 use App\Console\Commands\WordFetchCommand;
 use App\Console\Kernel;
+use App\Domain\Calendar\CalendarServiceInterface;
 use App\Domain\Countdown\CountdownBusinessValidator;
 use App\Domain\Countdown\CountdownRepositoryInterface;
 use App\Domain\Event\EventPublisher;
 use App\Domain\Event\EventStoreRepositoryInterface;
 use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
+use App\Domain\Quote\QuoteApiInterface;
 use App\Domain\Quote\QuoteRepositoryInterface;
+use App\Domain\Transport\TramServiceInterface;
 use App\Domain\Weather\WeatherRepositoryInterface;
+use App\Domain\Weather\WeatherServiceInterface;
 use App\Domain\Word\WordRepositoryInterface;
 use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
@@ -90,7 +94,7 @@ final class SharedProvider implements ServiceProviderInterface
         });
 
         $c->set(DatabaseService::class, fn(Container $c) => new DatabaseService($c->get(PDO::class), $c->get(LoggerInterface::class)));
-        $c->set(EventStoreRepositoryInterface::class, fn(Container $c) => new PDOEventStoreRepository($c->get(DatabaseService::class), 'events'));
+        $c->set(EventStoreRepositoryInterface::class, fn(Container $c) => new PDOEventStoreRepository($c->get(DatabaseService::class)));
         $c->set(EventPublisher::class, fn(Container $c) => new SyncEventPublisher($c->get(EventStoreRepositoryInterface::class), $c->get(LoggerInterface::class)));
 
         $c->set(Environment::class, function (Container $c): Environment {
@@ -106,32 +110,55 @@ final class SharedProvider implements ServiceProviderInterface
             $c->get(Translator::class),
         ));
 
-        $c->set(ModuleRepositoryInterface::class, fn(Container $c) => new PDOModuleRepository($c->get(DatabaseService::class), $c->get(Config::class)->moduleTableName, $c->get(Config::class)->moduleDateFormat));
-        $c->set(CountdownRepositoryInterface::class, fn(Container $c) => new PDOCountdownRepository($c->get(DatabaseService::class), $c->get(Config::class)->countdownTableName, $c->get(Config::class)->countdownDateFormat));
-        $c->set(QuoteRepositoryInterface::class, fn(Container $c) => new PDOQuoteRepository($c->get(DatabaseService::class), $c->get(Config::class)->quoteTableName, $c->get(Config::class)->quoteDateFormat));
-        $c->set(WordRepositoryInterface::class, fn(Container $c) => new PDOWordRepository($c->get(DatabaseService::class), $c->get(Config::class)->wordTableName, $c->get(Config::class)->wordDateFormat));
-        $c->set(WeatherRepositoryInterface::class, fn(Container $c) => new PDOWeatherRepository($c->get(DatabaseService::class), $c->get(Config::class)->weatherTableName, $c->get(Config::class)->weatherDateFormat));
+        $c->set(ModuleRepositoryInterface::class, fn(Container $c) => new PDOModuleRepository($c->get(DatabaseService::class), $c->get(Config::class)->moduleDateFormat));
+        $c->set(CountdownRepositoryInterface::class, fn(Container $c) => new PDOCountdownRepository($c->get(DatabaseService::class), $c->get(Config::class)->countdownDateFormat));
+        $c->set(QuoteRepositoryInterface::class, fn(Container $c) => new PDOQuoteRepository($c->get(DatabaseService::class), $c->get(Config::class)->quoteDateFormat));
+        $c->set(WordRepositoryInterface::class, fn(Container $c) => new PDOWordRepository($c->get(DatabaseService::class), $c->get(Config::class)->wordDateFormat));
+        $c->set(WeatherRepositoryInterface::class, fn(Container $c) => new PDOWeatherRepository($c->get(DatabaseService::class), $c->get(Config::class)->weatherDateFormat));
 
-        $c->set(TramService::class, fn(Container $c) => new TramService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->tramUrl));
-        $c->set(WeatherService::class, fn(Container $c) => new WeatherService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->imgwWeatherUrl, $c->get(Config::class)->airlyEndpoint, $c->get(Config::class)->airlyApiKey, $c->get(Config::class)->airlyLocationId));
-        $c->set(QuoteApiService::class, fn(Container $c) => new QuoteApiService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->quoteApiUrl));
+        $c->set(CountdownBusinessValidator::class, function (Container $c) {
+            $config = $c->get(Config::class);
+            return new CountdownBusinessValidator(
+                minTitleLength: $config->countdownMinTitleLength,
+                maxTitleLength: $config->countdownMaxTitleLength
+            );
+        });
+
+        $c->set(CountdownValidationHelper::class, fn(Container $c) => new CountdownValidationHelper(
+            $c->get(CountdownBusinessValidator::class)
+        ));
+
+        $c->set(ModuleBusinessValidator::class, fn() => new ModuleBusinessValidator());
+
+        $c->set(ModuleValidationHelper::class, fn(Container $c) => new ModuleValidationHelper(
+            $c->get(ModuleBusinessValidator::class)
+        ));
+
+        $c->set(TramServiceInterface::class, fn(Container $c) => new TramService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->tramUrl));
+        $c->set(WeatherServiceInterface::class, fn(Container $c) => new WeatherService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->imgwWeatherUrl, $c->get(Config::class)->airlyEndpoint, $c->get(Config::class)->airlyApiKey, $c->get(Config::class)->airlyLocationId));
+        $c->set(QuoteApiInterface::class, fn(Container $c) => new QuoteApiService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->quoteApiUrl));
+        $c->set(CalendarServiceInterface::class, fn(Container $c) => new CalendarService($c->get(LoggerInterface::class), $c->get(Config::class)->googleCalendarApiKey, $c->get(Config::class)->googleCalendarId));
+
+        $c->set(TramService::class, fn(Container $c) => $c->get(TramServiceInterface::class));
+        $c->set(WeatherService::class, fn(Container $c) => $c->get(WeatherServiceInterface::class));
+        $c->set(QuoteApiService::class, fn(Container $c) => $c->get(QuoteApiInterface::class));
+        $c->set(CalendarService::class, fn(Container $c) => $c->get(CalendarServiceInterface::class));
         $c->set(WordApiService::class, fn(Container $c) => new WordApiService($c->get(LoggerInterface::class), $c->get(HttpClientInterface::class), $c->get(Config::class)->wordApiUrl));
-        $c->set(CalendarService::class, fn(Container $c) => new CalendarService($c->get(LoggerInterface::class), $c->get(Config::class)->googleCalendarApiKey, $c->get(Config::class)->googleCalendarId));
 
         $c->set(CreateCountdownUseCase::class, fn(Container $c) => new CreateCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
         $c->set(DeleteCountdownUseCase::class, fn(Container $c) => new DeleteCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
         $c->set(GetAllCountdownsUseCase::class, fn(Container $c) => new GetAllCountdownsUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class)));
-        $c->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownValidationHelper::class)));
+        $c->set(GetCountdownByIdUseCase::class, fn(Container $c) => new GetCountdownByIdUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
         $c->set(GetCurrentCountdownUseCase::class, fn(Container $c) => new GetCurrentCountdownUseCase($c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class)));
         $c->set(UpdateCountdownUseCase::class, fn(Container $c) => new UpdateCountdownUseCase($c->get(EventPublisher::class), $c->get(CountdownRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(CountdownBusinessValidator::class)));
 
         $c->set(GetAllModulesUseCase::class, fn(Container $c) => new GetAllModulesUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class)));
-        $c->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleValidationHelper::class)));
+        $c->set(GetModuleByIdUseCase::class, fn(Container $c) => new GetModuleByIdUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleBusinessValidator::class)));
         $c->set(IsModuleVisibleUseCase::class, fn(Container $c) => new IsModuleVisibleUseCase($c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class)));
         $c->set(ToggleModuleUseCase::class, fn(Container $c) => new ToggleModuleUseCase($c->get(EventPublisher::class), $c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleBusinessValidator::class)));
         $c->set(UpdateModuleUseCase::class, fn(Container $c) => new UpdateModuleUseCase($c->get(EventPublisher::class), $c->get(ModuleRepositoryInterface::class), $c->get(LoggerInterface::class), $c->get(ModuleBusinessValidator::class)));
 
-        $c->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseCase($c->get(LoggerInterface::class), $c->get(QuoteApiService::class), $c->get(EventPublisher::class), $c->get(QuoteRepositoryInterface::class)));
+        $c->set(FetchQuoteUseCase::class, fn(Container $c) => new FetchQuoteUseCase($c->get(LoggerInterface::class), $c->get(QuoteApiInterface::class), $c->get(EventPublisher::class), $c->get(QuoteRepositoryInterface::class)));
         $c->set(FetchWordUseCase::class, fn(Container $c) => new FetchWordUseCase($c->get(LoggerInterface::class), $c->get(WordApiService::class), $c->get(WordRepositoryInterface::class)));
 
         $c->set(CommandRegistry::class, function (Container $c) {

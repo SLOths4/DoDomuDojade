@@ -16,9 +16,10 @@ use PDO;
  */
 readonly class PDOUserRepository implements UserRepositoryInterface
 {
+    private const TABLE_NAME = 'user';
+
     public function __construct(
         private DatabaseService $dbHelper,
-        private string          $TABLE_NAME,
         private string          $DATE_FORMAT,
     ) {}
 
@@ -34,7 +35,8 @@ readonly class PDOUserRepository implements UserRepositoryInterface
             (int)$row['id'],
             (string)$row['username'],
             (string)$row['password_hash'],
-            new DateTimeImmutable($row['created_at'])
+            new DateTimeImmutable($row['created_at']),
+            (bool)($row['must_change_password'] ?? false)
         );
     }
 
@@ -43,7 +45,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
      */
     public function findAll(): array
     {
-        $rows = $this->dbHelper->getAll("SELECT * FROM \"$this->TABLE_NAME\"");
+        $rows = $this->dbHelper->getAll("SELECT * FROM \"" . self::TABLE_NAME . "\"");
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
@@ -53,7 +55,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function findByExactUsername(string $username): ?User
     {
         $rows = $this->dbHelper->getAll(
-            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username = :username LIMIT 1",
+            "SELECT * FROM \"" . self::TABLE_NAME . "\" WHERE username = :username LIMIT 1",
             [':username' => [$username, PDO::PARAM_STR]]
         );
 
@@ -70,7 +72,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function findByUsernamePartial(string $username): array
     {
         $rows = $this->dbHelper->getAll(
-            "SELECT * FROM \"$this->TABLE_NAME\" WHERE username LIKE :username",
+            "SELECT * FROM \"" . self::TABLE_NAME . "\" WHERE username LIKE :username",
             [':username' => ["%$username%", PDO::PARAM_STR]]
         );
 
@@ -83,7 +85,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function findById(int $id): User
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM \"$this->TABLE_NAME\" WHERE id = :id",
+            "SELECT * FROM \"" . self::TABLE_NAME . "\" WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
 
@@ -104,11 +106,12 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function add(User $user): int
     {
         return $this->dbHelper->insert(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
-                'username'      => [$user->username, PDO::PARAM_STR],
-                'password_hash' => [$user->passwordHash, PDO::PARAM_STR],
-                'created_at'    => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
+                'username'             => [$user->username, PDO::PARAM_STR],
+                'password_hash'        => [$user->passwordHash, PDO::PARAM_STR],
+                'must_change_password' => [$user->mustChangePassword, PDO::PARAM_BOOL],
+                'created_at'           => [$user->createdAt->format($this->DATE_FORMAT), PDO::PARAM_STR],
             ]
         );
     }
@@ -119,10 +122,11 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function update(User $user): bool
     {
         $affected = $this->dbHelper->update(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
-                'username'      => [$user->username, PDO::PARAM_STR],
-                'password_hash' => [$user->passwordHash, PDO::PARAM_STR],
+                'username'             => [$user->username, PDO::PARAM_STR],
+                'password_hash'        => [$user->passwordHash, PDO::PARAM_STR],
+                'must_change_password' => [$user->mustChangePassword, PDO::PARAM_BOOL],
             ],
             [
                 'id' => [$user->id, PDO::PARAM_INT],
@@ -138,7 +142,7 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     public function delete(int $id): bool
     {
         $affected = $this->dbHelper->delete(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'id' => [$id, PDO::PARAM_INT],
             ]
@@ -150,12 +154,13 @@ readonly class PDOUserRepository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function updatePassword(int $id, string $newPasswordHash): bool
+    public function updatePassword(int $id, string $newPasswordHash, bool $mustChangePassword = false): bool
     {
         $affected = $this->dbHelper->update(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
-                'password_hash' => [$newPasswordHash, PDO::PARAM_STR],
+                'password_hash'        => [$newPasswordHash, PDO::PARAM_STR],
+                'must_change_password' => [$mustChangePassword, PDO::PARAM_BOOL],
             ],
             [
                 'id' => [$id, PDO::PARAM_INT],

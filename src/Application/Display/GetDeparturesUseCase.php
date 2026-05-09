@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Domain\Transport\TramServiceInterface;
 use App\Infrastructure\ExternalApi\Tram\TramApiException;
-use App\Infrastructure\ExternalApi\Tram\TramService;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetDeparturesUseCase
 {
     /**
-     * @param TramService $tramService
+     * @param TramServiceInterface $tramService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private TramService $tramService,
+        private TramServiceInterface $tramService,
         private LoggerInterface $logger
     ) {}
 

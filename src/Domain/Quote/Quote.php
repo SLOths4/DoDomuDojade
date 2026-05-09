@@ -14,10 +14,10 @@ class Quote
     private array $events = [];
 
     public function __construct(
-        public ?int $id,
-        public string $quote,
-        public string $author,
-        public DateTimeImmutable $fetchedOn
+        public private(set) ?int $id,
+        public readonly string $quote,
+        public readonly string $author,
+        public readonly DateTimeImmutable $fetchedOn
     ){}
 
     public function assignId(int $id): void

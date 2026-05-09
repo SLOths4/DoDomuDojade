@@ -14,10 +14,10 @@ use PDO;
  */
 readonly class PDOWordRepository implements WordRepositoryInterface
 {
+    private const string TABLE_NAME = 'word';
 
     public function __construct(
         private DatabaseService $dbHelper,
-        private string          $TABLE_NAME,
         private string          $DATE_FORMAT,
     ){}
 
@@ -44,7 +44,7 @@ readonly class PDOWordRepository implements WordRepositoryInterface
     public function add(Word $word): bool
     {
         $lastId = $this->dbHelper->insert(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'word'              => [$word->word, PDO::PARAM_STR],
                 'ipa'               => [$word->ipa, PDO::PARAM_STR],
@@ -63,7 +63,7 @@ readonly class PDOWordRepository implements WordRepositoryInterface
     {
         $date = date($this->DATE_FORMAT);
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE fetched_on = :fetched_on",
+            "SELECT * FROM " . self::TABLE_NAME . " WHERE fetched_on = :fetched_on",
             ['fetched_on' => [$date, PDO::PARAM_STR]]
         );
         return $row === null ? null : $this->mapRow($row);

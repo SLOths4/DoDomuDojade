@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Application\Display;
 
 use App\Domain\Weather\WeatherRepositoryInterface;
+use App\Domain\Weather\WeatherServiceInterface;
 use App\Domain\Weather\WeatherSnapshot;
-use App\Infrastructure\ExternalApi\Weather\WeatherService;
 use App\Infrastructure\ExternalApi\Weather\WeatherApiException;
 use App\Infrastructure\Database\DatabaseException;
 use DateTimeImmutable;
@@ -17,11 +17,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetDisplayWeatherUseCase
 {
     /**
-     * @param WeatherService $weatherService
+     * @param WeatherServiceInterface $weatherService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private WeatherService $weatherService,
+        private WeatherServiceInterface $weatherService,
         private WeatherRepositoryInterface $weatherRepository,
         private LoggerInterface $logger,
         private int $cacheTtlSeconds,

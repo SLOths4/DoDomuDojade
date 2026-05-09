@@ -4,33 +4,41 @@ namespace App\Infrastructure\Persistence;
 
 use App\Domain\Announcement\Announcement;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Announcement\AnnouncementRepositoryException;
 use App\Domain\Announcement\AnnouncementRepositoryInterface;
 use App\Domain\Announcement\AnnouncementStatus;
+use App\Infrastructure\Database\DatabaseException;
 use App\Infrastructure\Database\DatabaseService;
 use DateTimeImmutable;
-use Exception;
 use PDO;
+use Throwable;
 
 /**
  * @inheritDoc
  */
 readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterface
 {
+    private const TABLE_NAME = 'announcement';
+
     public function __construct(
-        private DatabaseService $dbHelper,
-        private string          $TABLE_NAME,
-        private string          $DATE_FORMAT,
+        private DatabaseService    $dbHelper,
+        private AnnouncementMapper $mapper,
+        private string             $DATE_FORMAT,
     ) {}
 
     /**
      * Maps database row to Announcement entity.
      * @param array $r
      * @return Announcement
-     * @throws Exception
+     * @throws AnnouncementRepositoryException
      */
     private function mapRow(array $r): Announcement
     {
-        return Announcement::fromArray($r);
+        try {
+            return $this->mapper->toEntity($r);
+        } catch (Throwable $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to map announcement row', $e);
+        }
     }
 
     /**
@@ -38,8 +46,12 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function findAll(): array
     {
-        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
-        return array_map(fn($row) => $this->mapRow($row), $rows);
+        try {
+            $rows = $this->dbHelper->getAll("SELECT * FROM " . self::TABLE_NAME);
+            return array_map(fn($row) => $this->mapRow($row), $rows);
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to fetch all announcements', $e);
+        }
     }
 
     /**
@@ -47,14 +59,18 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function findValid(): array
     {
-        $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE valid_until >= :date AND status = :status",
-            [
-                ':date' => [date($this->DATE_FORMAT), PDO::PARAM_STR],
-                ':status' => [AnnouncementStatus::APPROVED->value, PDO::PARAM_INT]
-            ]
-        );
-        return array_map(fn($row) => $this->mapRow($row), $rows);
+        try {
+            $rows = $this->dbHelper->getAll(
+                "SELECT * FROM " . self::TABLE_NAME . " WHERE valid_until >= :date AND status = :status",
+                [
+                    ':date' => [date($this->DATE_FORMAT), PDO::PARAM_STR],
+                    ':status' => [AnnouncementStatus::APPROVED->value, PDO::PARAM_INT]
+                ]
+            );
+            return array_map(fn($row) => $this->mapRow($row), $rows);
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to fetch valid announcements', $e);
+        }
     }
 
     /**
@@ -62,11 +78,15 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function findPending(): array
     {
-        $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE status = :status ORDER BY date DESC",
-            [':status' => [AnnouncementStatus::PENDING->value, PDO::PARAM_INT]]
-        );
-        return array_map(fn($row) => $this->mapRow($row), $rows);
+        try {
+            $rows = $this->dbHelper->getAll(
+                "SELECT * FROM " . self::TABLE_NAME . " WHERE status = :status ORDER BY date DESC",
+                [':status' => [AnnouncementStatus::PENDING->value, PDO::PARAM_INT]]
+            );
+            return array_map(fn($row) => $this->mapRow($row), $rows);
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to fetch pending announcements', $e);
+        }
     }
 
     /**
@@ -74,11 +94,15 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function findByTitle(string $title): array
     {
-        $rows = $this->dbHelper->getAll(
-            "SELECT * FROM $this->TABLE_NAME WHERE title LIKE :title",
-            [':title' => ["%$title%", PDO::PARAM_STR]]
-        );
-        return array_map(fn($row) => $this->mapRow($row), $rows);
+        try {
+            $rows = $this->dbHelper->getAll(
+                "SELECT * FROM " . self::TABLE_NAME . " WHERE title LIKE :title",
+                [':title' => ["%$title%", PDO::PARAM_STR]]
+            );
+            return array_map(fn($row) => $this->mapRow($row), $rows);
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to fetch announcements by title', $e);
+        }
     }
 
     /**
@@ -86,12 +110,16 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function findById(AnnouncementId $id): ?Announcement
     {
-        $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
-            [':id' => [$id, PDO::PARAM_STR]]
-        );
+        try {
+            $row = $this->dbHelper->getOne(
+                "SELECT * FROM " . self::TABLE_NAME . " WHERE id = :id",
+                [':id' => [$id, PDO::PARAM_STR]]
+            );
 
-        return $row ? $this->mapRow($row) : null;
+            return $row ? $this->mapRow($row) : null;
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::fetchFailed('Failed to fetch announcement by id', $e);
+        }
     }
 
     /**
@@ -99,28 +127,34 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function add(Announcement $announcement): AnnouncementId
     {
-        $lastId = $this->dbHelper->insert(
-            $this->TABLE_NAME,
-            [
-                'id'          => [$announcement->getId(), PDO::PARAM_STR],
-                'title'       => [$announcement->title, PDO::PARAM_STR],
-                'text'        => [$announcement->text, PDO::PARAM_STR],
-                'date'        => [$announcement->getCreatedAt()->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'status'      => [$announcement->status->name, PDO::PARAM_STR],
-                'user_id'     => [$announcement->getUserId(), PDO::PARAM_INT],
-                'decided_at'  => [
-                    $announcement->decidedAt?->format($this->DATE_FORMAT),
-                    $announcement->decidedAt === null ? PDO::PARAM_NULL : PDO::PARAM_STR
-                ],
-                'decided_by'  => [
-                    $announcement->decidedBy,
-                    $announcement->decidedBy === null ? PDO::PARAM_NULL : PDO::PARAM_INT
-                ],
-            ]
-        );
+        try {
+            $data = $this->mapper->toDatabase($announcement, $this->DATE_FORMAT);
 
-        return new AnnouncementId($lastId);
+            $lastId = $this->dbHelper->insert(
+                self::TABLE_NAME,
+                [
+                    'id'          => [$data['id'], PDO::PARAM_STR],
+                    'title'       => [$data['title'], PDO::PARAM_STR],
+                    'text'        => [$data['text'], PDO::PARAM_STR],
+                    'date'        => [$data['date'], PDO::PARAM_STR],
+                    'valid_until' => [$data['valid_until'], PDO::PARAM_STR],
+                    'status'      => [$data['status'], PDO::PARAM_STR],
+                    'user_id'     => [$data['user_id'], PDO::PARAM_INT],
+                    'decided_at'  => [
+                        $data['decided_at'],
+                        $data['decided_at'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+                    ],
+                    'decided_by'  => [
+                        $data['decided_by'],
+                        $data['decided_by'] === null ? PDO::PARAM_NULL : PDO::PARAM_INT
+                    ],
+                ]
+            );
+
+            return new AnnouncementId($lastId);
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::persistenceFailed('Failed to add announcement', $e);
+        }
     }
 
     /**
@@ -128,20 +162,26 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function update(Announcement $announcement): int
     {
-        return $this->dbHelper->update(
-            $this->TABLE_NAME,
-            [
-                'title'       => [$announcement->title, PDO::PARAM_STR],
-                'text'        => [$announcement->text, PDO::PARAM_STR],
-                'valid_until' => [$announcement->validUntil->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'status'      => [$announcement->status->name, PDO::PARAM_STR],
-                'decided_at'  => [$announcement->decidedAt?->format($this->DATE_FORMAT), PDO::PARAM_STR],
-                'decided_by'  => [$announcement->decidedBy, PDO::PARAM_INT],
-            ],
-            [
-                'id' => [$announcement->getId(), PDO::PARAM_STR],
-            ]
-        );
+        try {
+            $data = $this->mapper->toDatabase($announcement, $this->DATE_FORMAT);
+
+            return $this->dbHelper->update(
+                self::TABLE_NAME,
+                [
+                    'title'       => [$data['title'], PDO::PARAM_STR],
+                    'text'        => [$data['text'], PDO::PARAM_STR],
+                    'valid_until' => [$data['valid_until'], PDO::PARAM_STR],
+                    'status'      => [$data['status'], PDO::PARAM_STR],
+                    'decided_at'  => [$data['decided_at'], PDO::PARAM_STR],
+                    'decided_by'  => [$data['decided_by'], PDO::PARAM_INT],
+                ],
+                [
+                    'id' => [$data['id'], PDO::PARAM_STR],
+                ]
+            );
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::persistenceFailed('Failed to update announcement', $e);
+        }
     }
 
     /**
@@ -149,14 +189,18 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function deleteRejectedOlderThan(DateTimeImmutable $date): int
     {
-        return $this->dbHelper->delete(
-            $this->TABLE_NAME,
-            [
-                'status' => [AnnouncementStatus::REJECTED->value, PDO::PARAM_INT],
-            ],
-            "decided_at < :date",
-            [':date' => [$date->format($this->DATE_FORMAT), PDO::PARAM_STR]]
-        );
+        try {
+            return $this->dbHelper->delete(
+                self::TABLE_NAME,
+                [
+                    'status' => [AnnouncementStatus::REJECTED->value, PDO::PARAM_INT],
+                ],
+                "decided_at < :date",
+                [':date' => [$date->format($this->DATE_FORMAT), PDO::PARAM_STR]]
+            );
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::persistenceFailed('Failed to delete rejected announcements', $e);
+        }
     }
 
     /**
@@ -164,11 +208,15 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
      */
     public function delete(AnnouncementId $id): int
     {
-        return $this->dbHelper->delete(
-            $this->TABLE_NAME,
-            [
-                'id' => [$id, PDO::PARAM_STR],
-            ]
-        );
+        try {
+            return $this->dbHelper->delete(
+                self::TABLE_NAME,
+                [
+                    'id' => [$id, PDO::PARAM_STR],
+                ]
+            );
+        } catch (DatabaseException $e) {
+            throw AnnouncementRepositoryException::persistenceFailed('Failed to delete announcement', $e);
+        }
     }
 }

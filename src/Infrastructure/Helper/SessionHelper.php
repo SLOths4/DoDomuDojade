@@ -18,20 +18,20 @@ final readonly class SessionHelper {
         session_regenerate_id($deleteOldSession);
     }
 
-    public static function validateFingerprint(): bool {
+    public static function validateFingerprint(string $remoteAddr, string $userAgent): bool {
         $storedIp = self::get('user_ip_hash');
         $storedAgent = self::get('user_agent_hash');
 
-        $currentIp = hash('sha256', $_SERVER['REMOTE_ADDR']);
-        $currentAgent = hash('sha256', $_SERVER['HTTP_USER_AGENT']);
+        $currentIp = hash('sha256', $remoteAddr);
+        $currentAgent = hash('sha256', $userAgent);
 
         return $storedIp === $currentIp && $storedAgent === $currentAgent;
     }
 
-    public static function setWithFingerprint(string $key, mixed $value): void {
+    public static function setWithFingerprint(string $key, mixed $value, string $remoteAddr, string $userAgent): void {
         self::set($key, $value);
-        self::set('user_ip_hash', hash('sha256', $_SERVER['REMOTE_ADDR']));
-        self::set('user_agent_hash', hash('sha256', $_SERVER['HTTP_USER_AGENT']));
+        self::set('user_ip_hash', hash('sha256', $remoteAddr));
+        self::set('user_agent_hash', hash('sha256', $userAgent));
     }
 
     public static function set(string $key, mixed $value): void {

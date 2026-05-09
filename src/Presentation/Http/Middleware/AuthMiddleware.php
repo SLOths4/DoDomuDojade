@@ -35,12 +35,26 @@ final readonly class AuthMiddleware implements MiddlewareInterface
      */
     public function handle(ServerRequestInterface $request, callable $next): ResponseInterface
     {
-        if (!$this->authService->isUserLoggedIn()) {
+        $serverParams = $request->getServerParams();
+        $remoteAddr = (string)($serverParams['REMOTE_ADDR'] ?? '');
+        $userAgent = $request->getHeaderLine('User-Agent');
+
+        if (!$this->authService->isUserLoggedIn($remoteAddr, $userAgent)) {
             return new Response(302, ['Location' => '/login']);
         }
 
         $user = $this->authService->getCurrentUser();
         $this->requestContext->setCurrentUser($user);
+
+        // Check if user must change password
+        $uri = $request->getUri()->getPath();
+        if ($user->mustChangePassword && 
+            $uri !== '/change-password' && 
+            !str_starts_with($uri, '/api/user') && 
+            $uri !== '/logout'
+        ) {
+            return new Response(302, ['Location' => '/change-password']);
+        }
 
         return $next($request);
     }

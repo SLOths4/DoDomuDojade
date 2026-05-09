@@ -14,9 +14,10 @@ use PDO;
  */
 readonly class PDOWeatherRepository implements WeatherRepositoryInterface
 {
+    private const string TABLE_NAME = 'weather';
+
     public function __construct(
         private DatabaseService $dbHelper,
-        private string $TABLE_NAME,
         private string $DATE_FORMAT,
     ) {}
 
@@ -52,7 +53,7 @@ readonly class PDOWeatherRepository implements WeatherRepositoryInterface
         }
 
         return $this->dbHelper->insert(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'payload' => [$payload, PDO::PARAM_STR],
                 'fetched_on' => [$snapshot->fetchedOn->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -66,7 +67,7 @@ readonly class PDOWeatherRepository implements WeatherRepositoryInterface
     public function fetchLatest(): ?WeatherSnapshot
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME ORDER BY fetched_on DESC LIMIT 1"
+            "SELECT * FROM " . self::TABLE_NAME . " ORDER BY fetched_on DESC LIMIT 1"
         );
 
         return $row === null ? null : $this->mapRow($row);

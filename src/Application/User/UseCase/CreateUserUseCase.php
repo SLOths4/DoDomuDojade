@@ -29,7 +29,7 @@ readonly class CreateUserUseCase
         $this->logger->info('Executing CreateUserUseCase');
 
         $username = new Username($dto->username, $this->maxUsernameLength);
-        $password = new Password($dto->password, $this->minPasswordLength);
+        $password = Password::create($dto->password, $this->minPasswordLength);
 
         if ($this->repository->findByExactUsername($username->value)) {
             $this->logger->warning('User already exists');

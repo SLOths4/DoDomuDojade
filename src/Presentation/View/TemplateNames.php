@@ -15,6 +15,8 @@ enum TemplateNames: string
     case HOME = 'pages/index';
     case LOGIN = 'pages/login';
     case USERS = 'pages/user';
+    case PROFILE = 'pages/profile';
+    case CHANGE_PASSWORD = 'pages/change-password';
     case ANNOUNCEMENTS = 'pages/announcement';
     case COUNTDOWNS = 'pages/countdown';
     case MODULES = 'pages/module';
