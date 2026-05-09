@@ -1826,16 +1826,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Announcement-Announcement.html#method_clearDomainEvents"
         },                {
-            "fqsen": "\\App\\Domain\\Announcement\\Announcement\u003A\u003AtoArray\u0028\u0029",
-            "name": "toArray",
-            "summary": "Serialize\u0020to\u0020array\u0020\u0028for\u0020database\u0020storage\u0029",
-            "url": "classes/App-Domain-Announcement-Announcement.html#method_toArray"
-        },                {
-            "fqsen": "\\App\\Domain\\Announcement\\Announcement\u003A\u003AfromArray\u0028\u0029",
-            "name": "fromArray",
-            "summary": "Hydrate\u0020from\u0020database\u0020array",
-            "url": "classes/App-Domain-Announcement-Announcement.html#method_fromArray"
-        },                {
             "fqsen": "\\App\\Domain\\Announcement\\Announcement\u003A\u003A\u0024events",
             "name": "events",
             "summary": "",
@@ -2045,6 +2035,21 @@ Search.appendIndex(
             "name": "id",
             "summary": "",
             "url": "classes/App-Domain-Announcement-AnnouncementId.html#property_id"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementRepositoryException",
+            "name": "AnnouncementRepositoryException",
+            "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
+            "url": "classes/App-Domain-Announcement-AnnouncementRepositoryException.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementRepositoryException\u003A\u003ApersistenceFailed\u0028\u0029",
+            "name": "persistenceFailed",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementRepositoryException.html#method_persistenceFailed"
+        },                {
+            "fqsen": "\\App\\Domain\\Announcement\\AnnouncementRepositoryException\u003A\u003AfetchFailed\u0028\u0029",
+            "name": "fetchFailed",
+            "summary": "",
+            "url": "classes/App-Domain-Announcement-AnnouncementRepositoryException.html#method_fetchFailed"
         },                {
             "fqsen": "\\App\\Domain\\Announcement\\AnnouncementRepositoryInterface",
             "name": "AnnouncementRepositoryInterface",
@@ -2300,6 +2305,46 @@ Search.appendIndex(
             "name": "title",
             "summary": "",
             "url": "classes/App-Domain-Announcement-Event-AnnouncementUpdatedEvent.html#property_title"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent",
+            "name": "CalendarEvent",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html#method___construct"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent\u003A\u003A\u0024summary",
+            "name": "summary",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html#property_summary"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent\u003A\u003A\u0024description",
+            "name": "description",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html#property_description"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent\u003A\u003A\u0024start",
+            "name": "start",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html#property_start"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarEvent\u003A\u003A\u0024end",
+            "name": "end",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarEvent.html#property_end"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarServiceInterface",
+            "name": "CalendarServiceInterface",
+            "summary": "Interface\u0020for\u0020calendar\u0020services",
+            "url": "classes/App-Domain-Calendar-CalendarServiceInterface.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Calendar\\CalendarServiceInterface\u003A\u003AgetEvents\u0028\u0029",
+            "name": "getEvents",
+            "summary": "",
+            "url": "classes/App-Domain-Calendar-CalendarServiceInterface.html#method_getEvents"
         },                {
             "fqsen": "\\App\\Domain\\Countdown\\Countdown",
             "name": "Countdown",
@@ -2911,6 +2956,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-Quote-Quote.html#property_fetchedOn"
         },                {
+            "fqsen": "\\App\\Domain\\Quote\\QuoteApiInterface",
+            "name": "QuoteApiInterface",
+            "summary": "Interface\u0020for\u0020quote\u0020API\u0020services",
+            "url": "classes/App-Domain-Quote-QuoteApiInterface.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\QuoteApiInterface\u003A\u003AgetQuote\u0028\u0029",
+            "name": "getQuote",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-QuoteApiInterface.html#method_getQuote"
+        },                {
             "fqsen": "\\App\\Domain\\Quote\\QuoteCreatedEvent",
             "name": "QuoteCreatedEvent",
             "summary": "Describes\u0020a\u0020domain\u0020event",
@@ -2940,6 +2995,21 @@ Search.appendIndex(
             "name": "author",
             "summary": "",
             "url": "classes/App-Domain-Quote-QuoteCreatedEvent.html#property_author"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\QuoteRepositoryException",
+            "name": "QuoteRepositoryException",
+            "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
+            "url": "classes/App-Domain-Quote-QuoteRepositoryException.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\QuoteRepositoryException\u003A\u003ApersistenceFailed\u0028\u0029",
+            "name": "persistenceFailed",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-QuoteRepositoryException.html#method_persistenceFailed"
+        },                {
+            "fqsen": "\\App\\Domain\\Quote\\QuoteRepositoryException\u003A\u003AfetchFailed\u0028\u0029",
+            "name": "fetchFailed",
+            "summary": "",
+            "url": "classes/App-Domain-Quote-QuoteRepositoryException.html#method_fetchFailed"
         },                {
             "fqsen": "\\App\\Domain\\Quote\\QuoteRepositoryInterface",
             "name": "QuoteRepositoryInterface",
@@ -3531,6 +3601,36 @@ Search.appendIndex(
             "summary": "Data\u0020required\u0020for\u0020view\u0020is\u0020missing",
             "url": "classes/App-Domain-Shared-ViewException.html#method_missingData"
         },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface",
+            "name": "TramServiceInterface",
+            "summary": "Interface\u0020for\u0020tram\u0020data\u0020services",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface\u003A\u003AgetTimes\u0028\u0029",
+            "name": "getTimes",
+            "summary": "",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html#method_getTimes"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface\u003A\u003AgetStops\u0028\u0029",
+            "name": "getStops",
+            "summary": "",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html#method_getStops"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface\u003A\u003AgetLines\u0028\u0029",
+            "name": "getLines",
+            "summary": "",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html#method_getLines"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface\u003A\u003AgetRoutes\u0028\u0029",
+            "name": "getRoutes",
+            "summary": "",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html#method_getRoutes"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport\\TramServiceInterface\u003A\u003AgetMessageForBollard\u0028\u0029",
+            "name": "getMessageForBollard",
+            "summary": "",
+            "url": "classes/App-Domain-Transport-TramServiceInterface.html#method_getMessageForBollard"
+        },                {
             "fqsen": "\\App\\Domain\\User\\ForbiddenSelfDeleteException",
             "name": "ForbiddenSelfDeleteException",
             "summary": "Basic\u0020exception\u0020for\u0020domain\u0020errors",
@@ -3570,6 +3670,11 @@ Search.appendIndex(
             "name": "createdAt",
             "summary": "",
             "url": "classes/App-Domain-User-User.html#property_createdAt"
+        },                {
+            "fqsen": "\\App\\Domain\\User\\User\u003A\u003A\u0024mustChangePassword",
+            "name": "mustChangePassword",
+            "summary": "",
+            "url": "classes/App-Domain-User-User.html#property_mustChangePassword"
         },                {
             "fqsen": "\\App\\Domain\\User\\UserAlreadyExistsException",
             "name": "UserAlreadyExistsException",
@@ -3681,6 +3786,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Domain-User-ValueObject-Password.html#method___construct"
         },                {
+            "fqsen": "\\App\\Domain\\User\\ValueObject\\Password\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "",
+            "url": "classes/App-Domain-User-ValueObject-Password.html#method_create"
+        },                {
             "fqsen": "\\App\\Domain\\User\\ValueObject\\Password\u003A\u003AfromHash\u0028\u0029",
             "name": "fromHash",
             "summary": "",
@@ -3735,6 +3845,16 @@ Search.appendIndex(
             "name": "fetchLatest",
             "summary": "",
             "url": "classes/App-Domain-Weather-WeatherRepositoryInterface.html#method_fetchLatest"
+        },                {
+            "fqsen": "\\App\\Domain\\Weather\\WeatherServiceInterface",
+            "name": "WeatherServiceInterface",
+            "summary": "Interface\u0020for\u0020weather\u0020services",
+            "url": "classes/App-Domain-Weather-WeatherServiceInterface.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Weather\\WeatherServiceInterface\u003A\u003AgetWeather\u0028\u0029",
+            "name": "getWeather",
+            "summary": "",
+            "url": "classes/App-Domain-Weather-WeatherServiceInterface.html#method_getWeather"
         },                {
             "fqsen": "\\App\\Domain\\Weather\\WeatherSnapshot",
             "name": "WeatherSnapshot",
@@ -3921,11 +4041,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_airlyLocationId"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024weatherTableName",
-            "name": "weatherTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_weatherTableName"
-        },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024weatherDateFormat",
             "name": "weatherDateFormat",
             "summary": "",
@@ -3950,11 +4065,6 @@ Search.appendIndex(
             "name": "dbName",
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_dbName"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024announcementTableName",
-            "name": "announcementTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_announcementTableName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024announcementDateFormat",
             "name": "announcementDateFormat",
@@ -3991,11 +4101,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_announcementMinTextLength"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024countdownTableName",
-            "name": "countdownTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_countdownTableName"
-        },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024countdownDateFormat",
             "name": "countdownDateFormat",
             "summary": "",
@@ -4006,20 +4111,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_countdownMaxTitleLength"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024moduleTableName",
-            "name": "moduleTableName",
+            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024countdownMinTitleLength",
+            "name": "countdownMinTitleLength",
             "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_moduleTableName"
+            "url": "classes/App-Infrastructure-Configuration-Config.html#property_countdownMinTitleLength"
         },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024moduleDateFormat",
             "name": "moduleDateFormat",
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_moduleDateFormat"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024userTableName",
-            "name": "userTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_userTableName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024userDateFormat",
             "name": "userDateFormat",
@@ -4066,20 +4166,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_quoteDateFormat"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024quoteTableName",
-            "name": "quoteTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_quoteTableName"
-        },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024wordApiUrl",
             "name": "wordApiUrl",
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#property_wordApiUrl"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024wordTableName",
-            "name": "wordTableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Configuration-Config.html#property_wordTableName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003A\u0024wordDateFormat",
             "name": "wordDateFormat",
@@ -4991,6 +5081,21 @@ Search.appendIndex(
             "summary": "Resolves\u0020given\u0020log\u0020level\u0020string\u0020into\u0020valid\u0020level",
             "url": "classes/App-Infrastructure-Logger-LoggerFactory.html#method_resolveLogLevel"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\AnnouncementMapper",
+            "name": "AnnouncementMapper",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-AnnouncementMapper.html"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\AnnouncementMapper\u003A\u003AtoEntity\u0028\u0029",
+            "name": "toEntity",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-AnnouncementMapper.html#method_toEntity"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\AnnouncementMapper\u003A\u003AtoDatabase\u0028\u0029",
+            "name": "toDatabase",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-AnnouncementMapper.html#method_toDatabase"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository",
             "name": "PDOAnnouncementRepository",
             "summary": "",
@@ -5051,15 +5156,20 @@ Search.appendIndex(
             "summary": "Deletes\u0020an\u0020announcement\u0020with\u0020provided\u0020ID.",
             "url": "classes/App-Infrastructure-Persistence-PDOAnnouncementRepository.html#method_delete"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOAnnouncementRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOAnnouncementRepository.html#property_dbHelper"
         },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository\u003A\u003A\u0024mapper",
+            "name": "mapper",
             "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOAnnouncementRepository.html#property_TABLE_NAME"
+            "url": "classes/App-Infrastructure-Persistence-PDOAnnouncementRepository.html#property_mapper"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOAnnouncementRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5116,15 +5226,15 @@ Search.appendIndex(
             "summary": "Updates\u0020a\u0020specific\u0020field\u0020in\u0020a\u0020countdown.",
             "url": "classes/App-Infrastructure-Persistence-PDOCountdownRepository.html#method_updateField"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOCountdownRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOCountdownRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOCountdownRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOCountdownRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOCountdownRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOCountdownRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOCountdownRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5146,15 +5256,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#method_append"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOEventStoreRepository\u003A\u003A\u0024tableName",
-            "name": "tableName",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOEventStoreRepository.html#property_tableName"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository",
             "name": "PDOModuleRepository",
@@ -5191,6 +5301,11 @@ Search.appendIndex(
             "summary": "Finds\u0020a\u0020module\u0020by\u0020its\u0020name.",
             "url": "classes/App-Infrastructure-Persistence-PDOModuleRepository.html#method_findByName"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOModuleRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository\u003A\u003ADEFAULT_START_TIME",
             "name": "DEFAULT_START_TIME",
             "summary": "",
@@ -5205,11 +5320,6 @@ Search.appendIndex(
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOModuleRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOModuleRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOModuleRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5241,15 +5351,15 @@ Search.appendIndex(
             "summary": "Fetches\u0020the\u0020latest\u0020quote\u0020for\u0020today.",
             "url": "classes/App-Infrastructure-Persistence-PDOQuoteRepository.html#method_fetchLatestQuote"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOQuoteRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOQuoteRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOQuoteRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOQuoteRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOQuoteRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOQuoteRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOQuoteRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5311,15 +5421,15 @@ Search.appendIndex(
             "summary": "Updates\u0020user\u0020password\u0020hash.",
             "url": "classes/App-Infrastructure-Persistence-PDOUserRepository.html#method_updatePassword"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOUserRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOUserRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOUserRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOUserRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOUserRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOUserRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOUserRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5351,15 +5461,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOWeatherRepository.html#method_fetchLatest"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWeatherRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOWeatherRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWeatherRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOWeatherRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWeatherRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOWeatherRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWeatherRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -5391,15 +5501,15 @@ Search.appendIndex(
             "summary": "Fetches\u0020the\u0020latest\u0020word\u0020for\u0020today.",
             "url": "classes/App-Infrastructure-Persistence-PDOWordRepository.html#method_fetchLatestWord"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWordRepository\u003A\u003ATABLE_NAME",
+            "name": "TABLE_NAME",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Persistence-PDOWordRepository.html#constant_TABLE_NAME"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWordRepository\u003A\u003A\u0024dbHelper",
             "name": "dbHelper",
             "summary": "",
             "url": "classes/App-Infrastructure-Persistence-PDOWordRepository.html#property_dbHelper"
-        },                {
-            "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWordRepository\u003A\u003A\u0024TABLE_NAME",
-            "name": "TABLE_NAME",
-            "summary": "",
-            "url": "classes/App-Infrastructure-Persistence-PDOWordRepository.html#property_TABLE_NAME"
         },                {
             "fqsen": "\\App\\Infrastructure\\Persistence\\PDOWordRepository\u003A\u003A\u0024DATE_FORMAT",
             "name": "DATE_FORMAT",
@@ -6166,6 +6276,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Controller-LoginController.html#method_logout"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\LoginController\u003A\u003AshowChangePassword\u0028\u0029",
+            "name": "showChangePassword",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Controller-LoginController.html#method_showChangePassword"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\LoginController\u003A\u003A\u0024flash",
             "name": "flash",
             "summary": "",
@@ -6280,6 +6395,11 @@ Search.appendIndex(
             "name": "index",
             "summary": "Display\u0020the\u0020main\u0020admin\u0020panel\u0020page\u0020with\u0020overview",
             "url": "classes/App-Presentation-Http-Controller-PanelController.html#method_index"
+        },                {
+            "fqsen": "\\App\\Presentation\\Http\\Controller\\PanelController\u003A\u003Aprofile\u0028\u0029",
+            "name": "profile",
+            "summary": "Display\u0020profile\u0020page",
+            "url": "classes/App-Presentation-Http-Controller-PanelController.html#method_profile"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\PanelController\u003A\u003Aannouncements\u0028\u0029",
             "name": "announcements",
@@ -6621,6 +6741,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-Http-Middleware-CsrfMiddleware.html#property_requestContext"
         },                {
+            "fqsen": "\\App\\Presentation\\Http\\Middleware\\CsrfMiddleware\u003A\u003A\u0024logger",
+            "name": "logger",
+            "summary": "",
+            "url": "classes/App-Presentation-Http-Middleware-CsrfMiddleware.html#property_logger"
+        },                {
             "fqsen": "\\App\\Presentation\\Http\\Middleware\\ExceptionMiddleware",
             "name": "ExceptionMiddleware",
             "summary": "",
@@ -6901,6 +7026,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Presentation-View-TemplateNames.html#enumcase_USERS"
         },                {
+            "fqsen": "\\App\\Presentation\\View\\TemplateNames\u003A\u003APROFILE",
+            "name": "PROFILE",
+            "summary": "",
+            "url": "classes/App-Presentation-View-TemplateNames.html#enumcase_PROFILE"
+        },                {
+            "fqsen": "\\App\\Presentation\\View\\TemplateNames\u003A\u003ACHANGE_PASSWORD",
+            "name": "CHANGE_PASSWORD",
+            "summary": "",
+            "url": "classes/App-Presentation-View-TemplateNames.html#enumcase_CHANGE_PASSWORD"
+        },                {
             "fqsen": "\\App\\Presentation\\View\\TemplateNames\u003A\u003AANNOUNCEMENTS",
             "name": "ANNOUNCEMENTS",
             "summary": "",
@@ -7076,6 +7211,11 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/app-domain-announcement-event.html"
         },                {
+            "fqsen": "\\App\\Domain\\Calendar",
+            "name": "Calendar",
+            "summary": "",
+            "url": "namespaces/app-domain-calendar.html"
+        },                {
             "fqsen": "\\App\\Domain\\Countdown",
             "name": "Countdown",
             "summary": "",
@@ -7110,6 +7250,11 @@ Search.appendIndex(
             "name": "Shared",
             "summary": "",
             "url": "namespaces/app-domain-shared.html"
+        },                {
+            "fqsen": "\\App\\Domain\\Transport",
+            "name": "Transport",
+            "summary": "",
+            "url": "namespaces/app-domain-transport.html"
         },                {
             "fqsen": "\\App\\Domain\\User",
             "name": "User",

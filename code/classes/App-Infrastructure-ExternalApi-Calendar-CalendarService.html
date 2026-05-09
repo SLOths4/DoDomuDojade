@@ -125,6 +125,9 @@
                             </ul>
         </div>
     
+            <span class="phpdocumentor-element__implements">
+            implements
+                            <a href="classes/App-Domain-Calendar-CalendarServiceInterface.html"><abbr title="\App\Domain\Calendar\CalendarServiceInterface">CalendarServiceInterface</abbr></a>                    </span>
     
     </h2>
 
@@ -138,7 +141,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">17</span>
 
     </aside>
 
@@ -158,6 +161,13 @@
 
 
 
+    <h4 id="toc-interfaces">
+        Interfaces
+        <a href="classes/App-Infrastructure-ExternalApi-Calendar-CalendarService.html#toc-interfaces" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <dl class="phpdocumentor-table-of-contents">
+                    <dt class="phpdocumentor-table-of-contents__entry -interface"><a href="classes/App-Domain-Calendar-CalendarServiceInterface.html"><abbr title="\App\Domain\Calendar\CalendarServiceInterface">CalendarServiceInterface</abbr></a></dt><dd>Interface for calendar services</dd>    </dl>
 
 
 
@@ -205,7 +215,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/App-Infrastructure-ExternalApi-Calendar-CalendarService.html#method_getEvents">getEvents()</a>
     <span>
-                                &nbsp;: <abbr title="\Google\Service\Calendar\Events">Events</abbr>    </span>
+                                &nbsp;: array&lt;string|int, <a href="classes/App-Domain-Calendar-CalendarEvent.html"><abbr title="\App\Domain\Calendar\CalendarEvent">CalendarEvent</abbr></a>&gt;    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
@@ -250,7 +260,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">18</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
@@ -287,7 +297,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
     </aside>
 
@@ -324,7 +334,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
@@ -366,7 +376,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
@@ -424,14 +434,14 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">55</span>
+    <span class="phpdocumentor-element-found-in__line">61</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getEvents</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Google\Service\Calendar\Events">Events</abbr></span></code>
+                    <span class="phpdocumentor-signature__name">getEvents</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Domain-Calendar-CalendarEvent.html"><abbr title="\App\Domain\Calendar\CalendarEvent">CalendarEvent</abbr></a>&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -444,7 +454,7 @@
     
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\Google\Service\Calendar\Events">Events</abbr></span>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Domain-Calendar-CalendarEvent.html"><abbr title="\App\Domain\Calendar\CalendarEvent">CalendarEvent</abbr></a>&gt;</span>
             </section>
 
 </article>
@@ -462,7 +472,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">40</span>
 
     </aside>
 
@@ -510,7 +520,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php"><a href="files/src-infrastructure-externalapi-calendar-calendarservice.html"><abbr title="src/Infrastructure/ExternalApi/Calendar/CalendarService.php">CalendarService.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">22</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
