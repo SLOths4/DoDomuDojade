@@ -35,7 +35,7 @@
                     <table id="usersTable" class="w-full table-fixed border-collapse">
                         <thead class="bg-gray-200 dark:bg-gray-700">
                         <tr>
-                            <th class="px-4 py-2 border">Id</th>
+                            <th class="w-24 px-4 py-2 border">Id</th>
                             <th class="px-4 py-2 border">Nazwa użytkownika</th>
                             <th class="px-4 py-2 border">Akcje</th>
                         </tr>
@@ -43,7 +43,7 @@
                         <tbody>
                         {% for user in users %}
                             <tr>
-                                <td class="px-4 py-2 border">{{ user.id }}</td>
+                                <td class="w-24 px-4 py-2 border whitespace-nowrap">{{ user.id }}</td>
                                 <td class="px-4 py-2 border">{{ user.username }}</td>
                                 <td class="px-4 py-2 border space-x-2">
                                     <button type="button"
@@ -200,7 +200,7 @@
                         <table id="usersTable" class="w-full table-fixed border-collapse">
                             <thead class="bg-gray-200 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-2 border">Id</th>
+                                <th class="w-24 px-4 py-2 border">Id</th>
                                 <th class="px-4 py-2 border">Nazwa użytkownika</th>
                                 <th class="px-4 py-2 border">Akcje</th>
                             </tr>
@@ -208,7 +208,7 @@
                             <tbody>
                                 ${users.map(user => `
                                     <tr>
-                                        <td class="px-4 py-2 border">${user.id}</td>
+                                        <td class="w-24 px-4 py-2 border whitespace-nowrap">${user.id}</td>
                                         <td class="px-4 py-2 border">${escapeHtml(user.username)}</td>
                                         <td class="px-4 py-2 border space-x-2">
                                             <button type="button"
