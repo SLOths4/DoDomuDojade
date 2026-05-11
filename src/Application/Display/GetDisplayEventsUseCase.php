@@ -28,6 +28,8 @@ readonly class GetDisplayEventsUseCase
      */
     public function execute(): ?array
     {
+        $this->logger->debug('Fetching calendar events for display');
+
         try {
             $events = $this->calendarService->getEvents();
             $eventsArray = [];
@@ -40,6 +42,10 @@ readonly class GetDisplayEventsUseCase
                     'end' => $event->end,
                 ];
             }
+
+            $this->logger->debug('Calendar events fetched for display', [
+                'event_count' => count($eventsArray),
+            ]);
 
             return $eventsArray;
         } catch (CalendarApiException|Exception $e) {

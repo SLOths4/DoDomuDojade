@@ -27,12 +27,20 @@ readonly class GetDeparturesUseCase
      */
     public function execute(array $stopIds): array
     {
+        $this->logger->debug('Fetching departures for display', [
+            'stop_count' => count($stopIds),
+            'stop_ids' => $stopIds,
+        ]);
+
         $departures = [];
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (TramApiException) {
-                $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
+            } catch (TramApiException $e) {
+                $this->logger->warning('Failed to fetch departures for stop', [
+                    'stop_id' => $stopId,
+                    'error' => $e->getMessage(),
+                ]);
                 continue;
             }
 
@@ -47,6 +55,11 @@ readonly class GetDeparturesUseCase
         }
 
         usort($departures, static fn($a, $b) => $a['minutes'] <=> $b['minutes']);
+
+        $this->logger->debug('Departures fetched for display', [
+            'stop_count' => count($stopIds),
+            'departure_count' => count($departures),
+        ]);
 
         return $departures;
     }

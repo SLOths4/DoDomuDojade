@@ -32,6 +32,7 @@ readonly class GetDisplayWeatherUseCase
      */
     public function execute(): ?array
     {
+        $this->logger->debug('Fetching weather for display');
         $cached = $this->weatherRepository->fetchLatest();
 
         if ($cached !== null && !empty($cached->payload) && $this->isCacheFresh($cached->fetchedOn)) {
@@ -57,6 +58,7 @@ readonly class GetDisplayWeatherUseCase
         }
 
         if (empty($weatherData)) {
+            $this->logger->warning('Weather service returned empty payload');
             return null;
         }
 
