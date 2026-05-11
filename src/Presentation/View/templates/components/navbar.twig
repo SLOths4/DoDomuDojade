@@ -19,7 +19,7 @@
         <img class="m-2" src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></a>
     <a class="max-sm:hidden sm:max-md:hidden" href="/panel"><p class="font-extrabold dark:text-white pl-1 pr-2">DoDomuDojadę</p></a>
 
-    <ul class="flex m-0 p-0 z-10 list-none">
+    <ul class="flex m-0 p-0 z-10 list-none gap-1">
         {# Mobile hamburger #}
         <li>
             <a href="javascript:void(0)" onclick="openMenu()"
@@ -56,7 +56,7 @@
                 <div class="mx-1">
                     <button @click="open = !open" type="button" class="flex items-center justify-center rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200 transition-colors" id="menu-button" aria-expanded="true" aria-haspopup="true">
                         <span class="max-w-28 truncate">{{ user ? user.username : 'Gościu' }}</span>
-                        <svg class="ml-1 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <svg class="ml-1 h-4 w-4 fill-current transition-transform duration-200" :class="open ? 'rotate-0' : '-rotate-90'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                             <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                         </svg>
                         <i class="fa-solid fa-circle-user fa-xl ml-2"></i>
@@ -75,9 +75,6 @@
                         <a href="/panel/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
                             <i class="fa-solid fa-user mr-2"></i> Twój profil
                         </a>
-                        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
-                            <i class="fa-solid fa-address-card mr-2"></i> O mnie
-                        </a>
                         <a href="/change-password" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
                             <i class="fa-solid fa-key mr-2"></i> Zmień hasło
                         </a>
@@ -93,13 +90,6 @@
             </div>
         </div>
 
-        {# Quick Logout Icon #}
-        <form action="/logout" method="post" class="flex items-center">
-            <input type="hidden" name="_token" value="{{ csrf.token }}">
-            <button type="submit" title="Wyloguj się" class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">
-                <i class="fa-solid fa-right-from-bracket fa-xl"></i>
-            </button>
-        </form>
     </div>
 </div>
 
