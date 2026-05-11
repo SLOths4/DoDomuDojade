@@ -529,6 +529,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#przewodnik-dla-maintainerow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przewodnik dla maintainerów
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Przewodnik dla maintainerów">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checklista-przed-mergem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklista przed mergem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -937,6 +965,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#przewodnik-dla-maintainerow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przewodnik dla maintainerów
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Przewodnik dla maintainerów">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checklista-przed-mergem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklista przed mergem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1090,6 +1146,23 @@
 @hexer7</p>
 <hr />
 <p><strong>Masz pytania?</strong> Otwórz <a href="https://github.com/SLOths4/DoDomuDojade/issues">Issue</a> lub skontaktuj się z nami na <a href="mailto:sloths4@spolecznaczworka.pl">sloths4@spolecznaczworka.pl</a>.</p>
+<h2 id="przewodnik-dla-maintainerow">Przewodnik dla maintainerów</h2>
+<p>Najważniejsze miejsca w kodzie, które warto znać przy utrzymaniu projektu:</p>
+<ul>
+<li><strong>Routing HTTP</strong>: <code>public/index.php</code> (pełna lista tras + middleware per trasa).</li>
+<li><strong>Kontener DI</strong>: <code>src/Infrastructure/Container.php</code> oraz <code>src/Infrastructure/Container/Providers/</code>.</li>
+<li><strong>Use case-y aplikacyjne</strong>: <code>src/Application/</code>.</li>
+<li><strong>Widoki Twig</strong>: <code>src/Presentation/View/templates/</code>.</li>
+<li><strong>Komendy CLI</strong>: <code>src/Console/CommandRegistry.php</code> i <code>src/Console/Commands/</code>.</li>
+<li><strong>Konfiguracja i walidacja ENV</strong>: <code>src/Infrastructure/Configuration/Config.php</code>.</li>
+</ul>
+<h3 id="checklista-przed-mergem">Checklista przed mergem</h3>
+<ol>
+<li>Czy dokumentacja endpointów zgadza się z <code>public/index.php</code>?</li>
+<li>Czy zmiany w konfiguracji/env są odnotowane w README/docs?</li>
+<li>Czy zmiany w DB mają migrację i aktualny opis?</li>
+<li>Czy uruchomiono testy/lint adekwatne do zakresu zmian?</li>
+</ol>
 
 
 

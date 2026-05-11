@@ -618,6 +618,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#dodatkowe-trasy-zwiazane-z-panelem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dodatkowe trasy związane z panelem
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -951,6 +962,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#dodatkowe-trasy-zwiazane-z-panelem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dodatkowe trasy związane z panelem
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1063,7 +1085,7 @@
 2. Mapuje na <code>ModuleViewDTO</code> z tłumaczeniami
 3. Renderuje szablon <code>MODULES</code></p>
 <h2 id="dependency-injection-kontener">Dependency Injection (Kontener)</h2>
-<p>Instancja <code>PanelController</code> jest konfigurowana w <code>bootstrap/bootstrap.php</code>:</p>
+<p>Instancja <code>PanelController</code> jest konfigurowana przez providery kontenera w <code>src/Infrastructure/Container/Providers/</code> i składana w <code>src/Infrastructure/Container.php</code>:</p>
 <div class="language-php highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$container-&gt;set(PanelController::class, fn(Container $c) =&gt; new PanelController(</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    $c-&gt;get(RequestContext::class),</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">    $c-&gt;get(TwigRenderer::class),</span>
@@ -1104,8 +1126,12 @@
 <p>Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:</p>
 <h3 id="uzytkownicy">Użytkownicy</h3>
 <ul>
+<li><code>GET /api/user</code> — pobierz wszystkich użytkowników</li>
 <li><code>POST /api/user</code> — dodaj użytkownika</li>
+<li><code>PATCH /api/user/{id}</code> — edytuj użytkownika</li>
 <li><code>DELETE /api/user/{id}</code> — usuń użytkownika</li>
+<li><code>POST /api/user/self/change-password</code> — zmień własne hasło</li>
+<li><code>POST /api/user/{id}/change-password</code> — zmień hasło wskazanego użytkownika</li>
 </ul>
 <h3 id="ogoszenia">Ogłoszenia</h3>
 <ul>
@@ -1119,6 +1145,7 @@
 </ul>
 <h3 id="liczniki">Liczniki</h3>
 <ul>
+<li><code>GET /api/countdowns</code> — pobierz wszystkie liczniki</li>
 <li><code>POST /api/countdown</code> — dodaj licznik</li>
 <li><code>PATCH /api/countdown/{id}</code> — edytuj licznik</li>
 <li><code>DELETE /api/countdown/{id}</code> — usuń licznik</li>
@@ -1127,6 +1154,12 @@
 <ul>
 <li><code>PATCH /api/module/{id}</code> — edytuj moduł</li>
 <li><code>POST /api/module/{id}/toggle</code> — włącz/wyłącz moduł</li>
+</ul>
+<h2 id="dodatkowe-trasy-zwiazane-z-panelem">Dodatkowe trasy związane z panelem</h2>
+<ul>
+<li><code>GET /panel/profile</code> oraz <code>GET /profile</code> — widok profilu użytkownika.</li>
+<li><code>GET /change-password</code> — formularz zmiany hasła (wymaga zalogowania).</li>
+<li><code>POST /api/authenticate</code> — logowanie użytkownika.</li>
 </ul>
 
 

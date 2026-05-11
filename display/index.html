@@ -707,7 +707,8 @@
 </tbody>
 </table>
 <blockquote>
-<p>Wszystkie endpoint-y Display zwracają spójny format z polem <code>is_active</code>, które mówi, czy dany moduł jest obecnie włączony</p>
+<p>Wszystkie endpoint-y Display zwracają pole <code>is_active</code>, które mówi, czy dany moduł jest obecnie włączony.
+Gdy moduł jest wyłączony lub nie ma danych, pole z payloadem (<code>departures</code>, <code>announcements</code>, <code>weather</code>, <code>countdown</code>, <code>events</code>, <code>quote</code>, <code>word</code>) może mieć wartość <code>null</code>.</p>
 </blockquote>
 <hr />
 <h2 id="display-api-endpoints">🏗️ Display API Endpoints</h2>
