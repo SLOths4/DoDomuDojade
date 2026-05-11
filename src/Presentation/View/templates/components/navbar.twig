@@ -19,7 +19,7 @@
         <img class="m-2" src="/assets/resources/logo_samo_kolor.png" alt="logo" width="40" height="40"></a>
     <a class="max-sm:hidden sm:max-md:hidden" href="/panel"><p class="font-extrabold dark:text-white pl-1 pr-2">DoDomuDojadę</p></a>
 
-    <ul class="flex m-0 p-0 z-10 list-none gap-1">
+    <ul class="flex m-0 p-0 z-10 list-none">
         {# Mobile hamburger #}
         <li>
             <a href="javascript:void(0)" onclick="openMenu()"
@@ -31,19 +31,19 @@
         </li>
 
         {# Desktop menu items #}
-        <li>
+        <li class="mr-1">
             <a href="/panel" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Panel</a>
         </li>
-        <li>
+        <li class="mr-1">
             <a href="/panel/announcements" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Ogłoszenia</a>
         </li>
-        <li>
+        <li class="mr-1">
             <a href="/panel/countdowns" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Odliczania</a>
         </li>
-        <li>
+        <li class="mr-1">
             <a href="/panel/users" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Użytkownicy</a>
         </li>
-        <li>
+        <li class="mr-1">
             <a href="/panel/modules" class="nav-link block max-sm:hidden sm:max-lg:hidden dark:text-white text-center px-4 py-3 bg-white hover:bg-beige dark:bg-gray-800 dark:hover:bg-gray-900 rounded-2xl">Moduły</a>
         </li>
     </ul>
@@ -56,7 +56,7 @@
                 <div class="mx-1">
                     <button @click="open = !open" type="button" class="flex items-center justify-center rounded-lg px-2 py-2 hover:text-primary-400 dark:text-white dark:hover:text-primary-200 transition-colors" id="menu-button" aria-expanded="true" aria-haspopup="true">
                         <span class="max-w-28 truncate">{{ user ? user.username : 'Gościu' }}</span>
-                        <svg class="ml-1 h-4 w-4 fill-current transition-transform duration-200" :class="open ? 'rotate-0' : '-rotate-90'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <svg class="ml-1 h-4 w-4 fill-current transition-transform duration-200" :style="open ? 'transform: rotate(0deg);' : 'transform: rotate(-90deg);'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                             <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                         </svg>
                         <i class="fa-solid fa-circle-user fa-xl ml-2"></i>
@@ -70,7 +70,7 @@
                      x-transition:leave="transition ease-in duration-75"
                      x-transition:leave-start="transform opacity-100 scale-100"
                      x-transition:leave-end="transform opacity-0 scale-95"
-                     class="origin-top-right absolute right-0 mt-2 top-[calc(100%+4px)] w-56 max-w-[90vw] rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800 shadow-xl z-50" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                     class="origin-top-right absolute right-0 w-56 max-w-[90vw] rounded-2xl border-2 border-primary-400 bg-white dark:bg-gray-800 shadow-xl z-50" style="top: calc(100% + 4px);" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-2 px-2" role="none">
                         <a href="/panel/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary-200 hover:text-gray-900 rounded-lg transition-colors" role="menuitem">
                             <i class="fa-solid fa-user mr-2"></i> Twój profil
