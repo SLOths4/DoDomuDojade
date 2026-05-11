@@ -95,6 +95,7 @@ try {
         // 2.5. Wyświetlenie stron panelu
         $r->addRoute('GET', '/panel/users', [PanelController::class, 'users', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/profile', [PanelController::class, 'profile', 'middleware' => [AuthMiddleware::class]]);
+        $r->addRoute('GET', '/profile', [PanelController::class, 'profile', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/countdowns', [PanelController::class, 'countdowns', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/announcements', [PanelController::class, 'announcements', 'middleware' => [AuthMiddleware::class]]);
         $r->addRoute('GET', '/panel/modules', [PanelController::class, 'modules', 'middleware' => [AuthMiddleware::class]]);
