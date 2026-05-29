@@ -45,6 +45,13 @@ readonly class GetDeparturesUseCase
             }
 
             foreach ($stopDepartures['times'] as $departure) {
+                if (!isset($departure['line'], $departure['minutes'], $departure['direction'])) {
+                    $this->logger->warning('Skipping invalid departure data', [
+                        'stop_id' => $stopId,
+                        'departure' => $departure,
+                    ]);
+                    continue;
+                }
                 $departures[] = [
                     'stopId' => $stopId,
                     'line' => (string)$departure['line'],

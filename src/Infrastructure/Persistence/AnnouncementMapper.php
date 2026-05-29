@@ -22,7 +22,7 @@ class AnnouncementMapper
             id: $data['id'] ? new AnnouncementId($data['id']) : null,
             title: $data['title'],
             text: $data['text'],
-            createdAt: new DateTimeImmutable($data['date']),
+            createdAt: new DateTimeImmutable($data['created_at']),
             validUntil: new DateTimeImmutable($data['valid_until']),
             userId: $data['user_id'] ? (int)$data['user_id'] : null,
             status: AnnouncementStatus::from($data['status']),
@@ -42,11 +42,11 @@ class AnnouncementMapper
             'id'          => $announcement->getId()?->getValue(),
             'title'       => $announcement->title,
             'text'        => $announcement->text,
-            'date'        => $announcement->getCreatedAt()->format($dateFormat),
+            'created_at'  => $announcement->getCreatedAt()->format('Y-m-d H:i:s'),
             'valid_until' => $announcement->validUntil->format($dateFormat),
             'user_id'     => $announcement->getUserId(),
             'status'      => $announcement->status->value,
-            'decided_at'  => $announcement->decidedAt?->format($dateFormat),
+            'decided_at'  => $announcement->decidedAt?->format('Y-m-d H:i:s'),
             'decided_by'  => $announcement->decidedBy,
         ];
     }

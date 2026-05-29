@@ -84,11 +84,17 @@ readonly class CalendarService implements CalendarServiceInterface
 
             $eventsArray = [];
             foreach ($events->getItems() as $event) {
+                $start = $event->getStart()->dateTime ?? $event->getStart()->date;
+                $end = $event->getEnd()->dateTime ?? $event->getEnd()->date;
+
+                $startDate = new DateTime($start);
+                $endDate = new DateTime($end);
+
                 $eventsArray[] = new CalendarEvent(
                     summary: (string)$event->getSummary(),
                     description: (string)$event->getDescription(),
-                    start: (new DateTime($event->getStart()->dateTime))->format('d.m.Y H:i'),
-                    end: (new DateTime($event->getEnd()->dateTime))->format('H:i'),
+                    start: $startDate->format('d.m.Y H:i'),
+                    end: $endDate->format('H:i'),
                 );
             }
 

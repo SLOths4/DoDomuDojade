@@ -17,8 +17,7 @@ create table if not exists announcement (
     id          varchar(255) primary key,
     title       text not null,
     text        text not null,
-    date        date not null,
-    created_at  date not null,
+    created_at  timestamp not null,
     valid_until date not null,
     user_id     integer,
     decided_at  timestamp,
@@ -33,7 +32,7 @@ create table if not exists announcement (
             or (decided_at is null and decided_by is null)),
 
     constraint announcement_valid_dates
-        check (date <= valid_until)
+        check (created_at::date <= valid_until)
 );
 
 -- Words table (fetched from external API)
@@ -96,7 +95,7 @@ create table if not exists event (
 -- Indexes for performance
 create index if not exists idx_announcement_user_id on announcement(user_id);
 create index if not exists idx_announcement_status on announcement(status);
-create index if not exists idx_announcement_date on announcement(date);
+create index if not exists idx_announcement_created_at on announcement(created_at);
 create index if not exists idx_countdown_user_id on countdown(user_id);
 create index if not exists idx_word_word on word(word);
 create index if not exists idx_quote_author on quote(author);

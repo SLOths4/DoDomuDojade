@@ -52,16 +52,22 @@ Entity reprezentuje obiekt z unikalną tożsamością (ID), który zmienia się 
 // Przykład: Announcement Entity
 final class Announcement {
     public function __construct(
-        private readonly ?AnnouncementId $id,
-        public string $title,
-        public string $text,
-        private readonly DateTimeImmutable $createdAt,
-        public DateTimeImmutable $validUntil,
-        private readonly ?int $userId,
-        public AnnouncementStatus $status = AnnouncementStatus::PENDING,
-        public ?DateTimeImmutable $decidedAt = null,
-        public ?int $decidedBy = null,
-    ){}
+        public readonly ?AnnouncementId $id,
+        public string                    $title,
+        public string                    $text,
+        public readonly DateTimeImmutable $createdAt,
+        public DateTimeImmutable         $validUntil,
+        public readonly ?int             $userId,
+        public AnnouncementStatus        $status = AnnouncementStatus::PENDING,
+        public ?DateTimeImmutable        $decidedAt = null {
+            get { return $this->decidedAt; }
+            set { $this->decidedAt = $value; }
+        },
+        public ?int                      $decidedBy = null {
+            get { return $this->decidedBy; }
+            set { $this->decidedBy = $value; }
+        },
+    ) {}
 
     // Factory methods
     public static function create(...): self { }
@@ -346,10 +352,10 @@ Invariants to reguły biznesowe, które muszą być spełnione.
 
 ### Announcement Invariants
 1. Announcement musi mieć unikalny tytuł (w kontekście)
-2. Announcement musi mieć `validUntil` >= `createdAt`
+2. Announcement musi mieć `validUntil` >= NOW (w momencie walidacji)
 3. Zatwierdzenie zmienia status z PENDING na APPROVED
 4. Odrzucenie zmienia status z PENDING na REJECTED
-5. Ogłoszenie jest ważne, tylko jeśli status = APPROVED i teraz < validUntil
+5. Ogłoszenie jest ważne, tylko jeśli status = APPROVED i teraz <= validUntil
 
 ``` php
 public function isValid(): bool {

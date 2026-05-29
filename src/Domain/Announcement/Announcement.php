@@ -54,7 +54,7 @@ final class Announcement
             get {
                 return $this->status;
             }
-            set(AnnouncementStatus $value) {
+            set {
                 $this->status = $value;
             }
         },

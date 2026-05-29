@@ -80,8 +80,8 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
     {
         try {
             $rows = $this->dbHelper->getAll(
-                "SELECT * FROM " . self::TABLE_NAME . " WHERE status = :status ORDER BY date DESC",
-                [':status' => [AnnouncementStatus::PENDING->value, PDO::PARAM_INT]]
+                "SELECT * FROM " . self::TABLE_NAME . " WHERE status = :status ORDER BY created_at DESC",
+                [':status' => [AnnouncementStatus::PENDING->value, PDO::PARAM_STR]]
             );
             return array_map(fn($row) => $this->mapRow($row), $rows);
         } catch (DatabaseException $e) {
@@ -136,7 +136,7 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
                     'id'          => [$data['id'], PDO::PARAM_STR],
                     'title'       => [$data['title'], PDO::PARAM_STR],
                     'text'        => [$data['text'], PDO::PARAM_STR],
-                    'date'        => [$data['date'], PDO::PARAM_STR],
+                    'created_at'  => [$data['created_at'], PDO::PARAM_STR],
                     'valid_until' => [$data['valid_until'], PDO::PARAM_STR],
                     'status'      => [$data['status'], PDO::PARAM_STR],
                     'user_id'     => [$data['user_id'], PDO::PARAM_INT],
@@ -172,8 +172,14 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
                     'text'        => [$data['text'], PDO::PARAM_STR],
                     'valid_until' => [$data['valid_until'], PDO::PARAM_STR],
                     'status'      => [$data['status'], PDO::PARAM_STR],
-                    'decided_at'  => [$data['decided_at'], PDO::PARAM_STR],
-                    'decided_by'  => [$data['decided_by'], PDO::PARAM_INT],
+                    'decided_at'  => [
+                        $data['decided_at'],
+                        $data['decided_at'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+                    ],
+                    'decided_by'  => [
+                        $data['decided_by'],
+                        $data['decided_by'] === null ? PDO::PARAM_NULL : PDO::PARAM_INT
+                    ],
                 ],
                 [
                     'id' => [$data['id'], PDO::PARAM_STR],
@@ -193,10 +199,10 @@ readonly class PDOAnnouncementRepository implements AnnouncementRepositoryInterf
             return $this->dbHelper->delete(
                 self::TABLE_NAME,
                 [
-                    'status' => [AnnouncementStatus::REJECTED->value, PDO::PARAM_INT],
+                    'status' => [AnnouncementStatus::REJECTED->value, PDO::PARAM_STR],
                 ],
                 "decided_at < :date",
-                [':date' => [$date->format($this->DATE_FORMAT), PDO::PARAM_STR]]
+                [':date' => [$date->format('Y-m-d H:i:s'), PDO::PARAM_STR]]
             );
         } catch (DatabaseException $e) {
             throw AnnouncementRepositoryException::persistenceFailed('Failed to delete rejected announcements', $e);

@@ -17,7 +17,9 @@
 </head>
 <body class="flex flex-col min-h-screen bg-primary-200 dark:bg-primary-400 dark:text-white">
 {% include "components/navbar.twig" %}
-{% block content %}{% endblock %}
+<div class="px-2 sm:px-4 flex-grow flex flex-col">
+    {% block content %}{% endblock %}
+</div>
 {% include "components/footer.twig" %}
 </body>
 </html>
