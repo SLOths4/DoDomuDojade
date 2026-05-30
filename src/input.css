@@ -38,3 +38,14 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 }
+@layer utilities {
+    .departure-imminent {
+        animation: departure-imminent-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes departure-imminent-pulse {
+        50% {
+            background-color: color-mix(in srgb, var(--color-red-100) 55%, white);
+        }
+    }
+}
