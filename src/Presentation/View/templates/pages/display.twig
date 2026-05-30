@@ -63,10 +63,7 @@
     <div class="grid w-full grid-cols-12 overflow-x-auto px-2 gap-4 overflow-hidden" :style="`height: ${gridHeight}px;`">
         <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="col-span-7 overflow-hidden rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-custom" :style="`height: ${tramHeight}px;`">
             <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Odjazdy</p>
-                    <h1 class="max-sm:text-lg max-md:text-xl max-lg:text-2xl text-3xl font-extrabold text-gray-800">Najbliższe tramwaje</h1>
-                </div>
+                <h1 class="max-sm:text-lg max-md:text-xl max-lg:text-2xl text-3xl font-extrabold text-gray-800">Odjazdy</h1>
                 <i class="fa-solid fa-train-tram text-3xl text-primary-400" aria-hidden="true"></i>
             </div>
             <div x-show="loading" class="rounded-2xl bg-gray-50 p-4 font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl font-bold text-center text-gray-500">
@@ -85,14 +82,14 @@
                     </div>
                 </div>
                 <template x-for="(tram, index) in visibleDepartures" :key="`${tram.line}-${index}`">
-                    <div class="demo grid grid-cols-4 w-full items-center border-b border-slate-100 text-left rounded-lg" :class="isDeparting(tram.minutes) ? 'bg-red-100 animate-pulse' : ''">
-                        <div class="py-2.5 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
+                    <div class="demo grid grid-cols-4 w-full items-center border-b border-slate-100 text-left rounded-lg px-3 my-1" :class="isDeparting(tram.minutes) ? 'bg-red-100 departure-imminent' : ''">
+                        <div class="py-3 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
                             <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-6 max-sm:w-6 max-md:h-7 max-md:w-7 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-6 max-sm:w-8 max-md:h-7 max-md:w-9 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 rounded-full' ]" class="font-extrabold inline-flex items-center justify-center shadow-custom"></div>
                         </div>
                         <div class="col-span-2 py-2.5 pr-4 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-gray-800">
                             <a x-text="tram.direction"></a>
                         </div>
-                        <div class="py-2.5 text-right font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-primary-400" :class="isDeparting(tram.minutes) ? 'text-red-500' : ''">
+                        <div class="py-3 text-right font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-primary-400" :class="isDeparting(tram.minutes) ? 'text-red-500' : ''">
                             <a x-html="formatMinutes(tram.minutes)"></a>
                         </div>
                     </div>
@@ -419,13 +416,21 @@
                 }
             },
 
-            isDeparting(min) {
+            parseMinutes(min) {
+                if (typeof min === 'string' && min.trim() === '<1') return 0;
+
                 const minutes = Number(min);
-                return Number.isFinite(minutes) && minutes < 1;
+                return Number.isFinite(minutes) ? minutes : null;
+            },
+
+            isDeparting(min) {
+                const minutes = this.parseMinutes(min);
+                return minutes !== null && minutes < 1;
             },
 
             formatMinutes(min) {
-                const minutes = Number(min);
+                const minutes = this.parseMinutes(min);
+                if (minutes === null) return min;
                 if (minutes < 1) return '<1';
                 if (minutes < 60) return `${minutes}`;
                 const h = Math.floor(minutes / 60), m = minutes % 60;
