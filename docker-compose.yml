@@ -1,0 +1,35 @@
+services:
+  app:
+    build: .
+    container_name: ddd_app
+    ports:
+      - "${APP_PORT_HOST:-8080}:80"
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./logs:/var/www/html/logs
+      - ./var/cache:/var/www/html/var/cache
+
+  db:
+    image: postgres:17-alpine
+    container_name: ddd_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-dodomudojade}
+      POSTGRES_USER: ${DB_USERNAME:-ddd}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ddd_password}
+    ports:
+      - "${DB_PORT_HOST:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./docker/db-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

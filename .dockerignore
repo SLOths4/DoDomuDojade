@@ -1,0 +1,11 @@
+node_modules
+vendor
+.git
+.env
+.env.local
+logs/*
+!logs/.gitkeep
+var/cache/*
+!var/cache/.gitkeep
+site
+docker-compose.override.yml

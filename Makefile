@@ -5,7 +5,7 @@ include .env
 export
 endif
 
-.PHONY: install dev build lint test docs db-init
+.PHONY: install dev build lint test docs db-init docker-up docker-down docker-build
 
 install:
 	@export COMPOSER_NO_DEV=1
@@ -35,3 +35,12 @@ docs:
 
 db-init:
 	PGPASSWORD="$${DB_PASSWORD}" psql "postgresql://$${DB_USERNAME}:$${DB_PASSWORD}@$${DB_HOST:-localhost}:$${DB_PORT:-5432}/$${DB_NAME:-dodomudojade}" -f schema/schema.sql
+
+docker-up:
+	docker-compose up -d
+
+docker-down:
+	docker-compose down
+
+docker-build:
+	docker-compose build --no-cache

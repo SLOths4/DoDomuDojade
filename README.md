@@ -47,6 +47,34 @@ Jeżeli chcesz zobaczyć dokumentację lokalnie, przejdź do sekcji [lokalna dok
 - Postgres
 
 ## Uruchamianie aplikacji
+
+### Metoda 1: Docker (Zalecane)
+
+To najprostszy sposób na uruchomienie pełnego środowiska aplikacji (PHP + Apache + Postgres) bez konieczności ręcznej konfiguracji.
+
+1. Sklonuj repozytorium i przejdź do katalogu:
+   ```shell
+   git clone https://github.com/SLOths4/DoDomuDojade.git
+   cd DoDomuDojade
+   ```
+2. Uruchom aplikację za pomocą Docker Compose:
+   ```shell
+   make docker-up
+   ```
+   *Baza danych zostanie automatycznie zainicjalizowana schematem i danymi startowymi.*
+3. Dodaj administratora aplikacji:
+   ```shell
+   docker exec -it ddd_app bin/app user:add admin adminadmin
+   ```
+4. Otwórz przeglądarkę pod adresem: `http://localhost:8080`
+
+> [!TIP]
+> Jeśli port 5432 lub 8080 jest już zajęty na Twoim komputerze, możesz go zmienić w pliku `.env.docker` modyfikując zmienne `DB_PORT_HOST` lub `APP_PORT_HOST`.
+
+---
+
+### Metoda 2: Instalacja tradycyjna (Manualna)
+
 Sklonuj repozytorium:
 
 ```shell
@@ -162,6 +190,9 @@ Jeżeli wolisz krótsze polecenia, możesz użyć Makefile:
 - `make test` — uruchamia PHPUnit.
 - `make docs` — buduje dokumentację MkDocs i phpDocumentor.
 - `make db-init` — wczytuje `schema/schema.sql` do istniejącej bazy (korzysta z `DB_*` z `.env`).
+- `make docker-up` — buduje i uruchamia kontenery w tle.
+- `make docker-down` — zatrzymuje i usuwa kontenery.
+- `make docker-build` — wymusza przebudowanie obrazów (przydatne po zmianach w Dockerfile).
 
 ## Lokalna dokumentacja
 
