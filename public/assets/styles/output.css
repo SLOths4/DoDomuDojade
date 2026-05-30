@@ -326,11 +326,11 @@
   .col-span-2 {
     grid-column: span 2 / span 2;
   }
-  .col-span-4 {
-    grid-column: span 4 / span 4;
+  .col-span-5 {
+    grid-column: span 5 / span 5;
   }
-  .col-span-8 {
-    grid-column: span 8 / span 8;
+  .col-span-7 {
+    grid-column: span 7 / span 7;
   }
   .m-0 {
     margin: calc(var(--spacing) * 0);
@@ -458,6 +458,9 @@
   .h-24 {
     height: calc(var(--spacing) * 24);
   }
+  .max-h-\[calc\(100\%-2\.25rem\)\] {
+    max-height: calc(100% - 2.25rem);
+  }
   .min-h-0 {
     min-height: calc(var(--spacing) * 0);
   }
@@ -514,6 +517,9 @@
   }
   .max-w-sm {
     max-width: var(--container-sm);
+  }
+  .flex-1 {
+    flex: 1;
   }
   .flex-shrink-0 {
     flex-shrink: 0;

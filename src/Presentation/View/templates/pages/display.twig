@@ -61,7 +61,7 @@
     </div>
 
     <div class="grid w-full grid-cols-12 overflow-x-auto px-2 gap-4 overflow-hidden" :style="`height: ${gridHeight}px;`">
-        <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="col-span-8 overflow-hidden rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-custom" :style="`height: ${tramHeight}px;`">
+        <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="col-span-7 overflow-hidden rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-custom" :style="`height: ${tramHeight}px;`">
             <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Odjazdy</p>
@@ -84,10 +84,10 @@
                         Odjazd
                     </div>
                 </div>
-                <template x-for="(tram, index) in departures" :key="`${tram.line}-${index}`">
+                <template x-for="(tram, index) in visibleDepartures" :key="`${tram.line}-${index}`">
                     <div class="demo grid grid-cols-4 w-full items-center border-b border-slate-100 text-left">
                         <div class="py-2.5 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
-                            <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-6 max-sm:w-6 max-md:h-7 max-md:w-7 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-6 max-sm:w-8 max-md:h-7 max-md:w-9 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 rounded-full border' ]" class="font-extrabold inline-flex items-center justify-center shadow-custom"></div>
+                            <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-6 max-sm:w-6 max-md:h-7 max-md:w-7 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-6 max-sm:w-8 max-md:h-7 max-md:w-9 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 rounded-full' ]" class="font-extrabold inline-flex items-center justify-center shadow-custom"></div>
                         </div>
                         <div class="col-span-2 py-2.5 pr-4 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-gray-800">
                             <a x-text="tram.direction"></a>
@@ -118,8 +118,8 @@
             </template>
         </div>
 
-        <div class="col-span-4 bg-white rounded-2xl border border-gray-100 shadow-custom p-3 flex flex-col gap-4 overflow-hidden" :style="`height: ${tramHeight}px;`">
-            <div x-data="multiModuleRotator()" x-init="load()" class="rounded-2xl bg-beige p-3">
+        <div class="col-span-5 bg-white rounded-2xl border border-gray-100 shadow-custom p-3 flex flex-col gap-4 overflow-hidden" :style="`height: ${tramHeight}px;`">
+            <div x-data="multiModuleRotator()" x-init="load()" class="min-h-0 flex-1 rounded-2xl bg-beige p-3 overflow-hidden flex flex-col">
                 <div class="mb-2 flex items-center justify-between border-b border-gray-200/70 pb-2">
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Dodatkowe informacje</p>
                     <i class="fa-solid fa-circle-info text-primary-400" aria-hidden="true"></i>
@@ -129,9 +129,10 @@
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl font-mono font-bold text-gray-500">Ładowanie...</p>
                     </div>
                 </template>
-                <template x-if="!loading && modules.length">
-                    <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
-                        <div x-show="current2 === index" class="rounded-lg bg-white p-3 shadow-custom">
+                <div class="min-h-0 flex-grow overflow-y-auto">
+                    <template x-if="!loading && modules.length">
+                        <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
+                            <div x-show="current2 === index" class="rounded-lg bg-white p-3 shadow-custom">
                             <template x-if="mod.type === 'countdown'">
                                 <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center text-gray-800" x-text="message"></p>
                             </template>
@@ -166,11 +167,12 @@
                                     </p>
                                 </div>
                             </template>
-                        </div>
+                            </div>
+                        </template>
                     </template>
-                </template>
-                <div x-show="!loading && !modules.length" class="rounded-lg bg-white p-4">
-                    <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl">Brak danych do wyświetlenia</p>
+                    <div x-show="!loading && !modules.length" class="rounded-lg bg-white p-4">
+                        <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl">Brak danych do wyświetlenia</p>
+                    </div>
                 </div>
                 <template x-if="error">
                     <template x-for="(errors, index) in error" :key="`error-${index}-${error}`">
@@ -197,12 +199,12 @@
                     </template>
                 </template>
             </div>
-            <div x-data="announcements()" x-init="load()" class="min-h-0 flex-grow rounded-2xl border border-slate-100 bg-white p-3 overflow-hidden">
+            <div x-data="announcements()" x-init="load()" class="min-h-0 flex-1 rounded-2xl border border-slate-100 bg-white p-3 overflow-hidden flex flex-col">
                 <div class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2">
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Ogłoszenia</p>
                     <i class="fa-solid fa-bullhorn text-primary-400" aria-hidden="true"></i>
                 </div>
-                <div x-show="!error && !info && !inactive" class="overflow-y-auto">
+                <div x-show="!error && !info && !inactive" class="min-h-0 flex-grow overflow-y-auto">
                     <template x-if="loading">
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl font-mono font-bold text-gray-500">Ładowanie...</p>
                     </template>
@@ -359,6 +361,7 @@
     function tramDepartures() {
         return {
             departures: [],
+            visibleDepartures: [],
             error: null,
             info: null,
             inactive: null,
@@ -399,14 +402,18 @@
                         if (JSON.stringify(this.departures) !== JSON.stringify(response.data)) {
                             this.departures = response.data;
                         }
+                        this.resetVisibleDepartures();
                     } else if (response.status === 'empty') {
                         this.departures = [];
+                        this.visibleDepartures = [];
                         this.info = response.message ?? 'Brak dostępnych odjazdów';
                     } else if (response.status === 'inactive') {
                         this.departures = [];
+                        this.visibleDepartures = [];
                         this.inactive = response.message ?? 'Moduł departures jest wyłączony';
                     } else {
                         this.departures = [];
+                        this.visibleDepartures = [];
                         this.error = response.message ?? 'Błąd działania modułu departures';
                     }
                 } catch (e) {
@@ -423,33 +430,32 @@
                 return `${h}h ${m}`;
             },
 
-            calcExcessTram() {
-                var parentEl = this.$refs.tramDiv;
-                var els = document.getElementsByClassName('demo');
-                for (var i = els.length - 1; i >= 0; i--) {
-                    if (!(parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth)) {
-                        break;
-                    }
-                    var el = els[i];
-                    if (el) {
-                        el.remove();
-                    }
+            resetVisibleDepartures() {
+                this.visibleDepartures = [...this.departures];
+                requestAnimationFrame(() => this.trimVisibleDepartures());
+            },
+
+            trimVisibleDepartures() {
+                const parentEl = this.$refs.tramDiv;
+                if (!parentEl || !this.visibleDepartures.length) return;
+
+                if (parentEl.scrollHeight > parentEl.clientHeight || parentEl.scrollWidth > parentEl.clientWidth) {
+                    this.visibleDepartures = this.visibleDepartures.slice(0, -1);
+                    requestAnimationFrame(() => this.trimVisibleDepartures());
                 }
             },
 
             checkOverflow() {
-                const elname = this.$refs.tramDiv;
-                if (elname.scrollHeight > elname.clientHeight || elname.scrollWidth > elname.clientWidth) {
-                    this.calcExcessTram();
-                }
+                this.resetVisibleDepartures();
             },
 
             async load() {
                 await this.fetchDepartures();
                 const refreshData = async () => {
                     await this.fetchDepartures();
-                    requestAnimationFrame(() => this.checkOverflow());
+                    requestAnimationFrame(() => this.trimVisibleDepartures());
                 };
+                window.addEventListener('resize', () => this.checkOverflow());
                 await refreshData();
                 setInterval(refreshData, 60000);
             }
