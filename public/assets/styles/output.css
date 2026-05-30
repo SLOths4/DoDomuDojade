@@ -101,6 +101,7 @@
     --radius-3xl: 1.5rem;
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     --blur-sm: 8px;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -458,9 +459,6 @@
   .h-24 {
     height: calc(var(--spacing) * 24);
   }
-  .max-h-\[calc\(100\%-2\.25rem\)\] {
-    max-height: calc(100% - 2.25rem);
-  }
   .min-h-0 {
     min-height: calc(var(--spacing) * 0);
   }
@@ -518,9 +516,6 @@
   .max-w-sm {
     max-width: var(--container-sm);
   }
-  .flex-1 {
-    flex: 1;
-  }
   .flex-shrink-0 {
     flex-shrink: 0;
   }
@@ -550,6 +545,9 @@
   }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
   }
   .resize {
     resize: both;
@@ -1994,6 +1992,11 @@
 @property --tw-ease {
   syntax: "*";
   inherits: false;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
 }
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {

@@ -85,14 +85,14 @@
                     </div>
                 </div>
                 <template x-for="(tram, index) in visibleDepartures" :key="`${tram.line}-${index}`">
-                    <div class="demo grid grid-cols-4 w-full items-center border-b border-slate-100 text-left">
+                    <div class="demo grid grid-cols-4 w-full items-center border-b border-slate-100 text-left rounded-lg" :class="isDeparting(tram.minutes) ? 'bg-red-100 animate-pulse' : ''">
                         <div class="py-2.5 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
                             <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-6 max-sm:w-6 max-md:h-7 max-md:w-7 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-6 max-sm:w-8 max-md:h-7 max-md:w-9 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 rounded-full' ]" class="font-extrabold inline-flex items-center justify-center shadow-custom"></div>
                         </div>
                         <div class="col-span-2 py-2.5 pr-4 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-gray-800">
                             <a x-text="tram.direction"></a>
                         </div>
-                        <div class="py-2.5 text-right font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-primary-400">
+                        <div class="py-2.5 text-right font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-primary-400" :class="isDeparting(tram.minutes) ? 'text-red-500' : ''">
                             <a x-html="formatMinutes(tram.minutes)"></a>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
         </div>
 
         <div class="col-span-5 bg-white rounded-2xl border border-gray-100 shadow-custom p-3 flex flex-col gap-4 overflow-hidden" :style="`height: ${tramHeight}px;`">
-            <div x-data="multiModuleRotator()" x-init="load()" class="min-h-0 flex-1 rounded-2xl bg-beige p-3 overflow-hidden flex flex-col">
+            <div x-data="multiModuleRotator()" x-init="load()" style="height: calc((100% - 1rem) / 2);" class="min-h-0 rounded-2xl bg-beige p-3 overflow-hidden flex flex-col">
                 <div class="mb-2 flex items-center justify-between border-b border-gray-200/70 pb-2">
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Dodatkowe informacje</p>
                     <i class="fa-solid fa-circle-info text-primary-400" aria-hidden="true"></i>
@@ -130,9 +130,8 @@
                     </div>
                 </template>
                 <div class="min-h-0 flex-grow overflow-y-auto">
-                    <template x-if="!loading && modules.length">
-                        <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
-                            <div x-show="current2 === index" class="rounded-lg bg-white p-3 shadow-custom">
+                    <template x-for="(mod, index) in modules" :key="`mod-${index}-${mod.type}`">
+                        <div x-show="!loading && modules.length && current2 === index" class="rounded-lg bg-white p-3 shadow-custom">
                             <template x-if="mod.type === 'countdown'">
                                 <p class="font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-center text-gray-800" x-text="message"></p>
                             </template>
@@ -167,8 +166,7 @@
                                     </p>
                                 </div>
                             </template>
-                            </div>
-                        </template>
+                        </div>
                     </template>
                     <div x-show="!loading && !modules.length" class="rounded-lg bg-white p-4">
                         <p class="text-center text-gray-500 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl">Brak danych do wyświetlenia</p>
@@ -199,7 +197,7 @@
                     </template>
                 </template>
             </div>
-            <div x-data="announcements()" x-init="load()" class="min-h-0 flex-1 rounded-2xl border border-slate-100 bg-white p-3 overflow-hidden flex flex-col">
+            <div x-data="announcements()" x-init="load()" style="height: calc((100% - 1rem) / 2);" class="min-h-0 rounded-2xl border border-slate-100 bg-white p-3 overflow-hidden flex flex-col">
                 <div class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2">
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Ogłoszenia</p>
                     <i class="fa-solid fa-bullhorn text-primary-400" aria-hidden="true"></i>
@@ -208,9 +206,8 @@
                     <template x-if="loading">
                         <p class="text-center max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg text-xl font-mono font-bold text-gray-500">Ładowanie...</p>
                     </template>
-                    <template x-if="!loading && announcements">
-                        <template x-for="(group, index) in grouped" :key="index">
-                            <div x-show="current === index">
+                    <template x-for="(group, index) in grouped" :key="index">
+                        <div x-show="!loading && announcements.length && current === index">
                                 <template x-for="(a, index) in group" :key="`${a.id}-${index}`">
                                     <div class="rounded-lg bg-beige p-3 shadow-custom">
                                         <h3 class="font-bold max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl text-gray-800" x-text="a.title"></h3>
@@ -221,8 +218,7 @@
                                         </p>
                                     </div>
                                 </template>
-                            </div>
-                        </template>
+                        </div>
                     </template>
                 </div>
                 <template x-if="error">
@@ -423,10 +419,16 @@
                 }
             },
 
+            isDeparting(min) {
+                const minutes = Number(min);
+                return Number.isFinite(minutes) && minutes < 1;
+            },
+
             formatMinutes(min) {
-                if (min === 0) return '<1';
-                if (min < 60) return `${min}`;
-                const h = Math.floor(min / 60), m = min % 60;
+                const minutes = Number(min);
+                if (minutes < 1) return '<1';
+                if (minutes < 60) return `${minutes}`;
+                const h = Math.floor(minutes / 60), m = minutes % 60;
                 return `${h}h ${m}`;
             },
 
