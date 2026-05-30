@@ -60,8 +60,8 @@
         </div>
     </div>
 
-    <div class="grid w-full grid-cols-12 overflow-x-auto px-2 gap-4 overflow-hidden" :style="`height: ${gridHeight}px;`">
-        <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="col-span-7 overflow-hidden rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-custom" :style="`height: ${tramHeight}px;`">
+    <div class="grid w-full px-2 gap-4 overflow-hidden" :style="`height: ${gridHeight}px; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);`">
+        <div x-data="tramDepartures()" x-init="load()" x-ref="tramDiv" class="overflow-hidden rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-custom" :style="`height: ${tramHeight}px; min-width: 0;`">
             <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
                 <h1 class="max-sm:text-lg max-md:text-xl max-lg:text-2xl text-3xl font-extrabold text-gray-800">Odjazdy</h1>
                 <i class="fa-solid fa-train-tram text-3xl text-primary-400" aria-hidden="true"></i>
@@ -86,7 +86,7 @@
                         <div class="py-3 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl">
                             <div x-text="tram.line" :class="[(count[tram.line] || 'bg-white'), tram.line < 20 ? 'max-sm:h-6 max-sm:w-6 max-md:h-7 max-md:w-7 max-lg:h-8 max-lg:w-8 max-xl:h-9 max-xl:w-9 max-2xl:h-10 max-2xl:w-10 h-11 w-11 rounded-full' : 'max-sm:h-6 max-sm:w-8 max-md:h-7 max-md:w-9 max-lg:h-8 max-lg:w-10 max-xl:h-9 max-xl:w-11 max-2xl:h-10 max-2xl:w-12 h-11 w-13 rounded-full' ]" class="font-extrabold inline-flex items-center justify-center shadow-custom"></div>
                         </div>
-                        <div class="col-span-2 py-2.5 pr-4 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-gray-800">
+                        <div class="col-span-2 py-2.5 pr-4 max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-bold text-gray-800" style="min-width: 0;">
                             <a x-text="tram.direction"></a>
                         </div>
                         <div class="py-3 text-right font-mono max-sm:text-xs max-md:text-sm max-lg:text-base max-xl:text-lg max-2xl:text-xl text-2xl font-extrabold text-primary-400" :class="isDeparting(tram.minutes) ? 'text-red-500' : ''">
@@ -115,7 +115,7 @@
             </template>
         </div>
 
-        <div class="col-span-5 bg-white rounded-2xl border border-gray-100 shadow-custom p-3 flex flex-col gap-4 overflow-hidden" :style="`height: ${tramHeight}px;`">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-custom p-3 flex flex-col gap-4 overflow-hidden" :style="`height: ${tramHeight}px; min-width: 0;`">
             <div x-data="multiModuleRotator()" x-init="load()" style="height: calc((100% - 1rem) / 2);" class="min-h-0 rounded-2xl bg-beige p-3 overflow-hidden flex flex-col">
                 <div class="mb-2 flex items-center justify-between border-b border-gray-200/70 pb-2">
                     <p class="text-xs font-bold uppercase tracking-widest text-primary-400">Dodatkowe informacje</p>
