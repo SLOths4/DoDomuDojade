@@ -6,8 +6,15 @@ Witaj w dokumentacji projektu **DoDomuDojadę**! Ta strona stanowi punkt wyjści
 
 - **[Autogenerowana dokumentacja kodu](code/index.html)**
 - **[Architektura](architecture.md)** — opisuje architekturę aplikacji
+- **[API i routing](api.md)** — wszystkie trasy, middleware, formaty odpowiedzi, sesja, CLI
+- **[Model danych](data-model.md)** — schemat bazy i reguły domenowe
+- **[Konfiguracja](configuration.md)** — pełna lista zmiennych `.env`
+- **[Integracje](integrations.md)** — ZTM, IMGW, Airly, Google Calendar, cytat i słowo dnia
 - **[Display](display.md)** — opisuje działanie najważniejszej funkcjonalności aplikacji
+- **[Panel](panel.md)** — panel administracyjny
 - **[Development](development.md)** — opisuje założenia dalszego rozwoju projektu
+- **[Stan projektu](current-state.md)** — znane błędy, dług techniczny, pokrycie testami
+- **[Migracja na Pythona](python-migration.md)** — plan przepisania backendu
 
 ## Stos technologiczny
 ### Backend
@@ -63,7 +70,7 @@ Widoczność modułów jest kontrolowana w tabeli `module` i sprawdzana po stron
    cp .env.example .env
    ```
 3. Uzupełnij wymagane zmienne środowiskowe (patrz sekcja niżej).
-4. Utwórz bazę danych i wgraj schemat z `schema/schema.sql`.
+4. Utwórz bazę danych, wgraj schemat z `schema/schema.sql`, a potem `schema/migrations/architecture_enhancements_001.sql` (tabela `events`). Dodaj wiersze modułów — patrz [Model danych](data-model.md#schemat-bazy-postgresql).
 5. Uruchom backend:
    ```shell
    php -S localhost:8080 -t public/ public/index.php
@@ -82,7 +89,7 @@ Poniżej lista kluczowych zmiennych środowiskowych. Wymagane zmienne muszą by�
 - `TWIG_CACHE_PATH` — katalog cache dla Twiga (np. `./var/cache/twig`)
 - `AIRLY_API_KEY`, `AIRLY_ENDPOINT` — dane jakości powietrza
 - `IMGW_WEATHER_URL` — endpoint IMGW
-- `DB_USERNAME`, `DB_PASSWORD` — dane dostępu do bazy
+- `DB_USERNAME`, `DB_PASSWORD` — dane dostępu do bazy (w kodzie opcjonalne, w praktyce wymagane)
 - `TRAM_URL` — endpoint ZTM (Peka)
 - `CALENDAR_API_KEY_PATH` — ścieżka do klucza Google Calendar
 - `CALENDAR_ID` — ID kalendarza Google
@@ -96,6 +103,8 @@ Poniżej lista kluczowych zmiennych środowiskowych. Wymagane zmienne muszą by�
 - `AIRLY_LOCATION_ID` (wymagane do pobierania danych z Airly)
 - `STOP_ID` — lista przystanków, np. `AWF41,AWF05`
 - `USER_TABLE_NAME` (domyślnie `user`) — nazwa tabeli użytkowników
+
+Pełna lista: [Konfiguracja](configuration.md).
 
 
 ### Szybki start (produkcja)

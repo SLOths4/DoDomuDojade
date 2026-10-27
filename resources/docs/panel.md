@@ -130,13 +130,12 @@ Wyświetla stronę zarządzania modułami.
 
 ## Dependency Injection (Kontener)
 
-Instancja `PanelController` jest konfigurowana w `bootstrap/bootstrap.php`:
+Instancja `PanelController` jest rejestrowana w `src/Infrastructure/Container/Providers/DisplayProvider.php`:
 
 ```php
-$container->set(PanelController::class, fn(Container $c) => new PanelController(
+$c->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(RequestContext::class),
     $c->get(TwigRenderer::class),
-    $c->get(FlashMessengerService::class),
     $c->get(LoggerInterface::class),
     $c->get(GetAllModulesUseCase::class),
     $c->get(GetAllUsersUseCase::class),
@@ -159,8 +158,9 @@ $container->set(PanelController::class, fn(Container $c) => new PanelController(
 
 ### CSRF Protection
 
-- Wszystkie żądania POST/PATCH/DELETE przechodzą przez `CsrfMiddleware`
-- Wymaga poprawnego tokenu CSRF w żądaniu
+- Wszystkie żądania POST/PUT/PATCH/DELETE przechodzą przez `CsrfMiddleware` — także publiczne (`/api/authenticate`, `/logout`, `/api/announcement/propose`)
+- Token jest renderowany w ukrytym polu `<input name="_token">`; JavaScript wysyła go w nagłówku `X-CSRF-Token`
+- Pełna lista endpointów: [API i routing](api.md)
 
 ## Szablony (Templates)
 
@@ -192,10 +192,12 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 - `POST /api/announcement/{id}/reject` — odrzuć ogłoszenie
 
 ### Liczniki
+- `GET /api/countdowns` — pobierz wszystkie (uwaga: liczba mnoga)
 - `POST /api/countdown` — dodaj licznik
 - `PATCH /api/countdown/{id}` — edytuj licznik
 - `DELETE /api/countdown/{id}` — usuń licznik
 
 ### Moduły
+- `GET /api/module` — pobierz wszystkie
 - `PATCH /api/module/{id}` — edytuj moduł
 - `POST /api/module/{id}/toggle` — włącz/wyłącz moduł
