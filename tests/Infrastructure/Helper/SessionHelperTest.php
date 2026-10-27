@@ -27,13 +27,12 @@ final class SessionHelperTest extends TestCase
     #[RunInSeparateProcess]
     public function testFingerprintValidation(): void
     {
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        $_SERVER['HTTP_USER_AGENT'] = 'PHPUnit';
+        $ip = '127.0.0.1';
+        $ua = 'PHPUnit';
 
-        SessionHelper::setWithFingerprint('user', 'alice');
-        self::assertTrue(SessionHelper::validateFingerprint());
+        SessionHelper::setWithFingerprint('user', 'alice', $ip, $ua);
+        self::assertTrue(SessionHelper::validateFingerprint($ip, $ua));
 
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.2';
-        self::assertFalse(SessionHelper::validateFingerprint());
+        self::assertFalse(SessionHelper::validateFingerprint('127.0.0.2', $ua));
     }
 }

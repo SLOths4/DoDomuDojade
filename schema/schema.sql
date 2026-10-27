@@ -7,6 +7,7 @@ create table if not exists "user" (
     username      varchar(255) not null unique,
     password_hash varchar(255) not null,
     is_active     boolean default true not null,
+    must_change_password boolean default false not null,
     created_at    timestamp not null
 );
 
@@ -16,23 +17,22 @@ create table if not exists announcement (
     id          varchar(255) primary key,
     title       text not null,
     text        text not null,
-    date        date not null,
-    created_at  date not null,
+    created_at  timestamp not null,
     valid_until date not null,
     user_id     integer,
     decided_at  timestamp,
     decided_by  integer,
     status      announcement_status default 'PENDING'::announcement_status,
 
-    constraint announcements_user_id_fkey
+    constraint announcement_user_id_fkey
         foreign key (user_id) references "user"(id) on delete set null on update cascade,
 
-    constraint announcements_decided_consistency
+    constraint announcement_decided_consistency
         check ((decided_at is not null and decided_by is not null)
             or (decided_at is null and decided_by is null)),
 
-    constraint announcements_valid_dates
-        check (date <= valid_until)
+    constraint announcement_valid_dates
+        check (created_at::date <= valid_until)
 );
 
 -- Words table (fetched from external API)
@@ -78,15 +78,29 @@ create table if not exists countdown (
     count_to date not null,
     user_id  integer not null,
 
-    constraint countdowns_user_id_fkey
+    constraint countdown_user_id_fkey
         foreign key (user_id) references "user"(id) on delete cascade on update cascade
+);
+
+-- Event Store table
+create table if not exists event (
+    id          serial primary key,
+    event_id    varchar(255) unique not null,
+    event_type  varchar(255) not null,
+    payload     jsonb not null,
+    occurred_at timestamp not null,
+    created_at  timestamp not null default current_timestamp
 );
 
 -- Indexes for performance
 create index if not exists idx_announcement_user_id on announcement(user_id);
 create index if not exists idx_announcement_status on announcement(status);
-create index if not exists idx_announcement_date on announcement(date);
+create index if not exists idx_announcement_created_at on announcement(created_at);
 create index if not exists idx_countdown_user_id on countdown(user_id);
 create index if not exists idx_word_word on word(word);
 create index if not exists idx_quote_author on quote(author);
 create index if not exists idx_weather_fetched_on on weather(fetched_on desc);
+create index if not exists idx_event_event_id on event(event_id);
+create index if not exists idx_event_event_type on event(event_type);
+create index if not exists idx_event_occurred_at on event(occurred_at desc);
+create index if not exists idx_event_payload on event using gin(payload);

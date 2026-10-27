@@ -130,7 +130,7 @@ Wyświetla stronę zarządzania modułami.
 
 ## Dependency Injection (Kontener)
 
-Instancja `PanelController` jest konfigurowana w `bootstrap/bootstrap.php`:
+Instancja `PanelController` jest konfigurowana przez providery kontenera w `src/Infrastructure/Container/Providers/` i składana w `src/Infrastructure/Container.php`:
 
 ```php
 $container->set(PanelController::class, fn(Container $c) => new PanelController(
@@ -179,8 +179,12 @@ Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/Templ
 Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 
 ### Użytkownicy
+- `GET /api/user` — pobierz wszystkich użytkowników
 - `POST /api/user` — dodaj użytkownika
+- `PATCH /api/user/{id}` — edytuj użytkownika
 - `DELETE /api/user/{id}` — usuń użytkownika
+- `POST /api/user/self/change-password` — zmień własne hasło
+- `POST /api/user/{id}/change-password` — zmień hasło wskazanego użytkownika
 
 ### Ogłoszenia
 - `POST /api/announcement` — dodaj ogłoszenie
@@ -192,6 +196,7 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 - `POST /api/announcement/{id}/reject` — odrzuć ogłoszenie
 
 ### Liczniki
+- `GET /api/countdowns` — pobierz wszystkie liczniki
 - `POST /api/countdown` — dodaj licznik
 - `PATCH /api/countdown/{id}` — edytuj licznik
 - `DELETE /api/countdown/{id}` — usuń licznik
@@ -199,3 +204,10 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 ### Moduły
 - `PATCH /api/module/{id}` — edytuj moduł
 - `POST /api/module/{id}/toggle` — włącz/wyłącz moduł
+
+## Dodatkowe trasy związane z panelem
+
+- `GET /panel/profile` oraz `GET /profile` — widok profilu użytkownika.
+- `GET /change-password` — formularz zmiany hasła (wymaga zalogowania).
+- `POST /api/authenticate` — logowanie użytkownika.
+

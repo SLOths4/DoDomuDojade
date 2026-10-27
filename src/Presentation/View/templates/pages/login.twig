@@ -75,7 +75,7 @@
                         const payload = await response.json();
 
                         if (!response.ok) {
-                            this.error = payload?.error || 'Wystąpił błąd logowania.';
+                            this.error = payload?.message || payload?.error || 'Wystąpił błąd logowania.';
                             return;
                         }
 

@@ -14,9 +14,10 @@ use PDO;
  */
 readonly class PDOCountdownRepository implements CountdownRepositoryInterface
 {
+    private const TABLE_NAME = 'countdown';
+
     public function __construct(
         private DatabaseService $dbHelper,
-        private string          $TABLE_NAME,
         private string          $DATE_FORMAT,
     ) {}
 
@@ -42,7 +43,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function findById(int $id): ?Countdown
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE id = :id",
+            "SELECT * FROM " . self::TABLE_NAME . " WHERE id = :id",
             [':id' => [$id, PDO::PARAM_INT]]
         );
 
@@ -55,7 +56,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function findCurrent(): ?Countdown
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE count_to > :now ORDER BY count_to LIMIT 1",
+            "SELECT * FROM " . self::TABLE_NAME . " WHERE count_to > :now ORDER BY count_to LIMIT 1",
             [':now' => [date($this->DATE_FORMAT), PDO::PARAM_STR]]
         );
 
@@ -67,7 +68,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
      */
     public function findAll(): array
     {
-        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
+        $rows = $this->dbHelper->getAll("SELECT * FROM " . self::TABLE_NAME);
         return array_map(fn($r) => $this->mapRow($r), $rows);
     }
 
@@ -77,7 +78,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function add(Countdown $countdown): int
     {
         return $this->dbHelper->insert(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'title'    => [$countdown->title, PDO::PARAM_STR],
                 'count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -92,7 +93,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function update(Countdown $countdown): bool
     {
         $affected = $this->dbHelper->update(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'title'    => [$countdown->title, PDO::PARAM_STR],
                 'count_to' => [$countdown->countTo->format($this->DATE_FORMAT), PDO::PARAM_STR],
@@ -111,7 +112,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function delete(int $id): bool
     {
         $affected = $this->dbHelper->delete(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'id' => [$id, PDO::PARAM_INT],
             ]
@@ -126,7 +127,7 @@ readonly class PDOCountdownRepository implements CountdownRepositoryInterface
     public function updateField(int $id, string $field, string $value): bool
     {
         $affected = $this->dbHelper->update(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 $field => [$value, PDO::PARAM_STR],
             ],

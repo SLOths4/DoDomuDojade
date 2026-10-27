@@ -13,5 +13,6 @@ readonly class User {
         public string            $username,
         public string            $passwordHash,
         public DateTimeImmutable $createdAt,
+        public bool              $mustChangePassword = false,
     ){}
 }

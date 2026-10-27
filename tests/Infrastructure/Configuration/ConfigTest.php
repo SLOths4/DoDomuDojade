@@ -33,6 +33,7 @@ final class ConfigTest extends TestCase
             'WORD_API_URL' => 'https://word.test',
             'TWIG_DEBUG' => 'true',
             'STOP_ID' => '123, 456,',
+            'DB_NAME' => 'dodomudojade',
         ]);
 
         $config = Config::fromEnv();

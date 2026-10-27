@@ -51,7 +51,7 @@ readonly class UpdateUserUseCase
         $passwordHash = $user->passwordHash;
 
         if ($dto->password !== null) {
-            $password = new Password($dto->password, $this->minPasswordLength);
+            $password = Password::create($dto->password, $this->minPasswordLength);
             $passwordHash = $password->getHash();
         }
 

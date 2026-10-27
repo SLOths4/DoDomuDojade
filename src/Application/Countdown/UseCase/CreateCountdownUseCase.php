@@ -7,8 +7,6 @@ use App\Application\Countdown\AddEditCountdownDTO;
 use App\Domain\Countdown\Countdown;
 use App\Domain\Countdown\CountdownException;
 use App\Domain\Event\EventPublisher;
-use App\Infrastructure\Helper\CountdownValidationHelper;
-use App\Infrastructure\Persistence\PDOCountdownRepository;
 use App\Domain\Countdown\CountdownBusinessValidator;
 use App\Domain\Countdown\CountdownRepositoryInterface;
 use Exception;

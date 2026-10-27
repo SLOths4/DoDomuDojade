@@ -10,6 +10,7 @@ use App\Presentation\Http\Shared\MiddlewareInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Random\RandomException;
 
 final readonly class CsrfMiddleware implements MiddlewareInterface
@@ -17,6 +18,7 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
     public function __construct(
         private CsrfTokenService $csrfTokenService,
         private RequestContext   $requestContext,
+        private LoggerInterface  $logger,
     ) {}
 
     public function handle(ServerRequestInterface $request, callable $next): ResponseInterface
@@ -55,7 +57,7 @@ final readonly class CsrfMiddleware implements MiddlewareInterface
             return $next($request);
 
         } catch (RandomException $e) {
-            error_log('CSRF token generation failed: ' . $e->getMessage());
+            $this->logger->critical('CSRF token generation failed', ['error' => $e->getMessage()]);
             return new Response(500, [], 'Internal Server Error');
         }
     }

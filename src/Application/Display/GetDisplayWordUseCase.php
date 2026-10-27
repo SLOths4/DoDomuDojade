@@ -27,14 +27,17 @@ readonly class GetDisplayWordUseCase
      */
     public function execute(): ?array
     {
+        $this->logger->debug('Fetching word for display');
+
         try {
             $word = $this->fetchActiveWordUseCase->execute();
         } catch (DomainException|InfrastructureException $e) {
-            $this->logger->error("Failed to fetch word", ['error' => $e->getMessage()]);
+            $this->logger->error('Failed to fetch word', ['error' => $e->getMessage()]);
             return null;
         }
 
         if (!$word) {
+            $this->logger->info('No active word available for display');
             return null;
         }
 

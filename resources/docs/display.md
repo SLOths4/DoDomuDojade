@@ -15,7 +15,8 @@ Podstrona `display` stanowi główną funkcjonalność aplikacji. To od niej zac
 | `/display/quote`             | GET    | JSON | Cytat dnia             | No   |
 | `/display/word`              | GET    | JSON | Słowo dnia             | No   |
 
-> Wszystkie endpoint-y Display zwracają spójny format z polem `is_active`, które mówi, czy dany moduł jest obecnie włączony
+> Wszystkie endpoint-y Display zwracają pole `is_active`, które mówi, czy dany moduł jest obecnie włączony.
+> Gdy moduł jest wyłączony lub nie ma danych, pole z payloadem (`departures`, `announcements`, `weather`, `countdown`, `events`, `quote`, `word`) może mieć wartość `null`.
 
 ---
 
