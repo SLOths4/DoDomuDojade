@@ -5,7 +5,6 @@ namespace App\Application\Module\UseCase;
 
 use App\Domain\Event\EventPublisher;
 use App\Domain\Module\ModuleException;
-use App\Infrastructure\Helper\ModuleValidationHelper;
 use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleRepositoryInterface;
 use Exception;

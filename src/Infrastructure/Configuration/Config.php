@@ -20,7 +20,6 @@ final readonly class Config
      * @param string $airlyEndpoint
      * @param string $airlyApiKey
      * @param string $airlyLocationId
-     * @param string $weatherTableName
      * @param string $weatherDateFormat
      * @param int    $weatherCacheTtlSeconds
      * @param string $dbHost
@@ -28,7 +27,6 @@ final readonly class Config
      * @param string $dbName
      * @param string $dbUsername
      * @param string $dbPassword
-     * @param string $announcementTableName
      * @param string $announcementDateFormat
      * @param string $announcementMaxValidDate
      * @param string $announcementDefaultValidDate
@@ -36,12 +34,9 @@ final readonly class Config
      * @param int    $announcementMinTitleLength
      * @param int    $announcementMaxTextLength
      * @param int    $announcementMinTextLength
-     * @param string $countdownTableName
      * @param string $countdownDateFormat
      * @param int    $countdownMaxTitleLength
-     * @param string $moduleTableName
      * @param string $moduleDateFormat
-     * @param string $userTableName
      * @param string $userDateFormat
      * @param int    $maxUsernameLength
      * @param int    $minPasswordLength
@@ -51,9 +46,7 @@ final readonly class Config
      * @param string $googleCalendarId
      * @param string $quoteApiUrl
      * @param string $quoteDateFormat
-     * @param string $quoteTableName
      * @param string $wordApiUrl
-     * @param string $wordTableName
      * @param string $wordDateFormat
      */
     private function __construct(
@@ -73,7 +66,6 @@ final readonly class Config
         public string $airlyLocationId,
 
         // Weather persistence
-        public string $weatherTableName,
         public string $weatherDateFormat,
         public int $weatherCacheTtlSeconds,
 
@@ -85,7 +77,6 @@ final readonly class Config
         private string $dbPassword,
 
         // Announcements
-        public string $announcementTableName,
         public string $announcementDateFormat,
         public string $announcementMaxValidDate,
         public string $announcementDefaultValidDate,
@@ -95,16 +86,14 @@ final readonly class Config
         public int $announcementMinTextLength,
 
         // Countdowns
-        public string $countdownTableName,
         public string $countdownDateFormat,
         public int $countdownMaxTitleLength,
+        public int $countdownMinTitleLength,
 
         // Modules
-        public string $moduleTableName,
         public string $moduleDateFormat,
 
         // Users
-        public string $userTableName,
         public string $userDateFormat,
         public int $maxUsernameLength,
         public int $minPasswordLength,
@@ -120,11 +109,9 @@ final readonly class Config
         // Quote API
         public string $quoteApiUrl,
         public string $quoteDateFormat,
-        public string $quoteTableName,
 
         // Word API
         public string $wordApiUrl,
-        public string $wordTableName,
         public string $wordDateFormat,
     ) {}
 
@@ -153,7 +140,6 @@ final readonly class Config
                 airlyLocationId: ltrim(self::optionalEnv('AIRLY_LOCATION_ID', ''), '/'),
 
                 // Weather persistence
-                weatherTableName: self::optionalEnv('WEATHER_TABLE_NAME', 'weather'),
                 weatherDateFormat: self::optionalEnv('WEATHER_DATE_FORMAT', 'Y-m-d H:i:s'),
                 weatherCacheTtlSeconds: self::intEnv('WEATHER_CACHE_TTL_SECONDS', 900),
 
@@ -165,7 +151,6 @@ final readonly class Config
                 dbPassword: self::optionalEnv('DB_PASSWORD', ''),
 
                 // Announcements
-                announcementTableName: self::optionalEnv('ANNOUNCEMENT_TABLE_NAME', 'announcement'),
                 announcementDateFormat: self::optionalEnv('ANNOUNCEMENT_DATE_FORMAT', 'Y-m-d'),
                 announcementMaxValidDate: self::optionalEnv('ANNOUNCEMENT_MAX_VALID_DATE', '+1 year'),
                 announcementDefaultValidDate: self::optionalEnv('ANNOUNCEMENT_DEFAULT_VALID_DATE', '+30 days'),
@@ -175,16 +160,14 @@ final readonly class Config
                 announcementMinTextLength: self::intEnv('ANNOUNCEMENT_MIN_TEXT_LENGTH', 10),
 
                 // Countdowns
-                countdownTableName: self::optionalEnv('COUNTDOWN_TABLE_NAME', 'countdown'),
                 countdownDateFormat: self::optionalEnv('COUNTDOWN_DATE_FORMAT', 'Y-m-d H:i:s'),
                 countdownMaxTitleLength: self::intEnv('COUNTDOWN_MAX_TITLE_LENGTH', 255),
+                countdownMinTitleLength: self::intEnv('COUNTDOWN_MIN_TITLE_LENGTH', 3),
 
                 // Modules
-                moduleTableName: self::optionalEnv('MODULE_TABLE_NAME', 'module'),
                 moduleDateFormat: self::optionalEnv('MODULE_DATE_FORMAT', 'H:i:s'),
 
                 // Users
-                userTableName: self::optionalEnv('USER_TABLE_NAME', 'user'),
                 userDateFormat: self::optionalEnv('USER_DATE_FORMAT', 'Y-m-d'),
                 maxUsernameLength: self::intEnv('MAX_USERNAME_LENGTH', 255),
                 minPasswordLength: self::intEnv('MIN_PASSWORD_LENGTH', 8),
@@ -201,11 +184,9 @@ final readonly class Config
                 // Quote
                 quoteApiUrl: self::requiredEnv('QUOTE_API_URL'),
                 quoteDateFormat: self::optionalEnv('QUOTE_DATE_FORMAT', 'Y-m-d'),
-                quoteTableName: self::optionalEnv('QUOTE_TABLE_NAME', 'quote'),
 
                 // Word
                 wordApiUrl: self::requiredEnv('WORD_API_URL'),
-                wordTableName: self::optionalEnv('WORD_TABLE_NAME', 'word'),
                 wordDateFormat: self::optionalEnv('WORD_DATE_FORMAT', 'Y-m-d'),
             );
 

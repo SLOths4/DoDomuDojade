@@ -27,14 +27,17 @@ readonly class GetDisplayQuoteUseCase
      */
     public function execute(): ?array
     {
+        $this->logger->debug('Fetching quote for display');
+
         try {
             $quote = $this->fetchActiveQuoteUseCase->execute();
         } catch (DomainException|InfrastructureException $e) {
-            $this->logger->error("Failed to fetch quote", ['error' => $e->getMessage()]);
+            $this->logger->error('Failed to fetch quote', ['error' => $e->getMessage()]);
             return null;
         }
 
         if (!$quote) {
+            $this->logger->info('No active quote available for display');
             return null;
         }
 

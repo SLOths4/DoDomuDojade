@@ -21,6 +21,7 @@ final readonly class AnnouncementId
      * Generates a new id for an announcement
      * @return self
      */
+    #[\NoDiscard]
     public static function generate(): self
     {
         return new self(uniqid('ann_', true));

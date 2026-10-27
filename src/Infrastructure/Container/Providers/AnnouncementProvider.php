@@ -19,6 +19,7 @@ use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\Database\DatabaseService;
 use App\Infrastructure\Helper\AnnouncementValidationHelper;
+use App\Infrastructure\Persistence\AnnouncementMapper;
 use App\Infrastructure\Persistence\PDOAnnouncementRepository;
 use Psr\Log\LoggerInterface;
 
@@ -26,9 +27,26 @@ final class AnnouncementProvider implements ServiceProviderInterface
 {
     public function register(Container $c): void
     {
+        $c->set(AnnouncementBusinessValidator::class, function (Container $c) {
+            $config = $c->get(Config::class);
+            return new AnnouncementBusinessValidator(
+                minTitleLength: $config->announcementMinTitleLength,
+                maxTitleLength: $config->announcementMaxTitleLength,
+                minTextLength: $config->announcementMinTextLength,
+                maxTextLength: $config->announcementMaxTextLength,
+                maxValidDate: $config->announcementMaxValidDate,
+            );
+        });
+
+        $c->set(AnnouncementValidationHelper::class, fn(Container $c) => new AnnouncementValidationHelper(
+            $c->get(AnnouncementBusinessValidator::class)
+        ));
+
+        $c->set(AnnouncementMapper::class, fn() => new AnnouncementMapper());
+
         $c->set(AnnouncementRepositoryInterface::class, fn(Container $c) => new PDOAnnouncementRepository(
             $c->get(DatabaseService::class),
-            $c->get(Config::class)->announcementTableName,
+            $c->get(AnnouncementMapper::class),
             $c->get(Config::class)->announcementDateFormat,
         ));
 
@@ -71,11 +89,11 @@ final class AnnouncementProvider implements ServiceProviderInterface
         $c->set(GetAnnouncementByIdUseCase::class, fn(Container $c) => new GetAnnouncementByIdUseCase(
             $c->get(AnnouncementRepositoryInterface::class),
             $c->get(LoggerInterface::class),
-            $c->get(AnnouncementValidationHelper::class),
+            $c->get(AnnouncementBusinessValidator::class),
         ));
         $c->set(ProposeAnnouncementUseCase::class, fn(Container $c) => new ProposeAnnouncementUseCase(
             $c->get(EventPublisher::class),
-            $c->get(AnnouncementValidationHelper::class),
+            $c->get(AnnouncementBusinessValidator::class),
             $c->get(AnnouncementRepositoryInterface::class),
             $c->get(LoggerInterface::class),
         ));

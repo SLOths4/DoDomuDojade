@@ -24,6 +24,7 @@ readonly class GetDisplayAnnouncementsUseCase
      */
     public function execute(): array
     {
+        $this->logger->debug('Fetching announcements for display');
         $announcements = $this->getValidAnnouncementsUseCase->execute();
 
         $response = [];
@@ -35,9 +36,10 @@ readonly class GetDisplayAnnouncementsUseCase
                     $user = $this->getUserByIdUseCase->execute($announcement->getUserId());
                     $author = $user->username;
                 } catch (EntityNotFoundException $e) {
-                    $this->logger->warning("Failed to fetch announcement author", [
-                        'userId' => $announcement->getUserId(),
-                        'error' => $e->getMessage()
+                    $this->logger->warning('Failed to fetch announcement author', [
+                        'user_id' => $announcement->getUserId(),
+                        'announcement_title' => $announcement->title,
+                        'error' => $e->getMessage(),
                     ]);
                 }
             }
@@ -48,6 +50,10 @@ readonly class GetDisplayAnnouncementsUseCase
                 'text' => $announcement->text,
             ];
         }
+
+        $this->logger->debug('Announcements prepared for display', [
+            'announcement_count' => count($response),
+        ]);
 
         return $response;
     }

@@ -14,7 +14,7 @@ interface QuoteRepositoryInterface
      *
      * @param Quote $quote The quote entity to add
      * @return int id
-     * @throws Exception
+     * @throws QuoteRepositoryException
      */
     public function add(Quote $quote): int;
 
@@ -23,7 +23,7 @@ interface QuoteRepositoryInterface
      * Returns the quote with the most recent fetched_on date matching today's date.
      *
      * @return Quote|null The latest quote for today or null if none exists
-     * @throws Exception
+     * @throws QuoteRepositoryException
      */
     public function fetchLatestQuote(): ?Quote;
 }

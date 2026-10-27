@@ -8,33 +8,34 @@ use App\Domain\Shared\ValidationException;
 /**
  * Password value object
  */
-final class Password
+final readonly class Password
 {
-    private string $hash;
+    private function __construct(
+        private string $hash
+    ) {}
 
     /**
      * @param string $plainPassword
      * @param int $minLength
      * @throws ValidationException
      */
-    public function __construct(
+    #[\NoDiscard]
+    public static function create(
         string $plainPassword,
         int $minLength = 8
-    ) {
+    ): self {
         if (mb_strlen($plainPassword) < $minLength) {
             throw ValidationException::invalidInput(['password' => ["Password too short (min $minLength)"]]);
         }
-        $this->hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+        return new self(password_hash($plainPassword, PASSWORD_DEFAULT));
     }
 
     /**
-     * @throws ValidationException
      */
+    #[\NoDiscard]
     public static function fromHash(string $hash): self
     {
-        $instance = new self('dummy_pass', 0);
-        $instance->hash = $hash;
-        return $instance;
+        return new self($hash);
     }
 
     /**

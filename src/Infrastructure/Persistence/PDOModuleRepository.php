@@ -15,12 +15,12 @@ use PDO;
  */
 readonly class PDOModuleRepository implements ModuleRepositoryInterface
 {
+    private const string TABLE_NAME = 'module';
     private const string DEFAULT_START_TIME = '00:00:00';
     private const string DEFAULT_END_TIME = '23:59:59';
 
     public function __construct(
         private DatabaseService $dbHelper,
-        private string          $TABLE_NAME,
         private string          $DATE_FORMAT
     ) {}
 
@@ -50,7 +50,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     public function findById(int $id): ?Module
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE id = :id LIMIT 1",
+            "SELECT * FROM " . self::TABLE_NAME . " WHERE id = :id LIMIT 1",
             [':id' => [$id, PDO::PARAM_INT]]
         );
 
@@ -67,7 +67,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     public function update(Module $module): bool
     {
         $affected = $this->dbHelper->update(
-            $this->TABLE_NAME,
+            self::TABLE_NAME,
             [
                 'module_name' => [$module->moduleName->value, PDO::PARAM_STR],
                 'is_active'   => [$module->isActive, PDO::PARAM_BOOL],
@@ -87,7 +87,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
      */
     public function findAll(): array
     {
-        $rows = $this->dbHelper->getAll("SELECT * FROM $this->TABLE_NAME");
+        $rows = $this->dbHelper->getAll("SELECT * FROM " . self::TABLE_NAME);
 
         return array_map(fn(array $row) => $this->mapRow($row), $rows);
     }
@@ -98,7 +98,7 @@ readonly class PDOModuleRepository implements ModuleRepositoryInterface
     public function findByName(ModuleName $moduleName): ?Module
     {
         $row = $this->dbHelper->getOne(
-            "SELECT * FROM $this->TABLE_NAME WHERE module_name = :module_name LIMIT 1",
+            "SELECT * FROM " . self::TABLE_NAME . " WHERE module_name = :module_name LIMIT 1",
             [':module_name' => [$moduleName->value, PDO::PARAM_STR]]
         );
 

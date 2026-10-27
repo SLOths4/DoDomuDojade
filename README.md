@@ -114,12 +114,6 @@ alter default privileges in schema public grant all on sequences to ddd;
 grant execute on all functions in schema public to ddd;
 ```
 
-Następnie wgraj migrację, która tworzy tabelę zdarzeń `events` (nie ma jej w `schema.sql`):
-
-```shell
-psql -U postgres -d dodomudojade -f schema/migrations/architecture_enhancements_001.sql
-```
-
 Nie zapomnij o dodaniu listy dostępnych modułów do tabeli modułów (standardowo `module`). Nazwy muszą być w liczbie pojedynczej, zgodnie z enumem `ModuleName`:
 
 ```postgresql

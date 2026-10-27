@@ -2,6 +2,7 @@
 
 namespace App\Tests\Infrastructure\Helper;
 
+use App\Domain\Module\ModuleBusinessValidator;
 use App\Domain\Module\ModuleException;
 use App\Infrastructure\Helper\ModuleValidationHelper;
 use DateTimeImmutable;
@@ -11,7 +12,7 @@ final class ModuleValidationHelperTest extends TestCase
 {
     public function testValidateStartTimeNotGreaterThanEndTimeThrows(): void
     {
-        $helper = new ModuleValidationHelper();
+        $helper = new ModuleValidationHelper(new ModuleBusinessValidator());
         $start = new DateTimeImmutable('10:00');
         $end = new DateTimeImmutable('09:00');
 
@@ -21,7 +22,7 @@ final class ModuleValidationHelperTest extends TestCase
 
     public function testValidateIdRejectsNonPositive(): void
     {
-        $helper = new ModuleValidationHelper();
+        $helper = new ModuleValidationHelper(new ModuleBusinessValidator());
 
         $this->expectException(ModuleException::class);
         $helper->validateId(0);

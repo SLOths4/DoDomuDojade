@@ -18,14 +18,16 @@ readonly class AuthenticationService
 
     /**
      * Checks if there is a user logged in the session
+     * @param string $remoteAddr
+     * @param string $userAgent
      * @return bool
      */
-    public function isUserLoggedIn(): bool {
+    public function isUserLoggedIn(string $remoteAddr, string $userAgent): bool {
         if (!SessionHelper::has('user_id')) {
             return false;
         }
 
-        if (!SessionHelper::validateFingerprint()) {
+        if (!SessionHelper::validateFingerprint($remoteAddr, $userAgent)) {
             $this->logout();
             return false;
         }

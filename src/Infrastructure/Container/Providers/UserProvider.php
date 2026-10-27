@@ -24,7 +24,6 @@ final class UserProvider implements ServiceProviderInterface
     {
         $c->set(UserRepositoryInterface::class, fn(Container $c) => new PDOUserRepository(
             $c->get(DatabaseService::class),
-            $c->get(Config::class)->userTableName,
             $c->get(Config::class)->userDateFormat,
         ));
 

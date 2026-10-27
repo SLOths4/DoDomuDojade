@@ -6,6 +6,7 @@ namespace App\Application\Announcement\UseCase;
 
 use App\Domain\Announcement\AnnouncementException;
 use App\Domain\Announcement\AnnouncementId;
+use App\Domain\Announcement\AnnouncementRepositoryException;
 use App\Domain\Announcement\AnnouncementStatus;
 use App\Domain\Event\EventPublisher;
 use App\Domain\Announcement\AnnouncementBusinessValidator;
@@ -18,6 +19,7 @@ use Psr\Log\LoggerInterface;
 readonly class ApproveRejectAnnouncementUseCase
 {
     /**
+     * @param EventPublisher $eventPublisher
      * @param AnnouncementRepositoryInterface $repository
      * @param LoggerInterface $logger
      * @param AnnouncementBusinessValidator $validator
@@ -34,7 +36,7 @@ readonly class ApproveRejectAnnouncementUseCase
      * @param AnnouncementStatus $status
      * @param int $adminId
      * @return void
-     * @throws AnnouncementException
+     * @throws AnnouncementException|AnnouncementRepositoryException
      */
     public function execute(AnnouncementId $announcementId, AnnouncementStatus $status, int $adminId): void
     {

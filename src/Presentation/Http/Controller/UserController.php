@@ -124,14 +124,14 @@ final class UserController extends BaseController
     public function changePassword(array $vars = []): ResponseInterface
     {
         $this->logger->debug("Received change password request");
-        $userId = (int)$vars['id'];
+        $currentUserId = $this->getCurrentUserId();
+        $userId = isset($vars['id']) ? (int)$vars['id'] : $currentUserId;
 
         $this->userValidationHelper->validateId($userId);
-        $currentUserId = $this->getCurrentUserId();
 
-        if ($currentUserId !== $userId) {
-            throw UserException::unauthorized();
-        }
+        // Admin (or anyone in panel) can change others' passwords. 
+        // If changing someone else's password, force them to change it again on login.
+        $mustChangeOnNextLogin = ($currentUserId !== $userId);
 
         $body = json_decode((string)$this->request->getBody(), true);
 
@@ -141,7 +141,7 @@ final class UserController extends BaseController
 
         $dto = ChangePasswordDTO::fromArray($body);
 
-        $this->changePasswordUseCase->execute($userId, $dto->password);
+        $this->changePasswordUseCase->execute($userId, $dto->password, $mustChangeOnNextLogin);
 
         return $this->jsonResponse(200, [
             'success' => true,

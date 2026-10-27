@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Display;
 
+use App\Domain\Transport\TramServiceInterface;
 use App\Infrastructure\ExternalApi\Tram\TramApiException;
-use App\Infrastructure\ExternalApi\Tram\TramService;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -13,11 +13,11 @@ use Psr\Log\LoggerInterface;
 readonly class GetDeparturesUseCase
 {
     /**
-     * @param TramService $tramService
+     * @param TramServiceInterface $tramService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        private TramService $tramService,
+        private TramServiceInterface $tramService,
         private LoggerInterface $logger
     ) {}
 
@@ -27,16 +27,31 @@ readonly class GetDeparturesUseCase
      */
     public function execute(array $stopIds): array
     {
+        $this->logger->debug('Fetching departures for display', [
+            'stop_count' => count($stopIds),
+            'stop_ids' => $stopIds,
+        ]);
+
         $departures = [];
         foreach ($stopIds as $stopId) {
             try {
                 $stopDepartures = $this->tramService->getTimes($stopId);
-            } catch (TramApiException) {
-                $this->logger->warning("No departures found for stop", ['stopId' => $stopId]);
+            } catch (TramApiException $e) {
+                $this->logger->warning('Failed to fetch departures for stop', [
+                    'stop_id' => $stopId,
+                    'error' => $e->getMessage(),
+                ]);
                 continue;
             }
 
             foreach ($stopDepartures['times'] as $departure) {
+                if (!isset($departure['line'], $departure['minutes'], $departure['direction'])) {
+                    $this->logger->warning('Skipping invalid departure data', [
+                        'stop_id' => $stopId,
+                        'departure' => $departure,
+                    ]);
+                    continue;
+                }
                 $departures[] = [
                     'stopId' => $stopId,
                     'line' => (string)$departure['line'],
@@ -47,6 +62,11 @@ readonly class GetDeparturesUseCase
         }
 
         usort($departures, static fn($a, $b) => $a['minutes'] <=> $b['minutes']);
+
+        $this->logger->debug('Departures fetched for display', [
+            'stop_count' => count($stopIds),
+            'departure_count' => count($departures),
+        ]);
 
         return $departures;
     }

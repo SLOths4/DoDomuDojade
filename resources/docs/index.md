@@ -70,7 +70,7 @@ Widoczność modułów jest kontrolowana w tabeli `module` i sprawdzana po stron
    cp .env.example .env
    ```
 3. Uzupełnij wymagane zmienne środowiskowe (patrz sekcja niżej).
-4. Utwórz bazę danych, wgraj schemat z `schema/schema.sql`, a potem `schema/migrations/architecture_enhancements_001.sql` (tabela `events`). Dodaj wiersze modułów — patrz [Model danych](data-model.md#schemat-bazy-postgresql).
+4. Utwórz bazę danych, wgraj schemat z `schema/schema.sql`. Dodaj wiersze modułów — patrz [Model danych](data-model.md#schemat-bazy-postgresql).
 5. Uruchom backend:
    ```shell
    php -S localhost:8080 -t public/ public/index.php
@@ -175,3 +175,21 @@ Oznacza to, że:
 
 ---
 **Masz pytania?** Otwórz [Issue](https://github.com/SLOths4/DoDomuDojade/issues) lub skontaktuj się z nami na [sloths4@spolecznaczworka.pl](mailto:sloths4@spolecznaczworka.pl).
+
+## Przewodnik dla maintainerów
+
+Najważniejsze miejsca w kodzie, które warto znać przy utrzymaniu projektu:
+
+- **Routing HTTP**: `public/index.php` (pełna lista tras + middleware per trasa).
+- **Kontener DI**: `src/Infrastructure/Container.php` oraz `src/Infrastructure/Container/Providers/`.
+- **Use case-y aplikacyjne**: `src/Application/`.
+- **Widoki Twig**: `src/Presentation/View/templates/`.
+- **Komendy CLI**: `src/Console/CommandRegistry.php` i `src/Console/Commands/`.
+- **Konfiguracja i walidacja ENV**: `src/Infrastructure/Configuration/Config.php`.
+
+### Checklista przed mergem
+
+1. Czy dokumentacja endpointów zgadza się z `public/index.php`?
+2. Czy zmiany w konfiguracji/env są odnotowane w README/docs?
+3. Czy zmiany w DB mają migrację i aktualny opis?
+4. Czy uruchomiono testy/lint adekwatne do zakresu zmian?

@@ -27,15 +27,19 @@ readonly class ChangePasswordUseCase
     /**
      * @param int $id
      * @param string $newPassword
+     * @param bool $mustChangePassword
      * @return bool
      * @throws Exception
      */
-    public function execute(int $id, string $newPassword): bool
+    public function execute(int $id, string $newPassword, bool $mustChangePassword = false): bool
     {
-        $this->logger->info('Changing user password', ['user_id' => $id]);
+        $this->logger->info('Changing user password', [
+            'user_id' => $id,
+            'must_change' => $mustChangePassword
+        ]);
 
-        $password = new Password($newPassword, $this->minPasswordLength);
-        $result = $this->repository->updatePassword($id, $password->getHash());
+        $password = Password::create($newPassword, $this->minPasswordLength);
+        $result = $this->repository->updatePassword($id, $password->getHash(), $mustChangePassword);
 
         $this->logger->info('Password change finished', [
             'user_id' => $id,

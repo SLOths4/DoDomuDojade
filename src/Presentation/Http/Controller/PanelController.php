@@ -166,6 +166,21 @@ class PanelController extends BaseController
     }
 
     /**
+     * Display profile page
+     *
+     * @throws Exception
+     */
+    public function profile(): ResponseInterface
+    {
+        $user = $this->requestContext->getCurrentUser();
+        $this->logger->info("Profile page loaded for user: " . $user->username);
+
+        return $this->render(TemplateNames::PROFILE->value, [
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Display announcement management page
      * Shows pending announcements separately from decided ones
      *

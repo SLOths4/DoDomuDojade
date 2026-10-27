@@ -55,16 +55,22 @@ Entity reprezentuje obiekt z unikalną tożsamością (ID), który zmienia się 
 // Przykład: Announcement Entity
 final class Announcement {
     public function __construct(
-        private readonly ?AnnouncementId $id,
-        public string $title,
-        public string $text,
-        private readonly DateTimeImmutable $createdAt,
-        public DateTimeImmutable $validUntil,
-        private readonly ?int $userId,
-        public AnnouncementStatus $status = AnnouncementStatus::PENDING,
-        public ?DateTimeImmutable $decidedAt = null,
-        public ?int $decidedBy = null,
-    ){}
+        public readonly ?AnnouncementId $id,
+        public string                    $title,
+        public string                    $text,
+        public readonly DateTimeImmutable $createdAt,
+        public DateTimeImmutable         $validUntil,
+        public readonly ?int             $userId,
+        public AnnouncementStatus        $status = AnnouncementStatus::PENDING,
+        public ?DateTimeImmutable        $decidedAt = null {
+            get { return $this->decidedAt; }
+            set { $this->decidedAt = $value; }
+        },
+        public ?int                      $decidedBy = null {
+            get { return $this->decidedBy; }
+            set { $this->decidedBy = $value; }
+        },
+    ) {}
 
     // Factory methods
     public static function create(...): self { }

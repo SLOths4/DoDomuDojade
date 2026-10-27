@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\ExternalApi\Calendar;
 
+use App\Domain\Calendar\CalendarEvent;
+use App\Domain\Calendar\CalendarServiceInterface;
+use DateTime;
 use Google\Service\Calendar\Events;
 use Google_Client;
 use Google_Service_Calendar;
@@ -11,7 +14,7 @@ use Throwable;
 /**
  * Used to interact with google calendar interface
  */
-readonly class CalendarService
+readonly class CalendarService implements CalendarServiceInterface
 {
     public function __construct(
         private LoggerInterface $logger,
@@ -52,7 +55,10 @@ readonly class CalendarService
         }
     }
 
-    public function getEvents(): Events
+    /**
+     * @return CalendarEvent[]
+     */
+    public function getEvents(): array
     {
         try {
             $client = $this->createClient();
@@ -76,7 +82,23 @@ readonly class CalendarService
 
             $this->logger->info('Calendar events successfully fetched');
 
-            return $events;
+            $eventsArray = [];
+            foreach ($events->getItems() as $event) {
+                $start = $event->getStart()->dateTime ?? $event->getStart()->date;
+                $end = $event->getEnd()->dateTime ?? $event->getEnd()->date;
+
+                $startDate = new DateTime($start);
+                $endDate = new DateTime($end);
+
+                $eventsArray[] = new CalendarEvent(
+                    summary: (string)$event->getSummary(),
+                    description: (string)$event->getDescription(),
+                    start: $startDate->format('d.m.Y H:i'),
+                    end: $endDate->format('H:i'),
+                );
+            }
+
+            return $eventsArray;
 
         } catch (Throwable $e) {
             $this->logger->error('Failed to fetch calendar events', ['error' => $e->getMessage()]);

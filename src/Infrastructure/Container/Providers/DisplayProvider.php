@@ -20,7 +20,10 @@ use App\Application\Countdown\UseCase\GetCurrentCountdownUseCase;
 use App\Application\Announcement\UseCase\GetAllAnnouncementsUseCase;
 use App\Application\Announcement\UseCase\GetValidAnnouncementsUseCase;
 use App\Application\Word\FetchActiveWordUseCase;
+use App\Domain\Calendar\CalendarServiceInterface;
+use App\Domain\Transport\TramServiceInterface;
 use App\Domain\Weather\WeatherRepositoryInterface;
+use App\Domain\Weather\WeatherServiceInterface;
 use App\Infrastructure\Configuration\Config;
 use App\Infrastructure\Container;
 use App\Infrastructure\ExternalApi\Calendar\CalendarService;
@@ -41,7 +44,7 @@ final class DisplayProvider implements ServiceProviderInterface
     public function register(Container $c): void
     {
         $c->set(GetDeparturesUseCase::class, fn(Container $c) => new GetDeparturesUseCase(
-            $c->get(TramService::class),
+            $c->get(TramServiceInterface::class),
             $c->get(LoggerInterface::class),
         ));
         $c->set(GetDisplayAnnouncementsUseCase::class, fn(Container $c) => new GetDisplayAnnouncementsUseCase(
@@ -53,13 +56,13 @@ final class DisplayProvider implements ServiceProviderInterface
             $c->get(GetCurrentCountdownUseCase::class),
         ));
         $c->set(GetDisplayWeatherUseCase::class, fn(Container $c) => new GetDisplayWeatherUseCase(
-            $c->get(WeatherService::class),
+            $c->get(WeatherServiceInterface::class),
             $c->get(WeatherRepositoryInterface::class),
             $c->get(LoggerInterface::class),
             $c->get(Config::class)->weatherCacheTtlSeconds,
         ));
         $c->set(GetDisplayEventsUseCase::class, fn(Container $c) => new GetDisplayEventsUseCase(
-            $c->get(CalendarService::class),
+            $c->get(CalendarServiceInterface::class),
             $c->get(LoggerInterface::class),
         ));
         $c->set(GetDisplayQuoteUseCase::class, fn(Container $c) => new GetDisplayQuoteUseCase(

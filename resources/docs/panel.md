@@ -130,19 +130,20 @@ Wyświetla stronę zarządzania modułami.
 
 ## Dependency Injection (Kontener)
 
-Instancja `PanelController` jest rejestrowana w `src/Infrastructure/Container/Providers/DisplayProvider.php`:
+Instancja `PanelController` jest konfigurowana przez providery kontenera w `src/Infrastructure/Container/Providers/` i składana w `src/Infrastructure/Container.php`:
 
 ```php
 $c->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(RequestContext::class),
     $c->get(TwigRenderer::class),
+    $c->get(FlashMessengerService::class),
     $c->get(LoggerInterface::class),
     $c->get(GetAllModulesUseCase::class),
     $c->get(GetAllUsersUseCase::class),
     $c->get(GetAllCountdownsUseCase::class),
     $c->get(GetAllAnnouncementsUseCase::class),
     $c->get(Translator::class),
-    $c->get(AnnouncementViewMapper::class),
+    $c->get(AnnouncementPresenter::class),
 ));
 ```
 
@@ -179,8 +180,12 @@ Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/Templ
 Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 
 ### Użytkownicy
+- `GET /api/user` — pobierz wszystkich użytkowników
 - `POST /api/user` — dodaj użytkownika
+- `PATCH /api/user/{id}` — edytuj użytkownika
 - `DELETE /api/user/{id}` — usuń użytkownika
+- `POST /api/user/self/change-password` — zmień własne hasło
+- `POST /api/user/{id}/change-password` — zmień hasło wskazanego użytkownika
 
 ### Ogłoszenia
 - `POST /api/announcement` — dodaj ogłoszenie
@@ -201,3 +206,10 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 - `GET /api/module` — pobierz wszystkie
 - `PATCH /api/module/{id}` — edytuj moduł
 - `POST /api/module/{id}/toggle` — włącz/wyłącz moduł
+
+## Dodatkowe trasy związane z panelem
+
+- `GET /panel/profile` oraz `GET /profile` — widok profilu użytkownika.
+- `GET /change-password` — formularz zmiany hasła (wymaga zalogowania).
+- `POST /api/authenticate` — logowanie użytkownika.
+
