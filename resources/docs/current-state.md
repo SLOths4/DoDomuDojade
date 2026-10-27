@@ -1,6 +1,6 @@
 # Stan projektu i znane problemy
 
-Stan na 2026-10-27 (gałąź `main`). Analiza obejmuje cały kod `src/`, szablony, schemat bazy i testy.
+Stan na 2026-10-27 (gałąź `main`). Decyzja twórcy: kod PHP nie będzie już poprawiany — poniższe problemy są listą wymagań dla [wersji w Pythonie](python-migration.md). Analiza obejmuje cały kod `src/`, szablony, schemat bazy i testy.
 
 ## Podsumowanie
 
@@ -44,6 +44,21 @@ Stan na 2026-10-27 (gałąź `main`). Analiza obejmuje cały kod `src/`, szablon
 | B16 | Status ogłoszenia bindowany jako `PDO::PARAM_INT`. | `PDOAnnouncementRepository` |
 | B17 | Brakujące klucze w JSON żądania → warning → `ErrorException` → 500 zamiast 400. | DTO w `src/Application/*/DTO` |
 | B18 | `display.twig`: Alpine `3.x.x` nieprzypięty, podwójne pobranie odjazdów przy starcie, błąd logiczny `if (!this.error.push(...))`. | `src/Presentation/View/templates/pages/display.twig` |
+
+## Edycja ogłoszeń w panelu
+
+Zgłoszone przez twórcę („przy edycji ogłoszeń coś się psuje”) i prześledzone w kodzie:
+
+| # | Problem | Miejsce | Objaw |
+|---|---|---|---|
+| E1 | Walidator nie powstaje w kontenerze (K1); kontroler jest budowany przed obsługą wyjątków. | `public/index.php:143`, `AnnouncementController.php:42` | Każda akcja na ogłoszeniach (lista, edycja, zatwierdzanie, usuwanie, propozycje) zwraca 500; toast „Błąd”. Strona panelu renderuje się normalnie. |
+| E2 | Data „ważne do” = dziś jest odrzucana (porównanie północy z `now`); data walidowana nawet bez zmiany. | `AnnouncementBusinessValidator.php:68` | Nie da się ustawić dzisiejszej daty ani poprawić tekstu wygasłego ogłoszenia. |
+| E3 | Pusta lub błędna data, brak pola `title` → wyjątek PHP. | `EditAnnouncementDTO.php:38-40` | 500 zamiast 400. |
+| E4 | Zmiana statusu na PENDING ustawia `decided_at/by`. Status w edycji omija akcje zatwierdź/odrzuć. | `Announcement.php:203-207`, `announcement.twig:217` | Oczekujące ogłoszenie ma decydenta. |
+| E5 | `decided_at` zapisywane w formacie `Y-m-d`. | `PDOAnnouncementRepository.php:138` | Traci godzinę decyzji. |
+| E6 | UPDATE zatwierdzony przed zapisem zdarzenia; bez tabeli `events` → 500. | `EditAnnouncementUseCase.php:66-74` | Zmiana zapisana, a użytkownik widzi błąd i nieodświeżoną tabelę. |
+| E7 | Limity w formularzu (50/500 znaków) inne niż w backendzie (5–255 / 10–65535). | `announcement.twig:200,206` | Licznik „620 / 500” dla długich propozycji; krótki tytuł odrzucany dopiero przez serwer. |
+| E8 | Modal zamyka się także przy błędzie; wygasła sesja daje HTML zamiast JSON. | `announcement.twig:608` | Wpisane zmiany giną; komunikat „Unexpected token <”. |
 
 ## Bezpieczeństwo
 

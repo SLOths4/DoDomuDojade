@@ -17,6 +17,9 @@ Plik: `src/Infrastructure/ExternalApi/Tram/TramService.php`.
 - Brak cache — każde odświeżenie ekranu (co 60 s) to N zapytań do PEKA.
 - Metody `getStops`, `getLines`, `getRoutes`, `findMessagesForBollard` są zaimplementowane, ale nieużywane.
 
+!!! note "Oficjalne źródło"
+    `method.vm` to nieoficjalne obejście. ZTM udostępnia [otwarte dane](https://www.ztm.poznan.pl/otwarte-dane/) w formacie GTFS (rozkład) i GTFS-RT (opóźnienia), bez klucza API. Kolumna `stop_code` w `stops.txt` zawiera te same symbole przystanków co PEKA (`AWF41`). Nowa wersja korzysta z tych danych — patrz [plan migracji](python-migration.md#tramwaje-gtfs-gtfs-rt-ztm-poznan).
+
 ## Pogoda (IMGW + Airly)
 
 Pliki: `src/Infrastructure/ExternalApi/Weather/WeatherService.php`, `src/Application/Display/GetDisplayWeatherUseCase.php`.
@@ -52,10 +55,16 @@ Plik: `src/Infrastructure/ExternalApi/Calendar/CalendarService.php`.
 
 ## Cytat dnia
 
+!!! danger "Nie działa"
+    `quotes-api-self.vercel.app` zwraca `404 DEPLOYMENT_NOT_FOUND` (sprawdzone 2026-10-27). Zamienniki: [plan migracji](python-migration.md#cytat-dnia).
+
 - `GET QUOTE_API_URL` → wymagane pola `quote`, `author`.
 - Wywoływane tylko z CLI `quote:fetch`, zapis do tabeli `quote`, publikacja zdarzenia `quote.created`.
 
 ## Słowo dnia
+
+!!! warning
+    `api.wotd.site` działało w dniu analizy, ale to prywatny serwis bez gwarancji; odrzuca daty z przyszłości (liczy w UTC). Zapasowe źródła: [plan migracji](python-migration.md#sowo-dnia).
 
 - `GET WORD_API_URL + YYYY-MM-DD` (data w **UTC**) → wymagane pola `word`, `ipa`, `definition`.
 - Wywoływane tylko z CLI `word:fetch`, zapis do tabeli `word` (bez zdarzenia).
