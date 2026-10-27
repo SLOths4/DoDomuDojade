@@ -4,6 +4,7 @@
 
 | Wersja | Data | Zmiany |
 |---|---|---|
+| 2.3 | 2026-10-28 | Przyjęte: Alpine.js, panel po polsku i angielsku, nazwa repozytorium `DoDomuDojade-v2`. |
 | 2.2 | 2026-10-27 | Odpowiedzi twórcy na pytania otwarte: ekran na Raspberry Pi 4 z Firefoksem, serwer w szkole tylko w sieci wewnętrznej, start z czystą bazą (bez importu danych), osobne repozytorium w `SLOths4` z tą samą licencją, ekran bez zmian i tylko po polsku. Odjazdy autobusów i tramwajów ze wszystkich 8 słupków AWF. Cytat i słowo z projektów Wikimedia, na zmianę po polsku i angielsku. Frontend na Alpine.js zamiast Vue. |
 | 2.1 | 2026-10-27 | Dostosowanie do nowego `main`: K1–K3 naprawione w PHP; import uwzględnia tabelę `event`, `must_change_password` i stare kolumny `announcement.date`; wymaganie wymuszonej zmiany hasła z blokadą innych akcji do czasu zmiany. |
 | 2.0 | 2026-10-27 | Uwzględnione odpowiedzi twórcy: nowe repozytorium, przełączenie jednorazowe, bez dalszych prac nad PHP, ORM, Docker, uproszczona architektura, oddzielny frontend, SSE, przeprojektowany panel, role, tramwaje z GTFS/GTFS-RT, nowe źródła cytatu i słowa dnia, wymagania dla edycji ogłoszeń. |
@@ -36,14 +37,14 @@ Nowa wersja DoDomuDojadę powstaje w Pythonie, w **nowym repozytorium**. Obecne 
 | D11 | Tramwaje | Oficjalne dane ZTM: GTFS + GTFS-RT zamiast `method.vm`. | przyjęte |
 | D12 | CLI | Uproszczone, jeden skrypt `ddd`. | przyjęte |
 | D13 | Role | Admin i moderator od początku; logowanie Google w późniejszym etapie. | przyjęte |
-| D14 | Framework frontendu | **Alpine.js + Tailwind CSS 4, bez frameworka SPA i bez bundlera.** Zespół zna Alpine, kod ekranu w dużej części przechodzi bez zmian, uczniom łatwiej to utrzymać. Vue dopiero, gdy panel mocno się rozrośnie. | rekomendacja, do potwierdzenia |
+| D14 | Framework frontendu | **Alpine.js + Tailwind CSS 4, bez frameworka SPA i bez bundlera.** Zespół zna Alpine, kod ekranu w dużej części przechodzi bez zmian, uczniom łatwiej to utrzymać. | przyjęte |
 | D15 | Cytat i słowo dnia | Projekty Wikimedia, na zmianę: jeden dzień po polsku, następny po angielsku. | przyjęte |
 | D16 | Odjazdy | Autobusy i tramwaje ze wszystkich słupków przystanku AWF (8 słupków w GTFS). | przyjęte |
 | D17 | Logowanie Google | Domena Google Workspace szkoły i domyślna rola nowych kont. | do decyzji (etap późniejszy) |
 | D19 | Dane ze starej wersji | Nie są przenoszone: baza nie zawiera istotnych danych. Przenoszona jest tylko konfiguracja (klucze API, konto serwisowe Google, id kalendarza). | przyjęte |
-| D20 | Nazwa repozytorium | Nowe repozytorium w organizacji `SLOths4`, licencja CC BY-NC 4.0 jak dotąd. Propozycja nazwy: `DoDomuDojade2`; po przełączeniu stare można przemianować na `DoDomuDojade-php` i zarchiwizować. Fork nie wchodzi w grę: GitHub nie pozwala forkować repozytorium do tej samej organizacji, a fork ciągnąłby całą historię PHP. | przyjęte, nazwa do potwierdzenia |
+| D20 | Repozytorium | **`SLOths4/DoDomuDojade-v2`**, licencja CC BY-NC 4.0 jak dotąd. Po przełączeniu stare repozytorium można przemianować na `DoDomuDojade-php` i zarchiwizować. Fork odpada: GitHub nie pozwala forkować do tej samej organizacji. | przyjęte |
 | D21 | Ekran | Wygląd bez zmian. Tylko po polsku. | przyjęte |
-| D22 | Język panelu | Dziś panel ma tłumaczenie angielskie (według języka przeglądarki). Propozycja: w wersji 2 tylko polski, teksty w jednym pliku, żeby łatwo dodać angielski później. | propozycja, do potwierdzenia |
+| D22 | Język panelu | Panel po polsku i po angielsku, jak dziś. Język z wyboru użytkownika (zapamiętany w profilu), a domyślnie z języka przeglądarki. Ekran tylko po polsku (D21). | przyjęte |
 | D23 | Kopie zapasowe | Bez automatycznych kopii: brak istotnych danych. `ddd backup` jako prosta komenda na żądanie. | przyjęte |
 | D18 | Hosting | Serwer w szkole, dostępny tylko w sieci wewnętrznej; utrzymują go uczniowie lub informatyk. | przyjęte |
 
@@ -70,7 +71,7 @@ Nowa wersja DoDomuDojadę powstaje w Pythonie, w **nowym repozytorium**. Obecne 
 ## Struktura nowego repozytorium
 
 ```
-ddd/
+DoDomuDojade-v2/
 ├── docker-compose.yml        # db, api, web
 ├── .env.example
 ├── ddd                       # skrypt CLI (bash) — patrz niżej
@@ -86,6 +87,7 @@ ddd/
 │       │   ├── db.py         # silnik, sesja, Base
 │       │   ├── auth.py       # sesja, CSRF, current_user, role
 │       │   ├── errors.py     # koperta błędu
+│       │   ├── i18n.py       # tłumaczenia komunikatów API (pl, en)
 │       │   ├── events.py     # zapis zdarzeń + broker SSE
 │       │   └── scheduler.py  # zadania cykliczne
 │       ├── announcements/    # models.py, schemas.py, service.py, router.py
@@ -105,7 +107,7 @@ ddd/
     ├── Caddyfile
     ├── display/              # index.html + display.js (ekran)
     ├── panel/                # strony panelu (HTML) + ich komponenty Alpine (.js)
-    └── shared/               # api.js (klient API, CSRF), komponenty, style, alpine.min.js
+    └── shared/               # api.js (klient API, CSRF), i18n.js + locales/pl.json, en.json, komponenty, style, alpine.min.js
 ```
 
 Każdy moduł funkcji ma te same cztery pliki: `models.py` (tabele ORM), `schemas.py` (Pydantic: wejście i wyjście API), `service.py` (logika i reguły), `router.py` (endpointy). Nie ma interfejsów repozytoriów, use case'ów w osobnych klasach ani kontenera DI — wystarczy `Depends()`.
@@ -266,6 +268,7 @@ Ogólne:
 - Limity pól pobierane z `GET /api/config` — jedno źródło prawdy dla frontendu i backendu.
 - Wygaśnięcie sesji → przekierowanie na logowanie z powrotem na tę samą stronę.
 - Działanie na telefonie.
+- Dwa języki (D22): wszystkie teksty panelu w `frontend/shared/locales/{pl,en}.json`, komunikaty błędów API tłumaczone po kluczu (jak dziś w `resources/lang`). Przełącznik języka w profilu; wybór zapisany przy koncie (kolumna `users.locale`).
 
 Ogłoszenia (na podstawie analizy obecnych błędów edycji):
 
@@ -287,7 +290,7 @@ Nowy, uporządkowany schemat tworzony przez Alembic:
 
 | Tabela | Zmiany względem obecnej bazy |
 |---|---|
-| `users` | + `role` (`admin`/`moderator`), + `google_sub` (później); `timestamptz`. |
+| `users` | + `role` (`admin`/`moderator`), + `locale` (`pl`/`en`), + `google_sub` (później); `timestamptz`. |
 | `announcements` | bez kolumny `date`; `created_at`, `decided_at` jako `timestamptz`; `decided_by` z kluczem obcym; status jako `text` z CHECK. |
 | `countdowns` | `count_to` jako `timestamptz` (z godziną). |
 | `modules` | okna czasowe mogą przechodzić przez północ (`start_time > end_time` oznacza noc). |
