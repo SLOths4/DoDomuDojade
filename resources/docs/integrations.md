@@ -56,7 +56,7 @@ Plik: `src/Infrastructure/ExternalApi/Calendar/CalendarService.php`.
 ## Cytat dnia
 
 !!! danger "Nie działa"
-    `quotes-api-self.vercel.app` zwraca `404 DEPLOYMENT_NOT_FOUND` (sprawdzone 2026-10-27). Zamienniki: [plan migracji](python-migration.md#cytat-dnia).
+    `quotes-api-self.vercel.app` zwraca `404 DEPLOYMENT_NOT_FOUND` (sprawdzone 2026-10-27). Zamienniki: [plan migracji](python-migration.md#cytat-i-sowo-dnia).
 
 - `GET QUOTE_API_URL` → wymagane pola `quote`, `author`.
 - Wywoływane tylko z CLI `quote:fetch`, zapis do tabeli `quote`, publikacja zdarzenia `quote.created`.
@@ -64,7 +64,7 @@ Plik: `src/Infrastructure/ExternalApi/Calendar/CalendarService.php`.
 ## Słowo dnia
 
 !!! warning
-    `api.wotd.site` działało w dniu analizy, ale to prywatny serwis bez gwarancji; odrzuca daty z przyszłości (liczy w UTC). Zapasowe źródła: [plan migracji](python-migration.md#sowo-dnia).
+    `api.wotd.site` działało w dniu analizy, ale to prywatny serwis bez gwarancji; odrzuca daty z przyszłości (liczy w UTC). Zapasowe źródła: [plan migracji](python-migration.md#cytat-i-sowo-dnia).
 
 - `GET WORD_API_URL + YYYY-MM-DD` (data w **UTC**) → wymagane pola `word`, `ipa`, `definition`.
 - Wywoływane tylko z CLI `word:fetch`, zapis do tabeli `word` (bez zdarzenia).

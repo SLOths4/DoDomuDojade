@@ -4,6 +4,7 @@
 
 | Wersja | Data | Zmiany |
 |---|---|---|
+| 2.2 | 2026-10-27 | Odpowiedzi twórcy na pytania otwarte: ekran na Raspberry Pi 4 z Firefoksem, serwer w szkole tylko w sieci wewnętrznej, start z czystą bazą (bez importu danych), osobne repozytorium w `SLOths4` z tą samą licencją, ekran bez zmian i tylko po polsku. Odjazdy autobusów i tramwajów ze wszystkich 8 słupków AWF. Cytat i słowo z projektów Wikimedia, na zmianę po polsku i angielsku. Frontend na Alpine.js zamiast Vue. |
 | 2.1 | 2026-10-27 | Dostosowanie do nowego `main`: K1–K3 naprawione w PHP; import uwzględnia tabelę `event`, `must_change_password` i stare kolumny `announcement.date`; wymaganie wymuszonej zmiany hasła z blokadą innych akcji do czasu zmiany. |
 | 2.0 | 2026-10-27 | Uwzględnione odpowiedzi twórcy: nowe repozytorium, przełączenie jednorazowe, bez dalszych prac nad PHP, ORM, Docker, uproszczona architektura, oddzielny frontend, SSE, przeprojektowany panel, role, tramwaje z GTFS/GTFS-RT, nowe źródła cytatu i słowa dnia, wymagania dla edycji ogłoszeń. |
 | 1.0 | 2026-10-27 | Pierwsze wydanie: wstępny plan migracji na podstawie analizy kodu. |
@@ -14,16 +15,16 @@ Nowa wersja DoDomuDojadę powstaje w Pythonie, w **nowym repozytorium**. Obecne 
 
 1. **Ultra prosty start.** `git clone`, `cp .env.example .env`, `docker compose up` — i działa. Bez ręcznego tworzenia bazy, crona ani budowania frontendu.
 2. **Prosta architektura.** Moduły per funkcja zamiast czterech warstw DDD, interfejsów repozytoriów i własnego kontenera DI.
-3. **Frontend oddzielony od backendu.** Backend to wyłącznie JSON API, frontend to osobna aplikacja budowana do plików statycznych.
+3. **Frontend oddzielony od backendu.** Backend to wyłącznie JSON API, frontend to osobny katalog ze statycznymi stronami HTML i komponentami Alpine.js, serwowany przez Caddy.
 4. **Ekran na żywo.** Ekran dostaje zmiany przez SSE zamiast odpytywać serwer co kilka sekund.
-5. **Przełączenie jednorazowe.** Nowa wersja jest budowana i testowana obok starej (na kopii danych), a na produkcję trafia w całości, gdy wszystko działa.
+5. **Przełączenie jednorazowe.** Nowa wersja jest budowana i testowana obok starej (z prawdziwą konfiguracją, na ekranie testowym), a na produkcję trafia w całości, gdy wszystko działa.
 
 ## Decyzje
 
 | # | Temat | Decyzja | Status |
 |---|---|---|---|
 | D1 | Repozytorium | Nowe repozytorium; obecne zarchiwizowane po przełączeniu. | przyjęte |
-| D2 | Przełączenie | Jednorazowe, po pełnych testach na kopii danych. | przyjęte |
+| D2 | Przełączenie | Jednorazowe, po pełnych testach z prawdziwą konfiguracją. | przyjęte |
 | D3 | Prace nad PHP | Brak. Priorytetem jest migracja. | przyjęte |
 | D4 | Dostęp do bazy | SQLAlchemy 2 ORM (zespół go zna). | przyjęte |
 | D5 | Konfiguracja | Nazwy tabel i formaty dat jako stałe w kodzie; w `.env` tylko sekrety, adresy i ustawienia wdrożenia. | przyjęte |
@@ -35,11 +36,16 @@ Nowa wersja DoDomuDojadę powstaje w Pythonie, w **nowym repozytorium**. Obecne 
 | D11 | Tramwaje | Oficjalne dane ZTM: GTFS + GTFS-RT zamiast `method.vm`. | przyjęte |
 | D12 | CLI | Uproszczone, jeden skrypt `ddd`. | przyjęte |
 | D13 | Role | Admin i moderator od początku; logowanie Google w późniejszym etapie. | przyjęte |
-| D14 | Framework frontendu | Propozycja: **Vue 3 + Vite + TypeScript + Tailwind 4**. Składnia Vue jest bardzo bliska Alpine.js, a komponenty ułatwią spójny panel. | do potwierdzenia |
-| D15 | Język cytatu i słowa dnia | Polski (Wikicytaty, Wikisłownik) czy angielski (ZenQuotes, wotd.site)? | do decyzji |
-| D16 | Linie na ekranie | Tylko tramwaje czy wszystkie linie z przystanków (jak dziś)? | do decyzji |
+| D14 | Framework frontendu | **Alpine.js + Tailwind CSS 4, bez frameworka SPA i bez bundlera.** Zespół zna Alpine, kod ekranu w dużej części przechodzi bez zmian, uczniom łatwiej to utrzymać. Vue dopiero, gdy panel mocno się rozrośnie. | rekomendacja, do potwierdzenia |
+| D15 | Cytat i słowo dnia | Projekty Wikimedia, na zmianę: jeden dzień po polsku, następny po angielsku. | przyjęte |
+| D16 | Odjazdy | Autobusy i tramwaje ze wszystkich słupków przystanku AWF (8 słupków w GTFS). | przyjęte |
 | D17 | Logowanie Google | Domena Google Workspace szkoły i domyślna rola nowych kont. | do decyzji (etap późniejszy) |
-| D18 | Hosting | Serwer z Dockerem — gdzie i kto nim zarządza? | do decyzji |
+| D19 | Dane ze starej wersji | Nie są przenoszone: baza nie zawiera istotnych danych. Przenoszona jest tylko konfiguracja (klucze API, konto serwisowe Google, id kalendarza). | przyjęte |
+| D20 | Nazwa repozytorium | Nowe repozytorium w organizacji `SLOths4`, licencja CC BY-NC 4.0 jak dotąd. Propozycja nazwy: `DoDomuDojade2`; po przełączeniu stare można przemianować na `DoDomuDojade-php` i zarchiwizować. Fork nie wchodzi w grę: GitHub nie pozwala forkować repozytorium do tej samej organizacji, a fork ciągnąłby całą historię PHP. | przyjęte, nazwa do potwierdzenia |
+| D21 | Ekran | Wygląd bez zmian. Tylko po polsku. | przyjęte |
+| D22 | Język panelu | Dziś panel ma tłumaczenie angielskie (według języka przeglądarki). Propozycja: w wersji 2 tylko polski, teksty w jednym pliku, żeby łatwo dodać angielski później. | propozycja, do potwierdzenia |
+| D23 | Kopie zapasowe | Bez automatycznych kopii: brak istotnych danych. `ddd backup` jako prosta komenda na żądanie. | przyjęte |
+| D18 | Hosting | Serwer w szkole, dostępny tylko w sieci wewnętrznej; utrzymują go uczniowie lub informatyk. | przyjęte |
 
 ## Stos
 
@@ -56,9 +62,9 @@ Nowa wersja DoDomuDojadę powstaje w Pythonie, w **nowym repozytorium**. Obecne 
 | Hasła | bcrypt (czyta istniejące hashe `$2y$`) |
 | Logowanie Google (później) | Authlib (OpenID Connect) |
 | CLI | Typer |
-| Frontend | Vue 3, Vite, TypeScript, Tailwind CSS 4 (D14) |
-| Serwer WWW | **Caddy** (pliki statyczne frontendu + proxy do API, HTTPS automatycznie) |
-| Jakość | pytest, ruff, mypy; Vitest dla frontendu; GitHub Actions |
+| Frontend | Alpine.js (przypięta wersja w repozytorium, nie z CDN), Tailwind CSS 4, moduły ES bez bundlera (D14) |
+| Serwer WWW | **Caddy** (pliki statyczne frontendu + proxy do API) |
+| Jakość | pytest, ruff, mypy; GitHub Actions |
 | Uruchamianie | Docker Compose |
 
 ## Struktura nowego repozytorium
@@ -93,15 +99,13 @@ ddd/
 │       │   ├── calendar.py
 │       │   ├── quote.py      # łańcuch źródeł
 │       │   └── word.py
-│       ├── cli.py
-│       └── legacy_import.py  # jednorazowy import danych ze starej bazy
+│       └── cli.py
 └── frontend/
-    ├── Dockerfile            # build Vite → Caddy
+    ├── Dockerfile            # build Tailwind → obraz Caddy
     ├── Caddyfile
-    └── src/
-        ├── display/          # ekran
-        ├── panel/            # panel administracyjny
-        └── shared/           # klient API, komponenty, style
+    ├── display/              # index.html + display.js (ekran)
+    ├── panel/                # strony panelu (HTML) + ich komponenty Alpine (.js)
+    └── shared/               # api.js (klient API, CSRF), komponenty, style, alpine.min.js
 ```
 
 Każdy moduł funkcji ma te same cztery pliki: `models.py` (tabele ORM), `schemas.py` (Pydantic: wejście i wyjście API), `service.py` (logika i reguły), `router.py` (endpointy). Nie ma interfejsów repozytoriów, use case'ów w osobnych klasach ani kontenera DI — wystarczy `Depends()`.
@@ -137,7 +141,7 @@ Jeden skrypt w bashu w katalogu głównym, który przekazuje polecenia do konten
 | `ddd user add <login>` | Nowy użytkownik; hasło pytane interaktywnie, rola `--role admin|moderator`. |
 | `ddd cleanup` | Usunięcie starych odrzuconych ogłoszeń i starych wpisów cache pogody. |
 | `ddd migrate` | Migracje bazy (normalnie automatyczne). |
-| `ddd import-legacy <DATABASE_URL>` | Jednorazowy import danych ze starej bazy. |
+| `ddd backup` | Zrzut bazy do pliku w `./backups` (na żądanie). |
 
 Polecenia kończą się kodem różnym od 0 przy błędzie.
 
@@ -157,7 +161,8 @@ Ponieważ frontend też jest pisany od nowa, kontrakt może zostać uporządkowa
 
 Bezpieczeństwo:
 
-- Ciasteczko sesji `HttpOnly`, `Secure`, `SameSite=Lax`; bez wiązania z adresem IP.
+- Ciasteczko sesji `HttpOnly`, `SameSite=Lax` (oraz `Secure`, gdy działa HTTPS); bez wiązania z adresem IP.
+- Serwer jest dostępny tylko w sieci szkolnej. Na start wystarczy HTTP w sieci wewnętrznej; HTTPS przez Caddy z certyfikatem wewnętrznym albo z prawdziwej domeny (wyzwanie DNS), gdy dojdzie logowanie Google.
 - CSRF: token w nagłówku `X-CSRF-Token` dla metod zmieniających stan.
 - Niezalogowane wywołanie API → **401** w JSON (nie przekierowanie).
 - Limit prób logowania.
@@ -174,6 +179,8 @@ Bezpieczeństwo:
 Kolumna `role` w tabeli `users` od początku.
 
 Wymuszona zmiana hasła (`must_change_password`, wprowadzona w PHP w październiku 2026) zostaje: konto z tą flagą może wyłącznie zmienić własne hasło i się wylogować — w PHP może dziś zarządzać innymi użytkownikami (B19 w [Stanie projektu](current-state.md)). Zmiana hasła innej osobie wymaga roli admin i ustawia jej tę flagę. Logowanie Google (późniejszy etap): OpenID Connect przez Authlib, dostęp tylko dla kont z domeny szkoły (`hd`), konto tworzone automatycznie przy pierwszym logowaniu z rolą domyślną (D17).
+
+Logowanie Google **nie wymaga wystawienia serwera do internetu**. Google nie łączy się z serwerem: przekierowanie na adres zwrotny (callback) robi przeglądarka użytkownika, a serwer sam wysyła zapytanie do Google. Google wymaga jednak, żeby adres zwrotny był domeną z publiczną końcówką (np. `ekran.szkola.pl`), a nie adresem IP — wystarczy, że ta domena rozwiązuje się na serwer w sieci szkolnej. Logowanie nauczycieli spoza szkoły wymagałoby już udostępnienia serwera na zewnątrz.
 
 ## Ekran na żywo (SSE)
 
@@ -210,7 +217,7 @@ Warunki ZTM: podać źródło i datę aktualizacji danych, nie używać logo ZTM
 
 Najważniejsze fakty (sprawdzone na danych z 2026-10-27):
 
-- `stops.txt` ma kolumnę `stop_code` z symbolami PEKA (`AWF41` → `stop_id 172`), więc konfiguracja przystanków zostaje taka sama.
+- `stops.txt` ma kolumnę `stop_code` z symbolami PEKA (`AWF41` → `stop_id 172`). Przystanek AWF ma 8 słupków o nazwie `AWF`: `AWF01`–`AWF05`, `AWF41`, `AWF42`, `AWF73` (stan na 2026-10-27). Konfiguracja: `STOP_NAME=AWF` wybiera wszystkie słupki o tej nazwie, więc nowy słupek pojawi się sam; opcjonalnie `STOP_CODES` do zawężenia.
 - `calendar_dates.txt` jest pusty, ale kod musi go obsłużyć.
 - Godziny po północy zapisane są jako `24:02:00` itd.
 - TripUpdates mają po jednym `stop_time_update` na kurs, tylko z `arrival.delay` — opóźnienie trzeba przenieść na dalsze przystanki.
@@ -218,36 +225,29 @@ Najważniejsze fakty (sprawdzone na danych z 2026-10-27):
 
 Algorytm:
 
-1. Z GTFS wczytać: `stop_code → stop_id`, `trips`, `routes`, `calendar`, `calendar_dates` i `stop_times` tylko dla skonfigurowanych przystanków.
+1. Z GTFS wczytać: słupki o nazwie `STOP_NAME` (`stop_name → [stop_id]`), `trips`, `routes`, `calendar`, `calendar_dates` i `stop_times` tylko dla skonfigurowanych przystanków.
 2. Aktywne usługi dla dwóch dni serwisowych: dziś i wczoraj (kursy po północy). Czas odjazdu = `północ dnia serwisowego (Europe/Warsaw) + sekundy z stop_times`.
 3. Kandydaci z oknem `[teraz − 2 min, teraz + 90 min]`, bez przystanków tylko wysiadkowych (`pickup_type = 1`).
 4. Opóźnienie z RT: jeśli kurs jest w RT i jego bieżący `stop_sequence ≤` sekwencji przystanku → czas + opóźnienie; jeśli pojazd już minął przystanek → pomiń; brak w RT → czas rozkładowy.
-5. Wynik `{stopId, line, minutes, direction, realtime}`, posortowany po minutach. Z `stop_headsign` usunąć znak `!` (oznaczenie objazdu).
+5. Wynik `{stopCode, line, minutes, direction, realtime}`, posortowany po minutach, autobusy i tramwaje (D16). Z `stop_headsign` usunąć znak `!` (oznaczenie objazdu).
 
 Zapas: RT starszy niż 3 min → czasy rozkładowe; brak GTFS → `status: empty`.
 
-### Cytat dnia
+### Cytat i słowo dnia
 
-Obecne źródło nie działa (`quotes-api-self.vercel.app` zwraca `DEPLOYMENT_NOT_FOUND`). Łańcuch źródeł, pierwsze działające wygrywa:
+Obecne źródło cytatów nie działa (`quotes-api-self.vercel.app` zwraca `DEPLOYMENT_NOT_FOUND`), a słowo dnia pochodzi z prywatnego serwisu bez gwarancji. Nowa wersja korzysta z projektów Wikimedia (D15): darmowe, stabilne, bez klucza API.
 
-| Kolejność | Wersja angielska | Wersja polska (D15) |
+Język zmienia się co dzień: dni o parzystym numerze (`data.toordinal() % 2 == 0`) po polsku, nieparzyste po angielsku. Cytat i słowo danego dnia są w tym samym języku.
+
+| | Po polsku | Po angielsku |
 |---|---|---|
-| 1 | ZenQuotes `GET https://zenquotes.io/api/today` → `[0].q`, `[0].a` | Wikicytaty: `Szablon:Cytat_dnia/{dzień}_{miesiąc}` (`action=raw`) |
-| 2 | lokalny `data/quotes.json` | lokalny `data/quotes.json` |
+| Cytat | Wikicytaty: `pl.wikiquote.org`, strona `Szablon:Cytat_dnia/{dzień}_{miesiąc w dopełniaczu}` (np. `27_października`). Tekst między `'''''…'''''`, autor z `[[…]]`. | Wikiquote: `en.wikiquote.org`, strona `Wikiquote:Quote_of_the_day/{Month}_{D},_{YYYY}` (np. `October_27,_2026`). Parametry szablonu `quote=` i `author=`. |
+| Słowo | Wikisłownik: `pl.wiktionary.org`, strona `Wikisłownik:Słowo_dnia/Rozkład/YYYY/MM/DD`. Parametry `hasło`, `wymowa` (`{{IPA|…}}`), pierwsza definicja `(1.1)` ze `znaczenie`. | Wiktionary: `en.wiktionary.org`, strona `Wiktionary:Word_of_the_day/YYYY/Month_D`. Szablon `{{WOTD|słowo|część mowy|definicja}}`; wymowa z `api.dictionaryapi.dev/api/v2/entries/en/{słowo}` (`[0].phonetic`), jeśli jest. |
+| Zapas | lokalny `data/quotes_pl.json`, `data/words_pl.json` | lokalny `data/quotes_en.json`, `data/words_en.json` |
 
-ZenQuotes wymaga podpisu „Quotes provided by ZenQuotes API”, Wikicytaty — „Wikicytaty, CC BY-SA”. Zapytania do Wikimedia muszą mieć nagłówek `User-Agent` z kontaktem.
+Wszystkie strony pobierane są przez `index.php?title=…&action=raw` (sprawdzone 2026-10-27, odpowiedź 200). Wymagania Wikimedia: nagłówek `User-Agent` z nazwą aplikacji i adresem kontaktowym. Licencja CC BY-SA: na ekranie mały podpis źródła („Wikicytaty”, „Wikisłownik”, „Wikiquote”, „Wiktionary”). Wikitekst czyścić biblioteką `mwparserfromhell`.
 
-### Słowo dnia
-
-`api.wotd.site` w dniu analizy działało, ale to prywatny serwis bez gwarancji i odrzuca daty z przyszłości (liczy w UTC).
-
-| Kolejność | Wersja angielska | Wersja polska (D15) |
-|---|---|---|
-| 1 | `https://api.wotd.site/query?date=YYYY-MM-DD` (data UTC) | Wikisłownik: `Wikisłownik:Słowo_dnia/Rozkład/YYYY/MM/DD` (`action=raw`) |
-| 2 | Wiktionary `Word_of_the_day/YYYY/Month_D` + wymowa z `api.dictionaryapi.dev` | – |
-| 3 | lokalny `data/words.json` | lokalny `data/words.json` |
-
-Lokalne listy (~366 pozycji) wybierane są według daty: `items[data.toordinal() % len(items)]`. Działają bez sieci.
+Lokalne listy (~366 pozycji na język) wybierane są według daty i działają bez sieci.
 
 ### Pogoda (IMGW + Airly)
 
@@ -295,13 +295,7 @@ Nowy, uporządkowany schemat tworzony przez Alembic:
 | `weather` | jeden wiersz z ostatnim wynikiem zamiast historii. |
 | `events` | `id bigserial` (numer zdarzenia dla SSE), `type`, `payload jsonb`, `created_at`. |
 
-Import ze starej bazy (`ddd import-legacy`): użytkownicy z hashami haseł (stare hasła działają, z zachowaniem obcinania spacji) i flagą `must_change_password`, ogłoszenia, odliczania, ustawienia modułów. Wszyscy importowani użytkownicy dostają rolę `admin`. Cache pogody i zdarzenia (tabela `event`, w starszych bazach `events`) nie są przenoszone.
-
-Stare bazy różnią się w zależności od tego, które migracje wgrano. Import musi obsłużyć:
-
-- `announcement.created_at` jako `date` (migracja `architecture_enhancements_001.sql`) albo `timestamp` (obecny `schema.sql`); brakującą godzinę uzupełnić `00:00` czasu warszawskiego;
-- obecną lub brakującą kolumnę `announcement.date` (usunięta z `schema.sql`, ale żadna migracja jej nie usuwa);
-- obecną lub brakującą kolumnę `user.must_change_password`.
+Danych ze starej bazy nie przenosimy (D19). Nowa instalacja startuje z pustą bazą; konta tworzy się przez `ddd user add`. Ze starego serwera przenoszona jest tylko konfiguracja: klucz Airly, plik konta serwisowego Google i id kalendarza (do pobrania z obecnego serwera, np. przez tunel SSH).
 
 ## Etapy
 
@@ -325,7 +319,7 @@ Stare bazy różnią się w zależności od tego, które migracje wgrano. Import
 ### Etap 3 — ekran
 
 - [ ] Endpointy `/api/display/*` i strumień SSE.
-- [ ] Frontend ekranu (przeniesiony układ obecnego ekranu, SSE z zapasowym odpytywaniem).
+- [ ] Frontend ekranu (obecny układ bez zmian, SSE z zapasowym odpytywaniem), test na Raspberry Pi 4 z Firefoksem.
 
 ### Etap 4 — panel
 
@@ -333,8 +327,9 @@ Stare bazy różnią się w zależności od tego, które migracje wgrano. Import
 
 ### Etap 5 — przełączenie
 
-- [ ] Import danych z kopii produkcyjnej bazy, testy na nich.
-- [ ] Wdrożenie na serwer (D18), przełączenie domeny, obserwacja.
+- [ ] Przeniesienie konfiguracji (klucze, konto serwisowe Google) z obecnego serwera.
+- [ ] Utworzenie kont, ustawienie modułów, testy na ekranie Raspberry Pi.
+- [ ] Wdrożenie na serwer szkolny, przełączenie adresu, który otwiera Firefox na ekranie; obserwacja.
 - [ ] Archiwizacja starego repozytorium.
 
 ### Później
@@ -345,10 +340,8 @@ Stare bazy różnią się w zależności od tego, które migracje wgrano. Import
 
 | Temat | Szczegół |
 |---|---|
-| Hasła | Stary kod obcina spacje z hasła przed hashowaniem i sprawdzeniem. Import i logowanie muszą robić to samo dla importowanych kont. |
-| Sesje | Sesji PHP nie da się przenieść — po przełączeniu wszyscy logują się ponownie. |
-| Strefa czasowa | Wszystko w `Europe/Warsaw` dla logiki, `timestamptz` w bazie. Stare kolumny bez strefy importować jako czas warszawski. |
-| Id ogłoszeń | Stare id `ann_…` (tekst). W nowym schemacie można przejść na UUID i zapisać stare id w kolumnie pomocniczej na czas importu. |
-| Nazwy modułów | W starej bazie mogą występować `announcements` (l. mnoga) — import musi to znormalizować. |
-| Wersje schematu | Produkcyjna baza może mieć dowolną kombinację wgranych migracji — przed importem sprawdzić kolumny w `information_schema` i przetestować import na kopii produkcji. |
+| Ekran | Raspberry Pi 4 z Firefoksem w trybie bez interfejsu. Unikać ciężkich animacji; SSE musi samo wznawiać połączenie po restarcie serwera lub zerwaniu sieci, a strona przeładować się po dłuższej awarii — nikt nie kliknie „odśwież”. |
+| Sesje | Po przełączeniu wszyscy logują się ponownie, a konta trzeba utworzyć od nowa. |
+| Strefa czasowa | Wszystko w `Europe/Warsaw` dla logiki, `timestamptz` w bazie. |
 | ZTM | Format danych może się zmienić bez uprzedzenia — testy na zapisanych feedach i czytelne logi przy błędzie parsowania. |
+| Wikimedia | Strony dnia bywają uzupełniane z wyprzedzeniem, ale nie zawsze — zawsze mieć lokalny zapas. |
