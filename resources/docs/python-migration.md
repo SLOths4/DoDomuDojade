@@ -4,6 +4,7 @@
 
 | Wersja | Data | Zmiany |
 |---|---|---|
+| 2.1 | 2026-10-27 | Dostosowanie do nowego `main`: K1–K3 naprawione w PHP; import uwzględnia tabelę `event`, `must_change_password` i stare kolumny `announcement.date`; wymaganie wymuszonej zmiany hasła z blokadą innych akcji do czasu zmiany. |
 | 2.0 | 2026-10-27 | Uwzględnione odpowiedzi twórcy: nowe repozytorium, przełączenie jednorazowe, bez dalszych prac nad PHP, ORM, Docker, uproszczona architektura, oddzielny frontend, SSE, przeprojektowany panel, role, tramwaje z GTFS/GTFS-RT, nowe źródła cytatu i słowa dnia, wymagania dla edycji ogłoszeń. |
 | 1.0 | 2026-10-27 | Pierwsze wydanie: wstępny plan migracji na podstawie analizy kodu. |
 
@@ -170,7 +171,9 @@ Bezpieczeństwo:
 | Moduły ekranu (włączanie, godziny) | nie | tak |
 | Użytkownicy i role | nie | tak |
 
-Kolumna `role` w tabeli `users` od początku. Logowanie Google (późniejszy etap): OpenID Connect przez Authlib, dostęp tylko dla kont z domeny szkoły (`hd`), konto tworzone automatycznie przy pierwszym logowaniu z rolą domyślną (D17).
+Kolumna `role` w tabeli `users` od początku.
+
+Wymuszona zmiana hasła (`must_change_password`, wprowadzona w PHP w październiku 2026) zostaje: konto z tą flagą może wyłącznie zmienić własne hasło i się wylogować — w PHP może dziś zarządzać innymi użytkownikami (B19 w [Stanie projektu](current-state.md)). Zmiana hasła innej osobie wymaga roli admin i ustawia jej tę flagę. Logowanie Google (późniejszy etap): OpenID Connect przez Authlib, dostęp tylko dla kont z domeny szkoły (`hd`), konto tworzone automatycznie przy pierwszym logowaniu z rolą domyślną (D17).
 
 ## Ekran na żywo (SSE)
 
@@ -292,7 +295,13 @@ Nowy, uporządkowany schemat tworzony przez Alembic:
 | `weather` | jeden wiersz z ostatnim wynikiem zamiast historii. |
 | `events` | `id bigserial` (numer zdarzenia dla SSE), `type`, `payload jsonb`, `created_at`. |
 
-Import ze starej bazy (`ddd import-legacy`): użytkownicy z hashami haseł (stare hasła działają, z zachowaniem obcinania spacji), ogłoszenia, odliczania, ustawienia modułów. Wszyscy importowani użytkownicy dostają rolę `admin`. Cache pogody i zdarzenia nie są przenoszone.
+Import ze starej bazy (`ddd import-legacy`): użytkownicy z hashami haseł (stare hasła działają, z zachowaniem obcinania spacji) i flagą `must_change_password`, ogłoszenia, odliczania, ustawienia modułów. Wszyscy importowani użytkownicy dostają rolę `admin`. Cache pogody i zdarzenia (tabela `event`, w starszych bazach `events`) nie są przenoszone.
+
+Stare bazy różnią się w zależności od tego, które migracje wgrano. Import musi obsłużyć:
+
+- `announcement.created_at` jako `date` (migracja `architecture_enhancements_001.sql`) albo `timestamp` (obecny `schema.sql`); brakującą godzinę uzupełnić `00:00` czasu warszawskiego;
+- obecną lub brakującą kolumnę `announcement.date` (usunięta z `schema.sql`, ale żadna migracja jej nie usuwa);
+- obecną lub brakującą kolumnę `user.must_change_password`.
 
 ## Etapy
 
@@ -341,4 +350,5 @@ Import ze starej bazy (`ddd import-legacy`): użytkownicy z hashami haseł (star
 | Strefa czasowa | Wszystko w `Europe/Warsaw` dla logiki, `timestamptz` w bazie. Stare kolumny bez strefy importować jako czas warszawski. |
 | Id ogłoszeń | Stare id `ann_…` (tekst). W nowym schemacie można przejść na UUID i zapisać stare id w kolumnie pomocniczej na czas importu. |
 | Nazwy modułów | W starej bazie mogą występować `announcements` (l. mnoga) — import musi to znormalizować. |
+| Wersje schematu | Produkcyjna baza może mieć dowolną kombinację wgranych migracji — przed importem sprawdzić kolumny w `information_schema` i przetestować import na kopii produkcji. |
 | ZTM | Format danych może się zmienić bez uprzedzenia — testy na zapisanych feedach i czytelne logi przy błędzie parsowania. |

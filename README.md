@@ -66,7 +66,7 @@ Skonfiguruj zmienne środowiskowe:
 cp .env.example .env
 ```
 
-Domyślnie aplikacja korzysta z tabeli użytkowników `user` (zmienna `USER_TABLE_NAME`, domyślnie `user`).
+Aplikacja korzysta z tabeli użytkowników `user` (nazwa jest stała w kodzie; zmienna `USER_TABLE_NAME` nie jest już czytana).
 
 Utwórz bazę danych używając `schema.sql` i użytkownika (tutaj dla przykładu `ddd`):
 

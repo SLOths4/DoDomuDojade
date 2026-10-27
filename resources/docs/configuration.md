@@ -27,34 +27,30 @@ Przy starcie sprawdzane jest, że `ANNOUNCEMENT_MIN_*_LENGTH < ANNOUNCEMENT_MAX_
 | `LOGGING_LEVEL` | `INFO` | W praktyce rozróżniane jest tylko `debug` / reszta. |
 | `TWIG_DEBUG` | `false` | `true/1/yes/on`. |
 | `AIRLY_LOCATION_ID` | `''` | Id lokalizacji Airly (wiodący `/` jest usuwany). |
-| `WEATHER_TABLE_NAME` | `weather` | |
 | `WEATHER_DATE_FORMAT` | `Y-m-d H:i:s` | |
 | `WEATHER_CACHE_TTL_SECONDS` | `900` | TTL cache pogody. |
 | `DB_HOST` | `localhost` | |
 | `DB_PORT` | `5432` | |
 | `DB_NAME` | `dodomudojade` | |
 | `DB_USERNAME`, `DB_PASSWORD` | `''` | W praktyce wymagane. |
-| `ANNOUNCEMENT_TABLE_NAME` | `announcement` | |
 | `ANNOUNCEMENT_DATE_FORMAT` | `Y-m-d` | |
 | `ANNOUNCEMENT_MAX_VALID_DATE` | `+1 year` | Wyrażenie PHP `modify()`. |
 | `ANNOUNCEMENT_DEFAULT_VALID_DATE` | `+30 days` | Ważność propozycji bez daty. |
 | `ANNOUNCEMENT_MIN_TITLE_LENGTH` / `MAX` | `5` / `255` | |
 | `ANNOUNCEMENT_MIN_TEXT_LENGTH` / `MAX` | `10` / `65535` | |
-| `COUNTDOWN_TABLE_NAME` | `countdown` | |
 | `COUNTDOWN_DATE_FORMAT` | `Y-m-d H:i:s` | |
+| `COUNTDOWN_MIN_TITLE_LENGTH` | `3` | |
 | `COUNTDOWN_MAX_TITLE_LENGTH` | `255` | |
-| `MODULE_TABLE_NAME` | `module` | |
 | `MODULE_DATE_FORMAT` | `H:i:s` | |
-| `USER_TABLE_NAME` | `user` | |
 | `USER_DATE_FORMAT` | `Y-m-d` | |
 | `MAX_USERNAME_LENGTH` | `255` | |
 | `MIN_PASSWORD_LENGTH` | `8` | |
 | `STOP_ID` | `''` | Lista przystanków po przecinku, np. `AWF41,AWF05`. |
-| `QUOTE_TABLE_NAME` / `QUOTE_DATE_FORMAT` | `quote` / `Y-m-d` | |
-| `WORD_TABLE_NAME` / `WORD_DATE_FORMAT` | `word` / `Y-m-d` | |
+| `QUOTE_DATE_FORMAT` | `Y-m-d` | |
+| `WORD_DATE_FORMAT` | `Y-m-d` | |
 
 !!! note
-    `.env.example` nie zawiera większości zmiennych opcjonalnych (nazw tabel, limitów długości, `WEATHER_*`, `ANNOUNCEMENT_*`).
+    Nazwy tabel są od października 2026 stałymi w repozytoriach (`TABLE_NAME`); zmienne `*_TABLE_NAME` nie są już czytane. `.env.example` nadal zawiera nieużywane `USER_TABLE_NAME`, a nie zawiera większości zmiennych opcjonalnych (limitów długości, `WEATHER_*`, `ANNOUNCEMENT_*`, `COUNTDOWN_*`).
 
 ## Logi
 

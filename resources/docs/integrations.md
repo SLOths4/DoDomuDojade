@@ -46,12 +46,12 @@ Plik: `src/Infrastructure/ExternalApi/Calendar/CalendarService.php`.
 
 - `google/apiclient`, konto serwisowe z pliku `CALENDAR_API_KEY_PATH`, scope `calendar.readonly`.
 - `events.list(CALENDAR_ID, timeMin = dziś 00:00, timeMax = jutro 00:00, orderBy = startTime, singleEvents = true)`.
-- Mapowanie: `{summary, description, start: "d.m.Y H:i", end: "H:i"}`.
+- `CalendarService` (implementuje `CalendarServiceInterface`) mapuje wydarzenia na obiekty `CalendarEvent`: `{summary, description, start: "d.m.Y H:i", end: "H:i"}`. Brak opisu daje pusty string.
 - Każdy wyjątek → `null` (moduł pusty).
 - Brak cache — wywołanie Google API przy każdym odświeżeniu (co 40 s).
 
 !!! bug
-    Wydarzenia całodniowe nie mają `start.dateTime` (tylko `start.date`), więc wyświetlana jest bieżąca godzina.
+    Wydarzenia całodniowe mają tylko `start.date`. Od października 2026 kod używa tej daty (wcześniej pokazywał bieżącą godzinę), ale wynik to `start: "dd.mm.rrrr 00:00"`, `end: "00:00"` — bez oznaczenia „cały dzień”.
 
 ## Cytat dnia
 

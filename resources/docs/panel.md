@@ -119,6 +119,16 @@ Wyświetla stronę zarządzania ogłoszeniami.
     - `decidedAnnouncements` — pozostałe statusy
 4. Renderuje szablon `ANNOUNCEMENTS`
 
+### `profile(): ResponseInterface`
+
+Wyświetla profil zalogowanego użytkownika (`/panel/profile`, alias `/profile`) z odnośnikiem do zmiany hasła.
+
+**Logika**:
+1. Pobiera bieżącego użytkownika z `RequestContext`
+2. Renderuje szablon `PROFILE`
+
+Zmiana hasła odbywa się na stronie `/change-password` (`LoginController::showChangePassword`, szablon `CHANGE_PASSWORD`), która wysyła `POST /api/user/self/change-password`. Na tę stronę `AuthMiddleware` przekierowuje użytkownika z ustawionym `must_change_password`.
+
 ### `modules(): ResponseInterface`
 
 Wyświetla stronę zarządzania modułami.
@@ -172,6 +182,8 @@ Szablony są przechowywane w `src/Presentation/View/templates/` i renderowane pr
 - `COUNTDOWNS` — zarządzanie licznikami
 - `ANNOUNCEMENTS` — zarządzanie ogłoszeniami
 - `MODULES` — zarządzanie modułami
+- `PROFILE` — profil zalogowanego użytkownika
+- `CHANGE_PASSWORD` — zmiana własnego hasła (także wymuszona)
 
 Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/TemplateNames.php`)
 

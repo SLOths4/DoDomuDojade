@@ -102,7 +102,6 @@ Poniżej lista kluczowych zmiennych środowiskowych. Wymagane zmienne muszą by�
 - `TWIG_DEBUG` (domyślnie `false`)
 - `AIRLY_LOCATION_ID` (wymagane do pobierania danych z Airly)
 - `STOP_ID` — lista przystanków, np. `AWF41,AWF05`
-- `USER_TABLE_NAME` (domyślnie `user`) — nazwa tabeli użytkowników
 
 Pełna lista: [Konfiguracja](configuration.md).
 

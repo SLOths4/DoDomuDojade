@@ -37,7 +37,7 @@ Wszystkie endpointy zwracają HTTP 200 i nagłówek `X-Request-Id`:
 | `empty` | Moduł włączony, brak danych (`null`, `[]`, pusty string) | `null` | komunikat |
 | `inactive` | Moduł wyłączony lub poza oknem czasowym | `null` | komunikat (po polsku) |
 
-Przy nieoczekiwanym błędzie (np. brak wiersza modułu w tabeli `module`) zwracana jest [koperta błędu](api.md#formaty-odpowiedzi) z kodem 500.
+Przy błędzie zwracana jest [koperta błędu](api.md#formaty-odpowiedzi): brak wiersza modułu w tabeli `module` daje 404 (`MODULE_NOT_FOUND`), nieoczekiwany wyjątek — 500.
 
 ## Algorytm każdego endpointu
 
@@ -85,12 +85,15 @@ Przy nieoczekiwanym błędzie (np. brak wiersza modułu w tabeli `module`) zwrac
 {
   "status": "active",
   "data": [
-    {"summary": "Zebranie", "description": null, "start": "27.10.2026 21:30", "end": "22:30"}
+    {"summary": "Zebranie", "description": "", "start": "27.10.2026 21:30", "end": "22:30"},
+    {"summary": "Dzień otwarty", "description": "", "start": "27.10.2026 00:00", "end": "00:00"}
   ],
   "message": null,
   "request_id": "…"
 }
 ```
+
+Brak opisu daje pusty string. Wydarzenie całodniowe ma `start` o północy i `end` równe `00:00` (koniec następnego dnia) — frontend nie oznacza go jako całodniowego.
 
 ### `/display/countdown`
 

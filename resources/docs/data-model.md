@@ -4,11 +4,19 @@
 
 Źródło: `schema/schema.sql` + `schema/migrations/*.sql`. Brak narzędzia do migracji — pliki SQL uruchamia się ręcznie.
 
-!!! danger "Schemat i migracje są rozjechane"
-    - Tabela `events` istnieje **tylko** w `migrations/architecture_enhancements_001.sql`. Po instalacji z samego `schema.sql` każda operacja publikująca zdarzenie domenowe kończy się błędem 500.
-    - `announcement.created_at` w `schema.sql` jest `NOT NULL` bez wartości domyślnej, a repozytorium jej nie wstawia. Działa tylko po migracji (`DEFAULT now()`).
+Migracje w `schema/migrations/`:
 
-    Na nowej instalacji uruchom `schema.sql`, a następnie `migrations/architecture_enhancements_001.sql`.
+| Plik | Co robi |
+|---|---|
+| `weather_cache_001.sql` | Tabela `weather` (cache pogody). Zawarta w `schema.sql`. |
+| `architecture_enhancements_001.sql` | Starsze bazy: `announcement.id` → `varchar`, `created_at date DEFAULT now()`, tabela `event`. |
+| `event_store_001.sql` | Tabela `event` (dziennik zdarzeń). Zawarta w `schema.sql`. |
+| `user_password_reset_001.sql` | Kolumna `user.must_change_password`. Zawarta w `schema.sql`. |
+
+Nowa instalacja potrzebuje tylko `schema.sql`.
+
+!!! warning "Aktualizacja istniejącej bazy"
+    Bazy utworzone ze starego `schema.sql` mają w `announcement` kolumnę `date` (`NOT NULL`, bez wartości domyślnej), której kod już nie wypełnia, a żadna migracja jej nie usuwa — INSERT ogłoszenia kończy się wtedy błędem. Przed aktualizacją trzeba ręcznie usunąć kolumnę (`alter table announcement drop column date`) i uruchomić `event_store_001.sql` oraz `user_password_reset_001.sql`. Migracja `architecture_enhancements_001.sql` tworzy `created_at` jako `date`, więc godzina utworzenia nie jest zapisywana.
 
 ```mermaid
 erDiagram
@@ -19,14 +27,14 @@ erDiagram
         varchar username UK
         varchar password_hash
         bool is_active
+        bool must_change_password
         timestamp created_at
     }
     ANNOUNCEMENT {
         varchar id PK
         text title
         text text
-        date date
-        date created_at
+        timestamp created_at
         date valid_until
         int user_id FK
         timestamp decided_at
@@ -64,7 +72,7 @@ erDiagram
         jsonb payload
         timestamp fetched_on
     }
-    EVENTS {
+    EVENT {
         serial id PK
         varchar event_id UK
         varchar event_type
@@ -76,14 +84,14 @@ erDiagram
 
 | Tabela | Ograniczenia i uwagi |
 |---|---|
-| `"user"` | `username` UNIQUE. `is_active` nieużywane w kodzie. Nazwa wymaga cytowania (`user` to słowo zastrzeżone). |
-| `announcement` | FK `user_id → user ON DELETE SET NULL`; CHECK: `decided_at` i `decided_by` oba null albo oba ustawione; CHECK `date <= valid_until`; `decided_by` bez FK. Status to natywny ENUM `announcement_status`. |
+| `"user"` | `username` UNIQUE. `must_change_password` wymusza zmianę hasła po zalogowaniu. `is_active` nieużywane w kodzie. Nazwa wymaga cytowania (`user` to słowo zastrzeżone). |
+| `announcement` | FK `user_id → user ON DELETE SET NULL`; CHECK: `decided_at` i `decided_by` oba null albo oba ustawione; CHECK `created_at::date <= valid_until`; `decided_by` bez FK. Status to natywny ENUM `announcement_status`. |
 | `countdown` | FK `user_id → user ON DELETE CASCADE`. `count_to` ma typ `date` (bez godziny). |
 | `module` | `module_name` UNIQUE; CHECK `start_time < end_time` (okna przez północ niemożliwe). |
 | `word` | `word` UNIQUE — powtórzenie słowa w innym dniu powoduje błąd INSERT. |
 | `quote` | – |
 | `weather` | Cache odpowiedzi API pogody. Wiersze nigdy nie są usuwane. |
-| `events` | Dziennik zdarzeń domenowych (append-only). |
+| `event` | Dziennik zdarzeń domenowych (append-only). |
 
 Wymagane dane startowe w `module` — nazwy **w liczbie pojedynczej**, zgodne z enumem `ModuleName`:
 
@@ -133,7 +141,7 @@ Walidacja (`AnnouncementBusinessValidator`, wartości z `.env`):
 
 Pola: `id`, `title`, `countTo` (data), `userId`.
 
-- Tytuł niepusty, maks. `COUNTDOWN_MAX_TITLE_LENGTH` (255).
+- Tytuł niepusty, od `COUNTDOWN_MIN_TITLE_LENGTH` (3) do `COUNTDOWN_MAX_TITLE_LENGTH` (255) znaków.
 - `countTo >= now` (z godziną — data „dziś” jest odrzucana).
 - Na ekranie wyświetlane jest najbliższe przyszłe odliczanie (`count_to > now`, `LIMIT 1`).
 
@@ -141,7 +149,7 @@ Pola: `id`, `title`, `countTo` (data), `userId`.
 
 Pola: `id`, `moduleName` (`announcement | calendar | countdown | tram | weather | quote | word`), `isActive`, `startTime`, `endTime`.
 
-Moduł jest widoczny, gdy `isActive && startTime <= now <= endTime` (porównanie godzin dnia bieżącego). Brak wiersza modułu w bazie → wyjątek `module.not_found` (500 na Display).
+Moduł jest widoczny, gdy `isActive && startTime <= now <= endTime` (porównanie godzin dnia bieżącego). Brak wiersza modułu w bazie → wyjątek `module.not_found` (404 w kopercie błędu na Display).
 
 Operacje: `toggle()` i `updateSchedule(start, end)` (wymaga `start <= end`).
 
@@ -151,6 +159,7 @@ Operacje: `toggle()` i `updateSchedule(start, end)` (wymaga `start <= end`).
 - `Password`: min. `MIN_PASSWORD_LENGTH` (8) znaków, bcrypt.
 - Nieudane logowanie zawsze zwraca ten sam błąd 401 `auth.invalid_credentials`.
 - Nie można usunąć samego siebie (403).
+- Każdy zalogowany użytkownik może zmienić hasło innemu użytkownikowi; wtedy ustawiane jest `must_change_password = true` i przy następnym logowaniu `AuthMiddleware` przekierowuje go na `/change-password`. Zmiana własnego hasła zeruje flagę.
 
 ### Quote / Word (cytat i słowo dnia)
 
@@ -163,7 +172,7 @@ Cache odczytu (read-through) w tabeli `weather` z TTL `WEATHER_CACHE_TTL_SECONDS
 
 ## Zdarzenia domenowe
 
-Encje zbierają zdarzenia, a use case po zapisie publikuje je przez `SyncEventPublisher` (do 3 prób z backoffem) do tabeli `events`. **Nie ma subskrybentów** — to wyłącznie dziennik audytowy.
+Encje zbierają zdarzenia, a use case po zapisie publikuje je przez `SyncEventPublisher` (do 3 prób z backoffem) do tabeli `event`. **Nie ma subskrybentów** — to wyłącznie dziennik audytowy.
 
 | Agregat | Zdarzenia |
 |---|---|
@@ -179,4 +188,4 @@ Zapis danych i zdarzenia nie są w jednej transakcji — przy awarii zapisu zdar
 ## Czas i strefy
 
 - Wszystkie znaczniki czasu w bazie są „naiwne” (bez strefy) i liczone w domyślnej strefie PHP (`php.ini`). Wyjątek: `DomainEvent.occurredAt` w UTC.
-- Formaty dat są konfigurowalne przez `.env` (`*_DATE_FORMAT`). Domyślne `Y-m-d` powoduje, że kolumny `timestamp` (`user.created_at`, `announcement.decided_at`, `quote/word.fetched_on`) przechowują tylko datę.
+- Formaty dat są konfigurowalne przez `.env` (`*_DATE_FORMAT`). Domyślne `Y-m-d` powoduje, że kolumny `timestamp` `user.created_at` i `quote/word.fetched_on` przechowują tylko datę. `announcement.created_at` i `decided_at` są zapisywane z godziną (format stały w `AnnouncementMapper`).

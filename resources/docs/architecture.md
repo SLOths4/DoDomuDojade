@@ -217,7 +217,7 @@ src/Infrastructure/
 ├── Configuration/   # Konfiguracja i .env
 ├── Container.php    # DI Container (PSR-11, z autowiringiem)
 ├── Container/Providers/ # Rejestracje usług (Shared, User, Announcement, Display)
-├── Event/           # Publikacja zdarzeń domenowych do tabeli events
+├── Event/           # Publikacja zdarzeń domenowych do tabeli event
 ├── Database/        # PDO i obsługa bazy
 ├── ExternalApi/     # Integracje (Tram, Weather, Quote, Word, Calendar)
 ├── Helper/          # Funkcje pomocnicze

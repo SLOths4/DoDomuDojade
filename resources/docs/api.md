@@ -26,7 +26,7 @@ RequestContextMiddleware → ExceptionMiddleware → [AuthMiddleware] → Locale
 |---|---|
 | `RequestContextMiddleware` | Ustawia `scope` = `admin` dla ścieżek `/panel/*`, inaczej `user`. |
 | `ExceptionMiddleware` | Łapie wyjątki i zamienia je na odpowiedź (JSON lub redirect z flash). Szczegóły niżej. |
-| `AuthMiddleware` | Tylko na trasach chronionych. Brak sesji → `302 /login` (także dla wywołań API!). W przeciwnym razie ładuje `User` do kontekstu. |
+| `AuthMiddleware` | Tylko na trasach chronionych. Brak sesji lub niezgodny odcisk → `302 /login` (także dla wywołań API!). W przeciwnym razie ładuje `User` do kontekstu. Jeśli użytkownik ma `must_change_password`, każde żądanie poza `/change-password`, `/logout` i ścieżkami zaczynającymi się od `/api/user` jest przekierowywane na `/change-password`. |
 | `LocaleMiddleware` | Locale `en`/`pl` (domyślnie `en`): `?lang=` → `$_SESSION['locale']` → `Accept-Language` → `en`. |
 | `CsrfMiddleware` | Generuje token; dla POST/PUT/PATCH/DELETE wymaga go w nagłówku `X-CSRF-Token` (lub `X-XSRF-TOKEN`, pole `_token`). Dotyczy też tras publicznych (`/api/authenticate`, `/logout`, `/api/announcement/propose`). |
 
@@ -42,9 +42,11 @@ Legenda: **A** = wymaga `AuthMiddleware`.
 | GET | `/propose` | `HomeController::proposeAnnouncement` | – | `pages/announcement-propose` |
 | GET | `/display` | `DisplayController::index` | – | `pages/display` |
 | GET | `/login` | `LoginController::show` | – | `pages/login` |
+| GET | `/change-password` | `LoginController::showChangePassword` | A | `pages/change-password` |
 | POST | `/logout` | `LoginController::logout` | – | 302 → `/login` |
 | GET | `/panel` | `PanelController::index` | A | `pages/panel` |
 | GET | `/panel/users` | `PanelController::users` | A | `pages/user` |
+| GET | `/panel/profile`, `/profile` | `PanelController::profile` | A | `pages/profile` |
 | GET | `/panel/countdowns` | `PanelController::countdowns` | A | `pages/countdown` |
 | GET | `/panel/announcements` | `PanelController::announcements` | A | `pages/announcement` |
 | GET | `/panel/modules` | `PanelController::modules` | A | `pages/module` |
@@ -58,7 +60,8 @@ Legenda: **A** = wymaga `AuthMiddleware`.
 | POST | `/api/user` | `UserController::add` | A | 201 `{success, message}` |
 | PATCH | `/api/user/{id}` | `UserController::update` | A | 200 `{success, message}` |
 | DELETE | `/api/user/{id}` | `UserController::delete` | A | 204 |
-| POST | `/api/user/{id}/change-password` | `UserController::changePassword` | A | 200 (tylko własne konto) |
+| POST | `/api/user/self/change-password` | `UserController::changePassword` | A | 200; zmiana własnego hasła, zeruje `must_change_password` |
+| POST | `/api/user/{id}/change-password` | `UserController::changePassword` | A | 200; dla cudzego konta ustawia `must_change_password = true` |
 | GET | `/api/announcement` | `AnnouncementController::getAll` | A | 200 `AnnouncementApiDTO[]` |
 | POST | `/api/announcement` | `AnnouncementController::add` | A | 201 |
 | GET | `/api/announcement/{id}` | `AnnouncementController::get` | A | 200 |
@@ -86,7 +89,7 @@ Zawsze surowy JSON (`json_decode(body, true)`):
 | `POST /api/authenticate` | `username`, `password` |
 | `POST /api/user` | `username`, `password` |
 | `PATCH /api/user/{id}` | `username`, opcjonalnie `password` |
-| `POST /api/user/{id}/change-password` | `password` |
+| `POST /api/user/self/change-password`, `POST /api/user/{id}/change-password` | `password` |
 | `POST /api/announcement` | `title`, `text`, `valid_until` |
 | `PATCH /api/announcement/{id}` | `title`, `text`, `valid_until`, opcjonalnie `status` |
 | `POST /api/announcement/propose` | `title`, `text`, opcjonalnie `expires_at` (domyślnie `ANNOUNCEMENT_DEFAULT_VALID_DATE`) |
@@ -141,7 +144,8 @@ Dla żądań nie-JSON błąd trafia do flash (`error`) i następuje `302` na `Re
 - Klucze sesji: `user_id`, `user_ip_hash` (sha256 IP), `user_agent_hash` (sha256 UA), `csrf_token` (64 hex), `flash.success`, `flash.error`, `locale` (tylko odczyt).
 - Logowanie: `session_regenerate_id(true)`, zapis `user_id` z odciskiem IP + User-Agent. Niezgodność odcisku → `session_destroy()`.
 - Hasła: `password_hash(PASSWORD_DEFAULT)` → bcrypt `$2y$`.
-- Brak ról — każdy zalogowany użytkownik może wszystko, poza zmianą cudzego hasła i usunięciem samego siebie.
+- Brak ról — każdy zalogowany użytkownik może wszystko poza usunięciem samego siebie, w tym zmienić hasło innemu użytkownikowi.
+- Wymuszona zmiana hasła: po zmianie cudzego hasła konto dostaje `must_change_password = true`. Po zalogowaniu (`/api/authenticate` zawsze zwraca `redirect: "/panel"`) `AuthMiddleware` przekierowuje na `/change-password`, a formularz wysyła `POST /api/user/self/change-password`.
 - Brak limitu prób logowania.
 
 ## CLI (`bin/app`)
