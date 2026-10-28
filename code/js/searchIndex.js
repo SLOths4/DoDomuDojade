@@ -3946,6 +3946,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Infrastructure-Configuration-Config.html#method_fromEnv"
         },                {
+            "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003AassertMinMax\u0028\u0029",
+            "name": "assertMinMax",
+            "summary": "",
+            "url": "classes/App-Infrastructure-Configuration-Config.html#method_assertMinMax"
+        },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\Config\u003A\u003ArequiredEnv\u0028\u0029",
             "name": "requiredEnv",
             "summary": "Fetches\u0020required\u0020variable\u0020from\u0020.env\u0020and\u0020throws\u0020error\u0020if\u0020not\u0020found",
@@ -4185,6 +4190,11 @@ Search.appendIndex(
             "name": "missingVariable",
             "summary": "Thrown\u0020when\u0020a\u0020variable\u0020is\u0020not\u0020found\u0020in\u0020.env",
             "url": "classes/App-Infrastructure-Configuration-ConfigException.html#method_missingVariable"
+        },                {
+            "fqsen": "\\App\\Infrastructure\\Configuration\\ConfigException\u003A\u003AinvalidRange\u0028\u0029",
+            "name": "invalidRange",
+            "summary": "Thrown\u0020when\u0020min\u0020\u003E\u003D\u0020max\u0020for\u0020a\u0020range\u0020variable\u0020pair",
+            "url": "classes/App-Infrastructure-Configuration-ConfigException.html#method_invalidRange"
         },                {
             "fqsen": "\\App\\Infrastructure\\Configuration\\ConfigException\u003A\u003AloadingFailed\u0028\u0029",
             "name": "loadingFailed",
@@ -6405,11 +6415,6 @@ Search.appendIndex(
             "name": "announcements",
             "summary": "Display\u0020announcement\u0020management\u0020page\nShows\u0020pending\u0020announcements\u0020separately\u0020from\u0020decided\u0020ones",
             "url": "classes/App-Presentation-Http-Controller-PanelController.html#method_announcements"
-        },                {
-            "fqsen": "\\App\\Presentation\\Http\\Controller\\PanelController\u003A\u003A\u0024flash",
-            "name": "flash",
-            "summary": "",
-            "url": "classes/App-Presentation-Http-Controller-PanelController.html#property_flash"
         },                {
             "fqsen": "\\App\\Presentation\\Http\\Controller\\PanelController\u003A\u003A\u0024logger",
             "name": "logger",
