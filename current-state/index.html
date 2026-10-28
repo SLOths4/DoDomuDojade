@@ -1,0 +1,1174 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/current-state/">
+      
+      
+        <link rel="prev" href="../development/">
+      
+      
+        <link rel="next" href="../python-migration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Stan projektu - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#stan-projektu-i-znane-problemy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Stan projektu
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Display
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#podsumowanie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Podsumowanie
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naprawione-na-main-2026-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naprawione na main (2026-10)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problemy-krytyczne-otwarte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problemy krytyczne (otwarte)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bedy-otwarte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Błędy (otwarte)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edycja-ogoszen-w-panelu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edycja ogłoszeń w panelu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bezpieczenstwo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bezpieczeństwo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wydajnosc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wydajność
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#martwy-kod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Martwy kod
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pokrycie-testami" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pokrycie testami
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#podsumowanie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Podsumowanie
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naprawione-na-main-2026-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naprawione na main (2026-10)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problemy-krytyczne-otwarte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problemy krytyczne (otwarte)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bedy-otwarte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Błędy (otwarte)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edycja-ogoszen-w-panelu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edycja ogłoszeń w panelu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bezpieczenstwo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bezpieczeństwo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wydajnosc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wydajność
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#martwy-kod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Martwy kod
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pokrycie-testami" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pokrycie testami
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="stan-projektu-i-znane-problemy">Stan projektu i znane problemy</h1>
+<p>Stan na 2026-10-27 (gałąź <code>main</code> po scaleniu zmian z października 2026, m.in. commit <code>0396c40</code>). Decyzja twórcy: kod PHP nie będzie już poprawiany — otwarte problemy poniżej są listą wymagań dla <a href="../python-migration/">wersji w Pythonie</a>. Analiza obejmuje cały kod <code>src/</code>, szablony, schemat bazy i testy. Aplikacja nie była uruchamiana — wnioski pochodzą z lektury kodu.</p>
+<h2 id="podsumowanie">Podsumowanie</h2>
+<table>
+<thead>
+<tr>
+<th>Obszar</th>
+<th>Stan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kod</td>
+<td>~200 plików PHP 8.5, warstwy Domain / Application / Infrastructure / Presentation, bez frameworka.</td>
+</tr>
+<tr>
+<td>Zależności</td>
+<td>FastRoute, Twig, Monolog, Guzzle PSR-7, Symfony HttpClient, Google API Client, phpdotenv.</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Szablony Twig + Alpine.js inline + Tailwind CSS 4. Brak osobnych plików JS.</td>
+</tr>
+<tr>
+<td>Baza</td>
+<td>PostgreSQL, 8 tabel, migracje ręczne.</td>
+</tr>
+<tr>
+<td>Testy</td>
+<td>16 plików PHPUnit (~37 testów), głównie walidatory i infrastruktura.</td>
+</tr>
+<tr>
+<td>CI</td>
+<td>Tylko budowanie dokumentacji (<code>.github/workflows/docs.yml</code>). Testy i PHPStan nie są uruchamiane w CI.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="naprawione-na-main-2026-10">Naprawione na main (2026-10)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Było</th>
+<th>Jak naprawione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K1</td>
+<td><code>AnnouncementBusinessValidator</code> i <code>CountdownBusinessValidator</code> nie były rejestrowane w kontenerze → 500 przy każdej operacji na ogłoszeniach i odliczaniach.</td>
+<td>Rejestracja w <code>AnnouncementProvider.php:29</code> i <code>SharedProvider.php:119</code>.</td>
+</tr>
+<tr>
+<td>K2</td>
+<td><code>schema.sql</code> nie zawierał tabeli zdarzeń.</td>
+<td>Tabela <code>event</code> (l. pojedyncza) w <code>schema.sql</code>; migracja <code>event_store_001.sql</code> dla istniejących baz.</td>
+</tr>
+<tr>
+<td>K3</td>
+<td>INSERT ogłoszenia pomijał <code>created_at</code>.</td>
+<td><code>AnnouncementMapper::toDatabase</code> zapisuje <code>created_at</code> (pełny timestamp); kolumna <code>date</code> usunięta ze schematu.</td>
+</tr>
+<tr>
+<td>E1</td>
+<td>Cała ścieżka <code>/api/announcement*</code> zwracała 500 (skutek K1).</td>
+<td>Jak K1.</td>
+</tr>
+<tr>
+<td>E5</td>
+<td><code>decided_at</code> zapisywane bez godziny.</td>
+<td><code>AnnouncementMapper</code> zapisuje <code>Y-m-d H:i:s</code>.</td>
+</tr>
+<tr>
+<td>B14</td>
+<td><code>GetCountdownByIdUseCase</code>/<code>GetModuleByIdUseCase</code> dostawały zły typ walidatora.</td>
+<td>Dostają <code>*BusinessValidator</code>.</td>
+</tr>
+<tr>
+<td>–</td>
+<td>Nazwy tabel konfigurowalne przez <code>*_TABLE_NAME</code>.</td>
+<td>Stałe <code>TABLE_NAME</code> w repozytoriach; zmienne usunięte z <code>Config</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Częściowo naprawione:</p>
+<ul>
+<li><strong>B6</strong> — usunięty użytkownik z aktywną sesją nie powoduje już <code>TypeError</code>: <code>PDOUserRepository::findById</code> rzuca <code>EntityNotFoundException</code> (404), które obsługuje <code>ExceptionMiddleware</code>. Sesja nadal nie jest jednak niszczona (brak wylogowania).</li>
+<li><strong>B10</strong> — wydarzenia całodniowe nie pokazują już bieżącej godziny (<code>CalendarService</code> używa <code>start.date</code>, gdy brak <code>dateTime</code>), ale wyświetlają się jako <code>00:00</code>–<code>00:00</code> zamiast „cały dzień”.</li>
+<li><strong>B16</strong> — status jest bindowany jako <code>PARAM_STR</code> w <code>add</code>, <code>update</code>, <code>findPending</code>, <code>deleteRejectedOlderThan</code>; <code>findValid</code> nadal używa <code>PARAM_INT</code> (<code>PDOAnnouncementRepository.php:67</code>).</li>
+</ul>
+<h2 id="problemy-krytyczne-otwarte">Problemy krytyczne (otwarte)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Miejsce</th>
+<th>Skutek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K4</td>
+<td>README na <code>main</code> każe wstawić moduł <code>announcements</code> (l. mnoga), enum oczekuje <code>announcement</code>. Poprawione w README na gałęzi z dokumentacją.</td>
+<td><code>README.md</code>, <code>src/Domain/Module/ModuleName.php</code></td>
+<td>Strona modułów i <code>/display/announcement</code> zwracają błąd.</td>
+</tr>
+<tr>
+<td>K5</td>
+<td>Brak migracji dla istniejących baz: kolumna <code>announcement.date</code> (<code>NOT NULL</code>, bez domyślnej) nie jest usuwana żadną migracją, a kod już jej nie wstawia.</td>
+<td><code>schema/migrations/*</code>, <code>AnnouncementMapper.php</code></td>
+<td>Na bazie utworzonej ze starego <code>schema.sql</code> każdy INSERT ogłoszenia kończy się błędem, dopóki ktoś ręcznie nie usunie kolumny.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bedy-otwarte">Błędy (otwarte)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Miejsce</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>Cache Twig odwrócony: włączony tylko w trybie debug.</td>
+<td><code>src/Infrastructure/Twig/TwigFactory.php:39</code></td>
+</tr>
+<tr>
+<td>B2</td>
+<td><code>UpdateModuleUseCase</code> waliduje <code>startTime</code> zamiast <code>endTime</code>.</td>
+<td><code>src/Application/Module/UseCase/UpdateModuleUseCase.php:73</code></td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Klucz tłumaczeń <code>module_name</code> (pl) vs <code>module_names</code> (en) — w angielskiej wersji nazwy modułów wyświetlają się jako klucze.</td>
+<td><code>resources/lang/en.php:11</code>, <code>resources/lang/pl.php:3</code></td>
+</tr>
+<tr>
+<td>B4</td>
+<td><code>RequestContextMiddleware</code> zapisuje <code>scope</code> w statycznym singletonie, a reszta aplikacji używa instancji z kontenera — <code>scope</code> nigdy nie jest widoczny.</td>
+<td><code>src/Presentation/Http/Middleware/RequestContextMiddleware.php:16</code></td>
+</tr>
+<tr>
+<td>B5</td>
+<td><code>LOGGING_LEVEL=warning/error</code> jest ignorowane (rozróżniane tylko <code>debug</code>).</td>
+<td><code>src/Infrastructure/Logger/LoggerFactory.php:40</code></td>
+</tr>
+<tr>
+<td>B6</td>
+<td>Usunięty użytkownik z aktywną sesją dostaje błąd 404 zamiast wylogowania (patrz wyżej).</td>
+<td><code>AuthMiddleware</code>, <code>AuthenticationService::getCurrentUser</code></td>
+</tr>
+<tr>
+<td>B7</td>
+<td>API zwraca <code>302 /login</code> zamiast 401 dla niezalogowanych wywołań JSON.</td>
+<td><code>AuthMiddleware</code></td>
+</tr>
+<tr>
+<td>B8</td>
+<td>Komendy CLI łapią własne wyjątki — <code>bin/app</code> kończy się kodem 0 także przy błędzie.</td>
+<td><code>src/Console/Commands/*</code></td>
+</tr>
+<tr>
+<td>B9</td>
+<td><code>?lang=</code> nie jest zapisywane w sesji.</td>
+<td><code>LocaleMiddleware</code></td>
+</tr>
+<tr>
+<td>B10</td>
+<td>Wydarzenia całodniowe wyświetlane jako <code>00:00</code>–<code>00:00</code>.</td>
+<td><code>src/Infrastructure/ExternalApi/Calendar/CalendarService.php:87</code></td>
+</tr>
+<tr>
+<td>B11</td>
+<td>Airly parsowane po indeksie tablicy zamiast po nazwie wartości.</td>
+<td><code>src/Infrastructure/ExternalApi/Weather/WeatherService.php:57</code></td>
+</tr>
+<tr>
+<td>B12</td>
+<td><code>Countdown::updateDetails</code> zmienia <code>userId</code>, ale repozytorium go nie zapisuje. <code>findCurrent</code> porównuje kolumnę <code>date</code> z datetime — dzisiejsze odliczanie znika o północy.</td>
+<td><code>PDOCountdownRepository</code></td>
+</tr>
+<tr>
+<td>B13</td>
+<td><code>findValid</code> (<code>valid_until &gt;= dziś</code>) i <code>Announcement::isValid()</code> (<code>now &lt;= valid_until 00:00</code>) różnie traktują dzień wygaśnięcia.</td>
+<td><code>PDOAnnouncementRepository</code>, <code>Announcement</code></td>
+</tr>
+<tr>
+<td>B15</td>
+<td><code>word.word</code> jest UNIQUE — powtórzenie słowa w innym dniu powoduje błąd.</td>
+<td><code>schema/schema.sql</code></td>
+</tr>
+<tr>
+<td>B16</td>
+<td><code>findValid</code> binduje status jako <code>PDO::PARAM_INT</code>.</td>
+<td><code>PDOAnnouncementRepository.php:67</code></td>
+</tr>
+<tr>
+<td>B17</td>
+<td>Brakujące klucze w JSON żądania → warning → <code>ErrorException</code> → 500 zamiast 400 (np. <code>$array['title']</code> bez <code>??</code>).</td>
+<td>DTO w <code>src/Application/*/DTO</code></td>
+</tr>
+<tr>
+<td>B18</td>
+<td><code>display.twig</code>: Alpine <code>3.x.x</code> nieprzypięty, podwójne pobranie odjazdów przy starcie, błąd logiczny <code>if (!this.error.push(...))</code>.</td>
+<td><code>src/Presentation/View/templates/pages/display.twig</code></td>
+</tr>
+<tr>
+<td>B19</td>
+<td>Użytkownik z wymuszoną zmianą hasła (<code>must_change_password</code>) ma dostęp do całego <code>/api/user*</code> (wyjątek po prefiksie), więc przed zmianą własnego hasła może dodawać i usuwać użytkowników oraz zmieniać im hasła.</td>
+<td><code>AuthMiddleware.php:51-55</code></td>
+</tr>
+<tr>
+<td>B20</td>
+<td>Stara migracja <code>architecture_enhancements_001.sql</code> dodaje <code>announcement.created_at</code> jako <code>date</code>, a nowy schemat i kod używają <code>timestamp</code> — bazy po tej migracji tracą godzinę utworzenia.</td>
+<td><code>schema/migrations/architecture_enhancements_001.sql:44</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="edycja-ogoszen-w-panelu">Edycja ogłoszeń w panelu</h2>
+<p>Zgłoszone przez twórcę („przy edycji ogłoszeń coś się psuje”) i prześledzone w kodzie. E1 i E5 są naprawione na <code>main</code> (patrz wyżej); pozostałe nadal występują:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Miejsce</th>
+<th>Objaw</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E2</td>
+<td>Data „ważne do” = dziś jest odrzucana (porównanie północy z <code>now</code>); data walidowana nawet bez zmiany.</td>
+<td><code>AnnouncementBusinessValidator.php</code> (<code>validateValidUntilDate</code>)</td>
+<td>Nie da się ustawić dzisiejszej daty ani poprawić tekstu wygasłego ogłoszenia.</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>Pusta lub błędna data, brak pola <code>title</code> → wyjątek PHP.</td>
+<td><code>EditAnnouncementDTO.php</code> (<code>fromArray</code>)</td>
+<td>500 zamiast 400.</td>
+</tr>
+<tr>
+<td>E4</td>
+<td>Zmiana statusu na PENDING ustawia <code>decided_at/by</code>. Status w edycji omija akcje zatwierdź/odrzuć.</td>
+<td><code>Announcement::update</code>, <code>announcement.twig:217</code></td>
+<td>Oczekujące ogłoszenie ma decydenta.</td>
+</tr>
+<tr>
+<td>E6</td>
+<td>UPDATE zatwierdzony przed zapisem zdarzenia (brak transakcji).</td>
+<td><code>EditAnnouncementUseCase.php</code></td>
+<td>Gdy zapis zdarzenia się nie uda, zmiana jest zapisana, a użytkownik widzi błąd.</td>
+</tr>
+<tr>
+<td>E7</td>
+<td>Limity w formularzu (50/500 znaków) inne niż w backendzie (5–255 / 10–65535).</td>
+<td><code>announcement.twig:200,206</code></td>
+<td>Licznik „620 / 500” dla długich propozycji; krótki tytuł odrzucany dopiero przez serwer.</td>
+</tr>
+<tr>
+<td>E8</td>
+<td>Modal zamyka się także przy błędzie (<code>finally</code>); wygasła sesja daje HTML zamiast JSON.</td>
+<td><code>announcement.twig:524,557</code></td>
+<td>Wpisane zmiany giną; komunikat „Unexpected token &lt;”.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bezpieczenstwo">Bezpieczeństwo</h2>
+<ul>
+<li>Ciasteczko sesji bez jawnych flag <code>HttpOnly</code>/<code>Secure</code>/<code>SameSite</code>.</li>
+<li>Brak limitu prób logowania.</li>
+<li>Brak ról: każdy zalogowany użytkownik może zmienić hasło dowolnemu innemu (po zmianie cudzego hasła ustawiane jest <code>must_change_password</code>).</li>
+<li>Odcisk sesji po IP psuje się za reverse proxy i w sieciach mobilnych.</li>
+<li><code>DatabaseService</code> loguje wartości parametrów na poziomie debug — w tym hashe haseł.</li>
+<li><code>CountdownRepositoryInterface::updateField</code> wstawia nazwę kolumny do SQL bez sanityzacji (martwy kod).</li>
+<li>B19 (wyżej): wymuszona zmiana hasła nie blokuje API użytkowników.</li>
+</ul>
+<h2 id="wydajnosc">Wydajność</h2>
+<ul>
+<li>Brak timeoutów HTTP — zawieszone API blokuje worker PHP na ~60 s.</li>
+<li>Brak cache dla tramwajów i kalendarza; liczba zapytań rośnie liniowo z liczbą ekranów.</li>
+<li>Każdy INSERT/UPDATE wykonuje dodatkowe zapytanie do <code>information_schema</code>.</li>
+<li>N+1 zapytań o autorów ogłoszeń na ekranie.</li>
+<li>Tabela <code>weather</code> rośnie bez końca.</li>
+</ul>
+<h2 id="martwy-kod">Martwy kod</h2>
+<ul>
+<li><code>TramService::getStops/getLines/getRoutes/findMessagesForBollard</code></li>
+<li><code>AnnouncementRepositoryInterface::findPending/findByTitle</code>, <code>UserRepositoryInterface::findByUsernamePartial</code>, <code>CountdownRepositoryInterface::updateField</code></li>
+<li><code>DatabaseService::bulkInsert/getColumn</code></li>
+<li><code>GetUserByUsernameUseCase</code>, <code>GetModuleByIdUseCase</code>, <code>GetCountdownByIdUseCase</code> (zarejestrowane, nieużywane)</li>
+<li>Gałąź <code>/stream</code> i <code>is_callable</code> w <code>public/index.php</code></li>
+<li>Kolumna <code>user.is_active</code></li>
+<li>Zależności <code>phpmailer/phpmailer</code> i npm <code>alpinejs</code></li>
+</ul>
+<h2 id="pokrycie-testami">Pokrycie testami</h2>
+<table>
+<thead>
+<tr>
+<th>Pokryte</th>
+<th>Niepokryte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Walidatory ogłoszeń, odliczań, modułów (przez helpery)</td>
+<td>Wszystkie use case'y zapisujące dane</td>
+</tr>
+<tr>
+<td><code>AnnouncementId</code>, <code>Config</code>, <code>LanguageTranslator</code>, <code>SessionHelper</code>, <code>StaticFileHandlingHelper</code></td>
+<td>Przejścia stanów encji i zdarzenia</td>
+</tr>
+<tr>
+<td><code>SyncEventPublisher</code> (deduplikacja, ponawianie)</td>
+<td>Repozytoria PDO, <code>AnnouncementMapper</code> i SQL</td>
+</tr>
+<tr>
+<td><code>TramService</code>, <code>GetDepartures</code>, <code>GetValidAnnouncements</code>, <code>GetAllUsers</code>, <code>FetchActiveQuote</code></td>
+<td>Cache pogody, widoczność modułów, kalendarz</td>
+</tr>
+<tr>
+<td>Smoke test kontenera</td>
+<td>Kontrolery, middleware (auth, CSRF, wymuszona zmiana hasła), schemat i migracje</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

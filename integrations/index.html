@@ -1,0 +1,852 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/integrations/">
+      
+      
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../display/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Integracje - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#integracje-zewnetrzne" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Integracje
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tramwaje-ztm-poznan-peka" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tramwaje (ZTM Poznań, PEKA)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pogoda-imgw-airly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pogoda (IMGW + Airly)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalendarz-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kalendarz Google
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cytat-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cytat dnia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sowo-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Słowo dnia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nieuzywane-zaleznosci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nieużywane zależności
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Display
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tramwaje-ztm-poznan-peka" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tramwaje (ZTM Poznań, PEKA)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pogoda-imgw-airly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pogoda (IMGW + Airly)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalendarz-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kalendarz Google
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cytat-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cytat dnia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sowo-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Słowo dnia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nieuzywane-zaleznosci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nieużywane zależności
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="integracje-zewnetrzne">Integracje zewnętrzne</h1>
+<p>Wszystkie integracje używają jednego klienta Symfony HttpClient. <strong>Nie ustawiono timeoutów ani ponowień</strong> — obowiązują wartości domyślne (~60 s).</p>
+<h2 id="tramwaje-ztm-poznan-peka">Tramwaje (ZTM Poznań, PEKA)</h2>
+<p>Plik: <code>src/Infrastructure/ExternalApi/Tram/TramService.php</code>.</p>
+<ul>
+<li><code>POST TRAM_URL</code>, <code>Content-Type: application/x-www-form-urlencoded</code>, body <code>method=getTimes&amp;p0={"symbol":"&lt;STOP_ID&gt;"}</code>.</li>
+<li><code>stopId</code> musi pasować do <code>^[A-Z0-9]+$</code>.</li>
+<li>Odpowiedź:<ul>
+<li><code>success === false</code> → błąd <code>apiLogicError(error.message)</code>,</li>
+<li><code>success</code> nie jest obiektem → <code>noDepartureData</code>,</li>
+<li>brak <code>success.times</code> → pusta lista,</li>
+<li>inaczej <code>success.times[] = {line, minutes, direction, …}</code>.</li>
+</ul>
+</li>
+<li><code>GetDeparturesUseCase</code> odpytuje każdy przystanek z <code>STOP_ID</code>, mapuje na <code>{stopId, line, minutes, direction}</code>, łączy i sortuje po <code>minutes</code>. Błąd jednego przystanku jest logowany i pomijany.</li>
+<li>Brak cache — każde odświeżenie ekranu (co 60 s) to N zapytań do PEKA.</li>
+<li>Metody <code>getStops</code>, <code>getLines</code>, <code>getRoutes</code>, <code>findMessagesForBollard</code> są zaimplementowane, ale nieużywane.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Oficjalne źródło</p>
+<p><code>method.vm</code> to nieoficjalne obejście. ZTM udostępnia <a href="https://www.ztm.poznan.pl/otwarte-dane/">otwarte dane</a> w formacie GTFS (rozkład) i GTFS-RT (opóźnienia), bez klucza API. Kolumna <code>stop_code</code> w <code>stops.txt</code> zawiera te same symbole przystanków co PEKA (<code>AWF41</code>). Nowa wersja korzysta z tych danych — patrz <a href="../python-migration/#tramwaje-gtfs-gtfs-rt-ztm-poznan">plan migracji</a>.</p>
+</div>
+<h2 id="pogoda-imgw-airly">Pogoda (IMGW + Airly)</h2>
+<p>Pliki: <code>src/Infrastructure/ExternalApi/Weather/WeatherService.php</code>, <code>src/Application/Display/GetDisplayWeatherUseCase.php</code>.</p>
+<p><strong>IMGW</strong>: <code>GET IMGW_WEATHER_URL</code>. Używane pola: <code>stacja</code>, <code>data_pomiaru</code>, <code>godzina_pomiaru</code>, <code>temperatura</code>, <code>predkosc_wiatru</code>, <code>kierunek_wiatru</code>, <code>wilgotnosc_wzgledna</code>, <code>suma_opadu</code>, <code>cisnienie</code>.</p>
+<p><strong>Airly</strong>: <code>GET {AIRLY_ENDPOINT}?locationId={AIRLY_LOCATION_ID}</code>, nagłówki <code>apikey: AIRLY_API_KEY</code>, <code>Accept-Language: pl</code>.</p>
+<ul>
+<li>Wartości są czytane <strong>po indeksie tablicy</strong> (<code>current.values[0]</code> = PM1, <code>[1]</code> = PM2.5, <code>[3]</code> = PM10, …) — kolejność nie jest gwarantowana przez Airly.</li>
+<li><code>current.indexes[0]</code> → <code>{value, level, color, description, advice}</code>.</li>
+<li>Błąd Airly jest połykany (pola <code>null</code>).</li>
+</ul>
+<p><strong>Cache</strong> (tabela <code>weather</code>, TTL <code>WEATHER_CACHE_TTL_SECONDS</code>):</p>
+<ol>
+<li>Weź najnowszy snapshot; jeśli świeży — zwróć.</li>
+<li>Inaczej odpytaj API; przy błędzie zwróć przeterminowany snapshot albo <code>null</code>.</li>
+<li>Po sukcesie zapisz nowy snapshot (błąd zapisu → tylko warning).</li>
+</ol>
+<p>Wynik dla ekranu: <code>{temperature, pressure, airlyAdvice, airlyDescription, airlyColour}</code> (stringi, <code>"N/A"</code> przy braku).</p>
+<h2 id="kalendarz-google">Kalendarz Google</h2>
+<p>Plik: <code>src/Infrastructure/ExternalApi/Calendar/CalendarService.php</code>.</p>
+<ul>
+<li><code>google/apiclient</code>, konto serwisowe z pliku <code>CALENDAR_API_KEY_PATH</code>, scope <code>calendar.readonly</code>.</li>
+<li><code>events.list(CALENDAR_ID, timeMin = dziś 00:00, timeMax = jutro 00:00, orderBy = startTime, singleEvents = true)</code>.</li>
+<li><code>CalendarService</code> (implementuje <code>CalendarServiceInterface</code>) mapuje wydarzenia na obiekty <code>CalendarEvent</code>: <code>{summary, description, start: "d.m.Y H:i", end: "H:i"}</code>. Brak opisu daje pusty string.</li>
+<li>Każdy wyjątek → <code>null</code> (moduł pusty).</li>
+<li>Brak cache — wywołanie Google API przy każdym odświeżeniu (co 40 s).</li>
+</ul>
+<div class="admonition bug">
+<p class="admonition-title">Bug</p>
+<p>Wydarzenia całodniowe mają tylko <code>start.date</code>. Od października 2026 kod używa tej daty (wcześniej pokazywał bieżącą godzinę), ale wynik to <code>start: "dd.mm.rrrr 00:00"</code>, <code>end: "00:00"</code> — bez oznaczenia „cały dzień”.</p>
+</div>
+<h2 id="cytat-dnia">Cytat dnia</h2>
+<div class="admonition danger">
+<p class="admonition-title">Nie działa</p>
+<p><code>quotes-api-self.vercel.app</code> zwraca <code>404 DEPLOYMENT_NOT_FOUND</code> (sprawdzone 2026-10-27). Zamienniki: <a href="../python-migration/#cytat-i-sowo-dnia">plan migracji</a>.</p>
+</div>
+<ul>
+<li><code>GET QUOTE_API_URL</code> → wymagane pola <code>quote</code>, <code>author</code>.</li>
+<li>Wywoływane tylko z CLI <code>quote:fetch</code>, zapis do tabeli <code>quote</code>, publikacja zdarzenia <code>quote.created</code>.</li>
+</ul>
+<h2 id="sowo-dnia">Słowo dnia</h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>api.wotd.site</code> działało w dniu analizy, ale to prywatny serwis bez gwarancji; odrzuca daty z przyszłości (liczy w UTC). Zapasowe źródła: <a href="../python-migration/#cytat-i-sowo-dnia">plan migracji</a>.</p>
+</div>
+<ul>
+<li><code>GET WORD_API_URL + YYYY-MM-DD</code> (data w <strong>UTC</strong>) → wymagane pola <code>word</code>, <code>ipa</code>, <code>definition</code>.</li>
+<li>Wywoływane tylko z CLI <code>word:fetch</code>, zapis do tabeli <code>word</code> (bez zdarzenia).</li>
+<li>Sprawdzenie „czy już pobrano dziś” używa lokalnej strefy serwera, a URL — UTC.</li>
+</ul>
+<h2 id="nieuzywane-zaleznosci">Nieużywane zależności</h2>
+<ul>
+<li><code>phpmailer/phpmailer</code> — w <code>composer.json</code>, brak użycia w kodzie.</li>
+<li><code>alpinejs</code> — w <code>package.json</code>, ale ładowany z CDN.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

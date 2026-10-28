@@ -1,0 +1,1431 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/api/">
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../data-model/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>API i routing - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-i-routing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API i routing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cykl-zycia-zadania" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cykl życia żądania
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Middleware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabela-tras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabela tras
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tabela tras">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strony-html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strony HTML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-json-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API JSON (panel)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ciaa-zadan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ciała żądań
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-publiczne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display (publiczne)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formaty-odpowiedzi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formaty odpowiedzi
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formaty odpowiedzi">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#koperta-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Koperta Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#koperta-bedu-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Koperta błędu (JSON)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sesja-i-bezpieczenstwo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sesja i bezpieczeństwo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-binapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI (bin/app)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Display
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cykl-zycia-zadania" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cykl życia żądania
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Middleware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tabela-tras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tabela tras
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tabela tras">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strony-html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strony HTML
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-json-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API JSON (panel)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ciaa-zadan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ciała żądań
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display-publiczne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display (publiczne)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formaty-odpowiedzi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formaty odpowiedzi
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formaty odpowiedzi">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#koperta-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Koperta Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#koperta-bedu-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Koperta błędu (JSON)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sesja-i-bezpieczenstwo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sesja i bezpieczeństwo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-binapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI (bin/app)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="api-i-routing">API i routing</h1>
+<p>Wszystkie ścieżki są zdefiniowane w <code>public/index.php</code> (FastRoute). Ten dokument opisuje <strong>rzeczywisty</strong> kontrakt HTTP — to on musi zostać zachowany przy przepisywaniu backendu, bo frontend (Alpine.js w szablonach) z niego korzysta.</p>
+<h2 id="cykl-zycia-zadania">Cykl życia żądania</h2>
+<ol>
+<li><code>public/index.php</code> ładuje <code>bootstrap/bootstrap.php</code>:<ul>
+<li><code>display_errors=0</code>, handler zamieniający warningi/notice'y na <code>ErrorException</code>,</li>
+<li>handler shutdown zwracający JSON 500 przy błędach fatalnych,</li>
+<li>Dotenv (<code>createImmutable</code>),</li>
+<li><code>Container</code> + providery w kolejności: <code>SharedProvider</code>, <code>UserProvider</code>, <code>AnnouncementProvider</code>, <code>DisplayProvider</code>.</li>
+</ul>
+</li>
+<li><code>ServerRequest::fromGlobals()</code> (Guzzle PSR-7). Metody inne niż GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS → 400.</li>
+<li><code>StaticFileHandlingHelper::serve()</code> — pliki statyczne (css/js/png/jpg/jpeg/ico/svg) z <code>public/</code>, z ochroną przed path traversal, <code>Cache-Control: public, max-age=86400</code>.</li>
+<li>Dispatcher FastRoute → 404 / 405 / znaleziony handler.</li>
+<li>Kontroler jest pobierany z kontenera, budowany jest pipeline middleware i wywoływana akcja <code>$controller-&gt;$method($vars)</code>.</li>
+</ol>
+<h2 id="middleware">Middleware</h2>
+<p>Kolejność (od zewnątrz do środka):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>RequestContextMiddleware → ExceptionMiddleware → [AuthMiddleware] → LocaleMiddleware → CsrfMiddleware → kontroler
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Middleware</th>
+<th>Działanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RequestContextMiddleware</code></td>
+<td>Ustawia <code>scope</code> = <code>admin</code> dla ścieżek <code>/panel/*</code>, inaczej <code>user</code>.</td>
+</tr>
+<tr>
+<td><code>ExceptionMiddleware</code></td>
+<td>Łapie wyjątki i zamienia je na odpowiedź (JSON lub redirect z flash). Szczegóły niżej.</td>
+</tr>
+<tr>
+<td><code>AuthMiddleware</code></td>
+<td>Tylko na trasach chronionych. Brak sesji lub niezgodny odcisk → <code>302 /login</code> (także dla wywołań API!). W przeciwnym razie ładuje <code>User</code> do kontekstu. Jeśli użytkownik ma <code>must_change_password</code>, każde żądanie poza <code>/change-password</code>, <code>/logout</code> i ścieżkami zaczynającymi się od <code>/api/user</code> jest przekierowywane na <code>/change-password</code>.</td>
+</tr>
+<tr>
+<td><code>LocaleMiddleware</code></td>
+<td>Locale <code>en</code>/<code>pl</code> (domyślnie <code>en</code>): <code>?lang=</code> → <code>$_SESSION['locale']</code> → <code>Accept-Language</code> → <code>en</code>.</td>
+</tr>
+<tr>
+<td><code>CsrfMiddleware</code></td>
+<td>Generuje token; dla POST/PUT/PATCH/DELETE wymaga go w nagłówku <code>X-CSRF-Token</code> (lub <code>X-XSRF-TOKEN</code>, pole <code>_token</code>). Dotyczy też tras publicznych (<code>/api/authenticate</code>, <code>/logout</code>, <code>/api/announcement/propose</code>).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tabela-tras">Tabela tras</h2>
+<p>Legenda: <strong>A</strong> = wymaga <code>AuthMiddleware</code>.</p>
+<h3 id="strony-html">Strony HTML</h3>
+<table>
+<thead>
+<tr>
+<th>Metoda</th>
+<th>Ścieżka</th>
+<th>Akcja</th>
+<th>Auth</th>
+<th>Szablon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/</code></td>
+<td><code>HomeController::index</code></td>
+<td>–</td>
+<td><code>pages/index</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/propose</code></td>
+<td><code>HomeController::proposeAnnouncement</code></td>
+<td>–</td>
+<td><code>pages/announcement-propose</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display</code></td>
+<td><code>DisplayController::index</code></td>
+<td>–</td>
+<td><code>pages/display</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/login</code></td>
+<td><code>LoginController::show</code></td>
+<td>–</td>
+<td><code>pages/login</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/change-password</code></td>
+<td><code>LoginController::showChangePassword</code></td>
+<td>A</td>
+<td><code>pages/change-password</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/logout</code></td>
+<td><code>LoginController::logout</code></td>
+<td>–</td>
+<td>302 → <code>/login</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel</code></td>
+<td><code>PanelController::index</code></td>
+<td>A</td>
+<td><code>pages/panel</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel/users</code></td>
+<td><code>PanelController::users</code></td>
+<td>A</td>
+<td><code>pages/user</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel/profile</code>, <code>/profile</code></td>
+<td><code>PanelController::profile</code></td>
+<td>A</td>
+<td><code>pages/profile</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel/countdowns</code></td>
+<td><code>PanelController::countdowns</code></td>
+<td>A</td>
+<td><code>pages/countdown</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel/announcements</code></td>
+<td><code>PanelController::announcements</code></td>
+<td>A</td>
+<td><code>pages/announcement</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/panel/modules</code></td>
+<td><code>PanelController::modules</code></td>
+<td>A</td>
+<td><code>pages/module</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-json-panel">API JSON (panel)</h3>
+<table>
+<thead>
+<tr>
+<th>Metoda</th>
+<th>Ścieżka</th>
+<th>Akcja</th>
+<th>Auth</th>
+<th>Odpowiedź</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/api/authenticate</code></td>
+<td><code>LoginController::authenticate</code></td>
+<td>–</td>
+<td>200 <code>{success: true, redirect: "/panel"}</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/user</code></td>
+<td><code>UserController::getAll</code></td>
+<td>A</td>
+<td>200 <code>[{id, username}]</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/user</code></td>
+<td><code>UserController::add</code></td>
+<td>A</td>
+<td>201 <code>{success, message}</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/api/user/{id}</code></td>
+<td><code>UserController::update</code></td>
+<td>A</td>
+<td>200 <code>{success, message}</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/user/{id}</code></td>
+<td><code>UserController::delete</code></td>
+<td>A</td>
+<td>204</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/user/self/change-password</code></td>
+<td><code>UserController::changePassword</code></td>
+<td>A</td>
+<td>200; zmiana własnego hasła, zeruje <code>must_change_password</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/user/{id}/change-password</code></td>
+<td><code>UserController::changePassword</code></td>
+<td>A</td>
+<td>200; dla cudzego konta ustawia <code>must_change_password = true</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/announcement</code></td>
+<td><code>AnnouncementController::getAll</code></td>
+<td>A</td>
+<td>200 <code>AnnouncementApiDTO[]</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/announcement</code></td>
+<td><code>AnnouncementController::add</code></td>
+<td>A</td>
+<td>201</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/announcement/{id}</code></td>
+<td><code>AnnouncementController::get</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/api/announcement/{id}</code></td>
+<td><code>AnnouncementController::update</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/announcement/{id}</code></td>
+<td><code>AnnouncementController::delete</code></td>
+<td>A</td>
+<td>204</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/announcement/{id}/approve</code></td>
+<td><code>AnnouncementController::approve</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/announcement/{id}/reject</code></td>
+<td><code>AnnouncementController::reject</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/announcement/propose</code></td>
+<td><code>AnnouncementController::propose</code></td>
+<td><strong>publiczne</strong></td>
+<td>201</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/module</code></td>
+<td><code>ModuleController::getAll</code></td>
+<td>A</td>
+<td>200 <code>[{id, moduleNameLabel, startTime "H:i", endTime "H:i", isActive}]</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/api/module/{id}</code></td>
+<td><code>ModuleController::update</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/module/{id}/toggle</code></td>
+<td><code>ModuleController::toggle</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/countdowns</code> <em>(l. mnoga)</em></td>
+<td><code>CountdownController::getAll</code></td>
+<td>A</td>
+<td>200 <code>[{id, title, countTo "Y-m-d H:i", countToEdit "Y-m-d\TH:i", authorName}]</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/countdown</code></td>
+<td><code>CountdownController::add</code></td>
+<td>A</td>
+<td>201</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/api/countdown/{id}</code></td>
+<td><code>CountdownController::update</code></td>
+<td>A</td>
+<td>200</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/countdown/{id}</code></td>
+<td><code>CountdownController::delete</code></td>
+<td>A</td>
+<td>204</td>
+</tr>
+</tbody>
+</table>
+<p>Parametr <code>{id}</code> ma wzorzec <code>[a-z0-9_.]+</code>. Id ogłoszeń to stringi (<code>ann_…</code>), pozostałe są rzutowane <code>(int)</code> — <code>"abc"</code> staje się <code>0</code>.</p>
+<h3 id="ciaa-zadan">Ciała żądań</h3>
+<p>Zawsze surowy JSON (<code>json_decode(body, true)</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Pola</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /api/authenticate</code></td>
+<td><code>username</code>, <code>password</code></td>
+</tr>
+<tr>
+<td><code>POST /api/user</code></td>
+<td><code>username</code>, <code>password</code></td>
+</tr>
+<tr>
+<td><code>PATCH /api/user/{id}</code></td>
+<td><code>username</code>, opcjonalnie <code>password</code></td>
+</tr>
+<tr>
+<td><code>POST /api/user/self/change-password</code>, <code>POST /api/user/{id}/change-password</code></td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td><code>POST /api/announcement</code></td>
+<td><code>title</code>, <code>text</code>, <code>valid_until</code></td>
+</tr>
+<tr>
+<td><code>PATCH /api/announcement/{id}</code></td>
+<td><code>title</code>, <code>text</code>, <code>valid_until</code>, opcjonalnie <code>status</code></td>
+</tr>
+<tr>
+<td><code>POST /api/announcement/propose</code></td>
+<td><code>title</code>, <code>text</code>, opcjonalnie <code>expires_at</code> (domyślnie <code>ANNOUNCEMENT_DEFAULT_VALID_DATE</code>)</td>
+</tr>
+<tr>
+<td><code>POST/PATCH /api/countdown</code></td>
+<td><code>title</code>, <code>count_to</code></td>
+</tr>
+<tr>
+<td><code>PATCH /api/module/{id}</code></td>
+<td><code>start_time</code>, <code>end_time</code></td>
+</tr>
+</tbody>
+</table>
+<p>Hasła i nazwy użytkowników są <strong>trimowane</strong> w DTO.</p>
+<h3 id="display-publiczne">Display (publiczne)</h3>
+<p>Szczegóły w <a href="../display/">Display</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Metoda</th>
+<th>Ścieżka</th>
+<th>Moduł</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/display/departure</code></td>
+<td><code>tram</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/announcement</code></td>
+<td><code>announcement</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/countdown</code></td>
+<td><code>countdown</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/weather</code></td>
+<td><code>weather</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/event</code></td>
+<td><code>calendar</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/quote</code></td>
+<td><code>quote</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/display/word</code></td>
+<td><code>word</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="formaty-odpowiedzi">Formaty odpowiedzi</h2>
+<h3 id="koperta-display">Koperta Display</h3>
+<p>Zawsze HTTP 200, nagłówek <code>X-Request-Id</code>:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active|inactive|empty"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;payload|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;hex16&gt;"</span><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="koperta-bedu-json">Koperta błędu (JSON)</h3>
+<p>Żądanie jest traktowane jako JSON, gdy <code>Accept</code> lub <code>Content-Type</code> zawiera <code>application/json</code> albo jest nagłówek <code>X-Requested-With: XMLHttpRequest</code>.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ERROR_CODE&gt;"</span><span class="p">,</span><span class="w"> </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{}},</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;przetłumaczony komunikat&gt;"</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;id&gt;"</span><span class="p">}</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Wyjątek</th>
+<th>Status</th>
+<th>Komunikat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AuthenticationException</code>, <code>DomainException</code> (i pochodne)</td>
+<td><code>httpStatusCode</code> wyjątku (400/401/403/404/409)</td>
+<td>klucz tłumaczenia przetłumaczony z <code>context</code></td>
+</tr>
+<tr>
+<td><code>ApplicationException</code>, <code>InfrastructureException</code></td>
+<td>500</td>
+<td>„An error occurred”</td>
+</tr>
+<tr>
+<td>pozostałe</td>
+<td>500, <code>INTERNAL_SERVER_ERROR</code></td>
+<td>„An unexpected error occurred”</td>
+</tr>
+</tbody>
+</table>
+<p>Dla żądań nie-JSON błąd trafia do flash (<code>error</code>) i następuje <code>302</code> na <code>Referer</code> (lub <code>/</code>; dla błędów auth — <code>/login</code>).</p>
+<h2 id="sesja-i-bezpieczenstwo">Sesja i bezpieczeństwo</h2>
+<ul>
+<li>Natywna sesja PHP (<code>PHPSESSID</code>), bez jawnych flag <code>HttpOnly</code>/<code>Secure</code>/<code>SameSite</code> (obowiązują domyślne z <code>php.ini</code>).</li>
+<li>Klucze sesji: <code>user_id</code>, <code>user_ip_hash</code> (sha256 IP), <code>user_agent_hash</code> (sha256 UA), <code>csrf_token</code> (64 hex), <code>flash.success</code>, <code>flash.error</code>, <code>locale</code> (tylko odczyt).</li>
+<li>Logowanie: <code>session_regenerate_id(true)</code>, zapis <code>user_id</code> z odciskiem IP + User-Agent. Niezgodność odcisku → <code>session_destroy()</code>.</li>
+<li>Hasła: <code>password_hash(PASSWORD_DEFAULT)</code> → bcrypt <code>$2y$</code>.</li>
+<li>Brak ról — każdy zalogowany użytkownik może wszystko poza usunięciem samego siebie, w tym zmienić hasło innemu użytkownikowi.</li>
+<li>Wymuszona zmiana hasła: po zmianie cudzego hasła konto dostaje <code>must_change_password = true</code>. Po zalogowaniu (<code>/api/authenticate</code> zawsze zwraca <code>redirect: "/panel"</code>) <code>AuthMiddleware</code> przekierowuje na <code>/change-password</code>, a formularz wysyła <code>POST /api/user/self/change-password</code>.</li>
+<li>Brak limitu prób logowania.</li>
+</ul>
+<h2 id="cli-binapp">CLI (<code>bin/app</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Komenda</th>
+<th>Argumenty</th>
+<th>Działanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>quote:fetch</code></td>
+<td>–</td>
+<td>Pobiera cytat dnia z API i zapisuje (raz dziennie).</td>
+</tr>
+<tr>
+<td><code>word:fetch</code></td>
+<td>–</td>
+<td>Pobiera słowo dnia z API i zapisuje (raz dziennie).</td>
+</tr>
+<tr>
+<td><code>announcement-rejected:delete</code></td>
+<td><code>&lt;YYYY-MM-DD&gt;</code></td>
+<td>Usuwa odrzucone ogłoszenia z <code>decided_at</code> wcześniejszym niż data.</td>
+</tr>
+<tr>
+<td><code>user:add</code></td>
+<td><code>&lt;username&gt; &lt;password&gt;</code></td>
+<td>Tworzy użytkownika.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Komendy łapią własne wyjątki, więc <code>bin/app</code> zwraca kod 0 także przy błędzie — cron nie wykryje awarii.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

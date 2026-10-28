@@ -260,6 +260,114 @@
   
   
     <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../display/" class="md-nav__link">
         
   
@@ -481,6 +589,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#profile-responseinterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        profile(): ResponseInterface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#modules-responseinterface" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -664,6 +783,60 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -818,6 +991,17 @@
     <span class="md-ellipsis">
       
         announcements(): ResponseInterface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#profile-responseinterface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        profile(): ResponseInterface
       
     </span>
   </a>
@@ -1078,6 +1262,12 @@
     - <code>pendingAnnouncements</code> — status <code>PENDING</code>
     - <code>decidedAnnouncements</code> — pozostałe statusy
 4. Renderuje szablon <code>ANNOUNCEMENTS</code></p>
+<h3 id="profile-responseinterface"><code>profile(): ResponseInterface</code></h3>
+<p>Wyświetla profil zalogowanego użytkownika (<code>/panel/profile</code>, alias <code>/profile</code>) z odnośnikiem do zmiany hasła.</p>
+<p><strong>Logika</strong>:
+1. Pobiera bieżącego użytkownika z <code>RequestContext</code>
+2. Renderuje szablon <code>PROFILE</code></p>
+<p>Zmiana hasła odbywa się na stronie <code>/change-password</code> (<code>LoginController::showChangePassword</code>, szablon <code>CHANGE_PASSWORD</code>), która wysyła <code>POST /api/user/self/change-password</code>. Na tę stronę <code>AuthMiddleware</code> przekierowuje użytkownika z ustawionym <code>must_change_password</code>.</p>
 <h3 id="modules-responseinterface"><code>modules(): ResponseInterface</code></h3>
 <p>Wyświetla stronę zarządzania modułami.</p>
 <p><strong>Logika</strong>:
@@ -1086,7 +1276,7 @@
 3. Renderuje szablon <code>MODULES</code></p>
 <h2 id="dependency-injection-kontener">Dependency Injection (Kontener)</h2>
 <p>Instancja <code>PanelController</code> jest konfigurowana przez providery kontenera w <code>src/Infrastructure/Container/Providers/</code> i składana w <code>src/Infrastructure/Container.php</code>:</p>
-<div class="language-php highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$container-&gt;set(PanelController::class, fn(Container $c) =&gt; new PanelController(</span>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">$c-&gt;set(PanelController::class, fn(Container $c) =&gt; new PanelController(</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    $c-&gt;get(RequestContext::class),</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">    $c-&gt;get(TwigRenderer::class),</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">    $c-&gt;get(FlashMessengerService::class),</span>
@@ -1096,7 +1286,7 @@
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="x">    $c-&gt;get(GetAllCountdownsUseCase::class),</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="x">    $c-&gt;get(GetAllAnnouncementsUseCase::class),</span>
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="x">    $c-&gt;get(Translator::class),</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="x">    $c-&gt;get(AnnouncementViewMapper::class),</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="x">    $c-&gt;get(AnnouncementPresenter::class),</span>
 </span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="x">));</span>
 </span></code></pre></div>
 <p><strong>Kontener</strong>: Niestandardowa implementacja DI (nie Laravel, nie Symfony) — minimalistyczna, efektywna dla małych aplikacji.</p>
@@ -1109,8 +1299,9 @@
 </ul>
 <h3 id="csrf-protection">CSRF Protection</h3>
 <ul>
-<li>Wszystkie żądania POST/PATCH/DELETE przechodzą przez <code>CsrfMiddleware</code></li>
-<li>Wymaga poprawnego tokenu CSRF w żądaniu</li>
+<li>Wszystkie żądania POST/PUT/PATCH/DELETE przechodzą przez <code>CsrfMiddleware</code> — także publiczne (<code>/api/authenticate</code>, <code>/logout</code>, <code>/api/announcement/propose</code>)</li>
+<li>Token jest renderowany w ukrytym polu <code>&lt;input name="_token"&gt;</code>; JavaScript wysyła go w nagłówku <code>X-CSRF-Token</code></li>
+<li>Pełna lista endpointów: <a href="../api/">API i routing</a></li>
 </ul>
 <h2 id="szablony-templates">Szablony (Templates)</h2>
 <p>Szablony są przechowywane w <code>src/Presentation/View/templates/</code> i renderowane przez Twig:</p>
@@ -1120,6 +1311,8 @@
 <li><code>COUNTDOWNS</code> — zarządzanie licznikami</li>
 <li><code>ANNOUNCEMENTS</code> — zarządzanie ogłoszeniami</li>
 <li><code>MODULES</code> — zarządzanie modułami</li>
+<li><code>PROFILE</code> — profil zalogowanego użytkownika</li>
+<li><code>CHANGE_PASSWORD</code> — zmiana własnego hasła (także wymuszona)</li>
 </ul>
 <p>Mapowanie nazw szablonów w enum <code>TemplateNames</code> (w <code>src/Presentation/View/TemplateNames.php</code>)</p>
 <h2 id="api-endpoints-powiazane">API Endpoints (powiązane)</h2>
@@ -1145,13 +1338,14 @@
 </ul>
 <h3 id="liczniki">Liczniki</h3>
 <ul>
-<li><code>GET /api/countdowns</code> — pobierz wszystkie liczniki</li>
+<li><code>GET /api/countdowns</code> — pobierz wszystkie (uwaga: liczba mnoga)</li>
 <li><code>POST /api/countdown</code> — dodaj licznik</li>
 <li><code>PATCH /api/countdown/{id}</code> — edytuj licznik</li>
 <li><code>DELETE /api/countdown/{id}</code> — usuń licznik</li>
 </ul>
 <h3 id="moduy">Moduły</h3>
 <ul>
+<li><code>GET /api/module</code> — pobierz wszystkie</li>
 <li><code>PATCH /api/module/{id}</code> — edytuj moduł</li>
 <li><code>POST /api/module/{id}/toggle</code> — włącz/wyłącz moduł</li>
 </ul>

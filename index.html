@@ -599,6 +599,114 @@
   
   
     <li class="md-nav__item">
+      <a href="api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="display/" class="md-nav__link">
         
   
@@ -661,6 +769,60 @@
     
   
     Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
   
 
     
@@ -1016,8 +1178,15 @@
 <ul>
 <li><strong><a href="code/index.html">Autogenerowana dokumentacja kodu</a></strong></li>
 <li><strong><a href="architecture/">Architektura</a></strong> — opisuje architekturę aplikacji</li>
+<li><strong><a href="api/">API i routing</a></strong> — wszystkie trasy, middleware, formaty odpowiedzi, sesja, CLI</li>
+<li><strong><a href="data-model/">Model danych</a></strong> — schemat bazy i reguły domenowe</li>
+<li><strong><a href="configuration/">Konfiguracja</a></strong> — pełna lista zmiennych <code>.env</code></li>
+<li><strong><a href="integrations/">Integracje</a></strong> — ZTM, IMGW, Airly, Google Calendar, cytat i słowo dnia</li>
 <li><strong><a href="display/">Display</a></strong> — opisuje działanie najważniejszej funkcjonalności aplikacji</li>
+<li><strong><a href="panel/">Panel</a></strong> — panel administracyjny</li>
 <li><strong><a href="development/">Development</a></strong> — opisuje założenia dalszego rozwoju projektu</li>
+<li><strong><a href="current-state/">Stan projektu</a></strong> — znane błędy, dług techniczny, pokrycie testami</li>
+<li><strong><a href="python-migration/">Migracja na Pythona</a></strong> — plan przepisania backendu</li>
 </ul>
 <h2 id="stos-technologiczny">Stos technologiczny</h2>
 <h3 id="backend">Backend</h3>
@@ -1066,7 +1235,7 @@
    <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 </span></code></pre></div></li>
 <li>Uzupełnij wymagane zmienne środowiskowe (patrz sekcja niżej).</li>
-<li>Utwórz bazę danych i wgraj schemat z <code>schema/schema.sql</code>.</li>
+<li>Utwórz bazę danych, wgraj schemat z <code>schema/schema.sql</code>. Dodaj wiersze modułów — patrz <a href="data-model/#schemat-bazy-postgresql">Model danych</a>.</li>
 <li>Uruchom backend:
    <div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>php<span class="w"> </span>-S<span class="w"> </span>localhost:8080<span class="w"> </span>-t<span class="w"> </span>public/<span class="w"> </span>public/index.php
 </span></code></pre></div></li>
@@ -1082,7 +1251,7 @@
 <li><code>TWIG_CACHE_PATH</code> — katalog cache dla Twiga (np. <code>./var/cache/twig</code>)</li>
 <li><code>AIRLY_API_KEY</code>, <code>AIRLY_ENDPOINT</code> — dane jakości powietrza</li>
 <li><code>IMGW_WEATHER_URL</code> — endpoint IMGW</li>
-<li><code>DB_USERNAME</code>, <code>DB_PASSWORD</code> — dane dostępu do bazy</li>
+<li><code>DB_USERNAME</code>, <code>DB_PASSWORD</code> — dane dostępu do bazy (w kodzie opcjonalne, w praktyce wymagane)</li>
 <li><code>TRAM_URL</code> — endpoint ZTM (Peka)</li>
 <li><code>CALENDAR_API_KEY_PATH</code> — ścieżka do klucza Google Calendar</li>
 <li><code>CALENDAR_ID</code> — ID kalendarza Google</li>
@@ -1096,8 +1265,8 @@
 <li><code>TWIG_DEBUG</code> (domyślnie <code>false</code>)</li>
 <li><code>AIRLY_LOCATION_ID</code> (wymagane do pobierania danych z Airly)</li>
 <li><code>STOP_ID</code> — lista przystanków, np. <code>AWF41,AWF05</code></li>
-<li><code>USER_TABLE_NAME</code> (domyślnie <code>user</code>) — nazwa tabeli użytkowników</li>
 </ul>
+<p>Pełna lista: <a href="configuration/">Konfiguracja</a>.</p>
 <h3 id="szybki-start-produkcja">Szybki start (produkcja)</h3>
 <ul>
 <li>Ustaw document root na <code>public/</code> (np. w Apache/Nginx).</li>

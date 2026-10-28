@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/display/">
       
       
-        <link rel="prev" href="../architecture/">
+        <link rel="prev" href="../integrations/">
       
       
         <link rel="next" href="../panel/">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference-dodomudojade" class="md-skip">
+        <a href="#display-ekran-informacyjny" class="md-skip">
           Skip to content
         </a>
       
@@ -257,6 +257,114 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -320,10 +428,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoints-overview" class="md-nav__link">
+  <a href="#endpointy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📡 Endpoints Overview
+        Endpointy
       
     </span>
   </a>
@@ -331,22 +439,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#display-api-endpoints" class="md-nav__link">
+  <a href="#format-odpowiedzi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🏗️ Display API Endpoints
+        Format odpowiedzi
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🏗️ Display API Endpoints">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorytm-kazdego-endpointu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorytm każdego endpointu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#przykady" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przykłady
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Przykłady">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-displaydeparture" class="md-nav__link">
+  <a href="#displaydeparture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/departure
+        /display/departure
       
     </span>
   </a>
@@ -354,10 +484,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayannouncement" class="md-nav__link">
+  <a href="#displayweather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/announcement
+        /display/weather
       
     </span>
   </a>
@@ -365,10 +495,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayweather" class="md-nav__link">
+  <a href="#displayevent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/weather
+        /display/event
       
     </span>
   </a>
@@ -376,10 +506,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displaycountdown" class="md-nav__link">
+  <a href="#displaycountdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/countdown
+        /display/countdown
       
     </span>
   </a>
@@ -387,10 +517,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayevent" class="md-nav__link">
+  <a href="#displayword-displayquote" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/event
+        /display/word, /display/quote
       
     </span>
   </a>
@@ -398,21 +528,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayword" class="md-nav__link">
+  <a href="#modu-wyaczony" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/word
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-displayquote" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /display/quote
+        Moduł wyłączony
       
     </span>
   </a>
@@ -421,6 +540,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-ekranu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend ekranu
+      
+    </span>
+  </a>
   
 </li>
       
@@ -486,6 +616,60 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -513,10 +697,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoints-overview" class="md-nav__link">
+  <a href="#endpointy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📡 Endpoints Overview
+        Endpointy
       
     </span>
   </a>
@@ -524,22 +708,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#display-api-endpoints" class="md-nav__link">
+  <a href="#format-odpowiedzi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🏗️ Display API Endpoints
+        Format odpowiedzi
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🏗️ Display API Endpoints">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorytm-kazdego-endpointu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorytm każdego endpointu
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#przykady" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Przykłady
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Przykłady">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-displaydeparture" class="md-nav__link">
+  <a href="#displaydeparture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/departure
+        /display/departure
       
     </span>
   </a>
@@ -547,10 +753,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayannouncement" class="md-nav__link">
+  <a href="#displayweather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/announcement
+        /display/weather
       
     </span>
   </a>
@@ -558,10 +764,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayweather" class="md-nav__link">
+  <a href="#displayevent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/weather
+        /display/event
       
     </span>
   </a>
@@ -569,10 +775,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displaycountdown" class="md-nav__link">
+  <a href="#displaycountdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/countdown
+        /display/countdown
       
     </span>
   </a>
@@ -580,10 +786,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayevent" class="md-nav__link">
+  <a href="#displayword-displayquote" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/event
+        /display/word, /display/quote
       
     </span>
   </a>
@@ -591,21 +797,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-displayword" class="md-nav__link">
+  <a href="#modu-wyaczony" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GET /display/word
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get-displayquote" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GET /display/quote
+        Moduł wyłączony
       
     </span>
   </a>
@@ -614,6 +809,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-ekranu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend ekranu
+      
+    </span>
+  </a>
   
 </li>
       
@@ -634,190 +840,199 @@
 
 
 
-<h1 id="api-reference-dodomudojade">API Reference — DoDomuDojadę</h1>
-<p>Podstrona <code>display</code> stanowi główną funkcjonalność aplikacji. To od niej zaczął się nasz projekt :-) (Nie wierzysz? Zajrzyj w przeszłość w repozytorium!)</p>
-<h2 id="endpoints-overview">📡 Endpoints Overview</h2>
+<h1 id="display-ekran-informacyjny">Display — ekran informacyjny</h1>
+<p>Podstrona <code>/display</code> stanowi główną funkcjonalność aplikacji. To od niej zaczął się nasz projekt :-)</p>
+<p><code>GET /display</code> renderuje szablon <code>pages/display</code> bez danych z serwera — wszystko ładuje się po stronie przeglądarki z endpointów <code>GET /display/*</code>.</p>
+<h2 id="endpointy">Endpointy</h2>
 <table>
 <thead>
 <tr>
 <th>Endpoint</th>
-<th>Method</th>
-<th>Type</th>
-<th>Purpose</th>
-<th>Auth</th>
+<th>Moduł</th>
+<th>Payload <code>data</code></th>
+<th>Odświeżanie w przeglądarce</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>/display</code></td>
-<td>GET</td>
-<td>HTML</td>
-<td>Główna strona display</td>
-<td>No</td>
-</tr>
-<tr>
 <td><code>/display/departure</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Odjazdy tramwajów</td>
-<td>No</td>
-</tr>
-<tr>
-<td><code>/display/announcement</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Ogłoszenia</td>
-<td>No</td>
-</tr>
-<tr>
-<td><code>/display/countdown</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Odliczanie</td>
-<td>No</td>
+<td><code>tram</code></td>
+<td><code>[{stopId, line, minutes, direction}]</code></td>
+<td>co 60 s</td>
 </tr>
 <tr>
 <td><code>/display/weather</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Pogoda</td>
-<td>No</td>
+<td><code>weather</code></td>
+<td><code>{temperature, pressure, airlyAdvice, airlyDescription, airlyColour}</code></td>
+<td>co 60 s</td>
+</tr>
+<tr>
+<td><code>/display/announcement</code></td>
+<td><code>announcement</code></td>
+<td><code>[{title, author, text}]</code></td>
+<td>co 8 s</td>
+</tr>
+<tr>
+<td><code>/display/countdown</code></td>
+<td><code>countdown</code></td>
+<td><code>{title, count_to}</code> (unix timestamp)</td>
+<td>co 40 s</td>
 </tr>
 <tr>
 <td><code>/display/event</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Zdarzenia z kalendarza</td>
-<td>No</td>
+<td><code>calendar</code></td>
+<td><code>[{summary, description, start, end}]</code></td>
+<td>co 40 s</td>
 </tr>
 <tr>
 <td><code>/display/quote</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Cytat dnia</td>
-<td>No</td>
+<td><code>quote</code></td>
+<td><code>{from, quote}</code></td>
+<td>co 40 s</td>
 </tr>
 <tr>
 <td><code>/display/word</code></td>
-<td>GET</td>
-<td>JSON</td>
-<td>Słowo dnia</td>
-<td>No</td>
+<td><code>word</code></td>
+<td><code>{word, ipa, definition}</code></td>
+<td>co 40 s</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>Wszystkie endpoint-y Display zwracają pole <code>is_active</code>, które mówi, czy dany moduł jest obecnie włączony.
-Gdy moduł jest wyłączony lub nie ma danych, pole z payloadem (<code>departures</code>, <code>announcements</code>, <code>weather</code>, <code>countdown</code>, <code>events</code>, <code>quote</code>, <code>word</code>) może mieć wartość <code>null</code>.</p>
-</blockquote>
-<hr />
-<h2 id="display-api-endpoints">🏗️ Display API Endpoints</h2>
-<blockquote>
-<p>Jeżeli dany moduł nie zwrócił danych, pole, które normalnie by je zawierało będzie równe <code>null</code>.</p>
-</blockquote>
-<h3 id="get-displaydeparture">GET <code>/display/departure</code></h3>
-<p>Pobiera odjazdy dla skonfigurowanych przystanków.</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong>
+<p>Żadne z nich nie wymaga uwierzytelnienia.</p>
+<h2 id="format-odpowiedzi">Format odpowiedzi</h2>
+<p>Wszystkie endpointy zwracają HTTP 200 i nagłówek <code>X-Request-Id</code>:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"departures"</span><span class="p">:[</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="p">{</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">"stopId"</span><span class="p">:</span><span class="s2">"AWF41"</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">"line"</span><span class="p">:</span><span class="s2">"18"</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">"minutes"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">"direction"</span><span class="p">:</span><span class="s2">"Ogrody"</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="p">},</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="p">{</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">            </span><span class="nt">"stopId"</span><span class="p">:</span><span class="s2">"AWF05"</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">            </span><span class="nt">"line"</span><span class="p">:</span><span class="s2">"190"</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">            </span><span class="nt">"minutes"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">            </span><span class="nt">"direction"</span><span class="p">:</span><span class="s2">"Os. Sobieskiego"</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="p">]</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<h3 id="get-displayannouncement">GET <code>/display/announcement</code></h3>
-<p>Pobiera ważne (valid) ogłoszenia.</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9f2c1a7b3e4d5f60"</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th><code>status</code></th>
+<th>Znaczenie</th>
+<th><code>data</code></th>
+<th><code>message</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>active</code></td>
+<td>Moduł włączony i są dane</td>
+<td>payload</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td><code>empty</code></td>
+<td>Moduł włączony, brak danych (<code>null</code>, <code>[]</code>, pusty string)</td>
+<td><code>null</code></td>
+<td>komunikat</td>
+</tr>
+<tr>
+<td><code>inactive</code></td>
+<td>Moduł wyłączony lub poza oknem czasowym</td>
+<td><code>null</code></td>
+<td>komunikat (po polsku)</td>
+</tr>
+</tbody>
+</table>
+<p>Przy błędzie zwracana jest <a href="../api/#formaty-odpowiedzi">koperta błędu</a>: brak wiersza modułu w tabeli <code>module</code> daje 404 (<code>MODULE_NOT_FOUND</code>), nieoczekiwany wyjątek — 500.</p>
+<h2 id="algorytm-kazdego-endpointu">Algorytm każdego endpointu</h2>
+<ol>
+<li><code>IsModuleVisibleUseCase(ModuleName)</code> — moduł musi istnieć, mieć <code>is_active = true</code> i <code>start_time &lt;= teraz &lt;= end_time</code>.</li>
+<li>Niewidoczny → <code>inactive</code>.</li>
+<li>Use case modułu (<code>GetDeparturesUseCase</code>, <code>GetDisplayWeatherUseCase</code>, …).</li>
+<li>Pusty wynik → <code>empty</code>, inaczej <code>active</code>.</li>
+</ol>
+<h2 id="przykady">Przykłady</h2>
+<h3 id="displaydeparture"><code>/display/departure</code></h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"announcements"</span><span class="p">:[</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">"title"</span><span class="p">:</span><span class="s2">"tytuł"</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">"author"</span><span class="p">:</span><span class="s2">"admin"</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">"text"</span><span class="p">:</span><span class="s2">"treść"</span><span class="p">}</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span><span class="nt">"stopId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AWF41"</span><span class="p">,</span><span class="w"> </span><span class="nt">"line"</span><span class="p">:</span><span class="w"> </span><span class="s2">"18"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ogrody"</span><span class="p">},</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">{</span><span class="nt">"stopId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AWF05"</span><span class="p">,</span><span class="w"> </span><span class="nt">"line"</span><span class="p">:</span><span class="w"> </span><span class="s2">"190"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Os. Sobieskiego"</span><span class="p">}</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<h3 id="get-displayweather">GET <code>/display/weather</code></h3>
-<p>Pobiera pogodę.</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong>
+</span></code></pre></div>
+<h3 id="displayweather"><code>/display/weather</code></h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">"weather"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"temperature"</span><span class="p">:</span><span class="s2">"-0.7"</span><span class="p">,</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">"pressure"</span><span class="p">:</span><span class="s2">"1002.6"</span><span class="p">,</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">"airlyAdvice"</span><span class="p">:</span><span class="s2">"N\/A"</span><span class="p">,</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">"airlyDescription"</span><span class="p">:</span><span class="s2">"N\/A"</span><span class="p">,</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">"airlyColour"</span><span class="p">:</span><span class="s2">"N\/A"</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<h3 id="get-displaycountdown">GET <code>/display/countdown</code></h3>
-<p>Pobiera najświeższe odliczanie.</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-0.7"</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">"pressure"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1002.6"</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">"airlyAdvice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"N/A"</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">"airlyDescription"</span><span class="p">:</span><span class="w"> </span><span class="s2">"N/A"</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">"airlyColour"</span><span class="p">:</span><span class="w"> </span><span class="s2">"N/A"</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="displayevent"><code>/display/event</code></h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">"countdown"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">"title"</span><span class="p">:</span><span class="s2">"tytuł"</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">"count_to"</span><span class="p">:</span><span class="mi">1769731200</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<h3 id="get-displayevent">GET <code>/display/event</code></h3>
-<p>Pobiera zdarzenia z kalendarza.</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">"events"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">"summary"</span><span class="p">:</span><span class="s2">"Wydarzenie ca\u0142odniowe"</span><span class="p">,</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">      </span><span class="nt">"description"</span><span class="p">:</span><span class="s2">"Wydarzenie bez opisu"</span><span class="p">,</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="s2">"Wydarzenie ca\u0142odniowe"</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="kc">null</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">      </span><span class="nt">"summary"</span><span class="p">:</span><span class="s2">"Testowe wydarzenie w ci\u0105gu dnia"</span><span class="p">,</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">      </span><span class="nt">"description"</span><span class="p">:</span><span class="s2">"Wydarzenie bez opisu"</span><span class="p">,</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="s2">"21:30"</span><span class="p">,</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="s2">"22:30"</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">}</span>
-</span></code></pre></div></p>
-<h3 id="get-displayword">GET <code>/display/word</code></h3>
-<p>Pobiera słowo dnia (z bazy danych).</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">"word"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">"word"</span><span class="p">:</span><span class="s2">"mirative"</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">"ipa"</span><span class="p">:</span><span class="s2">"\/\u02c8m\u026a\u0279\u0259t\u026av\/"</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">"definition"</span><span class="p">:</span><span class="s2">"(countable, grammar) (An instance of) a form of a word which conveys this mood."</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">}</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p">{</span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Zebranie"</span><span class="p">,</span><span class="w"> </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"27.10.2026 21:30"</span><span class="p">,</span><span class="w"> </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="s2">"22:30"</span><span class="p">},</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">{</span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Dzień otwarty"</span><span class="p">,</span><span class="w"> </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"27.10.2026 00:00"</span><span class="p">,</span><span class="w"> </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00:00"</span><span class="p">}</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="get-displayquote">GET <code>/display/quote</code></h3>
-<p>Pobiera cytat dnia (z bazy danych).</p>
-<p><strong>Przykładowa odpowiedź (aktywny moduł):</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">"is_active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">"from"</span><span class="p">:</span><span class="s2">"Clare"</span><span class="p">,</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">"quote"</span><span class="p">:</span><span class="s2">"Don\u2019t be so quick to throw away your life. No matter how disgraceful or embarrassing it may be, you need to keep struggling to find your way out until the very end."</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">}</span>
+<p>Brak opisu daje pusty string. Wydarzenie całodniowe ma <code>start</code> o północy i <code>end</code> równe <code>00:00</code> (koniec następnego dnia) — frontend nie oznacza go jako całodniowego.</p>
+<h3 id="displaycountdown"><code>/display/countdown</code></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ferie"</span><span class="p">,</span><span class="w"> </span><span class="nt">"count_to"</span><span class="p">:</span><span class="w"> </span><span class="mi">1769731200</span><span class="p">},</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">}</span>
 </span></code></pre></div>
+<h3 id="displayword-displayquote"><code>/display/word</code>, <code>/display/quote</code></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"word"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mirative"</span><span class="p">,</span><span class="w"> </span><span class="nt">"ipa"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/ˈmɪɹətɪv/"</span><span class="p">,</span><span class="w"> </span><span class="nt">"definition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">},</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">}</span>
+</span></code></pre></div>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clare"</span><span class="p">,</span><span class="w"> </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">},</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="modu-wyaczony">Moduł wyłączony</h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inactive"</span><span class="p">,</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Moduł odjazdów jest wyłączony."</span><span class="p">,</span><span class="w"> </span><span class="nt">"request_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="frontend-ekranu">Frontend ekranu</h2>
+<p><code>pages/display.twig</code> to samodzielny dokument HTML (bez <code>extends</code>) z komponentami Alpine.js zdefiniowanymi inline:</p>
+<table>
+<thead>
+<tr>
+<th>Komponent</th>
+<th>Rola</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>layout()</code></td>
+<td>Dopasowuje wysokość siatki do okna.</td>
+</tr>
+<tr>
+<td><code>clock()</code></td>
+<td>Data i godzina <code>pl-PL</code>, co 1 s.</td>
+</tr>
+<tr>
+<td><code>weather()</code></td>
+<td><code>/display/weather</code>, kolor temperatury wg progów -10/0/5/15/25 °C.</td>
+</tr>
+<tr>
+<td><code>tramDepartures()</code></td>
+<td><code>/display/departure</code>, kolory linii, <code>0</code> min → <code>&lt;1</code>, &gt; 60 min → <code>Xh Y</code>.</td>
+</tr>
+<tr>
+<td><code>multiModuleRotator()</code></td>
+<td>Równolegle <code>/countdown</code>, <code>/quote</code>, <code>/word</code>, <code>/event</code>; slajdy zmieniane co 10 s.</td>
+</tr>
+<tr>
+<td><code>announcements()</code></td>
+<td><code>/display/announcement</code>, jedno ogłoszenie co 8 s.</td>
+</tr>
+</tbody>
+</table>
+<p>Wspólny helper <code>parseDisplayResponse(res)</code> zamienia błędny JSON lub <code>!res.ok</code> na <code>status: 'error'</code>.</p>
+<p>Zależności z CDN: Alpine.js, FontAwesome, Google Fonts (Lato). Style: Tailwind CSS 4 (<code>src/input.css</code> → <code>public/assets/styles/output.css</code>).</p>
 
 
 

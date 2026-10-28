@@ -1,0 +1,2010 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sloths4.github.io/DoDomuDojade/python-migration/">
+      
+      
+        <link rel="prev" href="../current-state/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Migracja na Pythona - DoDomuDojade - Dokumentacja</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plan-migracji-na-pythona" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-header__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DoDomuDojade - Dokumentacja
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Migracja na Pythona
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DoDomuDojade - Dokumentacja" class="md-nav__button md-logo" aria-label="DoDomuDojade - Dokumentacja" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DoDomuDojade - Dokumentacja
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architektura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API i routing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model danych
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Konfiguracja
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integracje
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Display
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rozwój
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../current-state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stan projektu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migracja na Pythona
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#historia-zmian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historia zmian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stan-realizacji-2026-10-28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stan realizacji (2026-10-28)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cel-i-zasady" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cel i zasady
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decyzje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decyzje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-nowego-repozytorium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struktura nowego repozytorium
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uruchamianie-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uruchamianie (Docker)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-skrypt-ddd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI: skrypt ddd
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ekran-na-zywo-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ekran na żywo (SSE)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integracje
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integracje">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tramwaje-gtfs-gtfs-rt-ztm-poznan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tramwaje: GTFS + GTFS-RT ZTM Poznań
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cytat-i-sowo-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cytat i słowo dnia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pogoda-imgw-airly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pogoda (IMGW + Airly)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kalendarz-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kalendarz Google
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#panel-administracyjny-wymagania" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel administracyjny — wymagania
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-danych" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model danych
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etapy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etapy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Etapy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etap-0-fundamenty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 0 — fundamenty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-1-rdzen-backendu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 1 — rdzeń backendu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-2-integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 2 — integracje
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-3-ekran" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 3 — ekran
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-4-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 4 — panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-5-przeaczenie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 5 — przełączenie
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pozniej" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Później
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#na-co-uwazac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Na co uważać
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#historia-zmian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historia zmian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stan-realizacji-2026-10-28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stan realizacji (2026-10-28)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cel-i-zasady" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cel i zasady
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decyzje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decyzje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#struktura-nowego-repozytorium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Struktura nowego repozytorium
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uruchamianie-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uruchamianie (Docker)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-skrypt-ddd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI: skrypt ddd
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ekran-na-zywo-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ekran na żywo (SSE)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integracje
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integracje">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tramwaje-gtfs-gtfs-rt-ztm-poznan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tramwaje: GTFS + GTFS-RT ZTM Poznań
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cytat-i-sowo-dnia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cytat i słowo dnia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pogoda-imgw-airly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pogoda (IMGW + Airly)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kalendarz-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kalendarz Google
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#panel-administracyjny-wymagania" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Panel administracyjny — wymagania
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-danych" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model danych
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etapy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etapy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Etapy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etap-0-fundamenty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 0 — fundamenty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-1-rdzen-backendu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 1 — rdzeń backendu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-2-integracje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 2 — integracje
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-3-ekran" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 3 — ekran
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-4-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 4 — panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etap-5-przeaczenie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Etap 5 — przełączenie
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pozniej" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Później
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#na-co-uwazac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Na co uważać
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="plan-migracji-na-pythona">Plan migracji na Pythona</h1>
+<h2 id="historia-zmian">Historia zmian</h2>
+<table>
+<thead>
+<tr>
+<th>Wersja</th>
+<th>Data</th>
+<th>Zmiany</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.4</td>
+<td>2026-10-28</td>
+<td>Stan realizacji: etapy 0–5 zrobione lokalnie w <code>DoDomuDojade-v2</code> (czeka na utworzenie repozytorium); odstępstwa od planu.</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>2026-10-28</td>
+<td>Przyjęte: Alpine.js, panel po polsku i angielsku, nazwa repozytorium <code>DoDomuDojade-v2</code>.</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>2026-10-27</td>
+<td>Odpowiedzi twórcy na pytania otwarte: ekran na Raspberry Pi 4 z Firefoksem, serwer w szkole tylko w sieci wewnętrznej, start z czystą bazą (bez importu danych), osobne repozytorium w <code>SLOths4</code> z tą samą licencją, ekran bez zmian i tylko po polsku. Odjazdy autobusów i tramwajów ze wszystkich 8 słupków AWF. Cytat i słowo z projektów Wikimedia, na zmianę po polsku i angielsku. Frontend na Alpine.js zamiast Vue.</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>2026-10-27</td>
+<td>Dostosowanie do nowego <code>main</code>: K1–K3 naprawione w PHP; import uwzględnia tabelę <code>event</code>, <code>must_change_password</code> i stare kolumny <code>announcement.date</code>; wymaganie wymuszonej zmiany hasła z blokadą innych akcji do czasu zmiany.</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>2026-10-27</td>
+<td>Uwzględnione odpowiedzi twórcy: nowe repozytorium, przełączenie jednorazowe, bez dalszych prac nad PHP, ORM, Docker, uproszczona architektura, oddzielny frontend, SSE, przeprojektowany panel, role, tramwaje z GTFS/GTFS-RT, nowe źródła cytatu i słowa dnia, wymagania dla edycji ogłoszeń.</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>2026-10-27</td>
+<td>Pierwsze wydanie: wstępny plan migracji na podstawie analizy kodu.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stan-realizacji-2026-10-28">Stan realizacji (2026-10-28)</h2>
+<p>Kod nowej wersji powstał lokalnie i czeka na utworzenie repozytorium <code>SLOths4/DoDomuDojade-v2</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Etap</th>
+<th>Stan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 — fundamenty</td>
+<td>gotowe: Docker Compose, <code>ddd</code>, FastAPI, Alembic, Caddy, CI</td>
+</tr>
+<tr>
+<td>1 — rdzeń backendu</td>
+<td>gotowe: logowanie, sesje, CSRF, limit prób, role, wymuszona zmiana hasła, API ogłoszeń/odliczań/modułów/użytkowników, zdarzenia, harmonogram</td>
+</tr>
+<tr>
+<td>2 — integracje</td>
+<td>gotowe: odjazdy z GTFS + GTFS-RT (8 słupków AWF, autobusy i tramwaje), IMGW + Airly, Google Calendar, cytat i słowo z Wikimedia (pl/en na zmianę) z lokalnym zapasem</td>
+</tr>
+<tr>
+<td>3 — ekran</td>
+<td>gotowe: API ekranu, strumień SSE, ekran w dotychczasowym układzie z ponownym łączeniem i przeładowaniem po awarii</td>
+</tr>
+<tr>
+<td>4 — panel</td>
+<td>gotowe: przeprojektowany panel (pl/en), formularz propozycji</td>
+</tr>
+<tr>
+<td>5 — przełączenie</td>
+<td>przygotowane: <code>DEPLOY.md</code> z listą kontrolną i planem powrotu; samo wdrożenie wymaga serwera szkolnego</td>
+</tr>
+</tbody>
+</table>
+<p>Sprawdzone: 83 testy backendu (w tym na PostgreSQL), lint i typy, pełna instalacja od zera w Dockerze, ręczne testy ekranu i panelu w przeglądarce (także restart API przy otwartym ekranie). Niesprawdzone na żywo: Airly i Google Calendar (brak kluczy — parsowanie pokryte testami), Raspberry Pi.</p>
+<p>Odstępstwa od planu:</p>
+<ul>
+<li>Moduł odjazdów nazywa się <code>departures</code> zamiast <code>tram</code> (obejmuje autobusy).</li>
+<li>SSE nie odtwarza historii zdarzeń po ponownym połączeniu — ekran dostaje po prostu pełny stan. Prostsze, a efekt ten sam; tabela <code>events</code> zostaje jako dziennik zmian.</li>
+<li>Okno modułu <code>od = do</code> oznacza cały dzień; nowe moduły domyślnie są widoczne cały dzień.</li>
+<li>Brak osobnej ochrony „ostatniego administratora” — admin nie może zmienić własnej roli ani usunąć siebie, co wystarcza.</li>
+<li>Godziny w API są w strefie Europe/Warsaw.</li>
+</ul>
+<h2 id="cel-i-zasady">Cel i zasady</h2>
+<p>Nowa wersja DoDomuDojadę powstaje w Pythonie, w <strong>nowym repozytorium</strong>. Obecne repozytorium zostanie zarchiwizowane po przełączeniu. Kod PHP nie jest już rozwijany ani naprawiany — opisane w <a href="../current-state/">Stanie projektu</a> błędy służą jako lista wymagań dla nowej wersji.</p>
+<ol>
+<li><strong>Ultra prosty start.</strong> <code>git clone</code>, <code>cp .env.example .env</code>, <code>docker compose up</code> — i działa. Bez ręcznego tworzenia bazy, crona ani budowania frontendu.</li>
+<li><strong>Prosta architektura.</strong> Moduły per funkcja zamiast czterech warstw DDD, interfejsów repozytoriów i własnego kontenera DI.</li>
+<li><strong>Frontend oddzielony od backendu.</strong> Backend to wyłącznie JSON API, frontend to osobny katalog ze statycznymi stronami HTML i komponentami Alpine.js, serwowany przez Caddy.</li>
+<li><strong>Ekran na żywo.</strong> Ekran dostaje zmiany przez SSE zamiast odpytywać serwer co kilka sekund.</li>
+<li><strong>Przełączenie jednorazowe.</strong> Nowa wersja jest budowana i testowana obok starej (z prawdziwą konfiguracją, na ekranie testowym), a na produkcję trafia w całości, gdy wszystko działa.</li>
+</ol>
+<h2 id="decyzje">Decyzje</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Temat</th>
+<th>Decyzja</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1</td>
+<td>Repozytorium</td>
+<td>Nowe repozytorium; obecne zarchiwizowane po przełączeniu.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Przełączenie</td>
+<td>Jednorazowe, po pełnych testach z prawdziwą konfiguracją.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>Prace nad PHP</td>
+<td>Brak. Priorytetem jest migracja.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D4</td>
+<td>Dostęp do bazy</td>
+<td>SQLAlchemy 2 ORM (zespół go zna).</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>Konfiguracja</td>
+<td>Nazwy tabel i formaty dat jako stałe w kodzie; w <code>.env</code> tylko sekrety, adresy i ustawienia wdrożenia.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>Uruchamianie</td>
+<td>Docker Compose.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D7</td>
+<td>Architektura</td>
+<td>Uproszczona: moduły per funkcja.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D8</td>
+<td>Frontend</td>
+<td>Oddzielny od backendu.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D9</td>
+<td>Ekran</td>
+<td>SSE, z odpytywaniem jako zapasem.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D10</td>
+<td>Panel</td>
+<td>Przeprojektowany: spójny wygląd i zachowanie, przyjazny dla użytkownika.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D11</td>
+<td>Tramwaje</td>
+<td>Oficjalne dane ZTM: GTFS + GTFS-RT zamiast <code>method.vm</code>.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D12</td>
+<td>CLI</td>
+<td>Uproszczone, jeden skrypt <code>ddd</code>.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D13</td>
+<td>Role</td>
+<td>Admin i moderator od początku; logowanie Google w późniejszym etapie.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D14</td>
+<td>Framework frontendu</td>
+<td><strong>Alpine.js + Tailwind CSS 4, bez frameworka SPA i bez bundlera.</strong> Zespół zna Alpine, kod ekranu w dużej części przechodzi bez zmian, uczniom łatwiej to utrzymać.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D15</td>
+<td>Cytat i słowo dnia</td>
+<td>Projekty Wikimedia, na zmianę: jeden dzień po polsku, następny po angielsku.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D16</td>
+<td>Odjazdy</td>
+<td>Autobusy i tramwaje ze wszystkich słupków przystanku AWF (8 słupków w GTFS).</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D17</td>
+<td>Logowanie Google</td>
+<td>Domena Google Workspace szkoły i domyślna rola nowych kont.</td>
+<td>do decyzji (etap późniejszy)</td>
+</tr>
+<tr>
+<td>D19</td>
+<td>Dane ze starej wersji</td>
+<td>Nie są przenoszone: baza nie zawiera istotnych danych. Przenoszona jest tylko konfiguracja (klucze API, konto serwisowe Google, id kalendarza).</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D20</td>
+<td>Repozytorium</td>
+<td><strong><code>SLOths4/DoDomuDojade-v2</code></strong>, licencja CC BY-NC 4.0 jak dotąd. Po przełączeniu stare repozytorium można przemianować na <code>DoDomuDojade-php</code> i zarchiwizować. Fork odpada: GitHub nie pozwala forkować do tej samej organizacji.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D21</td>
+<td>Ekran</td>
+<td>Wygląd bez zmian. Tylko po polsku.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D22</td>
+<td>Język panelu</td>
+<td>Panel po polsku i po angielsku, jak dziś. Język z wyboru użytkownika (zapamiętany w profilu), a domyślnie z języka przeglądarki. Ekran tylko po polsku (D21).</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D23</td>
+<td>Kopie zapasowe</td>
+<td>Bez automatycznych kopii: brak istotnych danych. <code>ddd backup</code> jako prosta komenda na żądanie.</td>
+<td>przyjęte</td>
+</tr>
+<tr>
+<td>D18</td>
+<td>Hosting</td>
+<td>Serwer w szkole, dostępny tylko w sieci wewnętrznej; utrzymują go uczniowie lub informatyk.</td>
+<td>przyjęte</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stos">Stos</h2>
+<table>
+<thead>
+<tr>
+<th>Obszar</th>
+<th>Wybór</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Język</td>
+<td>Python 3.13, zarządzanie przez <strong>uv</strong></td>
+</tr>
+<tr>
+<td>API</td>
+<td><strong>FastAPI</strong> + uvicorn</td>
+</tr>
+<tr>
+<td>Baza</td>
+<td>PostgreSQL 17, <strong>SQLAlchemy 2 ORM</strong>, psycopg 3, <strong>Alembic</strong></td>
+</tr>
+<tr>
+<td>Walidacja i konfiguracja</td>
+<td>Pydantic 2, pydantic-settings</td>
+</tr>
+<tr>
+<td>Zadania cykliczne</td>
+<td><strong>APScheduler</strong> w procesie aplikacji (zamiast crona)</td>
+</tr>
+<tr>
+<td>HTTP klient</td>
+<td>httpx (timeouty, ponowienia)</td>
+</tr>
+<tr>
+<td>Tramwaje</td>
+<td><code>gtfs-realtime-bindings</code> (protobuf)</td>
+</tr>
+<tr>
+<td>Kalendarz</td>
+<td>google-api-python-client + google-auth</td>
+</tr>
+<tr>
+<td>Hasła</td>
+<td>bcrypt (czyta istniejące hashe <code>$2y$</code>)</td>
+</tr>
+<tr>
+<td>Logowanie Google (później)</td>
+<td>Authlib (OpenID Connect)</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>Typer</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Alpine.js (przypięta wersja w repozytorium, nie z CDN), Tailwind CSS 4, moduły ES bez bundlera (D14)</td>
+</tr>
+<tr>
+<td>Serwer WWW</td>
+<td><strong>Caddy</strong> (pliki statyczne frontendu + proxy do API)</td>
+</tr>
+<tr>
+<td>Jakość</td>
+<td>pytest, ruff, mypy; GitHub Actions</td>
+</tr>
+<tr>
+<td>Uruchamianie</td>
+<td>Docker Compose</td>
+</tr>
+</tbody>
+</table>
+<h2 id="struktura-nowego-repozytorium">Struktura nowego repozytorium</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>DoDomuDojade-v2/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── docker-compose.yml        # db, api, web
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── .env.example
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── ddd                       # skrypt CLI (bash) — patrz niżej
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── backend/
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── Dockerfile
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── pyproject.toml
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── alembic/
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├── data/                 # quotes.json, words.json (zapasowe źródła)
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   └── app/
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│       ├── main.py           # FastAPI, routery, start harmonogramu
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│       ├── core/
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│       │   ├── config.py     # Settings
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│       │   ├── db.py         # silnik, sesja, Base
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│       │   ├── auth.py       # sesja, CSRF, current_user, role
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│       │   ├── errors.py     # koperta błędu
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│       │   ├── i18n.py       # tłumaczenia komunikatów API (pl, en)
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│       │   ├── events.py     # zapis zdarzeń + broker SSE
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│       │   └── scheduler.py  # zadania cykliczne
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│       ├── announcements/    # models.py, schemas.py, service.py, router.py
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│       ├── countdowns/
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│       ├── modules/
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│       ├── users/
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│       ├── display/          # endpointy ekranu + strumień SSE
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│       ├── integrations/
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│       │   ├── tram.py       # GTFS + GTFS-RT
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│       │   ├── weather.py    # IMGW + Airly
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│       │   ├── calendar.py
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│       │   ├── quote.py      # łańcuch źródeł
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│       │   └── word.py
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│       └── cli.py
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>└── frontend/
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    ├── Dockerfile            # build Tailwind → obraz Caddy
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    ├── Caddyfile
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    ├── display/              # index.html + display.js (ekran)
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    ├── panel/                # strony panelu (HTML) + ich komponenty Alpine (.js)
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    └── shared/               # api.js (klient API, CSRF), i18n.js + locales/pl.json, en.json, komponenty, style, alpine.min.js
+</span></code></pre></div>
+<p>Każdy moduł funkcji ma te same cztery pliki: <code>models.py</code> (tabele ORM), <code>schemas.py</code> (Pydantic: wejście i wyjście API), <code>service.py</code> (logika i reguły), <code>router.py</code> (endpointy). Nie ma interfejsów repozytoriów, use case'ów w osobnych klasach ani kontenera DI — wystarczy <code>Depends()</code>.</p>
+<h2 id="uruchamianie-docker">Uruchamianie (Docker)</h2>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">db</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">postgres:17, wolumen na dane, healthcheck</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">api</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">backend; przy starcie `alembic upgrade head`, potem uvicorn</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">web</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">Caddy z gotowym frontendem; /api/* → api:8000</span>
+</span></code></pre></div>
+<p>Start od zera:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./ddd<span class="w"> </span>up
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>./ddd<span class="w"> </span>user<span class="w"> </span>add<span class="w"> </span>admin
+</span></code></pre></div>
+<p>Migracje bazy uruchamiają się same przy starcie kontenera <code>api</code>. Dane startowe (wiersze modułów) dodaje migracja Alembic. Zadania cykliczne działają w procesie API, więc nie trzeba konfigurować crona.</p>
+<h2 id="cli-skrypt-ddd">CLI: skrypt <code>ddd</code></h2>
+<p>Jeden skrypt w bashu w katalogu głównym, który przekazuje polecenia do kontenera (<code>docker compose exec api python -m app.cli …</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Polecenie</th>
+<th>Działanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ddd up</code> / <code>ddd down</code></td>
+<td>Start / zatrzymanie całości.</td>
+</tr>
+<tr>
+<td><code>ddd logs</code></td>
+<td>Logi aplikacji.</td>
+</tr>
+<tr>
+<td><code>ddd fetch</code></td>
+<td>Natychmiastowe pobranie cytatu, słowa, pogody i rozkładu (normalnie robi to harmonogram).</td>
+</tr>
+<tr>
+<td><code>ddd user add &lt;login&gt;</code></td>
+<td>Nowy użytkownik; hasło pytane interaktywnie, rola <code>--role admin|moderator</code>.</td>
+</tr>
+<tr>
+<td><code>ddd cleanup</code></td>
+<td>Usunięcie starych odrzuconych ogłoszeń i starych wpisów cache pogody.</td>
+</tr>
+<tr>
+<td><code>ddd migrate</code></td>
+<td>Migracje bazy (normalnie automatyczne).</td>
+</tr>
+<tr>
+<td><code>ddd backup</code></td>
+<td>Zrzut bazy do pliku w <code>./backups</code> (na żądanie).</td>
+</tr>
+</tbody>
+</table>
+<p>Polecenia kończą się kodem różnym od 0 przy błędzie.</p>
+<h2 id="api">API</h2>
+<p>Wszystkie endpointy są pod <code>/api</code>. Frontend i API działają w jednej domenie (Caddy), więc logowanie opiera się na ciasteczku sesji.</p>
+<table>
+<thead>
+<tr>
+<th>Grupa</th>
+<th>Endpointy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth</td>
+<td><code>POST /api/auth/login</code>, <code>POST /api/auth/logout</code>, <code>GET /api/auth/me</code></td>
+</tr>
+<tr>
+<td>Ekran</td>
+<td><code>GET /api/display/{departures,weather,announcements,countdown,events,quote,word}</code>, <code>GET /api/display/stream</code> (SSE)</td>
+</tr>
+<tr>
+<td>Propozycje</td>
+<td><code>POST /api/announcements/proposals</code> (publiczne)</td>
+</tr>
+<tr>
+<td>Panel</td>
+<td>CRUD <code>/api/announcements</code>, <code>/api/countdowns</code>, <code>/api/modules</code>, <code>/api/users</code>; <code>POST /api/announcements/{id}/approve</code>, <code>…/reject</code></td>
+</tr>
+<tr>
+<td>Konfiguracja</td>
+<td><code>GET /api/config</code> — limity długości pól itp. dla formularzy</td>
+</tr>
+</tbody>
+</table>
+<p>Ponieważ frontend też jest pisany od nowa, kontrakt może zostać uporządkowany (liczba mnoga w ścieżkach, spójne <code>camelCase</code> w JSON). Koperta odpowiedzi ekranu <code>{status, data, message}</code> i koperta błędu <code>{status: "error", data: {code, context}, message}</code> zostają, bo się sprawdziły.</p>
+<p>Bezpieczeństwo:</p>
+<ul>
+<li>Ciasteczko sesji <code>HttpOnly</code>, <code>SameSite=Lax</code> (oraz <code>Secure</code>, gdy działa HTTPS); bez wiązania z adresem IP.</li>
+<li>Serwer jest dostępny tylko w sieci szkolnej. Na start wystarczy HTTP w sieci wewnętrznej; HTTPS przez Caddy z certyfikatem wewnętrznym albo z prawdziwej domeny (wyzwanie DNS), gdy dojdzie logowanie Google.</li>
+<li>CSRF: token w nagłówku <code>X-CSRF-Token</code> dla metod zmieniających stan.</li>
+<li>Niezalogowane wywołanie API → <strong>401</strong> w JSON (nie przekierowanie).</li>
+<li>Limit prób logowania.</li>
+</ul>
+<h2 id="role">Role</h2>
+<table>
+<thead>
+<tr>
+<th>Uprawnienie</th>
+<th>Moderator</th>
+<th>Admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ogłoszenia: dodawanie, edycja, zatwierdzanie, odrzucanie, usuwanie</td>
+<td>tak</td>
+<td>tak</td>
+</tr>
+<tr>
+<td>Odliczania</td>
+<td>tak</td>
+<td>tak</td>
+</tr>
+<tr>
+<td>Moduły ekranu (włączanie, godziny)</td>
+<td>nie</td>
+<td>tak</td>
+</tr>
+<tr>
+<td>Użytkownicy i role</td>
+<td>nie</td>
+<td>tak</td>
+</tr>
+</tbody>
+</table>
+<p>Kolumna <code>role</code> w tabeli <code>users</code> od początku.</p>
+<p>Wymuszona zmiana hasła (<code>must_change_password</code>, wprowadzona w PHP w październiku 2026) zostaje: konto z tą flagą może wyłącznie zmienić własne hasło i się wylogować — w PHP może dziś zarządzać innymi użytkownikami (B19 w <a href="../current-state/">Stanie projektu</a>). Zmiana hasła innej osobie wymaga roli admin i ustawia jej tę flagę. Logowanie Google (późniejszy etap): OpenID Connect przez Authlib, dostęp tylko dla kont z domeny szkoły (<code>hd</code>), konto tworzone automatycznie przy pierwszym logowaniu z rolą domyślną (D17).</p>
+<p>Logowanie Google <strong>nie wymaga wystawienia serwera do internetu</strong>. Google nie łączy się z serwerem: przekierowanie na adres zwrotny (callback) robi przeglądarka użytkownika, a serwer sam wysyła zapytanie do Google. Google wymaga jednak, żeby adres zwrotny był domeną z publiczną końcówką (np. <code>ekran.szkola.pl</code>), a nie adresem IP — wystarczy, że ta domena rozwiązuje się na serwer w sieci szkolnej. Logowanie nauczycieli spoza szkoły wymagałoby już udostępnienia serwera na zewnątrz.</p>
+<h2 id="ekran-na-zywo-sse">Ekran na żywo (SSE)</h2>
+<pre class="mermaid"><code>flowchart LR
+    S[Harmonogram&lt;br/&gt;tram 30 s, pogoda 15 min,&lt;br/&gt;kalendarz 5 min, cytat/słowo 1×dziennie] --&gt; C[(Cache w pamięci)]
+    P[Panel: zapis ogłoszenia,&lt;br/&gt;odliczania, modułu] --&gt; T[(Transakcja:&lt;br/&gt;dane + events)]
+    T --&gt; B[Broker w procesie]
+    C --&gt; B
+    B --&gt;|SSE /api/display/stream| E[Ekrany]
+    E -.-&gt;|zapas: odpytywanie| A[GET /api/display/*]</code></pre>
+<ul>
+<li>Po połączeniu ekran dostaje pełny stan (wszystkie moduły), potem tylko zmiany: <code>event: departures</code>, <code>event: announcements</code>, <code>event: module</code> itd.</li>
+<li>Zmiany z panelu zapisują się w tabeli <code>events</code> <strong>w tej samej transakcji</strong> co dane. Po zatwierdzeniu broker rozsyła je do ekranów. <code>events.id</code> służy jako <code>id:</code> w SSE, więc po zerwaniu połączenia ekran podaje <code>Last-Event-ID</code> i dostaje to, co przegapił.</li>
+<li>Dane zewnętrzne pobiera harmonogram w tle i trzyma w pamięci. Liczba ekranów nie wpływa na liczbę zapytań do ZTM, Google i Airly.</li>
+<li>Widoczność modułów (godziny) sprawdza harmonogram co minutę i wysyła zmianę, gdy moduł się włącza lub wyłącza.</li>
+<li>Jeden proces uvicorn wystarczy dla tej skali. Przy kilku procesach broker przechodzi na PostgreSQL <code>LISTEN/NOTIFY</code>.</li>
+<li>Caddy: wyłączone buforowanie dla <code>/api/display/stream</code>.</li>
+<li>Gdy SSE nie działa, frontend wraca do odpytywania endpointów <code>/api/display/*</code>.</li>
+</ul>
+<h2 id="integracje">Integracje</h2>
+<h3 id="tramwaje-gtfs-gtfs-rt-ztm-poznan">Tramwaje: GTFS + GTFS-RT ZTM Poznań</h3>
+<p>Źródła (bez klucza API, dane bezpłatne):</p>
+<table>
+<thead>
+<tr>
+<th>Dane</th>
+<th>Adres</th>
+<th>Odświeżanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rozkład (GTFS ZIP, ~11 MB)</td>
+<td><code>https://www.ztm.poznan.pl/pl/dla-deweloperow/getGTFSFile</code></td>
+<td>raz dziennie (~03:00) i przy starcie</td>
+</tr>
+<tr>
+<td>Opóźnienia (GTFS-RT, protobuf)</td>
+<td><code>https://www.ztm.poznan.pl/pl/dla-deweloperow/getGtfsRtFile/?file=trip_updates.pb</code></td>
+<td>co 30 s, jeden poller</td>
+</tr>
+</tbody>
+</table>
+<p>Warunki ZTM: podać źródło i datę aktualizacji danych, nie używać logo ZTM ani Poznania. Dokumentacja: <a href="https://www.ztm.poznan.pl/otwarte-dane/">otwarte dane ZTM</a>.</p>
+<p>Najważniejsze fakty (sprawdzone na danych z 2026-10-27):</p>
+<ul>
+<li><code>stops.txt</code> ma kolumnę <code>stop_code</code> z symbolami PEKA (<code>AWF41</code> → <code>stop_id 172</code>). Przystanek AWF ma 8 słupków o nazwie <code>AWF</code>: <code>AWF01</code>–<code>AWF05</code>, <code>AWF41</code>, <code>AWF42</code>, <code>AWF73</code> (stan na 2026-10-27). Konfiguracja: <code>STOP_NAME=AWF</code> wybiera wszystkie słupki o tej nazwie, więc nowy słupek pojawi się sam; opcjonalnie <code>STOP_CODES</code> do zawężenia.</li>
+<li><code>calendar_dates.txt</code> jest pusty, ale kod musi go obsłużyć.</li>
+<li>Godziny po północy zapisane są jako <code>24:02:00</code> itd.</li>
+<li>TripUpdates mają po jednym <code>stop_time_update</code> na kurs, tylko z <code>arrival.delay</code> — opóźnienie trzeba przenieść na dalsze przystanki.</li>
+<li><code>trip_id</code> z RT pasują 1:1 do <code>trips.txt</code>.</li>
+</ul>
+<p>Algorytm:</p>
+<ol>
+<li>Z GTFS wczytać: słupki o nazwie <code>STOP_NAME</code> (<code>stop_name → [stop_id]</code>), <code>trips</code>, <code>routes</code>, <code>calendar</code>, <code>calendar_dates</code> i <code>stop_times</code> tylko dla skonfigurowanych przystanków.</li>
+<li>Aktywne usługi dla dwóch dni serwisowych: dziś i wczoraj (kursy po północy). Czas odjazdu = <code>północ dnia serwisowego (Europe/Warsaw) + sekundy z stop_times</code>.</li>
+<li>Kandydaci z oknem <code>[teraz − 2 min, teraz + 90 min]</code>, bez przystanków tylko wysiadkowych (<code>pickup_type = 1</code>).</li>
+<li>Opóźnienie z RT: jeśli kurs jest w RT i jego bieżący <code>stop_sequence ≤</code> sekwencji przystanku → czas + opóźnienie; jeśli pojazd już minął przystanek → pomiń; brak w RT → czas rozkładowy.</li>
+<li>Wynik <code>{stopCode, line, minutes, direction, realtime}</code>, posortowany po minutach, autobusy i tramwaje (D16). Z <code>stop_headsign</code> usunąć znak <code>!</code> (oznaczenie objazdu).</li>
+</ol>
+<p>Zapas: RT starszy niż 3 min → czasy rozkładowe; brak GTFS → <code>status: empty</code>.</p>
+<h3 id="cytat-i-sowo-dnia">Cytat i słowo dnia</h3>
+<p>Obecne źródło cytatów nie działa (<code>quotes-api-self.vercel.app</code> zwraca <code>DEPLOYMENT_NOT_FOUND</code>), a słowo dnia pochodzi z prywatnego serwisu bez gwarancji. Nowa wersja korzysta z projektów Wikimedia (D15): darmowe, stabilne, bez klucza API.</p>
+<p>Język zmienia się co dzień: dni o parzystym numerze (<code>data.toordinal() % 2 == 0</code>) po polsku, nieparzyste po angielsku. Cytat i słowo danego dnia są w tym samym języku.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Po polsku</th>
+<th>Po angielsku</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cytat</td>
+<td>Wikicytaty: <code>pl.wikiquote.org</code>, strona <code>Szablon:Cytat_dnia/{dzień}_{miesiąc w dopełniaczu}</code> (np. <code>27_października</code>). Tekst między <code>'''''…'''''</code>, autor z <code>[[…]]</code>.</td>
+<td>Wikiquote: <code>en.wikiquote.org</code>, strona <code>Wikiquote:Quote_of_the_day/{Month}_{D},_{YYYY}</code> (np. <code>October_27,_2026</code>). Parametry szablonu <code>quote=</code> i <code>author=</code>.</td>
+</tr>
+<tr>
+<td>Słowo</td>
+<td>Wikisłownik: <code>pl.wiktionary.org</code>, strona <code>Wikisłownik:Słowo_dnia/Rozkład/YYYY/MM/DD</code>. Parametry <code>hasło</code>, <code>wymowa</code> (<code>{{IPA|…}}</code>), pierwsza definicja <code>(1.1)</code> ze <code>znaczenie</code>.</td>
+<td>Wiktionary: <code>en.wiktionary.org</code>, strona <code>Wiktionary:Word_of_the_day/YYYY/Month_D</code>. Szablon <code>{{WOTD|słowo|część mowy|definicja}}</code>; wymowa z <code>api.dictionaryapi.dev/api/v2/entries/en/{słowo}</code> (<code>[0].phonetic</code>), jeśli jest.</td>
+</tr>
+<tr>
+<td>Zapas</td>
+<td>lokalny <code>data/quotes_pl.json</code>, <code>data/words_pl.json</code></td>
+<td>lokalny <code>data/quotes_en.json</code>, <code>data/words_en.json</code></td>
+</tr>
+</tbody>
+</table>
+<p>Wszystkie strony pobierane są przez <code>index.php?title=…&amp;action=raw</code> (sprawdzone 2026-10-27, odpowiedź 200). Wymagania Wikimedia: nagłówek <code>User-Agent</code> z nazwą aplikacji i adresem kontaktowym. Licencja CC BY-SA: na ekranie mały podpis źródła („Wikicytaty”, „Wikisłownik”, „Wikiquote”, „Wiktionary”). Wikitekst czyścić biblioteką <code>mwparserfromhell</code>.</p>
+<p>Lokalne listy (~366 pozycji na język) wybierane są według daty i działają bez sieci.</p>
+<h3 id="pogoda-imgw-airly">Pogoda (IMGW + Airly)</h3>
+<p>Bez zmian w źródłach. Poprawki: wartości Airly szukane po nazwie (<code>PM25</code>, <code>PRESSURE</code>…), nie po pozycji; cache w pamięci zamiast tabeli rosnącej bez końca (ostatni wynik zapisany w bazie na wypadek restartu).</p>
+<h3 id="kalendarz-google">Kalendarz Google</h3>
+<p>Bez zmian w źródle. Poprawki: wydarzenia całodniowe (<code>start.date</code> zamiast <code>start.dateTime</code>) wyświetlane jako „Cały dzień”; cache 5 min.</p>
+<h2 id="panel-administracyjny-wymagania">Panel administracyjny — wymagania</h2>
+<p>Ogólne:</p>
+<ul>
+<li>Jeden zestaw komponentów (tabela, formularz, okno potwierdzenia, komunikat) używany na każdej stronie.</li>
+<li>Formularz po błędzie zostaje otwarty z wpisanymi danymi; błędy pokazane przy polach.</li>
+<li>Limity pól pobierane z <code>GET /api/config</code> — jedno źródło prawdy dla frontendu i backendu.</li>
+<li>Wygaśnięcie sesji → przekierowanie na logowanie z powrotem na tę samą stronę.</li>
+<li>Działanie na telefonie.</li>
+<li>Dwa języki (D22): wszystkie teksty panelu w <code>frontend/shared/locales/{pl,en}.json</code>, komunikaty błędów API tłumaczone po kluczu (jak dziś w <code>resources/lang</code>). Przełącznik języka w profilu; wybór zapisany przy koncie (kolumna <code>users.locale</code>).</li>
+</ul>
+<p>Ogłoszenia (na podstawie analizy obecnych błędów edycji):</p>
+<table>
+<thead>
+<tr>
+<th>Problem w PHP</th>
+<th>Wymaganie w Pythonie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Całe API ogłoszeń zwraca 500 (walidator nie powstaje w kontenerze).</td>
+<td>Test każdego endpointu w CI.</td>
+</tr>
+<tr>
+<td>Dzisiejsza data ważności jest odrzucana; nie da się poprawić tekstu wygasłego ogłoszenia.</td>
+<td><code>valid_until &gt;= dziś</code>; data walidowana tylko, gdy się zmienia.</td>
+</tr>
+<tr>
+<td>Pusta lub błędna data, brak pola → 500.</td>
+<td>Walidacja Pydantic → 400 z błędem przy polu.</td>
+</tr>
+<tr>
+<td>Zmiana statusu w edycji omija zatwierdzanie i zostawia <code>decided_by</code> przy statusie PENDING.</td>
+<td>Status zmieniany wyłącznie akcjami zatwierdź/odrzuć; powrót do PENDING czyści <code>decided_*</code>.</td>
+</tr>
+<tr>
+<td><code>decided_at</code> traci godzinę.</td>
+<td>Kolumny <code>timestamptz</code>.</td>
+</tr>
+<tr>
+<td>Dane zapisane, a użytkownik widzi błąd (zdarzenie zapisywane osobno).</td>
+<td>Dane i zdarzenie w jednej transakcji.</td>
+</tr>
+<tr>
+<td>Limity frontendu (50/500) inne niż backendu (5–255 / 10–65535).</td>
+<td>Limity z <code>/api/config</code>.</td>
+</tr>
+<tr>
+<td>Modal zamyka się przy błędzie, zmiany giną.</td>
+<td>Zamykanie tylko po sukcesie.</td>
+</tr>
+<tr>
+<td>Brak trim tytułu i tekstu przy edycji.</td>
+<td>Trim we wszystkich ścieżkach.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="model-danych">Model danych</h2>
+<p>Nowy, uporządkowany schemat tworzony przez Alembic:</p>
+<table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Zmiany względem obecnej bazy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td>+ <code>role</code> (<code>admin</code>/<code>moderator</code>), + <code>locale</code> (<code>pl</code>/<code>en</code>), + <code>google_sub</code> (później); <code>timestamptz</code>.</td>
+</tr>
+<tr>
+<td><code>announcements</code></td>
+<td>bez kolumny <code>date</code>; <code>created_at</code>, <code>decided_at</code> jako <code>timestamptz</code>; <code>decided_by</code> z kluczem obcym; status jako <code>text</code> z CHECK.</td>
+</tr>
+<tr>
+<td><code>countdowns</code></td>
+<td><code>count_to</code> jako <code>timestamptz</code> (z godziną).</td>
+</tr>
+<tr>
+<td><code>modules</code></td>
+<td>okna czasowe mogą przechodzić przez północ (<code>start_time &gt; end_time</code> oznacza noc).</td>
+</tr>
+<tr>
+<td><code>quotes</code>, <code>words</code></td>
+<td><code>fetched_on</code> jako <code>date</code>; bez UNIQUE na samym słowie (UNIQUE na dacie).</td>
+</tr>
+<tr>
+<td><code>weather</code></td>
+<td>jeden wiersz z ostatnim wynikiem zamiast historii.</td>
+</tr>
+<tr>
+<td><code>events</code></td>
+<td><code>id bigserial</code> (numer zdarzenia dla SSE), <code>type</code>, <code>payload jsonb</code>, <code>created_at</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Danych ze starej bazy nie przenosimy (D19). Nowa instalacja startuje z pustą bazą; konta tworzy się przez <code>ddd user add</code>. Ze starego serwera przenoszona jest tylko konfiguracja: klucz Airly, plik konta serwisowego Google i id kalendarza (do pobrania z obecnego serwera, np. przez tunel SSH).</p>
+<h2 id="etapy">Etapy</h2>
+<h3 id="etap-0-fundamenty">Etap 0 — fundamenty</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Nowe repozytorium, <code>docker-compose.yml</code>, skrypt <code>ddd</code>, CI (ruff, mypy, pytest, build frontendu).</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Szkielet FastAPI, konfiguracja, baza, Alembic, koperta błędu.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Szkielet frontendu (Vite) i Caddy.</li>
+</ul>
+<h3 id="etap-1-rdzen-backendu">Etap 1 — rdzeń backendu</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Użytkownicy, role, logowanie, sesja, CSRF, limit prób.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ogłoszenia, odliczania, moduły — API z wymaganiami z sekcji panelu.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Zdarzenia w transakcji, broker, harmonogram.</li>
+</ul>
+<h3 id="etap-2-integracje">Etap 2 — integracje</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Tramwaje (GTFS + GTFS-RT) z testami na zapisanych plikach feedu.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Pogoda, kalendarz, cytat, słowo — z łańcuchami źródeł i timeoutami.</li>
+</ul>
+<h3 id="etap-3-ekran">Etap 3 — ekran</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Endpointy <code>/api/display/*</code> i strumień SSE.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Frontend ekranu (obecny układ bez zmian, SSE z zapasowym odpytywaniem), test na Raspberry Pi 4 z Firefoksem.</li>
+</ul>
+<h3 id="etap-4-panel">Etap 4 — panel</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Projekt panelu (spójne komponenty), potem implementacja stron: ogłoszenia, propozycje, odliczania, moduły, użytkownicy.</li>
+</ul>
+<h3 id="etap-5-przeaczenie">Etap 5 — przełączenie</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Przeniesienie konfiguracji (klucze, konto serwisowe Google) z obecnego serwera.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Utworzenie kont, ustawienie modułów, testy na ekranie Raspberry Pi.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Wdrożenie na serwer szkolny, przełączenie adresu, który otwiera Firefox na ekranie; obserwacja.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Archiwizacja starego repozytorium.</li>
+</ul>
+<h3 id="pozniej">Później</h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logowanie Google dla nauczycieli (D17).</li>
+</ul>
+<h2 id="na-co-uwazac">Na co uważać</h2>
+<table>
+<thead>
+<tr>
+<th>Temat</th>
+<th>Szczegół</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ekran</td>
+<td>Raspberry Pi 4 z Firefoksem w trybie bez interfejsu. Unikać ciężkich animacji; SSE musi samo wznawiać połączenie po restarcie serwera lub zerwaniu sieci, a strona przeładować się po dłuższej awarii — nikt nie kliknie „odśwież”.</td>
+</tr>
+<tr>
+<td>Sesje</td>
+<td>Po przełączeniu wszyscy logują się ponownie, a konta trzeba utworzyć od nowa.</td>
+</tr>
+<tr>
+<td>Strefa czasowa</td>
+<td>Wszystko w <code>Europe/Warsaw</code> dla logiki, <code>timestamptz</code> w bazie.</td>
+</tr>
+<tr>
+<td>ZTM</td>
+<td>Format danych może się zmienić bez uprzedzenia — testy na zapisanych feedach i czytelne logi przy błędzie parsowania.</td>
+</tr>
+<tr>
+<td>Wikimedia</td>
+<td>Strony dnia bywają uzupełniane z wyprzedzeniem, ale nie zawsze — zawsze mieć lokalny zapas.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -5,7 +5,23 @@
          <lastmod>2026-10-28</lastmod>
     </url>
     <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/api/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
          <loc>https://sloths4.github.io/DoDomuDojade/architecture/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/configuration/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/current-state/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/data-model/</loc>
          <lastmod>2026-10-28</lastmod>
     </url>
     <url>
@@ -17,7 +33,15 @@
          <lastmod>2026-10-28</lastmod>
     </url>
     <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/integrations/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
          <loc>https://sloths4.github.io/DoDomuDojade/panel/</loc>
+         <lastmod>2026-10-28</lastmod>
+    </url>
+    <url>
+         <loc>https://sloths4.github.io/DoDomuDojade/python-migration/</loc>
          <lastmod>2026-10-28</lastmod>
     </url>
 </urlset>
