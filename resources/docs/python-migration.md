@@ -4,11 +4,35 @@
 
 | Wersja | Data | Zmiany |
 |---|---|---|
+| 2.4 | 2026-10-28 | Stan realizacji: etapy 0–5 zrobione lokalnie w `DoDomuDojade-v2` (czeka na utworzenie repozytorium); odstępstwa od planu. |
 | 2.3 | 2026-10-28 | Przyjęte: Alpine.js, panel po polsku i angielsku, nazwa repozytorium `DoDomuDojade-v2`. |
 | 2.2 | 2026-10-27 | Odpowiedzi twórcy na pytania otwarte: ekran na Raspberry Pi 4 z Firefoksem, serwer w szkole tylko w sieci wewnętrznej, start z czystą bazą (bez importu danych), osobne repozytorium w `SLOths4` z tą samą licencją, ekran bez zmian i tylko po polsku. Odjazdy autobusów i tramwajów ze wszystkich 8 słupków AWF. Cytat i słowo z projektów Wikimedia, na zmianę po polsku i angielsku. Frontend na Alpine.js zamiast Vue. |
 | 2.1 | 2026-10-27 | Dostosowanie do nowego `main`: K1–K3 naprawione w PHP; import uwzględnia tabelę `event`, `must_change_password` i stare kolumny `announcement.date`; wymaganie wymuszonej zmiany hasła z blokadą innych akcji do czasu zmiany. |
 | 2.0 | 2026-10-27 | Uwzględnione odpowiedzi twórcy: nowe repozytorium, przełączenie jednorazowe, bez dalszych prac nad PHP, ORM, Docker, uproszczona architektura, oddzielny frontend, SSE, przeprojektowany panel, role, tramwaje z GTFS/GTFS-RT, nowe źródła cytatu i słowa dnia, wymagania dla edycji ogłoszeń. |
 | 1.0 | 2026-10-27 | Pierwsze wydanie: wstępny plan migracji na podstawie analizy kodu. |
+
+## Stan realizacji (2026-10-28)
+
+Kod nowej wersji powstał lokalnie i czeka na utworzenie repozytorium `SLOths4/DoDomuDojade-v2`.
+
+| Etap | Stan |
+|---|---|
+| 0 — fundamenty | gotowe: Docker Compose, `ddd`, FastAPI, Alembic, Caddy, CI |
+| 1 — rdzeń backendu | gotowe: logowanie, sesje, CSRF, limit prób, role, wymuszona zmiana hasła, API ogłoszeń/odliczań/modułów/użytkowników, zdarzenia, harmonogram |
+| 2 — integracje | gotowe: odjazdy z GTFS + GTFS-RT (8 słupków AWF, autobusy i tramwaje), IMGW + Airly, Google Calendar, cytat i słowo z Wikimedia (pl/en na zmianę) z lokalnym zapasem |
+| 3 — ekran | gotowe: API ekranu, strumień SSE, ekran w dotychczasowym układzie z ponownym łączeniem i przeładowaniem po awarii |
+| 4 — panel | gotowe: przeprojektowany panel (pl/en), formularz propozycji |
+| 5 — przełączenie | przygotowane: `DEPLOY.md` z listą kontrolną i planem powrotu; samo wdrożenie wymaga serwera szkolnego |
+
+Sprawdzone: 83 testy backendu (w tym na PostgreSQL), lint i typy, pełna instalacja od zera w Dockerze, ręczne testy ekranu i panelu w przeglądarce (także restart API przy otwartym ekranie). Niesprawdzone na żywo: Airly i Google Calendar (brak kluczy — parsowanie pokryte testami), Raspberry Pi.
+
+Odstępstwa od planu:
+
+- Moduł odjazdów nazywa się `departures` zamiast `tram` (obejmuje autobusy).
+- SSE nie odtwarza historii zdarzeń po ponownym połączeniu — ekran dostaje po prostu pełny stan. Prostsze, a efekt ten sam; tabela `events` zostaje jako dziennik zmian.
+- Okno modułu `od = do` oznacza cały dzień; nowe moduły domyślnie są widoczne cały dzień.
+- Brak osobnej ochrony „ostatniego administratora” — admin nie może zmienić własnej roli ani usunąć siebie, co wystarcza.
+- Godziny w API są w strefie Europe/Warsaw.
 
 ## Cel i zasady
 
