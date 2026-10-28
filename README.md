@@ -66,7 +66,7 @@ Skonfiguruj zmienne środowiskowe:
 cp .env.example .env
 ```
 
-Domyślnie aplikacja korzysta z tabeli użytkowników `user` (zmienna `USER_TABLE_NAME`, domyślnie `user`).
+Aplikacja korzysta z tabeli użytkowników `user` (nazwa jest stała w kodzie; zmienna `USER_TABLE_NAME` nie jest już czytana).
 
 Utwórz bazę danych używając `schema.sql` i użytkownika (tutaj dla przykładu `ddd`):
 
@@ -114,7 +114,7 @@ alter default privileges in schema public grant all on sequences to ddd;
 grant execute on all functions in schema public to ddd;
 ```
 
-Nie zapomnij o dodaniu listy dostępnych modułów do tabeli modułów (standardowo `module`):
+Nie zapomnij o dodaniu listy dostępnych modułów do tabeli modułów (standardowo `module`). Nazwy muszą być w liczbie pojedynczej, zgodnie z enumem `ModuleName`:
 
 ```postgresql
 insert into public.module (id, module_name, is_active, start_time, end_time)
@@ -122,7 +122,7 @@ values  (4, 'tram', true, '00:00', '23:59'),
         (5, 'weather', true, '00:00', '23:59'),
         (6, 'quote', true, '00:00', '23:59'),
         (7, 'word', true, '00:00', '23:59'),
-        (1, 'announcements', true, '00:00', '23:59'),
+        (1, 'announcement', true, '00:00', '23:59'),
         (3, 'countdown', true, '00:00', '23:59'),
         (2, 'calendar', true, '00:00', '23:59');
 ```

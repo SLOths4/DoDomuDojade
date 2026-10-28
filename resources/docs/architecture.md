@@ -10,7 +10,7 @@ Projekt stara się utrzymać zgodność z architekturą DDD (Domain-Driven Desig
 
 Punktem wejściowym całej aplikacji jest `index.php`. To tam znajdują się wszystkie ścieżki oraz ich obsługa.
 
-Index zaczyna od inicjacji `bootstrap.php` w `bootstrap/bootstrap.php`. Tu z kolei dzieje się druga część magii. Wszystkie instancje klas są inicjowane, tak, żeby mogły potem zostać wykorzystane w DI (Dependency Injection).
+Index zaczyna od inicjacji `bootstrap.php` w `bootstrap/bootstrap.php`. Tu z kolei dzieje się druga część magii: wczytywany jest `.env`, tworzony jest kontener DI (`src/Infrastructure/Container.php`) i rejestrowane są w nim providery z `src/Infrastructure/Container/Providers/` (`SharedProvider`, `UserProvider`, `AnnouncementProvider`, `DisplayProvider`). Klasy niezarejestrowane w providerach kontener tworzy sam przez autowiring (refleksję), o ile ich konstruktor nie ma parametrów skalarnych.
 
 Żeby wyjaśnić działanie aplikacji, przyjrzyjmy się przykładowej ścieżce `/login`.
 1. Nasz serwer odpytuje `index.php` o tę ścieżkę
@@ -26,10 +26,13 @@ public function show(): ResponseInterface
 ```
 Ot cała magia ✨
 
-Warto dodać, że niektóre ścieżki zawierają tzw. "middleware". Jest ono częścią wspólną między różnymi warstwami aplikacji. W naszej aplikacji na tę chwilę znajduje się middleware odpowiedzialne za:
-- csrf (cross-site request forgery)
-- translacje
-- uwierzytelnianie
+Warto dodać, że każde żądanie przechodzi przez tzw. "middleware". W naszej aplikacji kolejność jest następująca:
+
+```
+RequestContextMiddleware → ExceptionMiddleware → [AuthMiddleware] → LocaleMiddleware → CsrfMiddleware → kontroler
+```
+
+`AuthMiddleware` jest dodawane tylko do tras chronionych. Szczegóły: [API i routing](api.md#middleware).
 
 ## 🎯 Główne Zasady DDD w Projekcie
 
@@ -212,7 +215,9 @@ class AnnouncementDTO {
 ```
 src/Infrastructure/
 ├── Configuration/   # Konfiguracja i .env
-├── Container.php    # DI Container
+├── Container.php    # DI Container (PSR-11, z autowiringiem)
+├── Container/Providers/ # Rejestracje usług (Shared, User, Announcement, Display)
+├── Event/           # Publikacja zdarzeń domenowych do tabeli event
 ├── Database/        # PDO i obsługa bazy
 ├── ExternalApi/     # Integracje (Tram, Weather, Quote, Word, Calendar)
 ├── Helper/          # Funkcje pomocnicze
@@ -278,11 +283,15 @@ class EmailService {
 
 ```
 src/Presentation/Http/
+├── Context/         # RequestContext, LocaleContext
 ├── Controller/      # HTTP Controllers
 │   ├── AnnouncementController.php
 │   ├── UserController.php
 │   └── ...
-└── Response/        # Response helpers
+├── DTO/             # DTO widoków
+├── Middleware/      # Pipeline middleware
+├── Presenter/       # Formatowanie danych do widoków
+└── Shared/          # Interfejsy: flash, tłumacz, renderer
 
 src/Console/
 └── Commands/        # CLI Commands
@@ -351,11 +360,13 @@ graph TB
 Invariants to reguły biznesowe, które muszą być spełnione.
 
 ### Announcement Invariants
-1. Announcement musi mieć unikalny tytuł (w kontekście)
-2. Announcement musi mieć `validUntil` >= NOW (w momencie walidacji)
-3. Zatwierdzenie zmienia status z PENDING na APPROVED
-4. Odrzucenie zmienia status z PENDING na REJECTED
+1. Tytuł 5–255 znaków, tekst 10–65535 znaków (konfigurowalne w `.env`)
+2. `validUntil` od teraz do `now + ANNOUNCEMENT_MAX_VALID_DATE` (domyślnie `+1 year`)
+3. Ogłoszenie dodane przez admina jest od razu `APPROVED`; propozycja publiczna startuje jako `PENDING`
+4. Zatwierdzenie ustawia `APPROVED`, odrzucenie `REJECTED` — obecnie bez sprawdzania stanu wyjściowego
 5. Ogłoszenie jest ważne, tylko jeśli status = APPROVED i teraz <= validUntil
+
+Pełny opis reguł: [Model danych](data-model.md).
 
 ``` php
 public function isValid(): bool {
@@ -366,13 +377,16 @@ public function isValid(): bool {
 
 ## 📦 Dependency Injection
 
-Projekt używa DI Container (`src/Infrastructure/Container.php`) zgodny z psr-11 `ContainerInterface`.
+Projekt używa DI Container (`src/Infrastructure/Container.php`) zgodny z psr-11 `ContainerInterface`. Rejestracje znajdują się w providerach (`src/Infrastructure/Container/Providers/*Provider.php`). Każda usługa jest tworzona raz na żądanie (singleton w obrębie procesu PHP).
+
+!!! warning
+    Klasy z parametrami skalarnymi w konstruktorze (np. limity z `.env`) **muszą** być zarejestrowane w providerze — autowiring ich nie obsłuży.
 
 ```php
-// Container Registration
-$container->set(
-    PDOAnnouncementRepository::class,
-    fn(Container $c) => new PDOAnnouncementRepository($pdo)
+// Rejestracja w providerze
+$c->set(
+    AnnouncementRepositoryInterface::class,
+    fn(Container $c) => new PDOAnnouncementRepository(/* ... */)
 );
 
 // Usage in Controller

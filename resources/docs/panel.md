@@ -119,6 +119,16 @@ Wyświetla stronę zarządzania ogłoszeniami.
     - `decidedAnnouncements` — pozostałe statusy
 4. Renderuje szablon `ANNOUNCEMENTS`
 
+### `profile(): ResponseInterface`
+
+Wyświetla profil zalogowanego użytkownika (`/panel/profile`, alias `/profile`) z odnośnikiem do zmiany hasła.
+
+**Logika**:
+1. Pobiera bieżącego użytkownika z `RequestContext`
+2. Renderuje szablon `PROFILE`
+
+Zmiana hasła odbywa się na stronie `/change-password` (`LoginController::showChangePassword`, szablon `CHANGE_PASSWORD`), która wysyła `POST /api/user/self/change-password`. Na tę stronę `AuthMiddleware` przekierowuje użytkownika z ustawionym `must_change_password`.
+
 ### `modules(): ResponseInterface`
 
 Wyświetla stronę zarządzania modułami.
@@ -133,7 +143,7 @@ Wyświetla stronę zarządzania modułami.
 Instancja `PanelController` jest konfigurowana przez providery kontenera w `src/Infrastructure/Container/Providers/` i składana w `src/Infrastructure/Container.php`:
 
 ```php
-$container->set(PanelController::class, fn(Container $c) => new PanelController(
+$c->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(RequestContext::class),
     $c->get(TwigRenderer::class),
     $c->get(FlashMessengerService::class),
@@ -143,7 +153,7 @@ $container->set(PanelController::class, fn(Container $c) => new PanelController(
     $c->get(GetAllCountdownsUseCase::class),
     $c->get(GetAllAnnouncementsUseCase::class),
     $c->get(Translator::class),
-    $c->get(AnnouncementViewMapper::class),
+    $c->get(AnnouncementPresenter::class),
 ));
 ```
 
@@ -159,8 +169,9 @@ $container->set(PanelController::class, fn(Container $c) => new PanelController(
 
 ### CSRF Protection
 
-- Wszystkie żądania POST/PATCH/DELETE przechodzą przez `CsrfMiddleware`
-- Wymaga poprawnego tokenu CSRF w żądaniu
+- Wszystkie żądania POST/PUT/PATCH/DELETE przechodzą przez `CsrfMiddleware` — także publiczne (`/api/authenticate`, `/logout`, `/api/announcement/propose`)
+- Token jest renderowany w ukrytym polu `<input name="_token">`; JavaScript wysyła go w nagłówku `X-CSRF-Token`
+- Pełna lista endpointów: [API i routing](api.md)
 
 ## Szablony (Templates)
 
@@ -171,6 +182,8 @@ Szablony są przechowywane w `src/Presentation/View/templates/` i renderowane pr
 - `COUNTDOWNS` — zarządzanie licznikami
 - `ANNOUNCEMENTS` — zarządzanie ogłoszeniami
 - `MODULES` — zarządzanie modułami
+- `PROFILE` — profil zalogowanego użytkownika
+- `CHANGE_PASSWORD` — zmiana własnego hasła (także wymuszona)
 
 Mapowanie nazw szablonów w enum `TemplateNames` (w `src/Presentation/View/TemplateNames.php`)
 
@@ -196,12 +209,13 @@ Poniższe endpoint-y API pracują z danymi wyświetlanymi w panelu:
 - `POST /api/announcement/{id}/reject` — odrzuć ogłoszenie
 
 ### Liczniki
-- `GET /api/countdowns` — pobierz wszystkie liczniki
+- `GET /api/countdowns` — pobierz wszystkie (uwaga: liczba mnoga)
 - `POST /api/countdown` — dodaj licznik
 - `PATCH /api/countdown/{id}` — edytuj licznik
 - `DELETE /api/countdown/{id}` — usuń licznik
 
 ### Moduły
+- `GET /api/module` — pobierz wszystkie
 - `PATCH /api/module/{id}` — edytuj moduł
 - `POST /api/module/{id}/toggle` — włącz/wyłącz moduł
 

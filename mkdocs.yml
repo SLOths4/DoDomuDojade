@@ -16,6 +16,11 @@ plugins:
   - search
 
 markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -28,12 +33,17 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
 
 nav:
   - Home: index.md
   - Architektura: architecture.md
+  - API i routing: api.md
+  - Model danych: data-model.md
+  - Konfiguracja: configuration.md
+  - Integracje: integrations.md
   - Display: display.md
   - Panel: panel.md
   - Rozwój: development.md
+  - Stan projektu: current-state.md
+  - Migracja na Pythona: python-migration.md
 
