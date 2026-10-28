@@ -97,7 +97,6 @@ final class DisplayProvider implements ServiceProviderInterface
         $c->set(PanelController::class, fn(Container $c) => new PanelController(
             $c->get(RequestContext::class),
             $c->get(TwigRenderer::class),
-            $c->get(FlashMessengerService::class),
             $c->get(LoggerInterface::class),
             $c->get(GetAllModulesUseCase::class),
             $c->get(GetAllUsersUseCase::class),

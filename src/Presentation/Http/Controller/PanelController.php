@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Presentation\Http\Controller;
 
@@ -12,7 +13,6 @@ use App\Domain\Shared\ViewException;
 use App\Presentation\Http\Context\RequestContext;
 use App\Presentation\Http\DTO\ModuleViewDTO;
 use App\Presentation\Http\Presenter\AnnouncementPresenter;
-use App\Presentation\Http\Shared\FlashMessengerInterface;
 use App\Presentation\Http\Shared\Translator;
 use App\Presentation\Http\Shared\ViewRendererInterface;
 use App\Presentation\View\TemplateNames;
@@ -31,7 +31,6 @@ class PanelController extends BaseController
     public function __construct(
         RequestContext                              $requestContext,
         ViewRendererInterface                       $renderer,
-        readonly FlashMessengerInterface            $flash,
         private readonly LoggerInterface            $logger,
         private readonly GetAllModulesUseCase       $getAllModulesUseCase,
         private readonly GetAllUsersUseCase         $getAllUsersUseCase,
